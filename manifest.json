@@ -1,0 +1,24 @@
+{
+    "name": "Web Server for Chrome",
+    "short_name": "Web Server",
+    "description": "A Web Server for Chrome, serves web pages over the network, using HTTP",
+    "author": "Kyle Graehl",
+    "version": "0.0.1",
+    "manifest_version": 2,
+    "offline_enabled": true,
+    "minimum_chrome_version": "31",
+    "app": {
+        "background": {
+            "scripts": ["common.js","stream.js","connection.js","webapp.js","background.js"]
+        }
+    },
+    "permissions": [
+        {"fileSystem":["write","directory","retainEntries"]},
+        {"socket":[
+            "tcp-connect",
+            "udp-bind::",
+            "tcp-listen::",
+            "udp-send-to::"
+        ]}
+    ]
+}

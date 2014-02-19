@@ -9,7 +9,7 @@
     "minimum_chrome_version": "31",
     "app": {
         "background": {
-            "scripts": ["common.js","stream.js","connection.js","webapp.js","background.js"]
+            "scripts": ["common.js","buffer.js","stream.js","connection.js","webapp.js","background.js"]
         }
     },
     "permissions": [

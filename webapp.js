@@ -38,8 +38,12 @@
                 var stream = new IOStream(acceptInfo.socketId)
                 var connection = new HTTPConnection(stream)
                 this.connections[acceptInfo.socketId] = connection
-
+                connection.start()
+                //connection.readUntil('\r\n\r\n', this.onHeaders.bind(this))
             }
+        },
+        onHeaders: function(conn) {
+            debugger
         }
     }
 

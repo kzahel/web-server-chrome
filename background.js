@@ -12,7 +12,7 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
 			     });
     console.log('launched')
 
-    var app = new chrome.WebApplication({port:8889})
+    var app = new chrome.WebApplication({port:8887})
     app.start()
 });
 

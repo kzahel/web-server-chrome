@@ -93,7 +93,7 @@
         },
         write: function(data) {
             this.responseData.push(data)
-            this.responseLength += data.length
+            this.responseLength += (data.length || data.byteLength)
             // todo - support chunked response?
             if (! this.headersWritten) {
                 this.headersWritten = true
@@ -113,6 +113,55 @@
         }
     })
 
+
+    function PackageFilesHandler() {
+        BaseHandler.prototype.constructor.call(this)
+    }
+    _.extend(PackageFilesHandler.prototype, {
+
+        get: function() {
+            var uri = this.request.uri
+
+            var xhr = new XMLHttpRequest();
+            function stateChange(evt) {
+                if (evt.target.readyState == 4) {
+                    if (evt.target.status == 200) {
+                        var resp = {data:evt.target.response,
+                                    size:evt.target.response.byteLength,
+                                    type:evt.target.getResponseHeader('content-type')
+                                   }
+                        this.write(evt.target.response)
+                    } else {
+                        console.error('error in passthru package files',evt)
+                        this.write('error')
+                    }
+                  
+                }
+            }
+            xhr.onreadystatechange = stateChange.bind(this)
+            xhr.open("GET", uri, true);
+            for (key in this.request.headers) {
+
+                if (key == 'connection' ||
+                    key == 'host' ||
+                    key == 'cookie' ||
+                    key == 'accept-encoding' ||
+                    key == 'user-agent' ||
+                    key == 'referer') {
+                } else {
+                    //console.log('set req header',key)
+                    xhr.setRequestHeader(key, this.request.headers[key])
+                }
+            }
+            xhr.responseType = 'arraybuffer';
+            xhr.send();
+
+
+        }
+
+    }, BaseHandler.prototype)
+
+    window.PackageFilesHandler = PackageFilesHandler
     window.BaseHandler = BaseHandler
     chrome.WebApplication = WebApplication
 

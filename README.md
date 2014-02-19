@@ -1,5 +1,7 @@
 Chrome Web Server - an HTTP web server for Chrome (chrome.socket)
 
+https://chrome.google.com/webstore/detail/ofhbbkphhbklhfoeikjpcbhemlocgigb
+
 ====
 
 I wrote this because the example app provided by google would lock and

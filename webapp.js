@@ -3,7 +3,14 @@
 
     function WebApplication(opts) {
         this.opts = opts
-        this.connections = {}
+        this.handlers = opts.handlers
+        this.handlersMatch = []
+
+        for (var i=0; i<this.handlers.length; i++) {
+            var repat = this.handlers[i][0]
+            this.handlersMatch.push( [new RegExp(repat), this.handlers[i][1]] )
+        }
+
         this.host = opts.host || '127.0.0.1'
         this.port = opts.port
         this.sockInfo = null
@@ -27,26 +34,86 @@
                                                   errno:result})
                                   } else {
                                       console.log('listen result',result)
-                                      socket.accept(this.sockInfo.socketId, this.onAccept.bind(this));
+                                      this.doAccept()
                                   }
                               }.bind(this))
             }.bind(this));
+        },
+        doAccept: function() {
+            socket.accept(this.sockInfo.socketId, this.onAccept.bind(this));
         },
         onAccept: function(acceptInfo) {
             console.log('onAccept',acceptInfo);
             if (acceptInfo.socketId) {
                 var stream = new IOStream(acceptInfo.socketId)
                 var connection = new HTTPConnection(stream)
-                this.connections[acceptInfo.socketId] = connection
-                connection.start()
-                //connection.readUntil('\r\n\r\n', this.onHeaders.bind(this))
+                connection.addRequestCallback(this.onRequest.bind(this))
+                connection.tryRead()
             }
+            this.doAccept()
         },
-        onHeaders: function(conn) {
-            debugger
+        onRequest: function(request) {
+            //console.log('webapp handle req',request)
+            for (var i=0; i<this.handlersMatch.length; i++) {
+                var re = this.handlersMatch[i][0]
+                var reresult = re.exec(request.uri)
+                if (reresult) {
+                    var cls = this.handlersMatch[i][1]
+                    var requestHandler = new cls()
+                    requestHandler.request = request
+                    requestHandler[request.method.toLowerCase()](reresult.slice(1))
+                    return
+                }
+            }
+            console.error('unhandled request',request)
+            
         }
     }
 
+    function BaseHandler() {
+        this.headersWritten = false
+        this.responseData = []
+        this.responseLength = 0
+    }
+    _.extend(BaseHandler.prototype, {
+        get_argument: function(key,def) {
+            if (this.request.arguments[key] !== undefined) {
+                return this.request.arguments[key]
+            } else {
+                return def
+            }
+        },
+        writeHeaders: function() {
+            var lines = []
+            lines.push('HTTP/1.1 200 OK')
+            lines.push('content-length: ' + this.responseLength)
+            lines.push('\r\n')
+
+            this.request.connection.write(lines.join('\r\n'))
+        },
+        write: function(data) {
+            this.responseData.push(data)
+            this.responseLength += data.length
+            // todo - support chunked response?
+            if (! this.headersWritten) {
+                this.headersWritten = true
+                this.writeHeaders()
+            }
+            for (var i=0; i<this.responseData.length; i++) {
+                this.request.connection.write(this.responseData[i])
+            }
+            this.responseData = []
+            this.finish()
+        },
+        finish: function() {
+            this.request.connection.curRequest = null
+            if (this.request.isKeepAlive()) {
+                this.request.connection.tryRead()
+            }
+        }
+    })
+
+    window.BaseHandler = BaseHandler
     chrome.WebApplication = WebApplication
 
 })();

@@ -3,26 +3,56 @@
     function IOStream(sockId) {
         this.sockId = sockId
 
-        this.readUntilCallback = null
+        this.readCallback = null
         this.readUntilDelimiter = null
         this.readBuffer = new Buffer
         this.writeBuffer = new Buffer
         this.reading = false
+        this.writing = false
+        this.pleaseReadBytes = null
 
     }
 
     IOStream.prototype = {
         readUntil: function(delimiter, callback) {
             this.readUntilDelimiter = delimiter
-            this.readUntilCallback = callback
+            this.readCallback = callback
             this.tryRead()
         },
+        readBytes: function(numBytes, callback) {
+            this.pleaseReadBytes = numBytes
+            this.readCallback = callback
+            this.checkBuffer()
+            this.tryRead()
+        },
+        tryWrite: function() {
+            if (this.writing) { 
+                //console.warn('already writing..'); 
+                return
+            }
+            //console.log('tryWrite')
+            this.writing = true
+            var data = this.writeBuffer.consume_any_max(4096)
+            socket.write( this.sockId, data, this.onWrite.bind(this) )
+        },
+        onWrite: function(evt) {
+            this.writing = false
+            //console.log('onWrite',evt)
+            if (this.writeBuffer.size() > 0) {
+                //console.log('write more...')
+                this.tryWrite()
+            }
+        },
         tryRead: function() {
-            if (this.reading) { debugger;return }
+            if (this.reading) { 
+                //console.warn('already reading..'); 
+                return 
+            }
             this.reading = true
             socket.read( this.sockId, 4096, this.onRead.bind(this) )
         },
         onRead: function(evt) {
+            //console.log('onRead',evt)
             this.reading = false
             if (evt.resultCode == 0) {
                 this.error({message:'remote closed connection'})
@@ -35,21 +65,44 @@
             }
         },
         checkBuffer: function() {
+            //console.log('checkBuffer')
             if (this.readUntilDelimiter) {
                 var buf = this.readBuffer.flatten()
                 var str = arrayBufferToString(buf)
                 var idx = str.indexOf(this.readUntilDelimiter)
                 if (idx != -1) {
-                    var callback = this.readUntilCallback
+                    var callback = this.readCallback
                     var toret = this.readBuffer.consume(idx+this.readUntilDelimiter.length)
                     this.readUntilDelimiter = null
-                    this.readUntilCallback = null
+                    this.readCallback = null
                     callback(toret)
+                }
+            } else if (this.pleaseReadBytes) {
+                if (this.readBuffer.size() >= this.pleaseReadBytes) {
+                    var data = this.readBuffer.consume(this.pleaseReadBytes)
+                    var callback = this.readCallback
+                    this.readCallback = null
+                    this.pleaseReadBytes = null
+                    callback(data)
                 }
             }
         },
         error: function(data) {
             console.error(this,data)
+            // try close by writing 0 bytes
+
+            this.tryClose(function(res){
+
+                console.log('tryclose res',res)
+
+                socket.disconnect(this.sockId)
+                socket.destroy(this.sockId)
+                this.sockId = null
+                
+            }.bind(this))
+        },
+        tryClose: function(callback) {
+            socket.write(this.sockId, new ArrayBuffer, callback)
         }
     }
 

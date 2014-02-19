@@ -12,7 +12,28 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
 			     });
     console.log('launched')
 
-    var app = new chrome.WebApplication({port:8887})
+
+
+    function MainHandler() {
+        BaseHandler.prototype.constructor.call(this)
+    }
+    _.extend(MainHandler.prototype, {
+        get: function() {
+            // handle get request
+            this.write('OK!, ' + this.request.uri)
+        }
+    })
+    for (var key in BaseHandler.prototype) {
+        MainHandler.prototype[key] = BaseHandler.prototype[key]
+    }
+
+
+
+    var handlers = [
+        ['.*', MainHandler]
+    ]
+
+    var app = new chrome.WebApplication({handlers:handlers, port:8887})
     app.start()
 });
 

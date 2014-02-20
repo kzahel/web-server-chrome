@@ -2,6 +2,11 @@ Chrome Web Server - an HTTP web server for Chrome (chrome.socket)
 
 https://chrome.google.com/webstore/detail/ofhbbkphhbklhfoeikjpcbhemlocgigb
 
+The default behavior right now is very simple. You choose a directory
+to serve static content. It will crash if you try and request a file
+that is too large, because it does not stream the response, rather
+loads it all into memory.
+
 ====
 
 I wrote this because the example app provided by google would lock and

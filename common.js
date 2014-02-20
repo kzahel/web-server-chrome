@@ -4,7 +4,6 @@ function recursiveGetEntry(filesystem, path, callback) {
     var state = {e:filesystem}
 
     function recurse(e) {
-        console.log('recurse',e)
         if (path.length == 0) {
             if (e.name == 'TypeMismatchError') {
                 state.e.getDirectory(state.path, {create:false}, recurse, recurse)

@@ -13,6 +13,7 @@
         }
     },
     "permissions": [
+        "storage",
         {"fileSystem":["write","directory","retainEntries"]},
         {"socket":[
             "tcp-connect",

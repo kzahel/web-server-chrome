@@ -9,12 +9,16 @@
         this.arguments = {}
         var idx = this.uri.indexOf('?')
         if (idx != -1) {
+            this.path = decodeURI(this.uri.slice(0,idx))
             var s = this.uri.slice(idx+1)
             var parts = s.split('&')
             for (var i=0; i<parts.length; i++) {
                 var idx2 = parts[i].indexOf('=')
                 this.arguments[decodeURIComponent(s.slice(0,idx2))] = docodeURIComponent(s.slice(idx2+1,s.length))
             }
+
+        }else {
+            this.path = decodeURI(this.uri)
         }
     }
 

@@ -31,7 +31,8 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
 
     var handlers = [
 //        ['.*', MainHandler]
-        ['.*', PackageFilesHandler]
+//        ['.*', PackageFilesHandler]
+        ['.*', DirectoryEntryHandler]
     ]
 
     var app = new chrome.WebApplication({handlers:handlers, port:8887})

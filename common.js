@@ -1,5 +1,46 @@
 // common stuff
 
+function recursiveGetEntry(filesystem, path, callback) {
+    var state = {e:filesystem}
+
+    function recurse(e) {
+        console.log('recurse',e)
+        if (path.length == 0) {
+            if (e.name == 'TypeMismatchError') {
+                state.e.getDirectory(state.path, {create:false}, recurse, recurse)
+            } else if (e.isFile) {
+                callback(e)
+            } else if (e.isDirectory) {
+                callback(e)
+            } else {
+                callback({error:'path not found'})
+            }
+        } else if (e.isDirectory) {
+            if (path.length > 1) {
+                // this is not calling error callback, simply timing out!!!
+                e.getDirectory(path.shift(), {create:false}, recurse, recurse)
+            } else {
+                state.e = e
+                state.path = _.clone(path)
+                e.getFile(path.shift(), {create:false}, recurse, recurse)
+            }
+        } else {
+            callback({error:'file exists'})
+        }
+    }
+    recurse(filesystem)
+}
+
+function parseHeaders(lines) {
+    var headers = {}
+    // TODO - multi line headers?
+    for (var i=0;i<lines.length;i++) {
+        var l = lines[i].split(':')
+        headers[l[0].toLowerCase()] = l[1].trim()
+    }
+    return headers
+
+}
 function ui82str(arr, startOffset) {
     console.assert(arr)
     if (! startOffset) { startOffset = 0 }

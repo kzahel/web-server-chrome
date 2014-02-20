@@ -11,6 +11,9 @@
         this.writing = false
         this.pleaseReadBytes = null
 
+        this.remoteclosed = false
+        this.closed = false
+
     }
 
     IOStream.prototype = {
@@ -44,6 +47,11 @@
             }
         },
         tryRead: function() {
+            if (this.remoteclosed) {
+                console.warn('cannot read, socket is halfduplex')
+                debugger
+                return
+            }
             if (this.reading) { 
                 //console.warn('already reading..'); 
                 return 
@@ -55,7 +63,12 @@
             //console.log('onRead',evt)
             this.reading = false
             if (evt.resultCode == 0) {
-                this.error({message:'remote closed connection'})
+                //this.error({message:'remote closed connection'})
+                this.log('remote closed connection')
+                this.remoteclosed = true
+                if (this.request) {
+                    // do we even have a request yet? or like what to do ...
+                }
             } else if (evt.resultCode < 0) {
                 this.error({message:'error code',errno:evt.resultCode})
             } else {
@@ -63,6 +76,9 @@
                 this.checkBuffer()
                 this.tryRead()
             }
+        },
+        log: function(msg) {
+            console.log(this.sockId,msg)
         },
         checkBuffer: function() {
             //console.log('checkBuffer')
@@ -91,15 +107,11 @@
             console.error(this,data)
             // try close by writing 0 bytes
 
-            this.tryClose(function(res){
-
-                console.log('tryclose res',res)
 
                 socket.disconnect(this.sockId)
                 socket.destroy(this.sockId)
                 this.sockId = null
-                
-            }.bind(this))
+
         },
         tryClose: function(callback) {
             socket.write(this.sockId, new ArrayBuffer, callback)

@@ -43,7 +43,7 @@
             socket.accept(this.sockInfo.socketId, this.onAccept.bind(this));
         },
         onAccept: function(acceptInfo) {
-            console.log('onAccept',acceptInfo);
+            //console.log('onAccept',acceptInfo);
             if (acceptInfo.socketId) {
                 var stream = new IOStream(acceptInfo.socketId)
                 var connection = new HTTPConnection(stream)
@@ -83,21 +83,73 @@
                 return def
             }
         },
-        writeHeaders: function() {
+        getHeaders: function() {
+            // guess content type...
             var lines = []
-            lines.push('HTTP/1.1 200 OK')
+            var mime = {'html': 'text/html',
+                        'js': 'application/javascript'}
+            var parts = this.request.path.split('.')
+            var ext = parts[parts.length-1]
+            if (mime[ext]) {
+                lines.push('content-type: '+ mime[ext])
+            }
+
+
+/*
+            lines.push('accept-ranges: bytes')
+            if (this.request.headers['range']) {
+                debugger
+                if (this.request.headers['range'] == 'bytes 0-') {
+                    var cr = 'content-range: bytes 0-' + this.responseLength-1 + '/' + this.responseLength
+                    this.fileLength = this.responseLength
+                } else {
+                    var cr = 'content-range: ' + this.request.headers['range'] + '/' + this.fileLength
+                }
+                debugger
+                lines.push(cr)
+            }
+*/
+            return lines
+        },
+        writeHeaders: function(code, dheaders) {
+            this.headersWritten = true
+            var lines = []
+            if (code == 200) {
+                lines.push('HTTP/1.1 200 OK')
+            } else {
+                lines.push('HTTP/1.1 '+ code + ' Eat me')
+            }
             lines.push('content-length: ' + this.responseLength)
+
+            if (dheaders) {
+                for (key in dheaders) {
+                    // dont set certain headers...
+
+                    lines.push(key +': '+dheaders[key])
+                }
+            }
+
+            //lines = lines.concat(this.getHeaders())
+
             lines.push('\r\n')
 
             this.request.connection.write(lines.join('\r\n'))
         },
-        write: function(data) {
+        writeResponse: function(resp) {
+            var lines = resp.headers.split('\r\n')
+            var dheaders = parseHeaders(lines.slice(0,lines.length-1))
+            this.responseLength = (resp.data.length || resp.data.byteLength)
+            this.writeHeaders(200, dheaders)
+            this.write(resp.data)
+            
+        },
+        write: function(data, code) {
+            if (code === undefined) { code = 200 }
             this.responseData.push(data)
             this.responseLength += (data.length || data.byteLength)
             // todo - support chunked response?
             if (! this.headersWritten) {
-                this.headersWritten = true
-                this.writeHeaders()
+                this.writeHeaders(code)
             }
             for (var i=0; i<this.responseData.length; i++) {
                 this.request.connection.write(this.responseData[i])
@@ -113,13 +165,94 @@
         }
     })
 
+    function haveentry(entry) {
+        window.fs = new FileSystem(entry)
+    }
+    window.haveentry = haveentry
+
+    function FileSystem(entry) {
+        this.entry = entry
+    }
+    _.extend(FileSystem.prototype, {
+        getByPath: function(path, callback) {
+            if (path == '/') { 
+                callback(this.entry)
+                return
+            }
+            var parts = path.split('/')
+            var newpath = parts.slice(1,parts.length)
+            recursiveGetEntry(this.entry, newpath, callback)
+        }
+    })
+
+    function DirectoryEntryHandler() {
+        BaseHandler.prototype.constructor.call(this)
+    }
+    _.extend(DirectoryEntryHandler.prototype, {
+        get: function() {
+            if (! window.fs) {
+                this.write("error: need to select a directory to serve",500)
+                return
+            }
+            //var path = decodeURI(this.request.path)
+            fs.getByPath(this.request.path, this.onEntry.bind(this))
+
+        },
+        onEntry: function(entry) {
+            if (entry.error) {
+                this.write('not found',404)
+            } else if (entry.isFile) {
+                entry.file( function(file) {
+                    console.log(entry,file)
+                    var fr = new FileReader
+                    var cb = this.onReadEntry.bind(this)
+                    fr.onload = cb
+                    fr.onerror = cb
+                    fr.readAsArrayBuffer(file)
+                }.bind(this))
+            } else {
+                // directory
+                var reader = entry.createReader()
+                reader.readEntries( function(results) {
+                    this.renderDirectoryListing(results)
+                }.bind(this))
+            }
+        },
+        renderDirectoryListing: function(results) {
+            var html = ['<html>']
+            html.push('<style>li.directory {background:#aab}</style>')
+            html.push('<a href="..">parent</a>')
+            html.push('<ul>')
+
+            for (var i=0; i<results.length; i++) {
+                if (results[i].isDirectory) {
+                    html.push('<li class="directory"><a href="' + results[i].name + '/">' + results[i].name + '</a></li>')
+                } else {
+                    html.push('<li><a href="' + results[i].name + '">' + results[i].name + '</a></li>')
+                }
+            }
+            html.push('</ul></html>')
+            this.write(html.join('\n'))
+        },
+        onReadEntry: function(evt) {
+            // set mime types etc?
+            this.write(evt.target.result)
+
+        }
+    }, BaseHandler.prototype)
+
 
     function PackageFilesHandler() {
+        // this thing is ASS
         BaseHandler.prototype.constructor.call(this)
     }
     _.extend(PackageFilesHandler.prototype, {
 
         get: function() {
+
+            // how does this handle streaming and cancel and all that?
+            // not so good my guess...
+
             var uri = this.request.uri
 
             var xhr = new XMLHttpRequest();
@@ -128,17 +261,20 @@
                     if (evt.target.status == 200) {
                         var resp = {data:evt.target.response,
                                     size:evt.target.response.byteLength,
+                                    headers:evt.target.getAllResponseHeaders(),
                                     type:evt.target.getResponseHeader('content-type')
                                    }
-                        this.write(evt.target.response)
+                        this.writeResponse(resp)
                     } else {
-                        console.error('error in passthru package files',evt)
-                        this.write('error')
+                        //console.error('error in passthru package files',evt)
+                        this.write('error', 404)
                     }
-                  
                 }
             }
             xhr.onreadystatechange = stateChange.bind(this)
+            if (this.request.headers['range']) {
+                console.log('request had range',this.request)
+            }
             xhr.open("GET", uri, true);
             for (key in this.request.headers) {
 
@@ -155,13 +291,12 @@
             }
             xhr.responseType = 'arraybuffer';
             xhr.send();
-
-
         }
 
     }, BaseHandler.prototype)
 
     window.PackageFilesHandler = PackageFilesHandler
+    window.DirectoryEntryHandler = DirectoryEntryHandler
     window.BaseHandler = BaseHandler
     chrome.WebApplication = WebApplication
 

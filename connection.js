@@ -4,6 +4,7 @@
         this.curRequest = null
         this.onRequestCallback = null
         this.log('new connection')
+        this.closed = false
     }
 
     HTTPConnection.prototype = {
@@ -22,6 +23,10 @@
             }
             this.stream.writeBuffer.add(buf)
             this.stream.tryWrite()
+        },
+        close: function() {
+            this.closed = true
+            this.stream.close()
         },
         addRequestCallback: function(cb) {
             this.onRequestCallback = cb 

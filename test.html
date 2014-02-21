@@ -1,0 +1,36 @@
+
+<!--script src="test1.js"></script>
+<script src="test2.js"></script>
+<script src="test-404.js"></script>
+<script src="test3.js"></script-->
+<!--video src="big_buck_bunny_trailer_480p_high.mp4" controls="true" /-->
+<video id="video" src="Fosters.mp4" controls="true" preload="metadata" />
+<!--video id="video" src="big_buck_bunny.mp4" controls ="true" autoplay="false" /-->
+<script>
+
+var video = document.getElementById('video');
+        video.addEventListener("readystatechange", function(evt) { console.log('readystatechange'); } );
+        video.addEventListener("stalled", function(evt) { console.log("stalled",evt); } );
+        video.addEventListener("durationchange", function(evt) { console.log('durationchange',evt); } );
+        video.addEventListener("loadstart", function(evt) { console.log("load start",evt); } );
+        video.addEventListener("abort", function(evt) { console.log("abort",evt); } );
+        video.addEventListener("loadedmetadata", function(evt) { console.log("got metadata",evt); } );
+        video.addEventListener("error", function(evt) { console.log("got error",evt); 
+                                                        console.log('video state: ',video.readyState);
+                                                      } );
+        video.addEventListener("canplay", function(evt) { console.log('canplay',evt); } );
+        video.addEventListener("progress", function(evt) { console.log("progress",evt); } );
+        video.addEventListener("seek", function(evt) { console.log('seek',evt); } );
+        video.addEventListener("seeked", function(evt) { console.log('seeked',evt); } );
+        video.addEventListener("ended", function(evt) { console.log('ended',evt); } );
+        //video.addEventListener("timeupdate", function(evt) { console.log('timeupdate',evt); } );
+        video.addEventListener("pause", function(evt) { console.log('pause',evt); } );
+        video.addEventListener("play", function(evt) { console.log('play',evt); } );
+        video.addEventListener("suspend", function(evt) {
+            //console.log('suspend event',evt);
+        });
+window.video = video
+//video.preload = 'metadata' // 'none'
+//video.load()
+
+</script>

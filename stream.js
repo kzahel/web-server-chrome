@@ -13,7 +13,9 @@
 
         this.remoteclosed = false
         this.closed = false
+        this.onclose = null
 
+        this.onWriteBufferEmpty = null
     }
 
     IOStream.prototype = {
@@ -28,7 +30,7 @@
             this.checkBuffer()
             this.tryRead()
         },
-        tryWrite: function() {
+        tryWrite: function(callback) {
             if (this.writing) { 
                 //console.warn('already writing..'); 
                 return
@@ -36,14 +38,19 @@
             //console.log('tryWrite')
             this.writing = true
             var data = this.writeBuffer.consume_any_max(4096)
-            socket.write( this.sockId, data, this.onWrite.bind(this) )
+            socket.write( this.sockId, data, this.onWrite.bind(this, callback) )
         },
-        onWrite: function(evt) {
+        onWrite: function(evt, callback) {
             this.writing = false
             //console.log('onWrite',evt)
             if (this.writeBuffer.size() > 0) {
                 //console.log('write more...')
-                this.tryWrite()
+                if (this.closed || this.remoteclosed) {
+                } else {
+                    this.tryWrite(callback)
+                }
+            } else {
+                if (this.onWriteBufferEmpty) { this.onWriteBufferEmpty(); }
             }
         },
         tryRead: function() {
@@ -64,12 +71,14 @@
             this.reading = false
             if (evt.resultCode == 0) {
                 //this.error({message:'remote closed connection'})
-                this.log('remote closed connection')
+                this.log('remote closed connection (halfduplex)')
                 this.remoteclosed = true
+                if (this.onclose) { this.onclose() }
                 if (this.request) {
                     // do we even have a request yet? or like what to do ...
                 }
             } else if (evt.resultCode < 0) {
+                this.log('remote killed connection')
                 this.error({message:'error code',errno:evt.resultCode})
             } else {
                 this.readBuffer.add(evt.data)
@@ -77,6 +86,7 @@
                 this.tryRead()
             }
         },
+
         log: function(msg) {
             console.log(this.sockId,msg)
         },
@@ -103,14 +113,19 @@
                 }
             }
         },
+        close: function() {
+            if (this.onclose) { this.onclose() }
+            socket.disconnect(this.sockId)
+            socket.destroy(this.sockId)
+            this.sockId = null
+            this.closed = true
+        },
         error: function(data) {
             console.error(this,data)
             // try close by writing 0 bytes
-
-
-                socket.disconnect(this.sockId)
-                socket.destroy(this.sockId)
-                this.sockId = null
+            if (! this.closed) {
+                this.close()
+            }
 
         },
         tryClose: function(callback) {

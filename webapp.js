@@ -53,13 +53,13 @@
             this.doAccept()
         },
         onRequest: function(request) {
-            //console.log('webapp handle req',request)
+            console.log('handle req',request.uri)
             for (var i=0; i<this.handlersMatch.length; i++) {
                 var re = this.handlersMatch[i][0]
                 var reresult = re.exec(request.uri)
                 if (reresult) {
                     var cls = this.handlersMatch[i][1]
-                    var requestHandler = new cls()
+                    var requestHandler = new cls(request)
                     requestHandler.request = request
                     requestHandler[request.method.toLowerCase()](reresult.slice(1))
                     return
@@ -72,8 +72,9 @@
 
     function BaseHandler() {
         this.headersWritten = false
+        this.responseHeaders = {}
         this.responseData = []
-        this.responseLength = 0
+        this.responseLength = null
     }
     _.extend(BaseHandler.prototype, {
         get_argument: function(key,def) {
@@ -83,65 +84,28 @@
                 return def
             }
         },
-        getHeaders: function() {
-            // guess content type...
-            var lines = []
-            var mime = {'html': 'text/html',
-                        'js': 'application/javascript'}
-            var parts = this.request.path.split('.')
-            var ext = parts[parts.length-1]
-            if (mime[ext]) {
-                lines.push('content-type: '+ mime[ext])
-            }
-
-
-/*
-            lines.push('accept-ranges: bytes')
-            if (this.request.headers['range']) {
-                debugger
-                if (this.request.headers['range'] == 'bytes 0-') {
-                    var cr = 'content-range: bytes 0-' + this.responseLength-1 + '/' + this.responseLength
-                    this.fileLength = this.responseLength
-                } else {
-                    var cr = 'content-range: ' + this.request.headers['range'] + '/' + this.fileLength
-                }
-                debugger
-                lines.push(cr)
-            }
-*/
-            return lines
+        setHeader: function(k,v) {
+            this.responseHeaders[k] = v
         },
-        writeHeaders: function(code, dheaders) {
+        writeHeaders: function(code, callback) {
+            if (code === undefined) { code = 200 }
             this.headersWritten = true
             var lines = []
             if (code == 200) {
                 lines.push('HTTP/1.1 200 OK')
             } else {
-                lines.push('HTTP/1.1 '+ code + ' Eat me')
+                lines.push('HTTP/1.1 '+ code + ' ' + HTTPRESPONSES[code])
             }
+            console.assert(this.responseLength)
             lines.push('content-length: ' + this.responseLength)
 
-            if (dheaders) {
-                for (key in dheaders) {
-                    // dont set certain headers...
-
-                    lines.push(key +': '+dheaders[key])
-                }
+            for (key in this.responseHeaders) {
+                lines.push(key +': '+this.responseHeaders[key])
             }
-
-            //lines = lines.concat(this.getHeaders())
-
             lines.push('\r\n')
-
-            this.request.connection.write(lines.join('\r\n'))
-        },
-        writeResponse: function(resp) {
-            var lines = resp.headers.split('\r\n')
-            var dheaders = parseHeaders(lines.slice(0,lines.length-1))
-            this.responseLength = (resp.data.length || resp.data.byteLength)
-            this.writeHeaders(200, dheaders)
-            this.write(resp.data)
-            
+            var headerstr = lines.join('\r\n')
+            console.log('write headers',headerstr)
+            this.request.connection.write(headerstr, callback)
         },
         write: function(data, code) {
             if (code === undefined) { code = 200 }
@@ -159,8 +123,10 @@
         },
         finish: function() {
             this.request.connection.curRequest = null
-            if (this.request.isKeepAlive()) {
+            if (this.request.isKeepAlive() && ! this.request.connection.stream.remoteclosed) {
                 this.request.connection.tryRead()
+            } else {
+                this.request.connection.close()
             }
         }
     })
@@ -185,118 +151,6 @@
         }
     })
 
-    function DirectoryEntryHandler() {
-        BaseHandler.prototype.constructor.call(this)
-    }
-    _.extend(DirectoryEntryHandler.prototype, {
-        get: function() {
-            if (! window.fs) {
-                this.write("error: need to select a directory to serve",500)
-                return
-            }
-            //var path = decodeURI(this.request.path)
-            fs.getByPath(this.request.path, this.onEntry.bind(this))
-
-        },
-        onEntry: function(entry) {
-            if (entry.error) {
-                this.write('not found',404)
-            } else if (entry.isFile) {
-                entry.file( function(file) {
-                    console.log(entry,file)
-                    var fr = new FileReader
-                    var cb = this.onReadEntry.bind(this)
-                    fr.onload = cb
-                    fr.onerror = cb
-                    fr.readAsArrayBuffer(file)
-                }.bind(this))
-            } else {
-                // directory
-                var reader = entry.createReader()
-                reader.readEntries( function(results) {
-                    this.renderDirectoryListing(results)
-                }.bind(this))
-            }
-        },
-        renderDirectoryListing: function(results) {
-            var html = ['<html>']
-            html.push('<style>li.directory {background:#aab}</style>')
-            html.push('<a href="..">parent</a>')
-            html.push('<ul>')
-
-            for (var i=0; i<results.length; i++) {
-                if (results[i].isDirectory) {
-                    html.push('<li class="directory"><a href="' + results[i].name + '/">' + results[i].name + '</a></li>')
-                } else {
-                    html.push('<li><a href="' + results[i].name + '">' + results[i].name + '</a></li>')
-                }
-            }
-            html.push('</ul></html>')
-            this.write(html.join('\n'))
-        },
-        onReadEntry: function(evt) {
-            // set mime types etc?
-            this.write(evt.target.result)
-
-        }
-    }, BaseHandler.prototype)
-
-
-    function PackageFilesHandler() {
-        // this thing is ASS
-        BaseHandler.prototype.constructor.call(this)
-    }
-    _.extend(PackageFilesHandler.prototype, {
-
-        get: function() {
-
-            // how does this handle streaming and cancel and all that?
-            // not so good my guess...
-
-            var uri = this.request.uri
-
-            var xhr = new XMLHttpRequest();
-            function stateChange(evt) {
-                if (evt.target.readyState == 4) {
-                    if (evt.target.status == 200) {
-                        var resp = {data:evt.target.response,
-                                    size:evt.target.response.byteLength,
-                                    headers:evt.target.getAllResponseHeaders(),
-                                    type:evt.target.getResponseHeader('content-type')
-                                   }
-                        this.writeResponse(resp)
-                    } else {
-                        //console.error('error in passthru package files',evt)
-                        this.write('error', 404)
-                    }
-                }
-            }
-            xhr.onreadystatechange = stateChange.bind(this)
-            if (this.request.headers['range']) {
-                console.log('request had range',this.request)
-            }
-            xhr.open("GET", uri, true);
-            for (key in this.request.headers) {
-
-                if (key == 'connection' ||
-                    key == 'host' ||
-                    key == 'cookie' ||
-                    key == 'accept-encoding' ||
-                    key == 'user-agent' ||
-                    key == 'referer') {
-                } else {
-                    //console.log('set req header',key)
-                    xhr.setRequestHeader(key, this.request.headers[key])
-                }
-            }
-            xhr.responseType = 'arraybuffer';
-            xhr.send();
-        }
-
-    }, BaseHandler.prototype)
-
-    window.PackageFilesHandler = PackageFilesHandler
-    window.DirectoryEntryHandler = DirectoryEntryHandler
     window.BaseHandler = BaseHandler
     chrome.WebApplication = WebApplication
 

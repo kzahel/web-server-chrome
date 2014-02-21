@@ -159,6 +159,7 @@
         }
     })
 
+    window.FileSystem = FileSystem
     window.BaseHandler = BaseHandler
     chrome.WebApplication = WebApplication
 

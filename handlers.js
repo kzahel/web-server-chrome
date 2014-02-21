@@ -85,7 +85,6 @@
                     this.file = file
                     if (this.file.size > this.readChunkSize * 8 ||
                         this.request.headers['range']) {
-
                         this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
 
                         if (this.request.headers['range']) {
@@ -113,6 +112,7 @@
                             console.log('large file, streaming mode!')
                             this.fileOffset = 0
                             this.responseLength = this.file.size
+
                             this.writeHeaders(200)
                         }
                         

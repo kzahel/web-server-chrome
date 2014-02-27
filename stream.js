@@ -35,6 +35,7 @@
                 //console.warn('already writing..'); 
                 return
             }
+            if (this.closed) { console.warn('cant write, closed'); return }
             //console.log('tryWrite')
             this.writing = true
             var data = this.writeBuffer.consume_any_max(4096)
@@ -57,6 +58,10 @@
             if (this.remoteclosed) {
                 console.warn('cannot read, socket is halfduplex')
                 debugger
+                return
+            }
+            if (this.closed) {
+                console.warn('cant read, closed')
                 return
             }
             if (this.reading) { 
@@ -129,6 +134,10 @@
 
         },
         tryClose: function(callback) {
+            if (! this.sockId) {
+                console.warn('cant close, no sockid')
+                return
+            }
             socket.write(this.sockId, new ArrayBuffer, callback)
         }
     }

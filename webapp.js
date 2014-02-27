@@ -172,3 +172,4 @@
     chrome.WebApplication = WebApplication
 
 })();
+

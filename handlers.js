@@ -37,14 +37,6 @@
             //console.log(this.request.connection.stream.sockId,'debug wb:',this.request.connection.stream.writeBuffer.size())
         },
         get: function() {
-            if (! this.request.origpath.endsWith('/')) {
-                this.setHeader('location', this.request.origpath + '/') // XXX - encode latin-1 somehow?
-                this.responseLength = 0
-                this.writeHeaders(301)
-
-                this.finish()
-                return
-            }
             this.setHeader('accept-ranges','bytes')
             this.setHeader('connection','keep-alive')
             if (! window.fs) {
@@ -106,6 +98,19 @@
         },
         onEntry: function(entry) {
             this.entry = entry
+
+            if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
+                var newloc = this.request.origpath + '/'
+                this.setHeader('location', newloc) // XXX - encode latin-1 somehow?
+                this.responseLength = 0
+                console.log('redirect ->',newloc)
+                this.writeHeaders(301)
+
+                this.finish()
+                return
+            }
+
+
 
             if (this.request.connection.stream.closed) {
                 console.warn(this.request.connection.stream.sockId,'request closed while processing request')

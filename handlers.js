@@ -77,7 +77,9 @@
             }
         },
         onEntry: function(entry) {
-            if (entry.error) {
+            if (! entry) {
+                this.write('no entry',404)
+            } else if (entry.error) {
                 this.write('not found',404)
             } else if (entry.isFile) {
                 this.entry = entry

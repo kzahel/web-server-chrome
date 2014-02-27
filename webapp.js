@@ -15,12 +15,18 @@
         this.port = opts.port
         this.sockInfo = null
         this.lasterr = null
+        this.stopped = false
     }
 
     WebApplication.prototype = {
         error: function(data) {
             console.error(data)
             this.lasterr = data
+        },
+        stop: function() {
+            socket.disconnect(this.sockInfo.socketId)
+            socket.destroy(this.sockInfo.socketId)
+            this.stopped = true
         },
         start: function() {
             socket.create("tcp", {}, function(sockInfo) {
@@ -50,7 +56,9 @@
                 connection.addRequestCallback(this.onRequest.bind(this))
                 connection.tryRead()
             }
-            this.doAccept()
+            if (! this.stopped) {
+                this.doAccept()
+            }
         },
         onRequest: function(request) {
             console.log('handle req',request.uri)
@@ -66,7 +74,6 @@
                 }
             }
             console.error('unhandled request',request)
-            
         }
     }
 

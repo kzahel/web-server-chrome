@@ -1,7 +1,25 @@
 (function(){
+
+    function getEntryFile( entry, callback ) {
+
+        var cacheKey = entry.filesystem.name + '/' + entry.fullPath
+        var inCache = entryFileCache.get(cacheKey)
+        if (inCache) { 
+            //console.log('file cache hit'); 
+            callback(inCache); return }
+        
+        entry.file( function(file) {
+            entryFileCache.set(cacheKey, file)
+            callback(file)
+        }, function(evt) {
+            console.error('entry.file() error',evt)
+            debugger
+        })
+    }
+
     function DirectoryEntryHandler(request) {
         BaseHandler.prototype.constructor.call(this)
-        this.debugInterval = setInterval( this.debug.bind(this), 1000)
+        //this.debugInterval = setInterval( this.debug.bind(this), 1000)
         this.entry = null
         this.file = null
         this.readChunkSize = 4096 * 16
@@ -12,13 +30,21 @@
     }
     _.extend(DirectoryEntryHandler.prototype, {
         onClose: function() {
-            console.log('closed',this.request.path)
+            //console.log('closed',this.request.path)
             clearInterval(this.debugInterval)
         },
         debug: function() {
             //console.log(this.request.connection.stream.sockId,'debug wb:',this.request.connection.stream.writeBuffer.size())
         },
         get: function() {
+            if (! this.request.origpath.endsWith('/')) {
+                this.setHeader('location', this.request.origpath + '/') // XXX - encode latin-1 somehow?
+                this.responseLength = 0
+                this.writeHeaders(301)
+
+                this.finish()
+                return
+            }
             this.setHeader('accept-ranges','bytes')
             this.setHeader('connection','keep-alive')
             if (! window.fs) {
@@ -26,6 +52,9 @@
                 return
             }
             //var path = decodeURI(this.request.path)
+
+            // strip '/' off end of path
+
             fs.getByPath(this.request.path, this.onEntry.bind(this))
         },
         doReadChunk: function() {
@@ -71,19 +100,23 @@
                 //console.log(this.request.connection.stream.sockId,'write',evt.target.result.byteLength)
                 this.request.connection.write(evt.target.result)
             } else {
-                console.error('onreadchunk error')
-
-                debugger
+                console.error('onreadchunk error',evt.target.error)
+                this.request.connection.close()
             }
         },
         onEntry: function(entry) {
+            this.entry = entry
+
+            if (this.request.connection.stream.closed) {
+                console.warn(this.request.connection.stream.sockId,'request closed while processing request')
+                return
+            }
             if (! entry) {
                 this.write('no entry',404)
             } else if (entry.error) {
                 this.write('not found',404)
             } else if (entry.isFile) {
-                this.entry = entry
-                entry.file( function(file) {
+                getEntryFile(entry, function(file) {
                     this.file = file
                     if (this.file.size > this.readChunkSize * 8 ||
                         this.request.headers['range']) {
@@ -123,7 +156,7 @@
 
 
                     } else {
-                        console.log(entry,file)
+                        //console.log(entry,file)
                         var fr = new FileReader
                         var cb = this.onReadEntry.bind(this)
                         fr.onload = cb
@@ -134,9 +167,17 @@
             } else {
                 // directory
                 var reader = entry.createReader()
+
+                function onreaderr(evt) {
+                    entryCache.unset(this.entry.filesystem.name + this.entry.fullPath)
+                    console.error('error reading dir',evt)
+                    this.request.connection.close()
+                }
+
+                console.log('readentries')
                 reader.readEntries( function(results) {
                     this.renderDirectoryListing(results)
-                }.bind(this))
+                }.bind(this), onreaderr.bind(this))
             }
         },
         renderDirectoryListing: function(results) {
@@ -156,8 +197,16 @@
             this.write(html.join('\n'))
         },
         onReadEntry: function(evt) {
+            if (evt.type == 'error') {
+                console.error('error reading',evt.target.error)
+                // clear this file from cache...
+                entryFileCache.unset( this.entry.filesystem.name + '/' + this.entry.fullPath )
+
+                this.request.connection.close()
+            } else {
             // set mime types etc?
-            this.write(evt.target.result)
+                this.write(evt.target.result)
+            }
 
         }
     }, BaseHandler.prototype)

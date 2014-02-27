@@ -61,7 +61,7 @@
             }
         },
         onRequest: function(request) {
-            console.log('handle req',request.uri)
+            //console.log('handle req',request.uri)
             for (var i=0; i<this.handlersMatch.length; i++) {
                 var re = this.handlersMatch[i][0]
                 var reresult = re.exec(request.uri)
@@ -101,9 +101,10 @@
             if (code == 200) {
                 lines.push('HTTP/1.1 200 OK')
             } else {
+                console.warn(this.request.connection.stream.sockId,'response code',code)
                 lines.push('HTTP/1.1 '+ code + ' ' + HTTPRESPONSES[code])
             }
-            console.assert(this.responseLength)
+            console.assert(typeof this.responseLength == 'number')
             lines.push('content-length: ' + this.responseLength)
 
             var p = this.request.path.split('.')
@@ -119,7 +120,7 @@
             }
             lines.push('\r\n')
             var headerstr = lines.join('\r\n')
-            console.log('write headers',headerstr)
+            //console.log('write headers',headerstr)
             this.request.connection.write(headerstr, callback)
         },
         write: function(data, code) {

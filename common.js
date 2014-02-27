@@ -1,6 +1,52 @@
 // common stuff
 
+
+    function EntryCache() {
+        this.cache = {}
+    }
+    var EntryCacheprototype = {
+        clearTorrent: function() {
+            // todo
+        },
+        clearKey: function(skey) {
+            var todelete = []
+            for (var key in this.cache) {
+                if (key.startsWith(skey)) {
+                    todelete.push(key)
+                }
+            }
+            for (var i=0; i<todelete.length; i++) {
+                delete this.cache[todelete[i]]
+            }
+        },
+        clear: function() {
+            this.cache = {}
+        },
+        unset: function(k) {
+            delete this.cache[k]
+        },
+        set: function(k,v) {
+            this.cache[k] = v
+        },
+        get: function(k) {
+            return this.cache[k]
+        }
+    }
+    _.extend(EntryCache.prototype, EntryCacheprototype)
+
+    window.entryCache = new EntryCache
+    window.entryFileCache = new EntryCache
+
 function recursiveGetEntry(filesystem, path, callback) {
+    var cacheKey = filesystem.filesystem.name +
+        filesystem.fullPath +
+        '/' + path.join('/')
+    var inCache = entryCache.get(cacheKey)
+    if (inCache) { 
+        //console.log('cache hit');
+        callback(inCache); return
+    }
+
     var state = {e:filesystem}
 
     function recurse(e) {
@@ -8,8 +54,11 @@ function recursiveGetEntry(filesystem, path, callback) {
             if (e.name == 'TypeMismatchError') {
                 state.e.getDirectory(state.path, {create:false}, recurse, recurse)
             } else if (e.isFile) {
+                entryCache.set(cacheKey,e)
                 callback(e)
             } else if (e.isDirectory) {
+                //console.log(filesystem,path,cacheKey,state)
+                entryCache.set(cacheKey,e)
                 callback(e)
             } else {
                 callback({error:'path not found'})

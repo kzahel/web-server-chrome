@@ -35,7 +35,10 @@
                 //console.warn('already writing..'); 
                 return
             }
-            if (this.closed) { console.warn('cant write, closed'); return }
+            if (this.closed) { 
+                console.warn(this.sockId,'cant write, closed'); 
+                return 
+            }
             //console.log('tryWrite')
             this.writing = true
             var data = this.writeBuffer.consume_any_max(4096)
@@ -61,7 +64,7 @@
                 return
             }
             if (this.closed) {
-                console.warn('cant read, closed')
+                console.warn(this.sockId,'cant read, closed')
                 return
             }
             if (this.reading) { 
@@ -122,11 +125,12 @@
             if (this.onclose) { this.onclose() }
             socket.disconnect(this.sockId)
             socket.destroy(this.sockId)
-            this.sockId = null
+            //this.sockId = null
             this.closed = true
         },
         error: function(data) {
-            console.error(this,data)
+            console.warn(this.sockId,'closed')
+            //console.error(this,data)
             // try close by writing 0 bytes
             if (! this.closed) {
                 this.close()
@@ -134,8 +138,8 @@
 
         },
         tryClose: function(callback) {
-            if (! this.sockId) {
-                console.warn('cant close, no sockid')
+            if (! this.closed) {
+                console.warn('cant close, already closed')
                 return
             }
             socket.write(this.sockId, new ArrayBuffer, callback)

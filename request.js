@@ -20,6 +20,13 @@
         }else {
             this.path = decodeURI(this.uri)
         }
+
+        this.origpath = this.path
+
+        if (this.path[this.path.length-1] == '/') {
+            this.path = this.path.slice(0,this.path.length-1)
+        }
+        
     }
 
     Request.prototype = {

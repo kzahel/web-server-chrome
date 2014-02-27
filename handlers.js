@@ -103,7 +103,7 @@
                 var newloc = this.request.origpath + '/'
                 this.setHeader('location', newloc) // XXX - encode latin-1 somehow?
                 this.responseLength = 0
-                console.log('redirect ->',newloc)
+                //console.log('redirect ->',newloc)
                 this.writeHeaders(301)
 
                 this.finish()

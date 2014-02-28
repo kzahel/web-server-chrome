@@ -981,3 +981,11 @@ var MIMETYPES = {
   "zirz": "application/vnd.zul", 
   "zmm": "application/vnd.handheld-entertainment+xml"
 };
+var MIMECATEGORIES = {'video':[],'audio':[]}
+for (var key in MIMETYPES) {
+    if (MIMETYPES[key].startsWith('video/')) {
+        MIMECATEGORIES['video'].push( key )
+    } else if (MIMETYPES[key].startsWith('audio/')) {
+        MIMECATEGORIES['audio'].push( key )
+    }
+}

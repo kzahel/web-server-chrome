@@ -81,7 +81,8 @@
                 //this.error({message:'remote closed connection'})
                 this.log('remote closed connection (halfduplex)')
                 this.remoteclosed = true
-                if (this.onclose) { this.onclose() }
+                if (this.halfclose) { this.halfclose() }
+                //if (this.onclose) { this.onclose() } // not really closed..
                 if (this.request) {
                     // do we even have a request yet? or like what to do ...
                 }

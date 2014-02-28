@@ -69,7 +69,7 @@
                     var cls = this.handlersMatch[i][1]
                     var requestHandler = new cls(request)
                     requestHandler.request = request
-                    requestHandler[request.method.toLowerCase()](reresult.slice(1))
+                    requestHandler[request.method.toLowerCase()].apply(requestHandler, reresult.slice(1))
                     return
                 }
             }
@@ -95,7 +95,7 @@
             this.responseHeaders[k] = v
         },
         writeHeaders: function(code, callback) {
-            if (code === undefined) { code = 200 }
+            if (code === undefined || isNaN(code)) { code = 200 }
             this.headersWritten = true
             var lines = []
             if (code == 200) {
@@ -138,6 +138,7 @@
             this.finish()
         },
         finish: function() {
+            if (this.beforefinish) { this.beforefinish() }
             this.request.connection.curRequest = null
             if (this.request.isKeepAlive() && ! this.request.connection.stream.remoteclosed) {
                 this.request.connection.tryRead()

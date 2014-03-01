@@ -101,9 +101,10 @@
             if (code == 200) {
                 lines.push('HTTP/1.1 200 OK')
             } else {
-                console.log(this.request.connection.stream.sockId,'response code',code)
+                //console.log(this.request.connection.stream.sockId,'response code',code, this.responseLength)
                 lines.push('HTTP/1.1 '+ code + ' ' + HTTPRESPONSES[code])
             }
+            console.log(this.request.connection.stream.sockId,'response code',code, this.responseLength)
             console.assert(typeof this.responseLength == 'number')
             lines.push('content-length: ' + this.responseLength)
 

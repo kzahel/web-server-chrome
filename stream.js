@@ -44,12 +44,17 @@
             var data = this.writeBuffer.consume_any_max(4096)
             socket.write( this.sockId, data, this.onWrite.bind(this, callback) )
         },
-        onWrite: function(evt, callback) {
+        onWrite: function(callback, evt) {
+            // look at evt!
+            if (evt.bytesWritten <= 0) {
+                console.log('onwrite fail, closing',evt)
+                this.close()
+            }
             this.writing = false
             //console.log('onWrite',evt)
             if (this.writeBuffer.size() > 0) {
                 //console.log('write more...')
-                if (this.closed || this.remoteclosed) {
+                if (this.closed) {
                 } else {
                     this.tryWrite(callback)
                 }

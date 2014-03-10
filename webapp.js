@@ -61,7 +61,7 @@
             }
         },
         onRequest: function(request) {
-            //console.log('handle req',request.uri)
+            console.log('handle',request.method, request.uri)
             for (var i=0; i<this.handlersMatch.length; i++) {
                 var re = this.handlersMatch[i][0]
                 var reresult = re.exec(request.uri)
@@ -69,8 +69,11 @@
                     var cls = this.handlersMatch[i][1]
                     var requestHandler = new cls(request)
                     requestHandler.request = request
-                    requestHandler[request.method.toLowerCase()].apply(requestHandler, reresult.slice(1))
-                    return
+                    var handlerMethod = requestHandler[request.method.toLowerCase()]
+                    if (handlerMethod) {
+                        handlerMethod.apply(requestHandler, reresult.slice(1))
+                        return
+                    }
                 }
             }
             console.error('unhandled request',request)

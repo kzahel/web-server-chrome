@@ -38,7 +38,6 @@
     window.entryFileCache = new EntryCache
 
 function recursiveGetEntry(filesystem, path, callback) {
-debugger
     var cacheKey = filesystem.filesystem.name +
         filesystem.fullPath +
         '/' + path.join('/')

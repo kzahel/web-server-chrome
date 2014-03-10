@@ -36,6 +36,9 @@
         debug: function() {
             //console.log(this.request.connection.stream.sockId,'debug wb:',this.request.connection.stream.writeBuffer.size())
         },
+        head: function() {
+            this.get()
+        },
         get: function() {
             this.setHeader('accept-ranges','bytes')
             this.setHeader('connection','keep-alive')
@@ -123,7 +126,12 @@
             } else if (entry.isFile) {
                 getEntryFile(entry, function(file) {
                     this.file = file
-                    if (this.file.size > this.readChunkSize * 8 ||
+                    if (this.request.method == "HEAD") {
+                        this.responseLength = this.file.size
+                        this.writeHeaders(200)
+                        this.finish()
+
+                    } else if (this.file.size > this.readChunkSize * 8 ||
                         this.request.headers['range']) {
                         this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
 

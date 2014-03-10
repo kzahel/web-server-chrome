@@ -84,7 +84,7 @@
             this.reading = false
             if (evt.resultCode == 0) {
                 //this.error({message:'remote closed connection'})
-                this.log('remote closed connection (halfduplex)')
+                //this.log('remote closed connection (halfduplex)')
                 this.remoteclosed = true
                 if (this.halfclose) { this.halfclose() }
                 //if (this.onclose) { this.onclose() } // not really closed..

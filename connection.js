@@ -3,7 +3,7 @@
         this.stream = stream
         this.curRequest = null
         this.onRequestCallback = null
-        this.log('new connection')
+        //this.log('new connection')
         this.closed = false
     }
 
@@ -53,6 +53,8 @@
                 // TODO -- handle 100 continue..
                 this.stream.readBytes(clen, this.onRequest)
             } else if (method == 'GET') {
+                this.onRequest(this.curRequest)
+            } else if (method == 'HEAD') {
                 this.onRequest(this.curRequest)
             } else {
                 console.error('how to handle',this.curRequest)

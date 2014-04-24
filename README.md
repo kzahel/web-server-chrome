@@ -12,6 +12,8 @@ handle range requests. It also sets mime types correctly.
 
 ====
 
+MIT license
+
 I wrote this because the example app provided by google would lock and
 hang and had all sorts of nasty race conditions.
 

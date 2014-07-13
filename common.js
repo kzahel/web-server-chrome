@@ -1,3 +1,24 @@
+if (! String.prototype.endsWith) {
+    String.prototype.endsWith = function(substr) {
+        for (var i=0; i<substr.length; i++) {
+            if (this[this.length - 1 - i] !== substr[substr.length - 1 - i]) {
+                return false
+            }
+        }
+        return true
+    }
+}
+if (! String.prototype.startsWith) {
+    String.prototype.startsWith = function(substr) {
+        for (var i=0; i<substr.length; i++) {
+            if (this[i] !== substr[i]) {
+                return false
+            }
+        }
+        return true
+    }
+}
+
 // common stuff
 
 

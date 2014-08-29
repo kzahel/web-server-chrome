@@ -3,7 +3,6 @@
     var peerSockMap = {}
 
     function onTCPReceive(info) {
-        console.log('ontcprec',info)
         var sockId = info.socketId
         if (peerSockMap[sockId]) {
             peerSockMap[sockId].onReadTCP(info)

@@ -25,7 +25,6 @@
         },
         stop: function() {
             sockets.tcp.disconnect(this.sockInfo.socketId)
-            sockets.tcp.destroy(this.sockInfo.socketId)
             this.stopped = true
         },
         start: function() {

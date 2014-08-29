@@ -16,14 +16,20 @@
     "permissions": [
         "storage",
         "notifications",
-        {"fileSystem":["write","directory","retainEntries"]},
-        {"socket":[
-            "tcp-connect",
-            "udp-bind::",
-            "tcp-listen::",
-            "udp-send-to::"
-        ]}
+        {"fileSystem":["write","directory","retainEntries"]}
     ],
+    "sockets": {
+       "udp": {
+         "send": [""],
+         "bind": [""]
+       },
+       "tcp": {
+         "connect": [""]
+       },
+       "tcpServer": {
+         "listen": ["127.0.0.1:*"]
+       }
+    },
     "icons": { 
         "16": "200ok-16.png",
         "19": "200ok-19.png",

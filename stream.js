@@ -1,8 +1,22 @@
 (function() {
-    var socket = chrome.socket
+
+    var peerSockMap = {}
+
+    function onTCPReceive(info) {
+        console.log('ontcprec',info)
+        var sockId = info.socketId
+        if (peerSockMap[sockId]) {
+            peerSockMap[sockId].onReadTCP(info)
+        }
+    }
+
+    chrome.sockets.tcp.onReceive.addListener( onTCPReceive )
+
+
+    var sockets = chrome.sockets
     function IOStream(sockId) {
         this.sockId = sockId
-
+        peerSockMap[this.sockId] = this
         this.readCallback = null
         this.readUntilDelimiter = null
         this.readBuffer = new Buffer
@@ -16,9 +30,13 @@
         this.onclose = null
 
         this.onWriteBufferEmpty = null
+        chrome.sockets.tcp.setPaused(this.sockId, false, this.onUnpaused.bind(this))
     }
 
     IOStream.prototype = {
+        onUnpaused: function(info) {
+            //console.log('sock unpaused',info)
+        },
         readUntil: function(delimiter, callback) {
             this.readUntilDelimiter = delimiter
             this.readCallback = callback
@@ -42,7 +60,7 @@
             //console.log('tryWrite')
             this.writing = true
             var data = this.writeBuffer.consume_any_max(4096)
-            socket.write( this.sockId, data, this.onWrite.bind(this, callback) )
+            sockets.tcp.send( this.sockId, data, this.onWrite.bind(this, callback) )
         },
         onWrite: function(callback, evt) {
             // look at evt!
@@ -51,7 +69,6 @@
                 this.close()
             }
             this.writing = false
-            //console.log('onWrite',evt)
             if (this.writeBuffer.size() > 0) {
                 //console.log('write more...')
                 if (this.closed) {
@@ -77,9 +94,9 @@
                 return 
             }
             this.reading = true
-            socket.read( this.sockId, 4096, this.onRead.bind(this) )
+            //sockets.tcp.read( this.sockId, 4096, this.onRead.bind(this) )
         },
-        onRead: function(evt) {
+        onReadTCP: function(evt) {
             //console.log('onRead',evt)
             this.reading = false
             if (evt.resultCode == 0) {
@@ -129,8 +146,10 @@
         },
         close: function() {
             if (this.onclose) { this.onclose() }
-            socket.disconnect(this.sockId)
-            socket.destroy(this.sockId)
+            console.log('tcp sock destroy',this.sockId)
+            delete peerSockMap[this.sockId]
+            sockets.tcp.disconnect(this.sockId)
+            sockets.tcp.destroy(this.sockId)
             //this.sockId = null
             this.closed = true
         },
@@ -148,7 +167,7 @@
                 console.warn('cant close, already closed')
                 return
             }
-            socket.write(this.sockId, new ArrayBuffer, callback)
+            sockets.tcp.send(this.sockId, new ArrayBuffer, callback)
         }
     }
 

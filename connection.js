@@ -25,6 +25,7 @@
             this.stream.tryWrite()
         },
         close: function() {
+            console.log('http conn close')
             this.closed = true
             this.stream.close()
         },

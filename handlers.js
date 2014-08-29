@@ -40,6 +40,8 @@
             this.get()
         },
         get: function() {
+            this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
+
             this.setHeader('accept-ranges','bytes')
             this.setHeader('connection','keep-alive')
             if (! window.fs) {
@@ -71,7 +73,11 @@
             reader.readAsArrayBuffer(blobSlice)
         },
         onWriteBufferEmpty: function() {
-            //console.log('onWriteBufferEmpty')
+            if (! this.file) {
+                this.finish()
+                return
+            }
+            console.log('onWriteBufferEmpty')
             if (this.bodyWritten >= this.responseLength) {
                 this.request.connection.stream.onWriteBufferEmpty = null
                 this.finish()
@@ -133,7 +139,7 @@
 
                     } else if (this.file.size > this.readChunkSize * 8 ||
                         this.request.headers['range']) {
-                        this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
+                        //this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
 
                         if (this.request.headers['range']) {
                             console.log(this.request.connection.stream.sockId,'RANGE',this.request.headers['range'])
@@ -152,7 +158,8 @@
                                 }
 
                             } else {
-                                debugger
+                                debugger // TODO -- add support for partial file fetching...
+                                this.writeHeaders(500)
                             }
 
 

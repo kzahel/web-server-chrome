@@ -1,5 +1,5 @@
 (function(){
-    var socket = chrome.socket
+    var sockets = chrome.sockets
 
     function WebApplication(opts) {
         this.opts = opts
@@ -24,40 +24,46 @@
             this.lasterr = data
         },
         stop: function() {
-            socket.disconnect(this.sockInfo.socketId)
-            socket.destroy(this.sockInfo.socketId)
+            sockets.tcp.disconnect(this.sockInfo.socketId)
+            sockets.tcp.destroy(this.sockInfo.socketId)
             this.stopped = true
         },
         start: function() {
-            socket.create("tcp", {}, function(sockInfo) {
+            sockets.tcpServer.create({name:"listenSocket"},function(sockInfo) {
                 this.sockInfo = sockInfo
-                socket.listen(this.sockInfo.socketId,
-                              this.host,
-                              this.port,
+                sockets.tcpServer.listen(this.sockInfo.socketId,
+                                         this.host,
+                                         this.port,
                               function(result) {
                                   if (result < 0) {
                                       this.error({message:'unable to bind to port',
                                                   errno:result})
                                   } else {
                                       console.log('listen result',result)
-                                      this.doAccept()
+                                      this.bindAcceptCallbacks()
                                   }
                               }.bind(this))
             }.bind(this));
         },
-        doAccept: function() {
-            socket.accept(this.sockInfo.socketId, this.onAccept.bind(this));
+        bindAcceptCallbacks: function() {
+            sockets.tcpServer.onAcceptError.addListener(this.onAcceptError.bind(this))
+            sockets.tcpServer.onAccept.addListener(this.onAccept.bind(this))
+        },
+        onAcceptError: function(acceptInfo) {
+            console.error('accept error',this.sockInfo.socketId,acceptInfo)
+            // set unpaused, etc
         },
         onAccept: function(acceptInfo) {
             //console.log('onAccept',acceptInfo);
             if (acceptInfo.socketId) {
-                var stream = new IOStream(acceptInfo.socketId)
+                //var stream = new IOStream(acceptInfo.socketId)
+                var stream = new IOStream(acceptInfo.clientSocketId)
                 var connection = new HTTPConnection(stream)
                 connection.addRequestCallback(this.onRequest.bind(this))
                 connection.tryRead()
             }
             if (! this.stopped) {
-                this.doAccept()
+                //this.doAccept() // new API no longer need to call this
             }
         },
         onRequest: function(request) {
@@ -142,6 +148,7 @@
             this.finish()
         },
         finish: function() {
+            console.log('webapp.finish')
             if (this.beforefinish) { this.beforefinish() }
             this.request.connection.curRequest = null
             if (this.request.isKeepAlive() && ! this.request.connection.stream.remoteclosed) {

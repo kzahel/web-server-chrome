@@ -133,9 +133,21 @@
                 return
             }
             if (! entry) {
-                this.write('no entry',404)
+                if (this.request.method == "HEAD") {
+                    this.responseLength = 0
+                    this.writeHeaders(404)
+                    this.finish()
+                } else {
+                    this.write('no entry',404)
+                }
             } else if (entry.error) {
-                this.write('not found',404)
+                if (this.request.method == "HEAD") {
+                    this.responseLength = 0
+                    this.writeHeaders(404)
+                    this.finish()
+                } else {
+                    this.write('entry not found',404)
+                }
             } else if (entry.isFile) {
                 getEntryFile(entry, function(file) {
                     this.file = file

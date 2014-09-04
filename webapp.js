@@ -129,7 +129,7 @@
             }
             lines.push('\r\n')
             var headerstr = lines.join('\r\n')
-            console.log('write headers',headerstr)
+            //console.log('write headers',headerstr)
             this.request.connection.write(headerstr, callback)
         },
         write: function(data, code) {
@@ -147,7 +147,7 @@
             this.finish()
         },
         finish: function() {
-            //console.log('webapp.finish')
+            console.log('webapp.finish')
             if (this.beforefinish) { this.beforefinish() }
             this.request.connection.curRequest = null
             if (this.request.isKeepAlive() && ! this.request.connection.stream.remoteclosed) {

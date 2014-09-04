@@ -27,9 +27,13 @@ chrome.runtime.getBackgroundPage( function(bg) {
     chrome.storage.local.get('retainstr',function(d) {
         if (d['retainstr']) {
             chrome.fileSystem.restoreEntry(d['retainstr'], function(entry) {
-                window.entry = entry
-                bg.entry = entry
-                bg.haveentry(entry)
+                if (entry) {
+                    window.entry = entry
+                    bg.entry = entry
+                    bg.haveentry(entry)
+                } else {
+                    document.getElementById('status').innerText = 'DIRECTORY MISSING. CHOOSE AGAIN.'                    
+                }
             })
             document.getElementById('curfolder').innerText = d['retainstr']
         }

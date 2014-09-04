@@ -60,16 +60,18 @@
             var reader = new FileReader;
 
             var endByte = Math.min(this.fileOffset + this.readChunkSize,
-                                   this.file.size)
+                                   this.fileEndOffset)
             if (endByte >= this.file.size) {
-
+                console.error('bad readChunk')
+                console.assert(false)
             }
+
             //console.log('doReadChunk',this.fileOffset,endByte-this.fileOffset)
             reader.onload = this.onReadChunk.bind(this)
             reader.onerror = this.onReadChunk.bind(this)
-            var blobSlice = this.file.slice(this.fileOffset, endByte)
+            var blobSlice = this.file.slice(this.fileOffset, endByte + 1)
             var oldOffset = this.fileOffset
-            this.fileOffset += (endByte - this.fileOffset)
+            this.fileOffset += (endByte - this.fileOffset) + 1
             //console.log('offset',oldOffset,this.fileOffset)
             reader.readAsArrayBuffer(blobSlice)
         },
@@ -79,8 +81,11 @@
                 debugger
                 return
             }
+            console.assert( this.bodyWritten <= this.responseLength )
             console.log('onWriteBufferEmpty', this.bodyWritten, '/', this.responseLength)
-            if (this.bodyWritten >= this.responseLength) {
+            if (this.bodyWritten > this.responseLength) {
+                console.assert(false)
+            } else if (this.bodyWritten == this.responseLength) {
                 this.request.connection.stream.onWriteBufferEmpty = null
                 this.finish()
                 return
@@ -151,6 +156,7 @@
                             var rparts = range.split('-')
                             if (! rparts[1]) {
                                 this.fileOffset = parseInt(rparts[0])
+                                this.fileEndOffset = this.file.size - 1
                                 this.responseLength = this.file.size - this.fileOffset;
                                 this.setHeader('content-range','bytes '+this.fileOffset+'-'+(this.file.size-1)+'/'+this.file.size)
                                 if (this.fileOffset == 0) {

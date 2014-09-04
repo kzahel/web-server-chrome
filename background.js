@@ -1,5 +1,15 @@
 //blah
 
+function reload() { chrome.runtime.reload() }
+
+chrome.runtime.onSuspend.addListener( function(evt) {
+    console.error('onSuspend',evt)
+})
+chrome.runtime.onSuspendCanceled.addListener( function(evt) {
+    console.error('onSuspendCanceled',evt)
+})
+
+
 chrome.app.runtime.onLaunched.addListener(function(launchData) {
     console.log('onLaunched with launchdata',launchData)
     var info = {type:'onLaunched',
@@ -10,7 +20,7 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
                              function(mainWindow) {
                                  window.mainWindow = mainWindow;
 			     });
-    console.log('launched')
+    //console.log('launched')
 
 
 

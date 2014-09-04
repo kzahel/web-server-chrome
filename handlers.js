@@ -24,6 +24,7 @@
         this.file = null
         this.readChunkSize = 4096 * 16
         this.fileOffset = 0
+        this.fileEndOffset = 0
         this.bodyWritten = 0
         request.connection.stream.onclose = this.onClose.bind(this)
 
@@ -40,7 +41,7 @@
             this.get()
         },
         get: function() {
-            this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
+            //this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
 
             this.setHeader('accept-ranges','bytes')
             this.setHeader('connection','keep-alive')
@@ -74,10 +75,11 @@
         },
         onWriteBufferEmpty: function() {
             if (! this.file) {
-                this.finish()
+                console.error('!this.file')
+                debugger
                 return
             }
-            console.log('onWriteBufferEmpty')
+            console.log('onWriteBufferEmpty', this.bodyWritten, '/', this.responseLength)
             if (this.bodyWritten >= this.responseLength) {
                 this.request.connection.stream.onWriteBufferEmpty = null
                 this.finish()
@@ -139,7 +141,7 @@
 
                     } else if (this.file.size > this.readChunkSize * 8 ||
                         this.request.headers['range']) {
-                        //this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
+                        this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
 
                         if (this.request.headers['range']) {
                             console.log(this.request.connection.stream.sockId,'RANGE',this.request.headers['range'])
@@ -158,8 +160,13 @@
                                 }
 
                             } else {
-                                debugger // TODO -- add support for partial file fetching...
-                                this.writeHeaders(500)
+                                //debugger // TODO -- add support for partial file fetching...
+                                //this.writeHeaders(500)
+                                this.fileOffset = parseInt(rparts[0])
+                                this.fileEndOffset = parseInt(rparts[1])
+                                this.responseLength = this.fileEndOffset - this.fileOffset + 1
+                                this.setHeader('content-range','bytes '+this.fileOffset+'-'+(this.fileEndOffset)+'/'+this.file.size)
+                                this.writeHeaders(206)
                             }
 
 

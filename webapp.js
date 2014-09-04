@@ -38,7 +38,7 @@
                                       this.error({message:'unable to bind to port',
                                                   errno:result})
                                   } else {
-                                      console.log('listen result',result)
+                                      console.log('Listening on',this.port,result)
                                       this.bindAcceptCallbacks()
                                   }
                               }.bind(this))
@@ -112,7 +112,7 @@
                 //console.log(this.request.connection.stream.sockId,'response code',code, this.responseLength)
                 lines.push('HTTP/1.1 '+ code + ' ' + HTTPRESPONSES[code])
             }
-            console.log(this.request.connection.stream.sockId,'response code',code, this.responseLength)
+            console.log(this.request.connection.stream.sockId,'response code',code, 'clen',this.responseLength)
             console.assert(typeof this.responseLength == 'number')
             lines.push('content-length: ' + this.responseLength)
 
@@ -129,7 +129,7 @@
             }
             lines.push('\r\n')
             var headerstr = lines.join('\r\n')
-            //console.log('write headers',headerstr)
+            console.log('write headers',headerstr)
             this.request.connection.write(headerstr, callback)
         },
         write: function(data, code) {
@@ -147,7 +147,7 @@
             this.finish()
         },
         finish: function() {
-            console.log('webapp.finish')
+            //console.log('webapp.finish')
             if (this.beforefinish) { this.beforefinish() }
             this.request.connection.curRequest = null
             if (this.request.isKeepAlive() && ! this.request.connection.stream.remoteclosed) {

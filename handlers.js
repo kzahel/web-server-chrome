@@ -191,8 +191,8 @@
                         } else {
                             console.log('large file, streaming mode!')
                             this.fileOffset = 0
+                            this.fileEndOffset = this.file.size - 1
                             this.responseLength = this.file.size
-
                             this.writeHeaders(200)
                         }
                         

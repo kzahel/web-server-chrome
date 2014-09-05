@@ -1,24 +1,23 @@
-Chrome Web Server - an HTTP web server for Chrome (chrome.socket)
-
-====
-
-Now updated to use the new chrome.sockets API !
-
-====
-
-
 <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">![Try it now in CWS](https://raw.github.com/GoogleChrome/chrome-app-samples/master/tryitnowbutton.png "Click here to install this sample from the Chrome Web Store")</a>
 
+
+Chrome Web Server - an HTTP web server for Chrome (chrome.sockets)
+
+====
+
+Now updated to use the new chrome.sockets API! (old version used the now deprecated chrome.socket)
+
+====
 
 Get it in the chrome web store:
 https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb
 
-Here is an example project based on it:
-https://chrome.google.com/webstore/detail/flv-player/dhogabmliblgpadclikpkjfnnipeebjm
-
 The default behavior right now is very simple. You choose a directory
 to serve static content. It is now able to stream large files and
 handle range requests. It also sets mime types correctly.
+
+Here is an example project based on it:
+https://chrome.google.com/webstore/detail/flv-player/dhogabmliblgpadclikpkjfnnipeebjm
 
 ====
 

@@ -1,16 +1,19 @@
 <html>
 <body>
-web server status: <div id="status"></div>
+<div style="border:1px solid green">web server status: <div id="status"></div></div>
 
-<input type="button" id="choose-folder" value="choose folder" />, current: <span id="curfolder"></span>
+<input type="button" id="choose-folder" value="Choose Folder" />, current: <span id="curfolder"></span>
 
-<h1><a href="http://127.0.0.1:8887" target="_blank">Open Page hosted by Web Server</a></h1>
+<p><span style="font-weight:bold; font-size:200%"><a href="http://127.0.0.1:8887" target="_blank">http://127.0.0.1:8887</a></span> (local web server URL)</p>
 
 <p>
 Thanks for trying out Web Server for Chrome.  This is BETA quality
 software. Please, give me feedback about which features you need added
-to make this useful for you, send feedback:
+to make this useful for you.
 </p>
+
+<p><input id="donate" type="button" value="Donate with in-app purchase" /><br />
+You can make also make a donation to help improve the software!</p>
 
 <p>
 Note that on ChromeOS there is a firewall so the web server is NOT available to other computers on the network. If you want this feature, please 
@@ -35,5 +38,6 @@ leave a nice review to help others find this software
 
 
 <script src="index.js"></script>
+<script src="buy.js"></script>
 </body>
 </html>

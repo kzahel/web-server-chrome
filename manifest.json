@@ -1,13 +1,13 @@
 {
-
+    "key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv7ZULSqbpKKQ1QP5Tb9f8g306PlY87OYYlXBrp7PlBHd/LJMUBDNWMCrWhpFR8sIjpvHjYipDr60j+2i7vj3PZlwbxZ7e3x+2A4cQt1LaC1PVZ6avnbsV0YMkFQi8H5f7NQiBKE2i2/Z/kB2r/DzyiUdGW63/sgjpBvgDCCMysHl3NWCnHqIOOtGD8SFlT5clgNJgVOgosFwHE4yYJDpIkvJ+nrLia9v6V/Cyc8ITEd0njvsp0q0aFJp332Ua/RPvh/m1UKcj8f3FNbaCrdScFzfKo5UNmifKLGhT377xhnvhOKuEJbyghNkPheMUquwVpTEHdRFMm7nVcLAt/kuZwIDAQAB",
     "name": "Web Server for Chrome",
     "short_name": "Web Server",
     "description": "A Web Server for Chrome, serves web pages from a local folder over the network, using HTTP. Runs offline.",
     "author": "Kyle Graehl",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "manifest_version": 2,
     "offline_enabled": true,
-    "minimum_chrome_version": "31",
+    "minimum_chrome_version": "33",
     "app": {
         "background": {
             "scripts": ["underscore.js","common.js","mime.js","buffer.js","request.js","stream.js","connection.js","webapp.js","handlers.js","httplib.js","background.js"]
@@ -30,6 +30,12 @@
          "listen": ["127.0.0.1:*"]
        }
     },
+    "oauth2": {
+      "client_id": "458955919969-ip5gtdesaugnbn0tcqfaf39kn72ncddl.apps.googleusercontent.com",
+      "scopes": [
+        "https://www.googleapis.com/auth/chromewebstore.readonly"
+      ]
+    },
     "icons": { 
         "16": "200ok-16.png",
         "19": "200ok-19.png",
@@ -42,5 +48,4 @@
         "256": "200ok-256.png",
         "512": "200ok-512.png"
     }
-
 }

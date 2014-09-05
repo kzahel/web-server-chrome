@@ -18,6 +18,7 @@ chrome.runtime.getBackgroundPage( function(bg) {
             var d = {'retainstr':retainstr}
             chrome.storage.local.set(d)
             document.getElementById('curfolder').innerText = d['retainstr']
+            document.getElementById('status').innerText = 'OK'
             console.log('set retainstr!')
         }
     }
@@ -38,5 +39,26 @@ chrome.runtime.getBackgroundPage( function(bg) {
             document.getElementById('curfolder').innerText = d['retainstr']
         }
     })
+
+
+
+
+function onDonate(evt) {
+    console.log('onDonate',evt)
+}
+function onDonateFail(evt) {
+    console.log('onDonateFail',evt)
+}
+
+document.getElementById('donate').addEventListener('click', function(evt) {
+    var sku = "webserverdonation";
+    google.payments.inapp.buy({
+        'parameters': {'env': 'prod'},
+        'sku': sku,
+        'success': onDonate,
+        'failure': onDonateFail
+    });
+})
+
 
 })

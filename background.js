@@ -4,11 +4,15 @@ function reload() { chrome.runtime.reload() }
 
 chrome.runtime.onSuspend.addListener( function(evt) {
     console.error('onSuspend',evt)
+    app.stop()
 })
 chrome.runtime.onSuspendCanceled.addListener( function(evt) {
     console.error('onSuspendCanceled',evt)
 })
 
+chrome.app.window.onClosed.addListener(function(evt) {
+    console.log('window closed. shutdown server, unload background page? hm?')
+})
 
 chrome.app.runtime.onLaunched.addListener(function(launchData) {
     console.log('onLaunched with launchdata',launchData)

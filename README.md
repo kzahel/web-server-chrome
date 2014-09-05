@@ -1,5 +1,15 @@
 Chrome Web Server - an HTTP web server for Chrome (chrome.socket)
 
+====
+
+Now updated to use the new chrome.sockets API !
+
+====
+
+
+<a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">![Try it now in CWS](https://raw.github.com/GoogleChrome/chrome-app-samples/master/tryitnowbutton.png "Click here to install this sample from the Chrome Web Store")</a>
+
+
 Get it in the chrome web store:
 https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb
 

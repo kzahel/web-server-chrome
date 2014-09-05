@@ -147,13 +147,14 @@
             this.finish()
         },
         finish: function() {
-            console.log('webapp.finish')
             if (this.beforefinish) { this.beforefinish() }
             this.request.connection.curRequest = null
             if (this.request.isKeepAlive() && ! this.request.connection.stream.remoteclosed) {
                 this.request.connection.tryRead()
+                console.log('webapp.finish(keepalive)')
             } else {
                 this.request.connection.close()
+                console.log('webapp.finish(close)')
             }
         }
     })

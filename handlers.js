@@ -82,7 +82,7 @@
                 return
             }
             console.assert( this.bodyWritten <= this.responseLength )
-            console.log('onWriteBufferEmpty', this.bodyWritten, '/', this.responseLength)
+            //console.log('onWriteBufferEmpty', this.bodyWritten, '/', this.responseLength)
             if (this.bodyWritten > this.responseLength) {
                 console.assert(false)
             } else if (this.bodyWritten == this.responseLength) {

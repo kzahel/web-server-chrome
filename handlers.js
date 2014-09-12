@@ -213,6 +213,7 @@
             } else {
                 // directory
                 var reader = entry.createReader()
+                var allresults = []
                 this.isDirectoryListing = true
 
                 function onreaderr(evt) {
@@ -221,10 +222,24 @@
                     this.request.connection.close()
                 }
 
-                console.log('readentries')
-                reader.readEntries( function(results) {
+                function alldone(results) {
                     this.renderDirectoryListing(results)
-                }.bind(this), onreaderr.bind(this))
+                }
+
+                function onreadsuccess(results) {
+                    console.log('onreadsuccess',results.length)
+                    if (results.length == 0) {
+                        alldone.bind(this)(allresults)
+                    } else {
+                        allresults = allresults.concat( results )
+                        reader.readEntries( onreadsuccess.bind(this),
+                                            onreaderr.bind(this) )
+                    }
+                }
+
+                console.log('readentries')
+                reader.readEntries( onreadsuccess.bind(this),
+                                    onreaderr.bind(this))
             }
         },
         renderDirectoryListing: function(results) {

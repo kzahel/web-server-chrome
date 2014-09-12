@@ -117,7 +117,7 @@
             lines.push('content-length: ' + this.responseLength)
 
             var p = this.request.path.split('.')
-            if (p.length > 1) {
+            if (p.length > 1 && ! this.isDirectoryListing) {
                 var ext = p[p.length-1].toLowerCase()
                 if (MIMETYPES[ext]) {
                     this.setHeader('content-type',MIMETYPES[ext])

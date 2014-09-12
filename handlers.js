@@ -26,6 +26,7 @@
         this.fileOffset = 0
         this.fileEndOffset = 0
         this.bodyWritten = 0
+        this.isDirectoryListing = false
         request.connection.stream.onclose = this.onClose.bind(this)
 
     }
@@ -212,6 +213,7 @@
             } else {
                 // directory
                 var reader = entry.createReader()
+                this.isDirectoryListing = true
 
                 function onreaderr(evt) {
                     entryCache.unset(this.entry.filesystem.name + this.entry.fullPath)
@@ -239,6 +241,8 @@
                 }
             }
             html.push('</ul></html>')
+            this.setHeader('content-type','text/html')
+            this.setHeader('test-foo-bar','999')
             this.write(html.join('\n'))
         },
         onReadEntry: function(evt) {

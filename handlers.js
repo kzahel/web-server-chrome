@@ -249,10 +249,11 @@
             html.push('<ul>')
 
             for (var i=0; i<results.length; i++) {
+                var name = _.escape(results[i].name)
                 if (results[i].isDirectory) {
-                    html.push('<li class="directory"><a href="' + results[i].name + '/">' + results[i].name + '</a></li>')
+                    html.push('<li class="directory"><a href="' + name + '/">' + name + '</a></li>')
                 } else {
-                    html.push('<li><a href="' + results[i].name + '">' + results[i].name + '</a></li>')
+                    html.push('<li><a href="' + name + '">' + name + '</a></li>')
                 }
             }
             html.push('</ul></html>')

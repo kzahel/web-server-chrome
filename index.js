@@ -40,7 +40,61 @@ chrome.runtime.getBackgroundPage( function(bg) {
         }
     })
 
+    function serveFromDOM() {
+        var requestFileSystem = window.webkitRequestFileSystem || window.requestFileSystem;
+        requestFileSystem(
+            PERSISTENT,
+            0,
+            function( fs ){
+                fs.root.getDirectory(
+                    '/',
+                    {},
+                    function( entry ) {
+                        // write test file index.html in root directory
+                        entry.getFile( 
+                            'index.html',
+                            { create: true },
+                            function( fileEntry ){
+                                fileEntry.createWriter(
+                                    function( fileWriter ) {
+                                        fileWriter.onwrite = function() { console.log( 'file written' ); };
+                                        fileWriter.onerror = function() { console.log( 'save error' ); };
+                                        var blob = new Blob(
+                                            [ '<html><head></head><body><h1>Serving files from DOMfilesystem</h1></body></html>' ],
+                                            { type: 'text/html' }
+                                        );
+                                        fileWriter.write( blob );
+                                    }
+                                );
+                            },
+                            function(e) {
+                                // error
+                                console.log(e);
+                            }
+                        );
+      
+                        window.entry = entry;
+                        bg.entry = entry;
+                        bg.haveentry(entry);
+                  
+                        document.getElementById('curfolder').innerText = entry.fullPath;
+                        document.getElementById('status').innerText = 'OK';
+      
+                    },
+                    function(e) {
+                        // error
+                        console.log(e);
+                    }
+                );
+            },
+            function(e) {
+                // error
+                console.log(e);
+            }
+        );
+    }
 
+    document.getElementById('dfs').addEventListener('click', serveFromDOM );
 
 
 function onDonate(evt) {

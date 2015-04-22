@@ -53,7 +53,7 @@ chrome.runtime.getBackgroundPage( function(bg) {
                         // write test file index.html in root directory
                         entry.getFile( 
                             'index.html',
-                            { create: true },
+                            { create: true, exclusive: true },
                             function( fileEntry ){
                                 fileEntry.createWriter(
                                     function( fileWriter ) {
@@ -69,7 +69,7 @@ chrome.runtime.getBackgroundPage( function(bg) {
                             },
                             function(e) {
                                 // error
-                                console.log(e);
+                                console.log( 'file already exists' );
                             }
                         );
       

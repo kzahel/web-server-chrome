@@ -94,7 +94,8 @@ chrome.runtime.getBackgroundPage( function(bg) {
         );
     }
 
-    document.getElementById('dfs').addEventListener('click', serveFromDOM );
+    var el = document.getElementById('dfs')
+    if (el) { el.addEventListener('click', serveFromDOM ); }
 
 
 function onDonate(evt) {

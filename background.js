@@ -60,6 +60,7 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
 
     var app = new chrome.WebApplication({handlers:handlers, port:8887})
     app.start()
+    window.app = app
 });
 
 function reload() { chrome.runtime.reload() }

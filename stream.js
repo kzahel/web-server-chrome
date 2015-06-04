@@ -61,9 +61,14 @@
             var data = this.writeBuffer.consume_any_max(4096)
             //console.log(this.sockId,'tcp.send',data.byteLength)
             sockets.tcp.send( this.sockId, data, this.onWrite.bind(this, callback) )
-            //console.log(this.sockId,'tryWrite, lasterr',chrome.runtime.lastError)
         },
         onWrite: function(callback, evt) {
+            var err = chrome.runtime.lastError
+            if (err) {
+                console.log('socket.send lastError',err)
+                this.tryClose()
+            }
+
             // look at evt!
             if (evt.bytesWritten <= 0) {
                 console.log('onwrite fail, closing',evt)
@@ -131,9 +136,6 @@
             console.log('tcp sock close',this.sockId)
             delete peerSockMap[this.sockId]
             sockets.tcp.disconnect(this.sockId)
-            if (chrome.runtime.lastError) {
-                debugger
-            }
             //this.sockId = null
             this.closed = true
         },
@@ -144,16 +146,21 @@
             if (! this.closed) {
                 this.close()
             }
-
+        },
+        checkedCallback: function(callback) {
+            var err = chrome.runtime.lastError;
+            if (err) {
+                console.warn('socket callback lastError',err,callback)
+            }
         },
         tryClose: function(callback) {
+            if (!callback) { callback=this.checkedCallback }
             if (! this.closed) {
                 console.warn('cant close, already closed')
                 return
             }
             console.log(this.sockId,'tryClose')
             sockets.tcp.send(this.sockId, new ArrayBuffer, callback)
-            console.log(this.sockId,'tryClose, lasterr',chrome.runtime.lastError)
         }
     }
 

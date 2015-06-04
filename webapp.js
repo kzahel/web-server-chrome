@@ -20,6 +20,7 @@
         this.sockInfo = null
         this.lasterr = null
         this.stopped = false
+        this.starting = false
     }
 
     WebApplication.prototype = {
@@ -32,12 +33,15 @@
             this.stopped = true
         },
         start: function() {
+            if (this.starting) { return }
+            this.starting = true
             sockets.tcpServer.create({name:"listenSocket"},function(sockInfo) {
                 this.sockInfo = sockInfo
                 sockets.tcpServer.listen(this.sockInfo.socketId,
                                          this.host,
                                          this.port,
                               function(result) {
+                                  this.starting = false
                                   if (result < 0) {
                                       this.error({message:'unable to bind to port',
                                                   errno:result})

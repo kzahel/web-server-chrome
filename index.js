@@ -26,6 +26,9 @@ function addinterfaces() {
 
 
 chrome.runtime.getBackgroundPage( function(bg) {
+
+
+
     console.log('got bg page')
     window.bg = bg;
     

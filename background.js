@@ -16,6 +16,7 @@ chrome.app.window.onClosed.addListener(function(evt) {
 
 chrome.app.runtime.onLaunched.addListener(function(launchData) {
     console.log('onLaunched with launchdata',launchData)
+
     var info = {type:'onLaunched',
                 launchData: launchData}
     var opts = {id:'index'}
@@ -26,7 +27,7 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
 			     });
     //console.log('launched')
 
-
+    if (window.app) { console.log('already have webapp',app); return }
 
     function MainHandler() {
         BaseHandler.prototype.constructor.call(this)
@@ -40,8 +41,6 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
     for (var key in BaseHandler.prototype) {
         MainHandler.prototype[key] = BaseHandler.prototype[key]
     }
-
-
 
     var handlers = [
 //        ['.*', MainHandler]
@@ -58,9 +57,9 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
 	}
     })
 
-    var app = new chrome.WebApplication({handlers:handlers, port:8887})
+    // TODO -- auto free port discovery
+    window.app = new chrome.WebApplication({handlers:handlers, port:8887})
     app.start()
-    window.app = app
 });
 
 function reload() { chrome.runtime.reload() }

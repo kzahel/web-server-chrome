@@ -67,12 +67,14 @@
             if (err) {
                 console.log('socket.send lastError',err)
                 this.tryClose()
+                return
             }
 
             // look at evt!
             if (evt.bytesWritten <= 0) {
                 console.log('onwrite fail, closing',evt)
                 this.close()
+                return
             }
             this.writing = false
             if (this.writeBuffer.size() > 0) {
@@ -138,6 +140,7 @@
             sockets.tcp.disconnect(this.sockId)
             //this.sockId = null
             this.closed = true
+            this.cleanup()
         },
         error: function(data) {
             console.warn(this.sockId,'closed')
@@ -157,10 +160,14 @@
             if (!callback) { callback=this.checkedCallback }
             if (! this.closed) {
                 console.warn('cant close, already closed')
+                this.cleanup()
                 return
             }
             console.log(this.sockId,'tryClose')
             sockets.tcp.send(this.sockId, new ArrayBuffer, callback)
+        },
+        cleanup: function() {
+            this.writeBuffer = new Buffer
         }
     }
 

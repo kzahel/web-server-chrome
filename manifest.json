@@ -17,6 +17,7 @@
         "unlimitedStorage",
         "storage",
         "notifications",
+	"system.network",
         {"fileSystem":["write","directory","retainEntries"]}
     ],
     "sockets": {
@@ -28,7 +29,7 @@
          "connect": [""]
        },
        "tcpServer": {
-         "listen": ["127.0.0.1:*"]
+         "listen": ["*:*"]
        }
     },
     "oauth2": {

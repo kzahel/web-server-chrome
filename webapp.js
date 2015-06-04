@@ -11,7 +11,7 @@
             this.handlersMatch.push( [new RegExp(repat), this.handlers[i][1]] )
         }
 
-        this.host = opts.host || '127.0.0.1'
+        this.host = opts.host || '0.0.0.0' || '127.0.0.1'
         this.port = opts.port
         this.sockInfo = null
         this.lasterr = null

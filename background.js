@@ -4,7 +4,7 @@ function reload() { chrome.runtime.reload() }
 
 chrome.runtime.onSuspend.addListener( function(evt) {
     console.error('onSuspend',evt)
-    app.stop()
+    if (app) app.stop()
 })
 chrome.runtime.onSuspendCanceled.addListener( function(evt) {
     console.error('onSuspendCanceled',evt)
@@ -48,6 +48,15 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
 //        ['.*', PackageFilesHandler]
         ['.*', DirectoryEntryHandler]
     ]
+
+    chrome.system.network.getNetworkInterfaces( function(result) {
+	if (result) {
+	    for (var i=0; i<result.length; i++) {
+		console.log('network interface:',result[i])
+	    }
+
+	}
+    })
 
     var app = new chrome.WebApplication({handlers:handlers, port:8887})
     app.start()

@@ -1,6 +1,6 @@
 chrome.runtime.getBackgroundPage( function(bg) {
     window.bg = bg;
-
+    
     document.getElementById('status').innerText = 'OK'
 
     function choosefolder() {
@@ -105,15 +105,25 @@ function onDonateFail(evt) {
     console.log('onDonateFail',evt)
 }
 
-document.getElementById('donate').addEventListener('click', function(evt) {
-    var sku = "webserverdonation";
-    google.payments.inapp.buy({
-        'parameters': {'env': 'prod'},
-        'sku': sku,
-        'success': onDonate,
-        'failure': onDonateFail
-    });
-})
+var elt = document.getElementById('donate')
+    if (elt) {
+	elt.addEventListener('click', function(evt) {
+	    var sku = "webserverdonation";
+	    google.payments.inapp.buy({
+		'parameters': {'env': 'prod'},
+		'sku': sku,
+		'success': onDonate,
+		'failure': onDonateFail
+	    });
+	})
+    }
+
+    if (bg.app) {
+	debugger
+    }
+
+
+
 
 
 })

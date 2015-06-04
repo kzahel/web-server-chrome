@@ -1,7 +1,37 @@
+window.reload = chrome.runtime.reload
+
+function addinterfaces() {
+    var version = getchromeversion()
+    if (version >= 44) {
+        chrome.system.network.getNetworkInterfaces( function(result) {
+            if (result) {
+                var cont = document.getElementById('other-interfaces')
+                if (cont) {
+                    for (var i=0; i<result.length; i++) {
+                        console.log('network interface:',result[i])
+                        if (result[i].prefixLength == 24) {
+                            var a = document.createElement('a')
+                            a.target = "_blank"
+                            var href = 'http://' + result[i].address + ':' + bg.app.port
+                            a.innerText = href
+                            a.href = href
+                            cont.appendChild(a)
+                        }
+                    }
+                }
+            }
+        })
+    }
+}
+
+
 chrome.runtime.getBackgroundPage( function(bg) {
+    console.log('got bg page')
     window.bg = bg;
     
     document.getElementById('status').innerText = 'OK'
+
+    addinterfaces()
 
     function choosefolder() {
         chrome.fileSystem.chooseEntry({type:'openDirectory'},
@@ -107,22 +137,16 @@ function onDonateFail(evt) {
 
 var elt = document.getElementById('donate')
     if (elt) {
-	elt.addEventListener('click', function(evt) {
-	    var sku = "webserverdonation";
-	    google.payments.inapp.buy({
-		'parameters': {'env': 'prod'},
-		'sku': sku,
-		'success': onDonate,
-		'failure': onDonateFail
-	    });
-	})
+        elt.addEventListener('click', function(evt) {
+            var sku = "webserverdonation";
+            google.payments.inapp.buy({
+                'parameters': {'env': 'prod'},
+                'sku': sku,
+                'success': onDonate,
+                'failure': onDonateFail
+            });
+        })
     }
-
-    if (bg.app) {
-	debugger
-    }
-
-
 
 
 

@@ -1,3 +1,12 @@
+function getchromeversion() {
+    var version
+    var match = navigator.userAgent.match(/Chrome\/([\d]+)/)
+    if (match) {
+        var version = parseInt(match[1])
+    }
+    return version
+}
+
 if (! String.prototype.endsWith) {
     String.prototype.endsWith = function(substr) {
         for (var i=0; i<substr.length; i++) {

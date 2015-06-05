@@ -26,13 +26,28 @@
 
         this.remoteclosed = false
         this.closed = false
+
+        this.halfclose = null
         this.onclose = null
+        this._close_callbacks = []
 
         this.onWriteBufferEmpty = null
         chrome.sockets.tcp.setPaused(this.sockId, false, this.onUnpaused.bind(this))
     }
 
     IOStream.prototype = {
+        addCloseCallback: function(cb) {
+            this._close_callbacks.push(cb)
+        },
+        removeCloseCallback: function(cb) {
+            debugger
+        },
+        runCloseCallbacks: function() {
+            for (var i=0; i<this._close_callbacks.length; i++) {
+                this._close_callbacks[i](this)
+            }
+            if (this.onclose) { this.onclose() }
+        },
         onUnpaused: function(info) {
             //console.log('sock unpaused',info)
         },
@@ -94,7 +109,6 @@
                 this.log('remote closed connection (halfduplex)')
                 this.remoteclosed = true
                 if (this.halfclose) { this.halfclose() }
-                //if (this.onclose) { this.onclose() } // not really closed..
                 if (this.request) {
                     // do we even have a request yet? or like what to do ...
                 }
@@ -134,7 +148,7 @@
             }
         },
         close: function() {
-            if (this.onclose) { this.onclose() }
+            this.runCloseCallbacks()
             console.log('tcp sock close',this.sockId)
             delete peerSockMap[this.sockId]
             sockets.tcp.disconnect(this.sockId)

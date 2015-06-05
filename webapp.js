@@ -21,7 +21,8 @@
         this.lasterr = null
         this.stopped = false
         this.starting = false
-        this.started = true
+        this.started = false
+        this.streams = {}
     }
 
     WebApplication.prototype = {
@@ -29,24 +30,39 @@
             console.error(data)
             this.lasterr = data
         },
-/*
-        stop: function() {
-            sockets.tcp.disconnect(this.sockInfo.socketId)
-            this.stopped = true
-        },
-*/
         stop: function() {
             this.started = false
-            chrome.sockets.tcpServer.close(this.sockInfo.socketId, this.onClose.bind(this))
+            chrome.sockets.tcpServer.disconnect(this.sockInfo.socketId, this.onDisconnect.bind(this))
+            for (var key in this.streams) {
+                this.streams[key].close()
+            }
+            // also disconnect any open connections...
+
         },
         onClose: function(info) {
+            var err = chrome.runtime.lastError
+            if (err) { console.warn(err) }
+            this.stopped = true
+            this.started = false
             console.log('tcpserver onclose',info)
         },
         onDisconnect: function(info) {
+            var err = chrome.runtime.lastError
+            if (err) { console.warn(err) }
+            this.stopped = true
+            this.started = false
             console.log('tcpserver ondisconnect',info)
+            if (this.sockInfo) {
+                chrome.sockets.tcpServer.close(this.sockInfo.socketId, this.onClose.bind(this))
+            }
+        },
+        onStreamClose: function(stream) {
+            console.assert(stream.sockId)
+            delete this.streams[stream.sockId]
         },
         start: function() {
-            if (this.starting) { return }
+            if (this.starting || this.started) { return }
+            this.stopped = false
             this.starting = true
 
             chrome.system.network.getNetworkInterfaces( function(result) {
@@ -90,6 +106,8 @@
             if (acceptInfo.socketId) {
                 //var stream = new IOStream(acceptInfo.socketId)
                 var stream = new IOStream(acceptInfo.clientSocketId)
+                this.streams[acceptInfo.clientSocketId] = stream
+                stream.addCloseCallback(this.onStreamClose.bind(this))
                 var connection = new HTTPConnection(stream)
                 connection.addRequestCallback(this.onRequest.bind(this))
                 connection.tryRead()

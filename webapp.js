@@ -21,6 +21,7 @@
         this.lasterr = null
         this.stopped = false
         this.starting = false
+        this.started = true
     }
 
     WebApplication.prototype = {
@@ -28,13 +29,36 @@
             console.error(data)
             this.lasterr = data
         },
+/*
         stop: function() {
             sockets.tcp.disconnect(this.sockInfo.socketId)
             this.stopped = true
         },
+*/
+        stop: function() {
+            this.started = false
+            chrome.sockets.tcpServer.close(this.sockInfo.socketId, this.onClose.bind(this))
+        },
+        onClose: function(info) {
+            console.log('tcpserver onclose',info)
+        },
+        onDisconnect: function(info) {
+            console.log('tcpserver ondisconnect',info)
+        },
         start: function() {
             if (this.starting) { return }
             this.starting = true
+
+            chrome.system.network.getNetworkInterfaces( function(result) {
+                if (result) {
+                    for (var i=0; i<result.length; i++) {
+                        if (result[i].prefixLength == 24) {
+                            console.log('found interface address: ' + result[i].address)
+                        }
+                    }
+                }
+            })
+
             sockets.tcpServer.create({name:"listenSocket"},function(sockInfo) {
                 this.sockInfo = sockInfo
                 sockets.tcpServer.listen(this.sockInfo.socketId,
@@ -46,7 +70,8 @@
                                       this.error({message:'unable to bind to port',
                                                   errno:result})
                                   } else {
-                                      console.log('Listening on',this.port,result)
+                                      this.started = true
+                                      console.log('Listening on','http://'+ this.host + ':' + this.port)
                                       this.bindAcceptCallbacks()
                                   }
                               }.bind(this))
@@ -90,6 +115,11 @@
                 }
             }
             console.error('unhandled request',request)
+            // create a default handler...
+            var handler = new BaseHandler(request)
+            handler.request = request
+            handler.write("Unhandled request", 404)
+            handler.finish()
         }
     }
 

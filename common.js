@@ -4,6 +4,7 @@ function getchromeversion() {
     if (match) {
         var version = parseInt(match[1])
     }
+    return 44
     return version
 }
 

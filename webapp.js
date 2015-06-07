@@ -124,6 +124,7 @@
                 if (reresult) {
                     var cls = this.handlersMatch[i][1]
                     var requestHandler = new cls(request)
+                    requestHandler.app = this
                     requestHandler.request = request
                     var handlerMethod = requestHandler[request.method.toLowerCase()]
                     if (handlerMethod) {
@@ -135,6 +136,7 @@
             console.error('unhandled request',request)
             // create a default handler...
             var handler = new BaseHandler(request)
+            handler.app = this
             handler.request = request
             handler.write("Unhandled request", 404)
             handler.finish()

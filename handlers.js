@@ -150,66 +150,7 @@
                     this.write('entry not found',404)
                 }
             } else if (entry.isFile) {
-                getEntryFile(entry, function(file) {
-                    this.file = file
-                    if (this.request.method == "HEAD") {
-                        this.responseLength = this.file.size
-                        this.writeHeaders(200)
-                        this.finish()
-
-                    } else if (this.file.size > this.readChunkSize * 8 ||
-                        this.request.headers['range']) {
-                        this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
-
-                        if (this.request.headers['range']) {
-                            console.log(this.request.connection.stream.sockId,'RANGE',this.request.headers['range'])
-
-                            var range = this.request.headers['range'].split('=')[1].trim()
-
-                            var rparts = range.split('-')
-                            if (! rparts[1]) {
-                                this.fileOffset = parseInt(rparts[0])
-                                this.fileEndOffset = this.file.size - 1
-                                this.responseLength = this.file.size - this.fileOffset;
-                                this.setHeader('content-range','bytes '+this.fileOffset+'-'+(this.file.size-1)+'/'+this.file.size)
-                                if (this.fileOffset == 0) {
-                                    this.writeHeaders(200)
-                                } else {
-                                    this.writeHeaders(206)
-                                }
-
-                            } else {
-                                //debugger // TODO -- add support for partial file fetching...
-                                //this.writeHeaders(500)
-                                this.fileOffset = parseInt(rparts[0])
-                                this.fileEndOffset = parseInt(rparts[1])
-                                this.responseLength = this.fileEndOffset - this.fileOffset + 1
-                                this.setHeader('content-range','bytes '+this.fileOffset+'-'+(this.fileEndOffset)+'/'+this.file.size)
-                                this.writeHeaders(206)
-                            }
-
-
-                        } else {
-                            console.log('large file, streaming mode!')
-                            this.fileOffset = 0
-                            this.fileEndOffset = this.file.size - 1
-                            this.responseLength = this.file.size
-                            this.writeHeaders(200)
-                        }
-                        
-                        
-
-
-
-                    } else {
-                        //console.log(entry,file)
-                        var fr = new FileReader
-                        var cb = this.onReadEntry.bind(this)
-                        fr.onload = cb
-                        fr.onerror = cb
-                        fr.readAsArrayBuffer(file)
-                    }
-                }.bind(this))
+                this.renderFileContents(entry)
             } else {
                 // directory
                 var reader = entry.createReader()
@@ -223,6 +164,14 @@
                 }
 
                 function alldone(results) {
+                    if (this.app.opts.renderIndex) {
+                        for (var i=0; i<results.length; i++) {
+                            if (results[i].name == 'index.html') {
+                                this.renderFileContents(results[i])
+                                return
+                            }
+                        }
+                    }
                     this.renderDirectoryListing(results)
                 }
 
@@ -241,6 +190,68 @@
                 reader.readEntries( onreadsuccess.bind(this),
                                     onreaderr.bind(this))
             }
+        },
+        renderFileContents: function(entry, file) {
+            getEntryFile(entry, function(file) {
+                this.file = file
+                if (this.request.method == "HEAD") {
+                    this.responseLength = this.file.size
+                    this.writeHeaders(200)
+                    this.finish()
+
+                } else if (this.file.size > this.readChunkSize * 8 ||
+                           this.request.headers['range']) {
+                    this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
+
+                    if (this.request.headers['range']) {
+                        console.log(this.request.connection.stream.sockId,'RANGE',this.request.headers['range'])
+
+                        var range = this.request.headers['range'].split('=')[1].trim()
+
+                        var rparts = range.split('-')
+                        if (! rparts[1]) {
+                            this.fileOffset = parseInt(rparts[0])
+                            this.fileEndOffset = this.file.size - 1
+                            this.responseLength = this.file.size - this.fileOffset;
+                            this.setHeader('content-range','bytes '+this.fileOffset+'-'+(this.file.size-1)+'/'+this.file.size)
+                            if (this.fileOffset == 0) {
+                                this.writeHeaders(200)
+                            } else {
+                                this.writeHeaders(206)
+                            }
+
+                        } else {
+                            //debugger // TODO -- add support for partial file fetching...
+                            //this.writeHeaders(500)
+                            this.fileOffset = parseInt(rparts[0])
+                            this.fileEndOffset = parseInt(rparts[1])
+                            this.responseLength = this.fileEndOffset - this.fileOffset + 1
+                            this.setHeader('content-range','bytes '+this.fileOffset+'-'+(this.fileEndOffset)+'/'+this.file.size)
+                            this.writeHeaders(206)
+                        }
+
+
+                    } else {
+                        console.log('large file, streaming mode!')
+                        this.fileOffset = 0
+                        this.fileEndOffset = this.file.size - 1
+                        this.responseLength = this.file.size
+                        this.writeHeaders(200)
+                    }
+                    
+                    
+
+
+
+                } else {
+                    //console.log(entry,file)
+                    var fr = new FileReader
+                    var cb = this.onReadEntry.bind(this)
+                    fr.onload = cb
+                    fr.onerror = cb
+                    fr.readAsArrayBuffer(file)
+                }
+            }.bind(this))
         },
         renderDirectoryListing: function(results) {
             var html = ['<html>']

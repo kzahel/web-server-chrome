@@ -5,6 +5,54 @@ Chrome Web Server - an HTTP web server for Chrome (chrome.sockets)
 
 ====
 
+Basic usage:
+
+var app = new chrome.WebApplication(options)
+
+options: object, with keys
+- handlers: array of handlers,
+- renderIndex: boolean (whether to render index.html if in directory)
+- port: int (port to listen on)
+
+Handlers
+    var handlers = [
+        ['/favicon.ico',FavIconHandler],
+        ['/stream.*',StreamHandler],
+        ['/static/(.*)',StaticHandler],
+        ['.*', DefaultHandler]
+    ]
+
+handlers is an array of 2 element arrays where the first item is a regular expression for the URL and the second is the handler class, which should extend BaseHandler
+
+```
+    function StaticHandler() {
+        this.disk = null
+        chrome.runtime.getPackageDirectoryEntry( function(entry) { this.disk = entry }.bind(this) )
+        BaseHandler.prototype.constructor.call(this)
+    }
+    var FavIconHandlerprototype = {
+        get: function(path) {
+            // USE HTML5 filesystem operations to read file
+            
+        },
+        onReadFile: function(evt) {
+            if (evt.error) {
+                this.write('disk access error, perhaps restart JSTorrent')
+            } else {
+                this.write(evt)
+            }
+        }
+    }
+    _.extend(StaticHandler.prototype,
+             StaticHandlerprototype,
+             BaseHandler.prototype
+            )
+```
+
+todo: create small example pages
+
+====
+
 Now updated to use the new chrome.sockets API! (old version used the now deprecated chrome.socket)
 
 ====

@@ -20,7 +20,9 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
     var info = {type:'onLaunched',
                 launchData: launchData}
     var opts = {id:'index'}
-    chrome.app.window.create('index.html',
+    var page = 'index.html'
+    //var page = 'polymer/index.html'
+    chrome.app.window.create(page,
                              opts,
                              function(mainWindow) {
                                  window.mainWindow = mainWindow;
@@ -58,7 +60,7 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
     })
 
     // TODO -- auto free port discovery
-    window.app = new chrome.WebApplication({handlers:handlers, port:8887, renderIndex:true})
+    window.app = new chrome.WebApplication({handlers:handlers, port:8887, renderIndex:false})
     app.start()
 });
 

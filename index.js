@@ -5,6 +5,15 @@ function addinterfaces() {
     if (version >= 44) {
         chrome.system.network.getNetworkInterfaces( function(result) {
             if (result) {
+                var wport = document.getElementById('choose-port').value;
+                
+                var contLocal = document.getElementById('local-interfaces');
+                if (contLocal) {
+                    var href = 'http://127.0.0.1:' + wport;
+                    contLocal.innerText = href;
+                    contLocal.href = href;
+                }
+                
                 var cont = document.getElementById('other-interfaces')
                 if (cont) {
                     for (var i=0; i<result.length; i++) {
@@ -12,7 +21,7 @@ function addinterfaces() {
                         if (result[i].prefixLength == 24) {
                             var a = document.createElement('a')
                             a.target = "_blank"
-                            var href = 'http://' + result[i].address + ':' + bg.app.port
+                            var href = 'http://' + result[i].address + ':' + wport
                             a.innerText = href
                             a.href = href
                             cont.appendChild(a)
@@ -34,9 +43,7 @@ chrome.runtime.getBackgroundPage( function(bg) {
     addinterfaces()
 
     function choosefolder() {
-        chrome.fileSystem.chooseEntry({type:'openDirectory'},
-                                      onchoosefolder
-                                     )
+        chrome.fileSystem.chooseEntry({type:'openDirectory'}, onchoosefolder)
     }
 
     function onchoosefolder(entry) {
@@ -54,6 +61,8 @@ chrome.runtime.getBackgroundPage( function(bg) {
     }
 
     document.getElementById('choose-folder').addEventListener('click', choosefolder)
+
+
 
     chrome.storage.local.get('retainstr',function(d) {
         if (d['retainstr']) {

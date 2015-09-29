@@ -4,7 +4,7 @@ function reload() { chrome.runtime.reload() }
 
 chrome.runtime.onSuspend.addListener( function(evt) {
     console.error('onSuspend',evt)
-    if (app) app.stop()
+    if (window.app) app.stop()
 })
 chrome.runtime.onSuspendCanceled.addListener( function(evt) {
     console.error('onSuspendCanceled',evt)
@@ -12,6 +12,8 @@ chrome.runtime.onSuspendCanceled.addListener( function(evt) {
 
 chrome.app.window.onClosed.addListener(function(evt) {
     console.log('window closed. shutdown server, unload background page? hm?')
+    // trigger on callback from chrome.app.window.create
+    //if (window.app) { app.stop() }
 })
 
 chrome.app.runtime.onLaunched.addListener(function(launchData) {
@@ -26,6 +28,9 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
                              opts,
                              function(mainWindow) {
                                  window.mainWindow = mainWindow;
+                                 mainWindow.onClosed.addListener( function() {
+                                     if (window.app) { console.log('stopping server'); app.stop() }
+                                 })
 			     });
     //console.log('launched')
 

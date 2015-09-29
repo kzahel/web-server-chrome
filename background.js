@@ -64,4 +64,10 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
     app.start()
 });
 
+function restart(port) { 
+    app.stop();
+    app.port = port;
+    app.start();
+}
+
 function reload() { chrome.runtime.reload() }

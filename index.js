@@ -6,27 +6,43 @@ function addinterfaces() {
         chrome.system.network.getNetworkInterfaces( function(result) {
             if (result) {
                 var wport = document.getElementById('choose-port').value;
+                console.log("port found: " + wport);
                 
-                var contLocal = document.getElementById('local-interfaces');
-                if (contLocal) {
+                var contLocal = document.getElementById('local-interface');
+                if (typeof contLocal !== 'undefined') {
+                    while (contLocal.firstChild) {
+                        contLocal.removeChild(contLocal.firstChild);
+                    }                
+                    var a = document.createElement('a')
+                    a.target = "_blank";
                     var href = 'http://127.0.0.1:' + wport;
-                    contLocal.innerText = href;
-                    contLocal.href = href;
+                    a.innerText = href;
+                    a.href = href;
+                    contLocal.appendChild(a);
+
+                } else{
+                  console.log("not contLocal!");
                 }
                 
                 var cont = document.getElementById('other-interfaces')
-                if (cont) {
+                if (typeof cont !== 'undefined') {
+                    while (cont.firstChild) {
+                        cont.removeChild(cont.firstChild);
+                    }                
+                
                     for (var i=0; i<result.length; i++) {
                         console.log('network interface:',result[i])
                         if (result[i].prefixLength == 24) {
                             var a = document.createElement('a')
-                            a.target = "_blank"
-                            var href = 'http://' + result[i].address + ':' + wport
-                            a.innerText = href
-                            a.href = href
-                            cont.appendChild(a)
+                            a.target = "_blank";
+                            var href = 'http://' + result[i].address + ':' + wport;
+                            a.innerText = href;
+                            a.href = href;
+                            cont.appendChild(a);
                         }
                     }
+                } else{
+                  console.log("not cont!");
                 }
             }
         })
@@ -61,6 +77,20 @@ chrome.runtime.getBackgroundPage( function(bg) {
     }
 
     document.getElementById('choose-folder').addEventListener('click', choosefolder)
+
+    function onRestart() {
+        var input = document.getElementById('choose-port');
+        if (!input) return;
+    
+        var wport = input.value;
+        console.log("port found: " + wport);
+        addinterfaces()
+        if (bg) {
+            bg.restart(parseInt(wport));
+        }
+    }
+
+    document.getElementById('restart').addEventListener('click', onRestart)
 
 
 

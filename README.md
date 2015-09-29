@@ -37,7 +37,7 @@ handlers is an array of 2 element arrays where the first item is a regular expre
         },
         onReadFile: function(evt) {
             if (evt.error) {
-                this.write('disk access error, perhaps restart JSTorrent')
+                this.write('disk access error')
             } else {
                 this.write(evt)
             }

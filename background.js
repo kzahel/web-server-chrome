@@ -60,8 +60,8 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
     })
 
     // TODO -- auto free port discovery
-    window.app = new chrome.WebApplication({handlers:handlers, port:8887, renderIndex:false});
-    app.start();
+    window.app = new chrome.WebApplication({handlers:handlers, port:8887, renderIndex:false})
+    app.start()
 });
 
 function restart(port) { 

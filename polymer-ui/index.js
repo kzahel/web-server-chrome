@@ -16,25 +16,6 @@ function ui_ready() {
 function settings_ready(d) {
     window.localOptions = d
     console.log('fetched local settings',d)
-/*    
-    if (d['retainstr']) {
-        chrome.fileSystem.restoreEntry(d['retainstr'], function(entry) {
-            if (entry) {
-                //getel('current-folder').innerText = entry.fullPath
-            }
-        })
-
-    }
-*/
-/*
-    var persist_settings = ['port','optAllInterfaces','optBackground']
-    for (var i=0; i<persist_settings.length; i++) {
-        if (d[persist_settings[i]] !== undefined) {
-            //getel('options')[persist_settings[i]] = d[persist_settings[i]]
-        }
-    }
-*/
-
     window.webapp = bg.get_webapp(d)
     create_polymer_elements()
     on_webapp_change()
@@ -74,75 +55,12 @@ function on_webapp_change() {
     c.set('starting', webapp.starting)
     c.set('lasterr', webapp.lasterr)
 
-
-
-/*
-    if (webapp.interfaces) {
-        var ul = getel('interfaces')
-        ul.innerHTML = ''
-        for (var i=0; i<webapp.interfaces.length; i++) {
-            var a = document.createElement('a')
-            var url = 'http://' + webapp.interfaces[i] + ':' + webapp.port
-            a.href = url
-            a.innerText = url
-            a.target = "_blank"
-            var li = document.createElement('li')
-            li.appendChild(a)
-            ul.appendChild(li)
-        }
-    }
-*/
-
-/*
-    if (webapp.lasterr) {
-        console.log('webapp with error')
-        getel('start-stop').disabled = false
-        getel('start-stop').active = false
-        getel('status-spinner').active = false
-        getel('status-text').innerText = JSON.stringify(webapp.lasterr)
-    } else if (webapp.starting) {
-        console.log('webapp starting')
-        getel('start-stop').disabled = true
-        getel('status-spinner').active = true
-        getel('status-text').innerText = "STARTING"
-    } else if (webapp.started) {
-        console.log('webapp started')
-        getel('start-stop').disabled = false
-        getel('start-stop').active = true
-        getel('status-spinner').active = false
-        getel('status-text').innerText = "STARTED"
-
-    } else {
-        console.log('webapp stopped')
-        getel('start-stop').disabled = false
-        getel('start-stop').active = false
-        getel('status-spinner').active = false
-        getel('status-text').innerText = "STOPPED"
-    }
-*/
 }
 
 function setup_events() {
     document.getElementById('help-icon').addEventListener('click', function(evt) {
         document.getElementById('help-dialog').open()
     })
-
-/*
-    getel('start-stop').addEventListener('click', function(evt) {
-        
-        var active = getel('start-stop').active
-
-        if (active) {
-            webapp.start()
-        } else {
-            webapp.stop()
-        }
-    })
-
-    getel('choose-folder-button').addEventListener('click', function(evt) {
-
-    })
-*/
 }
 
 function create_polymer_elements() {

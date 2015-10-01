@@ -194,7 +194,7 @@
             var handler = new WSC.BaseHandler(request)
             handler.app = this
             handler.request = request
-            handler.write("Unhandled request", 404)
+            handler.write("Unhandled request. Did you select a folder to serve?", 404)
             handler.finish()
         }
     }

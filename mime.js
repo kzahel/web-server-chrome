@@ -1,3 +1,4 @@
+(function() {
 var MIMETYPES = {
   "123": "application/vnd.lotus-1-2-3", 
   "3dml": "text/vnd.in3d.3dml", 
@@ -989,3 +990,6 @@ for (var key in MIMETYPES) {
         MIMECATEGORIES['audio'].push( key )
     }
 }
+WSC.MIMECATEGORIES = MIMECATEGORIES
+WSC.MIMETYPES = MIMETYPES
+})()

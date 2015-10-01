@@ -2,42 +2,86 @@
     var sockets = chrome.sockets
 
     function WebApplication(opts) {
+        console.log('initialize webapp with opts',opts)
+        opts = opts || {}
         this.opts = opts
-        this.handlers = opts.handlers
-        this.handlersMatch = []
+        this.handlers = opts.handlers || []
+        this.init_handlers()
+        
+        if (opts.retainstr) {
+            // special option to setup a handler
+            chrome.fileSystem.restoreEntry( opts.retainstr, function(entry) {
+                if (entry) {
+                    WSC.DirectoryEntryHandler.fs = new WSC.FileSystem(entry)
+                    this.add_handler(['.*',WSC.DirectoryEntryHandler])
+                    this.init_handlers()
+                    console.log('setup handler for entry',entry)
 
-        for (var i=0; i<this.handlers.length; i++) {
-            var repat = this.handlers[i][0]
-            this.handlersMatch.push( [new RegExp(repat), this.handlers[i][1]] )
+                } else {
+                    console.error('error setting up retained entry')
+                }
+            }.bind(this))
         }
-
-        if (getchromeversion() >= 44) {
-            this.host = opts.host || '0.0.0.0'
-        } else {
-            this.host = opts.host || '127.0.0.1'
-        }
-        this.port = opts.port
+        this.host = this.get_host()
+        this.port = parseInt(opts.port || 8887)
         this.sockInfo = null
         this.lasterr = null
         this.stopped = false
         this.starting = false
         this.started = false
         this.streams = {}
+        this.on_status_change = null
+        this.interfaces = []
+        this.urls = []
+        if (this.port > 65535 || this.port < 1024) {
+            var err = 'bad port: ' + this.port
+            this.error(err)
+        }
+        console.log('webapp created',this)
     }
 
     WebApplication.prototype = {
+        get_host: function() {
+            var host
+            if (WSC.getchromeversion() >= 44 && this.opts.optAllInterfaces) {
+                host = this.opts.host || '0.0.0.0'
+            } else {
+                host = this.opts.host || '127.0.0.1'
+            }
+            return host
+        },
+        add_handler: function(handler) {
+            this.handlers.push(handler)
+        },
+        init_handlers: function() {
+            this.handlersMatch = []
+            for (var i=0; i<this.handlers.length; i++) {
+                var repat = this.handlers[i][0]
+                this.handlersMatch.push( [new RegExp(repat), this.handlers[i][1]] )
+            }
+            this.change()
+        },
+        change: function() {
+            if (this.on_status_change) { this.on_status_change() }
+        },
         error: function(data) {
             console.error(data)
             this.lasterr = data
+            this.change()
         },
-        stop: function() {
+        stop: function(reason) {
+            if (! (this.started || this.starting)) {
+                this.change()
+                return
+            }
+
             this.started = false
             chrome.sockets.tcpServer.disconnect(this.sockInfo.socketId, this.onDisconnect.bind(this))
             for (var key in this.streams) {
                 this.streams[key].close()
             }
+            this.change()
             // also disconnect any open connections...
-
         },
         onClose: function(info) {
             var err = chrome.runtime.lastError
@@ -61,24 +105,35 @@
             delete this.streams[stream.sockId]
         },
         start: function() {
+            console.log('webapp attempt start with opts',this.opts)
+            this.change()
+            //if (this.lasterr) { return }
             if (this.starting || this.started) { return }
             this.stopped = false
             this.starting = true
+            this.change()
 
-            chrome.system.network.getNetworkInterfaces( function(result) {
-                if (result) {
-                    for (var i=0; i<result.length; i++) {
-                        if (result[i].prefixLength == 24) {
-                            console.log('found interface address: ' + result[i].address)
+            this.urls = []
+            this.urls.push({url:'http://127.0.0.1:' + this.port})
+
+            if (this.opts.optAllInterfaces) {
+                chrome.system.network.getNetworkInterfaces( function(result) {
+                    console.log('network interfaces',result)
+                    if (result) {
+                        for (var i=0; i<result.length; i++) {
+                            if (result[i].prefixLength < 64) {
+                                this.urls.push({url:'http://'+result[i].address+':' + this.port})
+                                console.log('found interface address: ' + result[i].address)
+                            }
                         }
                     }
-                }
-            })
-
+                }.bind(this))
+            }
+            var host = this.get_host()
             sockets.tcpServer.create({name:"listenSocket"},function(sockInfo) {
                 this.sockInfo = sockInfo
                 sockets.tcpServer.listen(this.sockInfo.socketId,
-                                         this.host,
+                                         host,
                                          this.port,
                               function(result) {
                                   this.starting = false
@@ -87,8 +142,9 @@
                                                   errno:result})
                                   } else {
                                       this.started = true
-                                      console.log('Listening on','http://'+ this.host + ':' + this.port)
+                                      console.log('Listening on','http://'+ host + ':' + this.port)
                                       this.bindAcceptCallbacks()
+                                      this.change()
                                   }
                               }.bind(this))
             }.bind(this));
@@ -105,10 +161,10 @@
             //console.log('onAccept',acceptInfo);
             if (acceptInfo.socketId) {
                 //var stream = new IOStream(acceptInfo.socketId)
-                var stream = new IOStream(acceptInfo.clientSocketId)
+                var stream = new WSC.IOStream(acceptInfo.clientSocketId)
                 this.streams[acceptInfo.clientSocketId] = stream
                 stream.addCloseCallback(this.onStreamClose.bind(this))
-                var connection = new HTTPConnection(stream)
+                var connection = new WSC.HTTPConnection(stream)
                 connection.addRequestCallback(this.onRequest.bind(this))
                 connection.tryRead()
             }
@@ -135,7 +191,7 @@
             }
             console.error('unhandled request',request)
             // create a default handler...
-            var handler = new BaseHandler(request)
+            var handler = new WSC.BaseHandler(request)
             handler.app = this
             handler.request = request
             handler.write("Unhandled request", 404)
@@ -168,7 +224,7 @@
                 lines.push('HTTP/1.1 200 OK')
             } else {
                 //console.log(this.request.connection.stream.sockId,'response code',code, this.responseLength)
-                lines.push('HTTP/1.1 '+ code + ' ' + HTTPRESPONSES[code])
+                lines.push('HTTP/1.1 '+ code + ' ' + WSC.HTTPRESPONSES[code])
             }
             console.log(this.request.connection.stream.sockId,'response code',code, 'clen',this.responseLength)
             console.assert(typeof this.responseLength == 'number')
@@ -177,8 +233,8 @@
             var p = this.request.path.split('.')
             if (p.length > 1 && ! this.isDirectoryListing) {
                 var ext = p[p.length-1].toLowerCase()
-                if (MIMETYPES[ext]) {
-                    this.setHeader('content-type',MIMETYPES[ext])
+                if (WSC.MIMETYPES[ext]) {
+                    this.setHeader('content-type',WSC.MIMETYPES[ext])
                 }
             }
 
@@ -217,11 +273,6 @@
         }
     })
 
-    function haveentry(entry) {
-        window.fs = new FileSystem(entry)
-    }
-    window.haveentry = haveentry
-
     function FileSystem(entry) {
         this.entry = entry
     }
@@ -233,13 +284,13 @@
             }
             var parts = path.split('/')
             var newpath = parts.slice(1,parts.length)
-            recursiveGetEntry(this.entry, newpath, callback)
+            WSC.recursiveGetEntry(this.entry, newpath, callback)
         }
     })
 
-    window.FileSystem = FileSystem
-    window.BaseHandler = BaseHandler
-    chrome.WebApplication = WebApplication
+    WSC.FileSystem = FileSystem
+    WSC.BaseHandler = BaseHandler
+    WSC.WebApplication = WebApplication
 
 })();
 

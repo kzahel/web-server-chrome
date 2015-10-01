@@ -1,3 +1,4 @@
+(function() {
 var HTTPRESPONSES = {
     "200": "OK", 
     "201": "Created", 
@@ -41,3 +42,5 @@ var HTTPRESPONSES = {
     "504": "Gateway Timeout", 
     "505": "HTTP Version Not Supported"
 }
+WSC.HTTPRESPONSES = HTTPRESPONSES
+})()

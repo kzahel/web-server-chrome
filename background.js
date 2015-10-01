@@ -1,19 +1,12 @@
-//blah
-
 function reload() { chrome.runtime.reload() }
 
 chrome.runtime.onSuspend.addListener( function(evt) {
     console.error('onSuspend',evt)
-    if (window.app) app.stop()
+    // send notification using chrome.notifications?
+    if (window.app) app.stop('onsuspend')
 })
 chrome.runtime.onSuspendCanceled.addListener( function(evt) {
     console.error('onSuspendCanceled',evt)
-})
-
-chrome.app.window.onClosed.addListener(function(evt) {
-    console.log('window closed. shutdown server, unload background page? hm?')
-    // trigger on callback from chrome.app.window.create
-    //if (window.app) { app.stop() }
 })
 
 chrome.app.runtime.onLaunched.addListener(function(launchData) {
@@ -22,57 +15,68 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
     var info = {type:'onLaunched',
                 launchData: launchData}
     var opts = {id:'index'}
-    var page = 'index.html'
-    //var page = 'polymer/index.html'
+    //var page = 'index.html'
+    var page = 'polymer-ui/index.html'
     chrome.app.window.create(page,
                              opts,
                              function(mainWindow) {
                                  window.mainWindow = mainWindow;
-                                 mainWindow.onClosed.addListener( function() {
-                                     if (window.app) { console.log('stopping server'); app.stop() }
-                                 })
+                                 mainWindow.onClosed.addListener( window_closed )
 			     });
     //console.log('launched')
 
     if (window.app) { console.log('already have webapp',app); return }
 
-    function MainHandler() {
-        BaseHandler.prototype.constructor.call(this)
-    }
-    _.extend(MainHandler.prototype, {
-        get: function() {
-            // handle get request
-            this.write('OK!, ' + this.request.uri)
-        }
-    })
-    for (var key in BaseHandler.prototype) {
-        MainHandler.prototype[key] = BaseHandler.prototype[key]
-    }
-
-    var handlers = [
-//        ['.*', MainHandler]
-//        ['.*', PackageFilesHandler]
-        ['.*', DirectoryEntryHandler]
-    ]
-
-    chrome.system.network.getNetworkInterfaces( function(result) {
-	if (result) {
-	    for (var i=0; i<result.length; i++) {
-		console.log('network interface:',result[i])
-	    }
-
-	}
-    })
-
-    // TODO -- auto free port discovery
-    window.app = new chrome.WebApplication({handlers:handlers, port:8887, renderIndex:false})
-    app.start()
 });
 
+function get_webapp(opts) {
+    if (! window.app) {
+        window.app = create_app(opts)
+    }
+    return app
+}
+
+function create_app(opts) {
+    var app = new WSC.WebApplication(opts)
+    return app
+}
+
+function get_status() {
+    // gets current status of web server
+    var status = {}
+    if (window.app) {
+        status.app = app
+        status.created = true
+    } else {
+        status.created = false
+    }
+    return status
+}
+
+function start_app() {
+    if (app) { app.start() }
+}
+function stop_app() {
+    if (window.app) { app.stop() }
+}
+
+function window_closed() {
+    if (window.app) {
+        if (app.opts && app.opts.optBackground) { 
+            console.log('not stopping server, backgrounding mode on');
+            return 
+        }
+    }
+    console.log('main window closed. stopping server')
+    stop_app()
+}
+
 function restart(port) { 
-    app.stop();
-    app.port = port;
-    app.start();
+    if (window.app) {
+        app.stop();
+        app.port = port;
+        app.start();
+    }
 }
 
 function reload() { chrome.runtime.reload() }

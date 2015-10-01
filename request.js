@@ -1,5 +1,5 @@
 (function() {
-    function Request(opts) {
+    function HTTPRequest(opts) {
         this.method = opts.method
         this.uri = opts.uri
         this.version = opts.version
@@ -30,11 +30,11 @@
         
     }
 
-    Request.prototype = {
+    HTTPRequest.prototype = {
         isKeepAlive: function() {
             return this.headers['connection'] && this.headers['connection'].toLowerCase() != 'close'
         }
     }
 
-    window.Request = Request
+    WSC.HTTPRequest = HTTPRequest
 })()

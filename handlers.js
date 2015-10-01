@@ -3,13 +3,13 @@
     function getEntryFile( entry, callback ) {
 
         var cacheKey = entry.filesystem.name + '/' + entry.fullPath
-        var inCache = entryFileCache.get(cacheKey)
+        var inCache = WSC.entryFileCache.get(cacheKey)
         if (inCache) { 
             //console.log('file cache hit'); 
             callback(inCache); return }
         
         entry.file( function(file) {
-            entryFileCache.set(cacheKey, file)
+            WSC.entryFileCache.set(cacheKey, file)
             callback(file)
         }, function(evt) {
             console.error('entry.file() error',evt)
@@ -18,7 +18,7 @@
     }
 
     function DirectoryEntryHandler(request) {
-        BaseHandler.prototype.constructor.call(this)
+        WSC.BaseHandler.prototype.constructor.call(this)
         //this.debugInterval = setInterval( this.debug.bind(this), 1000)
         this.entry = null
         this.file = null
@@ -46,7 +46,7 @@
 
             this.setHeader('accept-ranges','bytes')
             this.setHeader('connection','keep-alive')
-            if (! window.fs) {
+            if (! WSC.DirectoryEntryHandler.fs) {
                 this.write("error: need to select a directory to serve",500)
                 return
             }
@@ -54,7 +54,7 @@
 
             // strip '/' off end of path
 
-            fs.getByPath(this.request.path, this.onEntry.bind(this))
+            WSC.DirectoryEntryHandler.fs.getByPath(this.request.path, this.onEntry.bind(this))
         },
         doReadChunk: function() {
             //console.log(this.request.connection.stream.sockId, 'doReadChunk', this.fileOffset)
@@ -158,7 +158,7 @@
                 this.isDirectoryListing = true
 
                 function onreaderr(evt) {
-                    entryCache.unset(this.entry.filesystem.name + this.entry.fullPath)
+                    WSC.entryCache.unset(this.entry.filesystem.name + this.entry.fullPath)
                     console.error('error reading dir',evt)
                     this.request.connection.close()
                 }
@@ -259,6 +259,8 @@
             html.push('<a href="..">parent</a>')
             html.push('<ul>')
 
+            // TODO -- add sorting (by query parameter?)
+
             for (var i=0; i<results.length; i++) {
                 var name = _.escape(results[i].name)
                 if (results[i].isDirectory) {
@@ -276,7 +278,7 @@
             if (evt.type == 'error') {
                 console.error('error reading',evt.target.error)
                 // clear this file from cache...
-                entryFileCache.unset( this.entry.filesystem.name + '/' + this.entry.fullPath )
+                WSC.entryFileCache.unset( this.entry.filesystem.name + '/' + this.entry.fullPath )
 
                 this.request.connection.close()
             } else {
@@ -285,10 +287,8 @@
             }
 
         }
-    }, BaseHandler.prototype)
+    }, WSC.BaseHandler.prototype)
 
-
-
-    window.DirectoryEntryHandler = DirectoryEntryHandler
+    WSC.DirectoryEntryHandler = DirectoryEntryHandler
 
 })()

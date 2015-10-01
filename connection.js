@@ -17,7 +17,8 @@
         write: function(data) {
             if (typeof data == 'string') {
                 // convert to arraybuffer
-                var buf = stringToUint8Array(data).buffer
+                // TODO fix with multi byte chars ( use encoding library )
+                var buf = WSC.stringToUint8Array(data).buffer
             } else {
                 var buf = data
             }
@@ -34,7 +35,7 @@
         },
         onHeaders: function(data) {
             // TODO - http headers are Latin1, not ascii...
-            var datastr = arrayBufferToString(data)
+            var datastr = WSC.arrayBufferToString(data)
             var lines = datastr.split('\r\n')
             var firstline = lines[0]
             var flparts = firstline.split(' ')
@@ -42,8 +43,8 @@
             var uri = flparts[1]
             var version = flparts[2]
 
-            var headers = parseHeaders(lines.slice(1,lines.length-2))
-            this.curRequest = new Request({headers:headers,
+            var headers = WSC.parseHeaders(lines.slice(1,lines.length-2))
+            this.curRequest = new WSC.HTTPRequest({headers:headers,
                                            method:method,
                                            uri:uri,
                                            version:version,
@@ -66,6 +67,6 @@
         }
     }
 
-    window.HTTPConnection = HTTPConnection;
+    WSC.HTTPConnection = HTTPConnection;
 
 })()

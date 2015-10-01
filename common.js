@@ -1,12 +1,16 @@
+(function() {
+
+window.WSC = {}
+
 function getchromeversion() {
     var version
     var match = navigator.userAgent.match(/Chrome\/([\d]+)/)
     if (match) {
         var version = parseInt(match[1])
     }
-    return 44
     return version
 }
+WSC.getchromeversion = getchromeversion
 
 if (! String.prototype.endsWith) {
     String.prototype.endsWith = function(substr) {
@@ -82,15 +86,15 @@ if (! String.prototype.startsWith) {
     }
     _.extend(EntryCache.prototype, EntryCacheprototype)
 
-    window.entryCache = new EntryCache
-    window.entryFileCache = new EntryCache
+    window.WSC.entryCache = new EntryCache
+    window.WSC.entryFileCache = new EntryCache
 
-function recursiveGetEntry(filesystem, path, callback) {
+WSC.recursiveGetEntry = function(filesystem, path, callback) {
     // XXX duplication with jstorrent
     var cacheKey = filesystem.filesystem.name +
         filesystem.fullPath +
         '/' + path.join('/')
-    var inCache = entryCache.get(cacheKey)
+    var inCache = WSC.entryCache.get(cacheKey)
     if (inCache) { 
         //console.log('cache hit');
         callback(inCache); return
@@ -103,11 +107,11 @@ function recursiveGetEntry(filesystem, path, callback) {
             if (e.name == 'TypeMismatchError') {
                 state.e.getDirectory(state.path, {create:false}, recurse, recurse)
             } else if (e.isFile) {
-                entryCache.set(cacheKey,e)
+                WSC.entryCache.set(cacheKey,e)
                 callback(e)
             } else if (e.isDirectory) {
                 //console.log(filesystem,path,cacheKey,state)
-                entryCache.set(cacheKey,e)
+                WSC.entryCache.set(cacheKey,e)
                 callback(e)
             } else {
                 callback({error:'path not found'})
@@ -130,7 +134,7 @@ function recursiveGetEntry(filesystem, path, callback) {
     recurse(filesystem)
 }
 
-function parseHeaders(lines) {
+WSC.parseHeaders = function(lines) {
     var headers = {}
     // TODO - multi line headers?
     for (var i=0;i<lines.length;i++) {
@@ -138,7 +142,6 @@ function parseHeaders(lines) {
         headers[l[0].toLowerCase()] = l[1].trim()
     }
     return headers
-
 }
 function ui82str(arr, startOffset) {
     console.assert(arr)
@@ -167,12 +170,12 @@ function str2ab(s) {
     return new Uint8Array(arr).buffer
 }
 
-    var stringToUint8Array = function(string) {
+    WSC.stringToUint8Array = function(string) {
         var encoder = new TextEncoder()
         return encoder.encode(string)
     };
 
-    var arrayBufferToString = function(buffer) {
+    WSC.arrayBufferToString = function(buffer) {
         var decoder = new TextDecoder()
         return decoder.decode(buffer)
     };
@@ -182,3 +185,5 @@ function str2ab(s) {
     }
 
 */
+
+})()

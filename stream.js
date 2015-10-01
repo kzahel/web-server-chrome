@@ -19,8 +19,8 @@
         peerSockMap[this.sockId] = this
         this.readCallback = null
         this.readUntilDelimiter = null
-        this.readBuffer = new Buffer
-        this.writeBuffer = new Buffer
+        this.readBuffer = new WSC.Buffer
+        this.writeBuffer = new WSC.Buffer
         this.writing = false
         this.pleaseReadBytes = null
 
@@ -128,7 +128,7 @@
             //console.log('checkBuffer')
             if (this.readUntilDelimiter) {
                 var buf = this.readBuffer.flatten()
-                var str = arrayBufferToString(buf)
+                var str = WSC.arrayBufferToString(buf)
                 var idx = str.indexOf(this.readUntilDelimiter)
                 if (idx != -1) {
                     var callback = this.readCallback
@@ -181,10 +181,10 @@
             sockets.tcp.send(this.sockId, new ArrayBuffer, callback)
         },
         cleanup: function() {
-            this.writeBuffer = new Buffer
+            this.writeBuffer = new WSC.Buffer
         }
     }
 
-    window.IOStream = IOStream;
+    WSC.IOStream = IOStream;
 
 })()

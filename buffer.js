@@ -1,3 +1,4 @@
+(function() {
 function Buffer(opts) {
     /*
       FIFO queue type that lets you check when able to consume the
@@ -177,3 +178,5 @@ if (false) {
     test_buffer3()
     test_buffer4()
 }
+WSC.Buffer = Buffer
+})()

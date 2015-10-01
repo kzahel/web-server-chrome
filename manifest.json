@@ -4,7 +4,7 @@
     "short_name": "Web Server",
     "description": "A Web Server for Chrome, serves web pages from a local folder over the network, using HTTP. Runs offline.",
     "author": "Kyle Graehl",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "manifest_version": 2,
     "offline_enabled": true,
     "minimum_chrome_version": "33",
@@ -39,15 +39,15 @@
       ]
     },
     "icons": { 
-        "16": "200ok-16.png",
-        "19": "200ok-19.png",
-        "32": "200ok-32.png",
-        "38": "200ok-38.png",
-        "48": "200ok-48.png",
-        "64": "200ok-64.png",
-        "96": "200ok-96.png",
-        "128": "200ok-128.png",
-        "256": "200ok-256.png",
-        "512": "200ok-512.png"
+        "16": "images/200ok-16.png",
+        "19": "images/200ok-19.png",
+        "32": "images/200ok-32.png",
+        "38": "images/200ok-38.png",
+        "48": "images/200ok-48.png",
+        "64": "images/200ok-64.png",
+        "96": "images/200ok-96.png",
+        "128": "images/200ok-128.png",
+        "256": "images/200ok-256.png",
+        "512": "images/200ok-512.png"
     }
 }

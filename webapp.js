@@ -236,8 +236,22 @@
                 var type = WSC.MIMETYPES[ext]
                 if (type) {
                     // go ahead and assume utf-8 for text/plain and text/html... (what other types?)
-                    // also how do we detect this in general?
-                    if (type == 'text/plain' || type == 'text/html') {
+                    // also how do we detect this in general? copy from nginx i guess?
+                    /*
+Changes with nginx 0.7.9                                         12 Aug 2008
+
+    *) Change: now ngx_http_charset_module works by default with following 
+       MIME types: text/html, text/css, text/xml, text/plain, 
+       text/vnd.wap.wml, application/x-javascript, and application/rss+xml.
+*/
+                    var default_types = ['text/html',
+                                         'text/xml',
+                                         'text/plain',
+                                         "text/vnd.wap.wml",
+                                         "application/javascript",
+                                         "application/rss+xml"]
+
+                    if (_.contains(default_types, type)) {
                         type += '; charset=utf-8'
                     }
                     this.setHeader('content-type',type)

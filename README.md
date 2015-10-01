@@ -4,6 +4,11 @@
 Chrome Web Server - an HTTP web server for Chrome (chrome.sockets)
 
 ====
+Building
+====
+Unfortunately there is a build process if you want to run this from source directly because I am using a Polymer (polymer-project.org) user interface. There is a bower.json in the polymer-ui folder and you will need to install node+npm+bower and then run bower install from that folder.
+
+====
 
 Basic usage:
 

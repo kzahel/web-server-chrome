@@ -1,0 +1,21 @@
+
+body {
+  margin:0;
+}
+
+paper-card {
+    padding-left:1em;
+    margin-bottom:4px;
+}
+
+paper-checkbox {
+    margin-bottom: 10px;
+}
+    paper-button {
+
+      margin-bottom: 24px;
+    }
+
+    paper-button.colorful {
+      background: #4285f4;
+    }

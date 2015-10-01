@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="">
+
+<head>
+  <link rel="import" href="elements/elements.html">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<body class="fullbleed layout vertical">
+  <paper-header-panel>
+
+    <paper-toolbar>
+      <!--paper-icon-button icon="menu" on-tap="{{menuAction}}"></paper-icon-button-->
+      <div class="title">Web Server for Chrome</div>
+      <paper-icon-button id="help-icon" icon="help-outline"></paper-icon-button>
+    </paper-toolbar>
+
+<div class="content" style="margin:2em">
+
+<div id="main-loading">
+    <paper-spinner active></paper-spinner> Loading...
+</div>
+
+
+<div id="main-content" style="display:none">
+<paper-card style="width:100%">
+  <div class="card-content">
+
+<p>Welcome to Web Server for Chrome.</p>
+
+<p>Please <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb/reviews">leave a nice review</a> to help others find this software.</p>
+
+<p>Need to <a target="_blank" href="https://github.com/kzahel/web-server-chrome/issues">Report a problem</a>?
+Open source, MIT license.</p>
+
+  </div>
+</paper-card>
+
+  </div>
+
+<dom-module id="wsc-controls">
+<template>
+<paper-card style="width:100%">
+<div class="card-actions">
+    <paper-button on-click="onChooseFolder" id="choose-folder-button" raised>Choose Folder</paper-button>Current: <span id="current-folder">{{ displayFolder(folder) }}</span>
+    <div>
+      <paper-toggle-button active$="[[started]]" disabled$="[[starting]]" on-click="onStartStop" id="start-stop"></paper-toggle-button><span style="padding-left:8px">Web Server: </span><span id="status-text">{{ state }}</span>
+    </div>
+
+    <!--paper-spinner active hidden$="[[!starting]]" id="status-spinner"></paper-spinner-->
+<h3>Web Server URL(s)</h3>
+
+<ul>
+  <template is="dom-repeat" items="{{interfaces}}">
+    <li><a href="{{item.url}}" target="_blank">{{item.url}}</a> </li>
+  </template>
+
+</ul>
+
+</div>
+</paper-card>
+</template>
+</dom-module>
+
+
+
+
+<wsc-controls></wsc-controls>
+
+<dom-module id="wsc-options">
+<template>
+<paper-card style="width:100%">
+
+  <h4>Options (needs restart)</h4>
+
+  <div>
+    <paper-checkbox checked="{{optBackground}}">Run in background</paper-checkbox>
+  </div>
+  <div>
+    <paper-checkbox checked="{{optAllInterfaces}}" >Accessible to other computers</paper-checkbox>
+  </div>
+
+  <div>
+    <paper-input is="iron-input" max="65535" min="1024"
+                 style="width:80px"
+                 label="Enter Port"
+                 auto-validate pattern="[0-9]*" error-message="Number between 1024 and 65535!"
+                 on-change="onPortChange"
+                 value="{{port}}">
+    </paper-input>
+  </div>
+</paper-card>
+</template>
+
+</dom-module>
+
+<wsc-options id="options"></wsc-options>
+
+    </div><!-- main content -->
+    </div><!-- content -->
+  </paper-header-panel>
+
+
+<!-- onboard dialog -->
+    <paper-dialog id="animated" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+      <h2>Welcome</h2>
+      <p>Thanks for installing Web Server for Chrome.</p>
+
+      <p>To get started, choose the folder to serve</p>
+
+    </paper-dialog>
+<!-- end dialog -->
+
+<!-- help dialog -->
+    <paper-dialog id="help-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+      <h2>Help</h2>
+
+      <p>This is a web server. Pretty self explanitory, right?</p>
+<p>Please <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb/reviews">leave a nice review</a> to help others find this software.</p>
+
+<p>Need to <a target="_blank" href="https://github.com/kzahel/web-server-chrome/issues">Report a problem</a>?
+Open source, MIT license.</p>
+      
+
+    </paper-dialog>
+<!-- end dialog -->
+
+
+<script src="index.js"></script>
+</body>
+
+</html>

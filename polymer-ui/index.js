@@ -110,7 +110,7 @@ function create_polymer_elements() {
                     if (window.webapp) {
                         bg.WSC.DirectoryEntryHandler.fs = new bg.WSC.FileSystem(entry)
                         if (webapp.handlers.length == 0) {
-                            webapp.add_handler(['.*',WSC.DirectoryEntryHandler])
+                            webapp.add_handler(['.*',bg.WSC.DirectoryEntryHandler])
                             webapp.init_handlers()
                         }
                         webapp.change()

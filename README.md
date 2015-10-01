@@ -1,15 +1,11 @@
 <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">![Try it now in CWS](https://raw.github.com/GoogleChrome/chrome-app-samples/master/tryitnowbutton.png "Click here to install this sample from the Chrome Web Store")</a>
 
+Get it in the chrome web store:
+https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb
 
 Chrome Web Server - an HTTP web server for Chrome (chrome.sockets)
 
-====
-Building
-====
-Unfortunately there is a build process if you want to run this from source directly because I am using a Polymer (polymer-project.org) user interface. There is a bower.json in the polymer-ui folder and you will need to install node+npm+bower and then run bower install from that folder.
-
-====
-
+===
 Basic usage:
 
 var app = new chrome.WebApplication(options)
@@ -56,9 +52,11 @@ handlers is an array of 2 element arrays where the first item is a regular expre
 
 todo: create small example pages
 
-====
 
-Now updated to use the new chrome.sockets API! (old version used the now deprecated chrome.socket)
+====
+Building
+====
+Unfortunately there is a build process if you want to run this from source directly because I am using a Polymer (polymer-project.org) user interface. There is a bower.json in the polymer-ui folder and you will need to install node+npm+bower and then run bower install from that folder. Oh, and then you will need to "Refactor for CSP" (chrome apps do not allow inline scripts), the way I do this is using https://chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg (open the folder and right click and select refactor for CSP)
 
 ====
 

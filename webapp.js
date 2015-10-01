@@ -233,8 +233,14 @@
             var p = this.request.path.split('.')
             if (p.length > 1 && ! this.isDirectoryListing) {
                 var ext = p[p.length-1].toLowerCase()
-                if (WSC.MIMETYPES[ext]) {
-                    this.setHeader('content-type',WSC.MIMETYPES[ext])
+                var type = WSC.MIMETYPES[ext]
+                if (type) {
+                    // go ahead and assume utf-8 for text/plain and text/html... (what other types?)
+                    // also how do we detect this in general?
+                    if (type == 'text/plain' || type == 'text/html') {
+                        type += '; charset=utf-8'
+                    }
+                    this.setHeader('content-type',type)
                 }
             }
 

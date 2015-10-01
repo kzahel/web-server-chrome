@@ -247,9 +247,15 @@
             this.request.connection.write(headerstr, callback)
         },
         write: function(data, code) {
+            if (typeof data == "string") {
+                console.warn('putting strings into write is not well tested with multi byte characters')
+                data = new TextEncoder('utf-8').encode(data).buffer
+            }
+
+            console.assert(data.byteLength)
             if (code === undefined) { code = 200 }
             this.responseData.push(data)
-            this.responseLength += (data.length || data.byteLength)
+            this.responseLength += data.byteLength
             // todo - support chunked response?
             if (! this.headersWritten) {
                 this.writeHeaders(code)

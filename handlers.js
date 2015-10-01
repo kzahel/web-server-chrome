@@ -270,7 +270,7 @@
                 }
             }
             html.push('</ul></html>')
-            this.setHeader('content-type','text/html')
+            this.setHeader('content-type','text/html; charset=utf-8')
             this.setHeader('test-foo-bar','999')
             this.write(html.join('\n'))
         },

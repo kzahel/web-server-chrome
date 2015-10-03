@@ -105,6 +105,7 @@
             delete this.streams[stream.sockId]
         },
         start: function() {
+	    this.lasterr = null
             console.log('webapp attempt start with opts',this.opts)
             this.change()
             //if (this.lasterr) { return }

@@ -15,35 +15,30 @@
       <!--paper-icon-button icon="menu" on-tap="{{menuAction}}"></paper-icon-button-->
       <div class="title">Web Server for Chrome</div>
       <paper-icon-button id="help-icon" icon="help-outline"></paper-icon-button>
+      <img src="../images/200ok-64.png" srcset="../images/200ok-128.png 2x" />
     </paper-toolbar>
 
-<div class="content" style="margin:2em">
+<div class="content" style="margin-left:2em; margin-right:2em; margin-bottom:0.5em">
 
 <div id="main-loading">
-    <paper-spinner active></paper-spinner> Loading...
+<paper-spinner active></paper-spinner> Loading...
+</div>
+<div id="main-content" style="display:none">
 </div>
 
 
-<div id="main-content" style="display:none">
 <paper-card style="width:100%">
   <div class="card-content">
 
-<p>Welcome to Web Server for Chrome.</p>
-
-<p>Please <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb/reviews">leave a nice review</a> to help others find this software.</p>
-
-<p>Need to <a target="_blank" href="https://github.com/kzahel/web-server-chrome/issues">Report a problem</a>?
-Open source, MIT license.</p>
-
+<p>Please <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb/reviews">leave a review</a> to help others find this software.</p>
   </div>
-</paper-card>
+  </paper-card>
 
-  </div>
 
 <dom-module id="wsc-controls">
 <template>
 <paper-card style="width:100%">
-<div class="card-actions">
+<div class="card-actions" style="padding-top:1em">
     <paper-button on-click="onChooseFolder" id="choose-folder-button" raised>Choose Folder</paper-button>Current: <span id="current-folder">{{ displayFolder(folder) }}</span>
     <div>
       <paper-toggle-button active$="[[started]]" disabled$="[[starting]]" on-click="onStartStop" id="start-stop"></paper-toggle-button><span style="padding-left:8px">Web Server: </span><span id="status-text">{{ state }}</span>
@@ -98,7 +93,21 @@ Open source, MIT license.</p>
 
 <wsc-options id="options"></wsc-options>
 
-    </div><!-- main content -->
+
+
+
+
+<paper-card style="width:100%">
+  <div class="card-content">
+
+<p>Need to <a target="_blank" href="https://github.com/kzahel/web-server-chrome/issues">Report a problem</a>?
+Open source, MIT license.</p>
+
+  </div>
+</paper-card>
+
+
+
     </div><!-- content -->
   </paper-header-panel>
 

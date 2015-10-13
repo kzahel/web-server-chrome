@@ -253,13 +253,29 @@
                 }
             }.bind(this))
         },
+        entriesSortFunc: function(a,b) {
+            var anl = a.name.toLowerCase()
+            var bnl = b.name.toLowerCase()
+            if (a.isDirectory && b.isDirectory) {
+                return anl.localeCompare(bnl)
+            } else if (a.isDirectory) {
+                return -1
+            } else if (b.isDirectory) {
+                return 1
+            } else {
+                /// both files
+                return anl.localeCompare(bnl)
+            }
+                
+        },
         renderDirectoryListing: function(results) {
             var html = ['<html>']
             html.push('<style>li.directory {background:#aab}</style>')
             html.push('<a href="..">parent</a>')
             html.push('<ul>')
-
-            // TODO -- add sorting (by query parameter?)
+            results.sort( this.entriesSortFunc )
+            
+            // TODO -- add sorting (by query parameter?) show file size?
 
             for (var i=0; i<results.length; i++) {
                 var name = _.escape(results[i].name)

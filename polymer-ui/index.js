@@ -147,6 +147,11 @@ function create_polymer_elements() {
                 type: Boolean,
                 observer: 'backgroundChange',
                 value: localOptions['optBackground']
+            },
+            optRenderIndex: {
+                type: Boolean,
+                observer: 'optRenderIndexChange',
+                value: localOptions['optRenderIndex']
             }
         },
         interfaceChange: function(val) {
@@ -158,6 +163,11 @@ function create_polymer_elements() {
             console.log('persist setting background')
             webapp.opts.optBackground = this.optBackground
             chrome.storage.local.set({'optBackground':this.optBackground})
+        },
+        optRenderIndexChange: function(val) {
+            console.log('persist setting renderIndex')
+            webapp.opts.renderIndex = this.optRenderIndex
+            chrome.storage.local.set({'optRenderIndex':this.optRenderIndex})
         },
         onPortChange: function(val) {
             var port = parseInt(this.port)

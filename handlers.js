@@ -268,7 +268,31 @@
             }
                 
         },
+        renderDirectoryListingTemplate: function(results) {
+            this.setHeader('transfer-encoding','chunked')
+            this.writeHeaders(200)
+            this.writeChunk(WSC.template_data )
+            var html = ['<script>start("current directory...")</script>',
+                        '<script>addRow("..","..",1,"170 B","10/2/15, 8:32:45 PM");</script>']
+
+            for (var i=0; i<results.length; i++) {
+                var rawname = results[i].name
+                var name = _.escape(results[i].name)
+                var isdirectory = results[i].isDirectory
+                var filesize = '""'
+                //var modified = '10/13/15, 10:38:40 AM'
+                var modified = ''
+                // raw, urlencoded, isdirectory, size, 
+                html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+','+filesize+',"'+modified+'");</script>')
+            }
+            this.writeChunk(WSC.str2ab(html.join('\n')))
+            this.request.connection.write(WSC.str2ab('0\r\n\r\n'))
+            this.finish()
+        },
         renderDirectoryListing: function(results) {
+            if (WSC.template_data) {
+                return this.renderDirectoryListingTemplate(results)
+            }
             var html = ['<html>']
             html.push('<style>li.directory {background:#aab}</style>')
             html.push('<a href="..">parent</a>')
@@ -304,6 +328,28 @@
 
         }
     }, WSC.BaseHandler.prototype)
+
+    chrome.runtime.getPackageDirectoryEntry( function(pentry) {
+        var template_filename = 'directory-listing-template.html'
+        var onfile = function(e) {
+            if (e instanceof FileError) {
+                console.error('template fetch:',e)
+            } else {
+                var onfile = function(file) {
+                    var onread = function(evt) {
+                        WSC.template_data = evt.target.result
+                    }
+                    var fr = new FileReader
+                    fr.onload = onread
+                    fr.onerror = onread
+                    fr.readAsArrayBuffer(file)
+                }
+                e.file( onfile, onfile )
+            }
+        }
+        pentry.getFile(template_filename,{create:false},onfile,onfile)
+    })
+
 
     WSC.DirectoryEntryHandler = DirectoryEntryHandler
 

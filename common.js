@@ -169,7 +169,8 @@ function str2ab(s) {
     }
     return new Uint8Array(arr).buffer
 }
-
+    WSC.ui82str = ui82str
+WSC.str2ab = str2ab
     WSC.stringToUint8Array = function(string) {
         var encoder = new TextEncoder()
         return encoder.encode(string)

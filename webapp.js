@@ -227,9 +227,11 @@
                 //console.log(this.request.connection.stream.sockId,'response code',code, this.responseLength)
                 lines.push('HTTP/1.1 '+ code + ' ' + WSC.HTTPRESPONSES[code])
             }
-            console.log(this.request.connection.stream.sockId,'response code',code, 'clen',this.responseLength)
-            console.assert(typeof this.responseLength == 'number')
-            lines.push('content-length: ' + this.responseLength)
+            if (! this.responseHeaders['transfer-encoding'] == 'chunked') {
+                console.log(this.request.connection.stream.sockId,'response code',code, 'clen',this.responseLength)
+                console.assert(typeof this.responseLength == 'number')
+                lines.push('content-length: ' + this.responseLength)
+            }
 
             var p = this.request.path.split('.')
             if (p.length > 1 && ! this.isDirectoryListing) {
@@ -267,7 +269,15 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             //console.log('write headers',headerstr)
             this.request.connection.write(headerstr, callback)
         },
-        write: function(data, code) {
+        writeChunk: function(data) {
+            console.assert( data.byteLength )
+            var chunkheader = data.byteLength.toString(16) + '\r\n'
+            //console.log('write chunk',[chunkheader])
+            this.request.connection.write( WSC.str2ab(chunkheader) )
+            this.request.connection.write( data )
+            this.request.connection.write( WSC.str2ab('\r\n') )
+        },
+        write: function(data, code, opt_finish) {
             if (typeof data == "string") {
                 console.warn('putting strings into write is not well tested with multi byte characters')
                 data = new TextEncoder('utf-8').encode(data).buffer
@@ -285,7 +295,9 @@ Changes with nginx 0.7.9                                         12 Aug 2008
                 this.request.connection.write(this.responseData[i])
             }
             this.responseData = []
-            this.finish()
+            if (opt_finish !== false) {
+                this.finish()
+            }
         },
         finish: function() {
             if (this.beforefinish) { this.beforefinish() }

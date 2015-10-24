@@ -227,7 +227,9 @@
                 //console.log(this.request.connection.stream.sockId,'response code',code, this.responseLength)
                 lines.push('HTTP/1.1 '+ code + ' ' + WSC.HTTPRESPONSES[code])
             }
-            if (! this.responseHeaders['transfer-encoding'] == 'chunked') {
+            if (this.responseHeaders['transfer-encoding'] === 'chunked') {
+                // pass
+            } else {
                 console.log(this.request.connection.stream.sockId,'response code',code, 'clen',this.responseLength)
                 console.assert(typeof this.responseLength == 'number')
                 lines.push('content-length: ' + this.responseLength)
@@ -270,7 +272,7 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             this.request.connection.write(headerstr, callback)
         },
         writeChunk: function(data) {
-            console.assert( data.byteLength )
+            console.assert( data.byteLength !== undefined )
             var chunkheader = data.byteLength.toString(16) + '\r\n'
             //console.log('write chunk',[chunkheader])
             this.request.connection.write( WSC.str2ab(chunkheader) )
@@ -283,7 +285,7 @@ Changes with nginx 0.7.9                                         12 Aug 2008
                 data = new TextEncoder('utf-8').encode(data).buffer
             }
 
-            console.assert(data.byteLength)
+            console.assert(data.byteLength !== undefined)
             if (code === undefined) { code = 200 }
             this.responseData.push(data)
             this.responseLength += data.byteLength

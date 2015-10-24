@@ -1,7 +1,8 @@
 (function(){
 
     function getEntryFile( entry, callback ) {
-
+        // XXX if file is 0 bytes, and then write some data, it stays cached... which is bad...
+        
         var cacheKey = entry.filesystem.name + '/' + entry.fullPath
         var inCache = WSC.entryFileCache.get(cacheKey)
         if (inCache) { 
@@ -9,7 +10,9 @@
             callback(inCache); return }
         
         entry.file( function(file) {
-            WSC.entryFileCache.set(cacheKey, file)
+            if (false) {
+                WSC.entryFileCache.set(cacheKey, file)
+            }
             callback(file)
         }, function(evt) {
             console.error('entry.file() error',evt)
@@ -277,7 +280,7 @@
 
             for (var i=0; i<results.length; i++) {
                 var rawname = results[i].name
-                var name = _.escape(results[i].name)
+                var name = encodeURIComponent(results[i].name)
                 var isdirectory = results[i].isDirectory
                 var filesize = '""'
                 //var modified = '10/13/15, 10:38:40 AM'
@@ -285,7 +288,9 @@
                 // raw, urlencoded, isdirectory, size, 
                 html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+','+filesize+',"'+modified+'");</script>')
             }
-            this.writeChunk(WSC.str2ab(html.join('\n')))
+            var data = html.join('\n')
+            data = new TextEncoder('utf-8').encode(data).buffer
+            this.writeChunk(data)
             this.request.connection.write(WSC.str2ab('0\r\n\r\n'))
             this.finish()
         },

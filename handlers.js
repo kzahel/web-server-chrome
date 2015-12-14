@@ -15,6 +15,8 @@
             }
             callback(file)
         }, function(evt) {
+            // todo -- actually respond with the file error?
+            // or cleanup the context at least
             console.error('entry.file() error',evt)
             debugger
         })

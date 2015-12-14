@@ -175,6 +175,12 @@
         },
         onRequest: function(request) {
             console.log('handle',request.method, request.uri)
+
+            if (this.opts.auth) {
+                debugger
+            }
+
+            
             for (var i=0; i<this.handlersMatch.length; i++) {
                 var re = this.handlersMatch[i][0]
                 var reresult = re.exec(request.uri)

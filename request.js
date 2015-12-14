@@ -9,7 +9,7 @@
         this.arguments = {}
         var idx = this.uri.indexOf('?')
         if (idx != -1) {
-            this.path = decodeURI(this.uri.slice(0,idx))
+            this.path = decodeURIComponent(this.uri.slice(0,idx))
             var s = this.uri.slice(idx+1)
             var parts = s.split('&')
 
@@ -19,7 +19,7 @@
                 this.arguments[decodeURIComponent(p.slice(0,idx2))] = decodeURIComponent(p.slice(idx2+1,s.length))
             }
         } else {
-            this.path = decodeURI(this.uri)
+            this.path = decodeURIComponent(this.uri)
         }
 
         this.origpath = this.path

@@ -45,14 +45,17 @@ function on_webapp_change() {
     console.log('webapp changed',status)
 
     var c = document.getElementsByTagName('wsc-controls')[0]
-    window.wc = c
+    // window could be undefined if suspend event?
+    if (window) {
+        window.wc = c
 
-    c.set('interfaces', webapp.urls.slice()) // why have to slice???
-    c.set('port', webapp.port)
-    c.set('folder', status.folder)
-    c.set('started', webapp.started)
-    c.set('starting', webapp.starting)
-    c.set('lasterr', webapp.lasterr)
+        c.set('interfaces', webapp.urls.slice()) // why have to slice???
+        c.set('port', webapp.port)
+        c.set('folder', status.folder)
+        c.set('started', webapp.started)
+        c.set('starting', webapp.starting)
+        c.set('lasterr', webapp.lasterr)
+    }
 
 }
 

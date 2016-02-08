@@ -80,14 +80,44 @@ chrome.runtime.onStartup.addListener( function(evt) {
     window.ONSTARTUP_FIRED = true
     console.log('onStartup',evt)
 })
+function createNotification(msg, prio) {
+//    if (prio === undefined) { prio = 0 }
+    var opts = {type:"basic",
+                title:msg,
+//                priority:prio,
+                iconUrl:'/images/200ok-256.png',
+                message:msg}
+    chrome.notifications.create( "suspending", opts, function(){} )
+}
+
+function triggerKeepAwake() {
+    //createNotification('WebServer') // creating a notification also works, but is annoying
+
+    // HACK: make an XHR to cause onSuspendCanceled event
+    console.log('triggerKeepAwake')
+    var xhr = new XMLHttpRequest
+    xhr.open("GET","http://127.0.0.1:" + (localOptions.port || 8887) + '/dummyUrlPing')
+    function onload(evt) {
+        console.log('triggerKeepAwake XHR loaded',evt)
+    }
+    xhr.onerror = onload
+    xhr.onload = onload
+    xhr.send()
+}
 
 chrome.runtime.onSuspend.addListener( function(evt) {
-    console.error('onSuspend',evt)
-    // send notification using chrome.notifications?
-    if (window.app) app.stop('onsuspend')
+    //createNotification("onSuspend")
+    console.warn('onSuspend')
+    
+    if (localOptions.optBackground) {
+        triggerKeepAwake()
+    } else {
+        if (window.app) app.stop('onsuspend')
+    }
 })
 chrome.runtime.onSuspendCanceled.addListener( function(evt) {
-    console.error('onSuspendCanceled',evt)
+    //createNotification("suspendcanceled!")
+    console.warn('onSuspendCanceled')
 })
 
 chrome.app.runtime.onLaunched.addListener(function(launchData) {

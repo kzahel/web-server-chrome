@@ -16,7 +16,7 @@ function ui_ready() {
 function settings_ready(d) {
     window.localOptions = d
     console.log('fetched local settings',d)
-    window.webapp = bg.get_webapp(d)
+    window.webapp = bg.get_webapp(d) // retainStr in here
     create_polymer_elements()
     on_webapp_change()
     webapp.on_status_change = on_webapp_change
@@ -26,7 +26,6 @@ function settings_ready(d) {
 
 chrome.runtime.getBackgroundPage( function(bg) {
     window.bg = bg
-
     chrome.storage.local.get(null, settings_ready)
 })
 
@@ -100,26 +99,10 @@ function create_polymer_elements() {
         },
         onChooseFolder: function() {
             console.log('clicked choose folder')
-
-            function onchoosefolder(entry) {
-                if (entry) {
-                    var retainstr = chrome.fileSystem.retainEntry(entry)
-                    var d = {'retainstr':retainstr}
-                    chrome.storage.local.set(d)
-                    console.log('set retainstr!')
-                    if (window.webapp) {
-                        bg.WSC.DirectoryEntryHandler.fs = new bg.WSC.FileSystem(entry)
-                        if (webapp.handlers.length == 0) {
-                            webapp.add_handler(['.*',bg.WSC.DirectoryEntryHandler])
-                            webapp.init_handlers()
-                        }
-                        webapp.change()
-                    }
-                    // reload UI, restart server... etc
-                }
+            function onfolder(folder) {
+                bg.onchoosefolder(folder)
             }
-            chrome.fileSystem.chooseEntry({type:'openDirectory'}, onchoosefolder)
-
+            chrome.fileSystem.chooseEntry({type:'openDirectory'}, onfolder)
         },
         onStartStop: function(evt) {
             if (! this.$$('#start-stop').active) { // changes before on-click
@@ -129,7 +112,6 @@ function create_polymer_elements() {
                 console.log('starting webapp')
                 webapp.start()
             }
-
         }
     })
 
@@ -148,6 +130,11 @@ function create_polymer_elements() {
                 observer: 'backgroundChange',
                 value: localOptions['optBackground']
             },
+            optAutoStart: {
+                type: Boolean,
+                observer: 'autoStartChange',
+                value: localOptions['optAutoStart']
+            },
             optRenderIndex: {
                 type: Boolean,
                 observer: 'optRenderIndexChange',
@@ -159,10 +146,17 @@ function create_polymer_elements() {
             webapp.opts.optAllInterfaces = this.optAllInterfaces
             chrome.storage.local.set({'optAllInterfaces':this.optAllInterfaces})
         },
+        autoStartChange: function(val) {
+            console.log('persist setting autostart')
+            webapp.opts.optAutoStart = this.optAutoStart
+            chrome.storage.local.set({'optAutoStart':this.optAutoStart})
+            bg.backgroundSettingChange({'optAutoStart':this.optAutoStart})
+        },
         backgroundChange: function(val) {
             console.log('persist setting background')
             webapp.opts.optBackground = this.optBackground
             chrome.storage.local.set({'optBackground':this.optBackground})
+            bg.backgroundSettingChange({'optBackground':this.optBackground})
         },
         optRenderIndexChange: function(val) {
             console.log('persist setting renderIndex')

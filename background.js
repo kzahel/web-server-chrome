@@ -1,4 +1,85 @@
-function reload() { chrome.runtime.reload() }
+var ALARMID = "check_wsc_periodic"
+var WSCID = "ofhbbkphhbklhfoeikjpcbhemlocgigb"
+function onchoosefolder(entry) {
+    if (entry) {
+        var retainstr = chrome.fileSystem.retainEntry(entry)
+        var d = {'retainstr':retainstr}
+        chrome.storage.local.set(d)
+        console.log('set retainstr!')
+        var webapp = get_webapp()
+        if (webapp) {
+            WSC.DirectoryEntryHandler.fs = new WSC.FileSystem(entry)
+            if (webapp.handlers.length == 0) {
+                webapp.add_handler(['.*',WSC.DirectoryEntryHandler])
+                webapp.init_handlers()
+            }
+            webapp.change()
+        }
+        // reload UI, restart server... etc
+    }
+}
+function settings_ready(d) {
+    window.localOptions = d
+    chrome.alarms.getAll( onAllAlarms )
+}
+chrome.storage.local.get(null, settings_ready)
+function sendWSCAwakeMessage() {
+    if (localOptions.optBackground && localOptions.optAutoStart) {
+        console.log('background && autostart. wake up!')
+        get_webapp(window.localOptions)
+    }
+}
+function onAlarm( alarm ) {
+    console.log('alarm fired',alarm)
+    if (alarm.name == ALARMID) {
+        sendWSCAwakeMessage()
+    }
+}
+
+chrome.alarms.onAlarm.addListener( onAlarm )
+function backgroundSettingChange( opts ) {
+    if (opts.optBackground !== undefined) {
+        localOptions.optBackground = opts.optBackground
+    }
+    if (opts.optBackground !== undefined) {
+        localOptions.optAutoStart = opts.optAutoStart
+    }
+    if (localOptions.optBackground && localOptions.optAutoStart) {
+        chrome.alarms.getAll( onAllAlarms )
+    } else {
+        chrome.alarms.clearAll()
+    }
+}
+function onAllAlarms( alarms ) {
+    if (! localOptions.optBackground) {
+        return
+    }
+    if (! localOptions.optAutoStart) {
+        return
+    }
+    var found = false
+    
+    console.log('got alarms',alarms)
+    for (var i=0; i<alarms.length; i++) {
+        if (alarms[i].name == ALARMID) {
+            found = true
+        }
+    }
+    if (! found) {
+        console.log('created periodic alarm')
+        chrome.alarms.create(ALARMID, {'periodInMinutes':1})
+    }
+    // also fire the callback/alarm thing sooner, perhaps...
+    console.log('also fire alarm now?')
+    sendWSCAwakeMessage()
+}
+
+
+chrome.runtime.onStartup.addListener( function(evt) {
+    // should fire when profile loads up...
+    window.ONSTARTUP_FIRED = true
+    console.log('onStartup',evt)
+})
 
 chrome.runtime.onSuspend.addListener( function(evt) {
     console.error('onSuspend',evt)
@@ -78,5 +159,4 @@ function restart(port) {
         app.start();
     }
 }
-
 function reload() { chrome.runtime.reload() }

@@ -16,6 +16,7 @@
                     this.add_handler(['.*',WSC.DirectoryEntryHandler])
                     this.init_handlers()
                     console.log('setup handler for entry',entry)
+                    if (opts.optBackground) { this.start() }
 
                 } else {
                     console.error('error setting up retained entry')

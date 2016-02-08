@@ -13,6 +13,8 @@ var app = new chrome.WebApplication(options)
 options: object, with keys
 - handlers: array of handlers,
 - renderIndex: boolean (whether to render index.html if in directory)
+- optBackground: whether to run even if the window is closed
+- optAutoStart: whether to auto start when chrome starts
 - port: int (port to listen on)
 
 Handlers
@@ -85,3 +87,4 @@ HTTPConnection object, and that has an associated IOStream object
 which handles the nonblocking read/write events for you.
 
 
+See CREDITS file

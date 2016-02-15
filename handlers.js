@@ -177,7 +177,13 @@
                             }
                         }
                     }
-                    this.renderDirectoryListing(results)
+                    if (this.request.arguments && this.request.arguments.static == '1' ||
+                        this.request.arguments.static == 'true'
+                       ) {
+                        this.renderDirectoryListing(results)
+                    } else {
+                        this.renderDirectoryListingTemplate(results)
+                    }
                 }
 
                 function onreadsuccess(results) {
@@ -274,6 +280,10 @@
                 
         },
         renderDirectoryListingTemplate: function(results) {
+            if (! WSC.template_data) {
+                return this.renderDirectoryListing(results)
+            }
+
             this.setHeader('transfer-encoding','chunked')
             this.writeHeaders(200)
             this.writeChunk(WSC.template_data )
@@ -297,12 +307,9 @@
             this.finish()
         },
         renderDirectoryListing: function(results) {
-            if (WSC.template_data) {
-                return this.renderDirectoryListingTemplate(results)
-            }
             var html = ['<html>']
             html.push('<style>li.directory {background:#aab}</style>')
-            html.push('<a href="..">parent</a>')
+            html.push('<a href="../?static=1">parent</a>')
             html.push('<ul>')
             results.sort( this.entriesSortFunc )
             
@@ -311,9 +318,9 @@
             for (var i=0; i<results.length; i++) {
                 var name = _.escape(results[i].name)
                 if (results[i].isDirectory) {
-                    html.push('<li class="directory"><a href="' + name + '/">' + name + '</a></li>')
+                    html.push('<li class="directory"><a href="' + name + '/?static=1">' + name + '</a></li>')
                 } else {
-                    html.push('<li><a href="' + name + '">' + name + '</a></li>')
+                    html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
                 }
             }
             html.push('</ul></html>')

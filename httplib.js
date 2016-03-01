@@ -43,4 +43,4 @@ var HTTPRESPONSES = {
     "505": "HTTP Version Not Supported"
 }
 WSC.HTTPRESPONSES = HTTPRESPONSES
-})()
+})();

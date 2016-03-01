@@ -69,4 +69,4 @@
 
     WSC.HTTPConnection = HTTPConnection;
 
-})()
+})();

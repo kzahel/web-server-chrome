@@ -179,4 +179,4 @@ if (false) {
     test_buffer4()
 }
 WSC.Buffer = Buffer
-})()
+})();

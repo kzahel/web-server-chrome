@@ -188,4 +188,4 @@
 
     WSC.IOStream = IOStream;
 
-})()
+})();

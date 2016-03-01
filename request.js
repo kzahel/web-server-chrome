@@ -37,4 +37,4 @@
     }
 
     WSC.HTTPRequest = HTTPRequest
-})()
+})();

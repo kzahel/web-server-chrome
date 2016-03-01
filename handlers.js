@@ -367,4 +367,4 @@
 
     WSC.DirectoryEntryHandler = DirectoryEntryHandler
 
-})()
+})();

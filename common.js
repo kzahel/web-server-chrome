@@ -1,6 +1,6 @@
 (function() {
 
-window.WSC = {}
+  window.WSC = {store_id:"ofhbbkphhbklhfoeikjpcbhemlocgigb"}
 
 function getchromeversion() {
     var version

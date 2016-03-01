@@ -343,26 +343,29 @@
         }
     }, WSC.BaseHandler.prototype)
 
-    chrome.runtime.getPackageDirectoryEntry( function(pentry) {
-        var template_filename = 'directory-listing-template.html'
-        var onfile = function(e) {
-            if (e instanceof FileError) {
-                console.error('template fetch:',e)
-            } else {
-                var onfile = function(file) {
-                    var onread = function(evt) {
-                        WSC.template_data = evt.target.result
+    if (chrome.runtime.id == WSC.store_id) {
+        
+        chrome.runtime.getPackageDirectoryEntry( function(pentry) {
+            var template_filename = 'directory-listing-template.html'
+            var onfile = function(e) {
+                if (e instanceof FileError) {
+                    console.error('template fetch:',e)
+                } else {
+                    var onfile = function(file) {
+                        var onread = function(evt) {
+                            WSC.template_data = evt.target.result
+                        }
+                        var fr = new FileReader
+                        fr.onload = onread
+                        fr.onerror = onread
+                        fr.readAsArrayBuffer(file)
                     }
-                    var fr = new FileReader
-                    fr.onload = onread
-                    fr.onerror = onread
-                    fr.readAsArrayBuffer(file)
+                    e.file( onfile, onfile )
                 }
-                e.file( onfile, onfile )
             }
-        }
-        pentry.getFile(template_filename,{create:false},onfile,onfile)
-    })
+            pentry.getFile(template_filename,{create:false},onfile,onfile)
+        })
+    }
 
 
     WSC.DirectoryEntryHandler = DirectoryEntryHandler

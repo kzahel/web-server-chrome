@@ -22,8 +22,11 @@
         })
     }
 
-    function DirectoryEntryHandler(request) {
+
+
+    function DirectoryEntryHandler(fs, request) {
         WSC.BaseHandler.prototype.constructor.call(this)
+        this.fs = fs
         //this.debugInterval = setInterval( this.debug.bind(this), 1000)
         this.entry = null
         this.file = null
@@ -33,7 +36,6 @@
         this.bodyWritten = 0
         this.isDirectoryListing = false
         request.connection.stream.onclose = this.onClose.bind(this)
-
     }
     _.extend(DirectoryEntryHandler.prototype, {
         onClose: function() {
@@ -51,7 +53,7 @@
 
             this.setHeader('accept-ranges','bytes')
             this.setHeader('connection','keep-alive')
-            if (! WSC.DirectoryEntryHandler.fs) {
+            if (! this.fs) {
                 this.write("error: need to select a directory to serve",500)
                 return
             }
@@ -59,7 +61,7 @@
 
             // strip '/' off end of path
 
-            WSC.DirectoryEntryHandler.fs.getByPath(this.request.path, this.onEntry.bind(this))
+            this.fs.getByPath(this.request.path, this.onEntry.bind(this))
         },
         doReadChunk: function() {
             //console.log(this.request.connection.stream.sockId, 'doReadChunk', this.fileOffset)

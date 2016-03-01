@@ -44,8 +44,8 @@
 
     WebApplication.prototype = {
         on_entry: function(entry) {
-            WSC.DirectoryEntryHandler.fs = new WSC.FileSystem(entry)
-            this.add_handler(['.*',WSC.DirectoryEntryHandler])
+            var fs = new WSC.FileSystem(entry)
+            this.add_handler(['.*',WSC.DirectoryEntryHandler.bind(null, fs)])
             this.init_handlers()
             console.log('setup handler for entry',entry)
             if (this.opts.optBackground) { this.start() }
@@ -170,17 +170,18 @@
             }
         },
         bindAcceptCallbacks: function() {
-            sockets.tcpServer.onAcceptError.addListener(this.onAcceptError.bind(this,this.id))
-            sockets.tcpServer.onAccept.addListener(this.onAccept.bind(this,this.id))
+            sockets.tcpServer.onAcceptError.addListener(this.onAcceptError.bind(this))
+            sockets.tcpServer.onAccept.addListener(this.onAccept.bind(this))
         },
-        onAcceptError: function(id, acceptInfo) {
-            if (id != this.id) { return }
+        onAcceptError: function(acceptInfo) {
+            if (acceptInfo.socketId != this.sockInfo.socketId) { return }
+            // need to check against this.socketInfo.socketId
             console.error('accept error',this.sockInfo.socketId,acceptInfo)
             // set unpaused, etc
         },
-        onAccept: function(id, acceptInfo) {
-            if (id != this.id) { return }
-            //console.log('onAccept',acceptInfo);
+        onAccept: function(acceptInfo) {
+            console.log('onAccept',acceptInfo,this.sockInfo)
+            if (acceptInfo.socketId != this.sockInfo.socketId) { return }
             if (acceptInfo.socketId) {
                 //var stream = new IOStream(acceptInfo.socketId)
                 var stream = new WSC.IOStream(acceptInfo.clientSocketId)
@@ -195,7 +196,7 @@
             }
         },
         onRequest: function(request) {
-            console.log('handle',request.method, request.uri)
+            console.log(this.id, 'handle',request.method, request.uri)
 
             if (this.opts.auth) {
                 debugger

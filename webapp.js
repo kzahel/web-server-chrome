@@ -2,8 +2,10 @@
     var sockets = chrome.sockets
 
     function WebApplication(opts) {
+        // need to support creating multiple WebApplication...
         console.log('initialize webapp with opts',opts)
         opts = opts || {}
+        this.id = Math.random().toString()
         this.opts = opts
         this.handlers = opts.handlers || []
         this.init_handlers()
@@ -12,16 +14,15 @@
             // special option to setup a handler
             chrome.fileSystem.restoreEntry( opts.retainstr, function(entry) {
                 if (entry) {
-                    WSC.DirectoryEntryHandler.fs = new WSC.FileSystem(entry)
-                    this.add_handler(['.*',WSC.DirectoryEntryHandler])
-                    this.init_handlers()
-                    console.log('setup handler for entry',entry)
-                    if (opts.optBackground) { this.start() }
+                    this.on_entry(entry)
 
                 } else {
                     console.error('error setting up retained entry')
                 }
             }.bind(this))
+        }
+        if (opts.entry) {
+            this.on_entry(opts.entry)
         }
         this.host = this.get_host()
         this.port = parseInt(opts.port || 8887)
@@ -42,6 +43,13 @@
     }
 
     WebApplication.prototype = {
+        on_entry: function(entry) {
+            WSC.DirectoryEntryHandler.fs = new WSC.FileSystem(entry)
+            this.add_handler(['.*',WSC.DirectoryEntryHandler])
+            this.init_handlers()
+            console.log('setup handler for entry',entry)
+            if (this.opts.optBackground) { this.start() }
+        },
         get_host: function() {
             var host
             if (WSC.getchromeversion() >= 44 && this.opts.optAllInterfaces) {
@@ -137,29 +145,41 @@
                 sockets.tcpServer.listen(this.sockInfo.socketId,
                                          host,
                                          this.port,
-                              function(result) {
-                                  this.starting = false
-                                  if (result < 0) {
-                                      this.error({message:'unable to bind to port',
-                                                  errno:result})
-                                  } else {
-                                      this.started = true
-                                      console.log('Listening on','http://'+ host + ':' + this.port)
-                                      this.bindAcceptCallbacks()
-                                      this.change()
-                                  }
-                              }.bind(this))
+                                         this.onListen.bind(this))
+                var lasterr = chrome.runtime.lastError
+                if (lasterr) {
+                    console.log('lasterr listen',lasterr)
+                }
             }.bind(this));
         },
-        bindAcceptCallbacks: function() {
-            sockets.tcpServer.onAcceptError.addListener(this.onAcceptError.bind(this))
-            sockets.tcpServer.onAccept.addListener(this.onAccept.bind(this))
+        onListen: function(result) {
+            console.log('onListen',result)
+            this.starting = false
+            var lasterr = chrome.runtime.lastError
+            if (lasterr) {
+                this.error({message:lasterr})
+            } else if (result < 0) {
+                this.error({message:'unable to bind to port',
+                            errno:result})
+            } else {
+                this.started = true
+                var host = this.get_host()
+                console.log('Listening on','http://'+ host + ':' + this.port)
+                this.bindAcceptCallbacks()
+                this.change()
+            }
         },
-        onAcceptError: function(acceptInfo) {
+        bindAcceptCallbacks: function() {
+            sockets.tcpServer.onAcceptError.addListener(this.onAcceptError.bind(this,this.id))
+            sockets.tcpServer.onAccept.addListener(this.onAccept.bind(this,this.id))
+        },
+        onAcceptError: function(id, acceptInfo) {
+            if (id != this.id) { return }
             console.error('accept error',this.sockInfo.socketId,acceptInfo)
             // set unpaused, etc
         },
-        onAccept: function(acceptInfo) {
+        onAccept: function(id, acceptInfo) {
+            if (id != this.id) { return }
             //console.log('onAccept',acceptInfo);
             if (acceptInfo.socketId) {
                 //var stream = new IOStream(acceptInfo.socketId)

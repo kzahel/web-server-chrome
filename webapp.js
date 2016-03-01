@@ -199,7 +199,28 @@
             console.log(this.id, 'handle',request.method, request.uri)
 
             if (this.opts.auth) {
-                debugger
+                var validAuth = false
+                var auth = request.headers['authorization']
+                if (auth) {
+                    if (auth.slice(0,6).toLowerCase() == 'basic ') {
+                        var userpass = atob(auth.slice(6,auth.length)).split(':')
+                        if (userpass[0] == this.opts.auth.username &&
+                            userpass[1] == this.opts.auth.password) {
+                            validAuth = true
+                        }
+                    }
+                }
+
+                if (! validAuth) {
+                    var handler = new WSC.BaseHandler(request)
+                    
+                    handler.app = this
+                    handler.request = request
+                    handler.setHeader("WWW-Authenticate", "Basic")
+                    handler.write("", 401)
+                    handler.finish()
+                    return
+                }
             }
 
             

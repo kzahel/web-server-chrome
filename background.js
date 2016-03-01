@@ -10,7 +10,7 @@ function onchoosefolder(entry) {
         if (webapp) {
             WSC.DirectoryEntryHandler.fs = new WSC.FileSystem(entry)
             if (webapp.handlers.length == 0) {
-                webapp.add_handler(['.*',WSC.DirectoryEntryHandler])
+                webapp.add_handler(['.*',WSC.DirectoryEntryHandler.bind(null,fs)])
                 webapp.init_handlers()
             }
             webapp.change()

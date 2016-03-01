@@ -5,6 +5,8 @@
         this.version = opts.version
         this.connection = opts.connection
         this.headers = opts.headers
+        this.body = null
+        this.bodyparams = null
 
         this.arguments = {}
         var idx = this.uri.indexOf('?')

@@ -1,4 +1,5 @@
 (function() {
+    _DEBUG = false
     function HTTPConnection(stream) {
         this.stream = stream
         this.curRequest = null
@@ -48,19 +49,62 @@
                                            method:method,
                                            uri:uri,
                                            version:version,
-                                           connection:this})
-            this.log(this.curRequest.uri)
-            if (headers['Content-Length']) {
-                var clen = parseInt(headers['Content-Length'])
+                                                   connection:this})
+            if (_DEBUG) {
+                this.log(this.curRequest.uri)
+            }
+            if (headers['content-length']) {
+                var clen = parseInt(headers['content-length'])
                 // TODO -- handle 100 continue..
-                this.stream.readBytes(clen, this.onRequest)
-            } else if (method == 'GET') {
+                if (clen > 0) {
+                    console.log('request had content length',clen)
+                    this.stream.readBytes(clen, this.onRequestBody.bind(this))
+                    return
+                } else {
+                    this.curRequest.body = null
+                }
+            }
+
+            
+            if (method == 'GET') {
                 this.onRequest(this.curRequest)
             } else if (method == 'HEAD') {
+                this.onRequest(this.curRequest)
+            } else if (method == 'PUT') {
+                // handle request BODY?
                 this.onRequest(this.curRequest)
             } else {
                 console.error('how to handle',this.curRequest)
             }
+        },
+        onRequestBody: function(body) {
+            var req = this.curRequest
+            var ct = req.headers['content-type']
+            var default_charset = 'utf-8'
+            if (ct) {
+                ct = ct.toLowerCase()
+                if (ct.toLowerCase().startsWith('application/x-www-form-urlencoded')) {
+                    var charset_i = ct.indexOf('charset=')
+                    if (charset_i != -1) {
+                        var charset = ct.slice(charset_i + 'charset='.length,
+                                               ct.length)
+                        console.log('using charset',charset)
+                    } else {
+                        var charset = default_charset
+                    }
+
+                    var bodydata = new TextDecoder(charset).decode(body)
+                    var bodyparams = {}
+                    var items = bodydata.split('&')
+                    for (var i=0; i<items.length; i++) {
+                        var kv = items[i].split('=')
+                        bodyparams[ decodeURIComponent(kv[0]) ] = decodeURIComponent(kv[1])
+                    }
+                    req.bodyparams = bodyparams
+                }
+            }
+            this.curRequest.body = body
+            this.onRequest(this.curRequest)
         },
         onRequest: function(request) {
             this.onRequestCallback(request)

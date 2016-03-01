@@ -1,4 +1,5 @@
 (function(){
+    _DEBUG = false
 
     function getEntryFile( entry, callback ) {
         // XXX if file is 0 bytes, and then write some data, it stays cached... which is bad...
@@ -189,7 +190,7 @@
                 }
 
                 function onreadsuccess(results) {
-                    console.log('onreadsuccess',results.length)
+                    //console.log('onreadsuccess',results.length)
                     if (results.length == 0) {
                         alldone.bind(this)(allresults)
                     } else {
@@ -199,7 +200,7 @@
                     }
                 }
 
-                console.log('readentries')
+                //console.log('readentries')
                 reader.readEntries( onreadsuccess.bind(this),
                                     onreaderr.bind(this))
             }
@@ -245,7 +246,9 @@
 
 
                     } else {
-                        console.log('large file, streaming mode!')
+                        if (_DEBUG) {
+                            console.log('large file, streaming mode!')
+                        }
                         this.fileOffset = 0
                         this.fileEndOffset = this.file.size - 1
                         this.responseLength = this.file.size

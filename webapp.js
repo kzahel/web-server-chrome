@@ -1,9 +1,12 @@
 (function(){
     var sockets = chrome.sockets
+    var _DEBUG = false
 
     function WebApplication(opts) {
         // need to support creating multiple WebApplication...
-        console.log('initialize webapp with opts',opts)
+        if (_DEBUG) {
+            console.log('initialize webapp with opts',opts)
+        }
         opts = opts || {}
         this.id = Math.random().toString()
         this.opts = opts
@@ -39,7 +42,9 @@
             var err = 'bad port: ' + this.port
             this.error(err)
         }
-        console.log('webapp created',this)
+        if (_DEBUG) {
+            console.log('webapp created',this)
+        }
     }
 
     WebApplication.prototype = {
@@ -47,7 +52,9 @@
             var fs = new WSC.FileSystem(entry)
             this.add_handler(['.*',WSC.DirectoryEntryHandler.bind(null, fs)])
             this.init_handlers()
-            console.log('setup handler for entry',entry)
+            if (_DEBUG) {
+                console.log('setup handler for entry',entry)
+            }
             if (this.opts.optBackground) { this.start() }
         },
         get_host: function() {
@@ -115,7 +122,9 @@
         },
         start: function() {
 	    this.lasterr = null
-            console.log('webapp attempt start with opts',this.opts)
+            if (_DEBUG) {
+                console.log('webapp attempt start with opts',this.opts)
+            }
             this.change()
             //if (this.lasterr) { return }
             if (this.starting || this.started) { return }
@@ -153,7 +162,7 @@
             }.bind(this));
         },
         onListen: function(result) {
-            console.log('onListen',result)
+            //console.log('onListen',result)
             this.starting = false
             var lasterr = chrome.runtime.lastError
             if (lasterr) {
@@ -180,7 +189,7 @@
             // set unpaused, etc
         },
         onAccept: function(acceptInfo) {
-            console.log('onAccept',acceptInfo,this.sockInfo)
+            //console.log('onAccept',acceptInfo,this.sockInfo)
             if (acceptInfo.socketId != this.sockInfo.socketId) { return }
             if (acceptInfo.socketId) {
                 //var stream = new IOStream(acceptInfo.socketId)
@@ -196,7 +205,7 @@
             }
         },
         onRequest: function(request) {
-            console.log(this.id, 'handle',request.method, request.uri)
+            console.log('Request',request.method, request.uri)
 
             if (this.opts.auth) {
                 var validAuth = false
@@ -279,7 +288,9 @@
             if (this.responseHeaders['transfer-encoding'] === 'chunked') {
                 // pass
             } else {
-                console.log(this.request.connection.stream.sockId,'response code',code, 'clen',this.responseLength)
+                if (_DEBUG) {
+                    console.log(this.request.connection.stream.sockId,'response code',code, 'clen',this.responseLength)
+                }
                 console.assert(typeof this.responseLength == 'number')
                 lines.push('content-length: ' + this.responseLength)
             }
@@ -330,6 +341,7 @@ Changes with nginx 0.7.9                                         12 Aug 2008
         },
         write: function(data, code, opt_finish) {
             if (typeof data == "string") {
+                // using .write directly can be dumb/dangerous. Better to pass explicit array buffers
                 console.warn('putting strings into write is not well tested with multi byte characters')
                 data = new TextEncoder('utf-8').encode(data).buffer
             }
@@ -355,10 +367,14 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             this.request.connection.curRequest = null
             if (this.request.isKeepAlive() && ! this.request.connection.stream.remoteclosed) {
                 this.request.connection.tryRead()
-                console.log('webapp.finish(keepalive)')
+                if (_DEBUG) {
+                    console.log('webapp.finish(keepalive)')
+                }
             } else {
                 this.request.connection.close()
-                console.log('webapp.finish(close)')
+                if (_DEBUG) {
+                    console.log('webapp.finish(close)')
+                }
             }
         }
     })

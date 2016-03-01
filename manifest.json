@@ -4,7 +4,7 @@
     "short_name": "Web Server",
     "description": "A Web Server for Chrome, serves web pages from a local folder over the network, using HTTP. Runs offline.",
     "author": "Kyle Graehl",
-    "version": "0.2.9",
+    "version": "0.3.0",
     "manifest_version": 2,
     "offline_enabled": true,
     "minimum_chrome_version": "33",

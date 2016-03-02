@@ -12,7 +12,6 @@
     chrome.sockets.tcp.onReceive.addListener( onTCPReceive )
     chrome.sockets.tcp.onReceiveError.addListener( onTCPReceive )
 
-
     var sockets = chrome.sockets
     function IOStream(sockId) {
         this.sockId = sockId

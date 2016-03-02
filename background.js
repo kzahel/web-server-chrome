@@ -8,11 +8,11 @@ function onchoosefolder(entry) {
         console.log('set retainstr!')
         var webapp = get_webapp()
         if (webapp) {
-            WSC.DirectoryEntryHandler.fs = new WSC.FileSystem(entry)
-            if (webapp.handlers.length == 0) {
-                webapp.add_handler(['.*',WSC.DirectoryEntryHandler.bind(null,fs)])
-                webapp.init_handlers()
-            }
+            var fs = new WSC.FileSystem(entry)
+            webapp.fs = fs
+            webapp.handlers = []
+            webapp.add_handler(['.*',WSC.DirectoryEntryHandler.bind(null,fs)])
+            webapp.init_handlers()
             webapp.change()
         }
         // reload UI, restart server... etc

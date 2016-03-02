@@ -34,6 +34,7 @@
         this.stopped = false
         this.starting = false
         this.started = false
+        this.fs = null
         this.streams = {}
         this.on_status_change = null
         this.interfaces = []
@@ -50,6 +51,7 @@
     WebApplication.prototype = {
         on_entry: function(entry) {
             var fs = new WSC.FileSystem(entry)
+            this.fs = fs
             this.add_handler(['.*',WSC.DirectoryEntryHandler.bind(null, fs)])
             this.init_handlers()
             if (_DEBUG) {

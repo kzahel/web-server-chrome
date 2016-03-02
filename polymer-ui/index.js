@@ -34,9 +34,9 @@ function get_status() {
         starting: webapp.starting,
         started: webapp.started,
         lasterr: webapp.lasterr,
-        folder: bg.WSC.DirectoryEntryHandler.fs &&
-            bg.WSC.DirectoryEntryHandler.fs.entry &&
-            bg.WSC.DirectoryEntryHandler.fs.entry.fullPath
+        folder: webapp.fs &&
+            webapp.fs.entry &&
+            webapp.fs.entry.fullPath
     }
 }
 

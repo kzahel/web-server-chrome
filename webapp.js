@@ -33,6 +33,7 @@
         this.lasterr = null
         this.stopped = false
         this.starting = false
+        this.start_callback = null
         this.started = false
         this.fs = null
         this.streams = {}
@@ -82,10 +83,22 @@
         change: function() {
             if (this.on_status_change) { this.on_status_change() }
         },
+        success: function(data) {
+            var callback = this.start_callback
+            this.start_callback = null
+            if (callback) {
+                callback({success:true, data:data})
+            }
+        },
         error: function(data) {
+            var callback = this.start_callback
+            this.start_callback = null
             console.error(data)
             this.lasterr = data
             this.change()
+            if (callback) {
+                callback({error:data})
+            }
         },
         stop: function(reason) {
             if (! (this.started || this.starting)) {
@@ -122,7 +135,31 @@
             console.assert(stream.sockId)
             delete this.streams[stream.sockId]
         },
-        start: function() {
+        start: function(callback, clear_urls) {
+            if (clear_urls === undefined) { clear_urls = true }
+            if (clear_urls) {
+                this.urls = []
+                this.urls.push({url:'http://127.0.0.1:' + this.port})
+            }
+
+            if (this.interfaces.length == 0 && this.opts.optAllInterfaces) {
+                // fetch interfaces and start again later...
+                chrome.system.network.getNetworkInterfaces( function(result) {
+                    console.log('network interfaces',result)
+                    if (result) {
+                        for (var i=0; i<result.length; i++) {
+                            if (result[i].prefixLength < 64) {
+                                this.urls.push({url:'http://'+result[i].address+':' + this.port})
+                                this.interfaces.push(result[i])
+                                console.log('found interface address: ' + result[i].address)
+                            }
+                        }
+                    }
+                    this.start(callback, false)
+                }.bind(this))
+                return
+            }
+            this.start_callback = callback
 	    this.lasterr = null
             if (_DEBUG) {
                 console.log('webapp attempt start with opts',this.opts)
@@ -133,23 +170,6 @@
             this.stopped = false
             this.starting = true
             this.change()
-
-            this.urls = []
-            this.urls.push({url:'http://127.0.0.1:' + this.port})
-
-            if (this.opts.optAllInterfaces) {
-                chrome.system.network.getNetworkInterfaces( function(result) {
-                    console.log('network interfaces',result)
-                    if (result) {
-                        for (var i=0; i<result.length; i++) {
-                            if (result[i].prefixLength < 64) {
-                                this.urls.push({url:'http://'+result[i].address+':' + this.port})
-                                console.log('found interface address: ' + result[i].address)
-                            }
-                        }
-                    }
-                }.bind(this))
-            }
             var host = this.get_host()
             sockets.tcpServer.create({name:"listenSocket"},function(sockInfo) {
                 this.sockInfo = sockInfo
@@ -178,6 +198,7 @@
                 console.log('Listening on','http://'+ host + ':' + this.port)
                 this.bindAcceptCallbacks()
                 this.change()
+                this.success({urls:this.urls})
             }
         },
         bindAcceptCallbacks: function() {

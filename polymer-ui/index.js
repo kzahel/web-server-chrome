@@ -147,6 +147,7 @@ function create_polymer_elements() {
         interfaceChange: function(val) {
             console.log('persist setting interface')
             webapp.opts.optAllInterfaces = this.optAllInterfaces
+            webapp.interfaces = []
             chrome.storage.local.set({'optAllInterfaces':this.optAllInterfaces})
         },
         autoStartChange: function(val) {

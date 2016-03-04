@@ -173,7 +173,8 @@ function stop_app() {
 
 function window_closed() {
     if (window.app) {
-        if (app.opts && app.opts.optBackground) { 
+        if (app.opts && app.opts.optBackground) {
+            chrome.app.window.create("hidden.html",{id:'hidden',hidden:true})
             console.log('not stopping server, backgrounding mode on');
             return 
         }

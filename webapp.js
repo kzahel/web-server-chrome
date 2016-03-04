@@ -84,6 +84,9 @@
             if (this.on_status_change) { this.on_status_change() }
         },
         success: function(data) {
+            if (this.opts.optStayAwake) {
+                chrome.power.requestKeepAwake('system') // TODO: support multiple WSC instances
+            }
             var callback = this.start_callback
             this.start_callback = null
             if (callback) {
@@ -91,6 +94,7 @@
             }
         },
         error: function(data) {
+            chrome.power.releaseKeepAwake()
             var callback = this.start_callback
             this.start_callback = null
             console.error(data)
@@ -101,6 +105,10 @@
             }
         },
         stop: function(reason) {
+            chrome.power.releaseKeepAwake()
+            // TODO: remove hidden.html ensureFirewallOpen
+            // also - support multiple instances.
+            
             if (! (this.started || this.starting)) {
                 this.change()
                 return
@@ -183,7 +191,14 @@
                 }
             }.bind(this));
         },
+        ensureFirewallOpen: function() {
+            // on chromeOS, if there are no foreground windows,
+            if (this.opts.optAllInterfaces && chrome.app.window.getAll().length == 0) {
+                chrome.app.window.create("hidden.html",{id:'hidden',hidden:true})
+            }
+        },
         onListen: function(result) {
+            this.ensureFirewallOpen()
             //console.log('onListen',result)
             this.starting = false
             var lasterr = chrome.runtime.lastError

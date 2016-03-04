@@ -187,4 +187,12 @@ WSC.str2ab = str2ab
 
 */
 
+function parseUri(str) {
+    return new URL(str)
+}
+
+    
+WSC.parseUri = parseUri
+
+    
 })();

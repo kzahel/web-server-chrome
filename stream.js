@@ -1,6 +1,7 @@
 (function() {
 
     var peerSockMap = {}
+    WSC.peerSockMap = peerSockMap
 
     function onTCPReceive(info) {
         var sockId = info.socketId

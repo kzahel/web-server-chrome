@@ -16,6 +16,8 @@
     "permissions": [
         "alarms",
         "unlimitedStorage",
+        "power",
+        "background",
         "storage",
         "notifications",
 	"system.network",

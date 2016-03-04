@@ -62,7 +62,11 @@
 
             // strip '/' off end of path
 
-            this.fs.getByPath(this.request.path, this.onEntry.bind(this))
+            if (this.fs.isFile) {
+                this.onEntry(this.fs)
+            } else {
+                this.fs.getByPath(this.request.path, this.onEntry.bind(this))
+            }
         },
         doReadChunk: function() {
             //console.log(this.request.connection.stream.sockId, 'doReadChunk', this.fileOffset)

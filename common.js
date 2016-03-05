@@ -136,10 +136,12 @@ WSC.recursiveGetEntry = function(filesystem, path, callback) {
 
 WSC.parseHeaders = function(lines) {
     var headers = {}
+    var line
     // TODO - multi line headers?
     for (var i=0;i<lines.length;i++) {
-        var l = lines[i].split(':')
-        headers[l[0].toLowerCase()] = l[1].trim()
+        line = lines[i]
+        var j = line.indexOf(':')
+        headers[ line.slice(0,j).toLowerCase() ] = line.slice(j+1,line.length).trim()
     }
     return headers
 }

@@ -23,11 +23,18 @@
         })
     }
 
-    function ProxyHandler(request) {
+    function ProxyHandler(validator, request) {
         WSC.BaseHandler.prototype.constructor.call(this)
+        this.validator = validator
     }
     _.extend(ProxyHandler.prototype, {
         get: function() {
+            if (! this.validator(this.request)) {
+                this.responseLength = 0
+                this.writeHeaders(403)
+                this.finish()
+                return
+            }
             console.log('proxyhandler get',this.request)
             var url = this.request.arguments.url
             var xhr = new WSC.ChromeSocketXMLHttpRequest

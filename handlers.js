@@ -23,7 +23,29 @@
         })
     }
 
-
+    function ProxyHandler(request) {
+        WSC.BaseHandler.prototype.constructor.call(this)
+    }
+    _.extend(ProxyHandler.prototype, {
+        get: function() {
+            console.log('proxyhandler get',this.request)
+            var url = this.request.arguments.url
+            var xhr = new WSC.ChromeSocketXMLHttpRequest
+            xhr.open("GET", url)
+            xhr.onload = this.onfetched.bind(this)
+            xhr.send()
+        },
+        onfetched: function(evt) {
+            for (var header in evt.target.headers) {
+                this.setHeader(header, evt.target.headers[header])
+            }
+            this.responseLength = evt.target.response.byteLength
+            this.writeHeaders(evt.target.code)
+            this.write(evt.target.response)
+            this.finish()
+        }
+    }, WSC.BaseHandler.prototype)
+    WSC.ProxyHandler = ProxyHandler
 
     function DirectoryEntryHandler(fs, request) {
         WSC.BaseHandler.prototype.constructor.call(this)

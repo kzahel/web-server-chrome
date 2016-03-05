@@ -50,6 +50,16 @@
     }
 
     WebApplication.prototype = {
+        get_info: function() {
+            return {
+                interfaces: this.interfaces,
+                urls: this.urls,
+                opts: this.opts,
+                started: this.started,
+                stopped: this.stopped,
+                lasterr: this.lasterr
+            }
+        },
         on_entry: function(entry) {
             var fs = new WSC.FileSystem(entry)
             this.fs = fs
@@ -90,7 +100,7 @@
             var callback = this.start_callback
             this.start_callback = null
             if (callback) {
-                callback({success:true, data:data})
+                callback(this.get_info())
             }
         },
         error: function(data) {

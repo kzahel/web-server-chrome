@@ -1,152 +1,153 @@
 <!doctype html>
 <html lang="">
 
-<head>
-  <link rel="import" href="elements/elements.html">
-  <link rel="stylesheet" href="styles.css">
-</head>
+  <head>
+    <link rel="import" href="elements/elements.html">
+    <link rel="stylesheet" href="styles.css">
+  </head>
 
-<body>
+  <body>
 
-<body class="fullbleed layout vertical">
-  <paper-header-panel>
+  <body class="fullbleed layout vertical">
+    <paper-header-panel><!-- is content invisible? paper header panel has some problems.... make it end right after the toolbar...-->
 
-    <paper-toolbar>
-      <!--paper-icon-button icon="menu" on-tap="{{menuAction}}"></paper-icon-button-->
-      <div class="title">Web Server for Chrome</div>
-      <paper-icon-button id="help-icon" icon="help-outline"></paper-icon-button>
-      <img src="../images/200ok-64.png" srcset="../images/200ok-128.png 2x" />
-    </paper-toolbar>
-  </paper-header-panel>
-
-<div class="content" style="margin-left:2em; margin-right:2em; margin-bottom:0.5em; margin-top:0.5em">
-
-<div id="main-loading">
-<paper-spinner active></paper-spinner> Loading...
-</div>
-<div id="main-content" style="display:none">
-</div>
+      <paper-toolbar>
+        <!--paper-icon-button icon="menu" on-tap="{{menuAction}}"></paper-icon-button-->
+        <div class="title">Web Server for Chrome</div>
+        <paper-icon-button id="help-icon" icon="help-outline"></paper-icon-button>
+        <img src="../images/200ok-64.png" srcset="../images/200ok-128.png 2x" />
+      </paper-toolbar>
 
 
-<paper-card style="width:100%">
-  <div class="card-content">
+      <div class="content" style="margin-left:2em; margin-right:2em; margin-bottom:0.5em; margin-top:0.5em">
 
-<h1 id="polymerWarning" style="display:none">ERROR: Polymer library not found. You need to use npm/bower in the polymer-ui folder...</h1>
-
-<p>Please <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb/reviews">leave a review</a> to help others find this software.</p>
-  </div>
-  </paper-card>
-
-
-<dom-module id="wsc-controls">
-<template>
-<paper-card style="width:100%">
-<div class="card-actions" style="padding-top:1em">
-    <paper-button on-click="onChooseFolder" id="choose-folder-button" raised>Choose Folder</paper-button>Current: <span id="current-folder">{{ displayFolder(folder) }}</span>
-    <div>
-      <paper-toggle-button active$="[[started]]" disabled$="[[starting]]" on-click="onStartStop" id="start-stop"></paper-toggle-button><span style="padding-left:8px">Web Server: </span><span id="status-text">{{ state }}</span>
-    </div>
-
-    <!--paper-spinner active hidden$="[[!starting]]" id="status-spinner"></paper-spinner-->
-<h3>Web Server URL(s)</h3>
-
-<ul>
-  <template is="dom-repeat" items="{{interfaces}}">
-    <li><a href="{{item.url}}" target="_blank">{{item.url}}</a> </li>
-  </template>
-
-</ul>
-
-</div>
-</paper-card>
-</template>
-</dom-module>
+        <div id="main-loading">
+          <paper-spinner active></paper-spinner> Loading...
+        </div>
+        <div id="main-content" style="display:none">
+        </div>
 
 
+        <paper-card style="width:100%">
+          <div class="card-content">
+
+            <h1 id="polymerWarning" style="display:none">ERROR: Polymer library not found. You need to use npm/bower in the polymer-ui folder...</h1>
+
+            <p>Please <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb/reviews">leave a review</a> to help others find this software.</p>
+          </div>
+        </paper-card>
 
 
-<wsc-controls></wsc-controls>
+        <dom-module id="wsc-controls">
+          <template>
+            <paper-card style="width:100%">
+              <div class="card-actions" style="padding-top:1em">
+                <paper-button on-click="onChooseFolder" id="choose-folder-button" raised>Choose Folder</paper-button>Current: <span id="current-folder">{{ displayFolder(folder) }}</span>
+                <div>
+                  <paper-toggle-button active$="[[started]]" disabled$="[[starting]]" on-click="onStartStop" id="start-stop"></paper-toggle-button><span style="padding-left:8px">Web Server: </span><span id="status-text">{{ state }}</span>
+                </div>
 
-<dom-module id="wsc-options">
-<template>
-<paper-card style="width:100%">
+                <!--paper-spinner active hidden$="[[!starting]]" id="status-spinner"></paper-spinner-->
+                <h3>Web Server URL(s)</h3>
 
-  <h4>Options (needs restart)</h4>
+                <ul>
+                  <template is="dom-repeat" items="{{interfaces}}">
+                    <li><a href="{{item.url}}" target="_blank">{{item.url}}</a> </li>
+                  </template>
 
-  <div>
-    <paper-checkbox checked="{{optBackground}}">Run in background</paper-checkbox>
-  </div>
-  <div>
-    <paper-checkbox disabled="{{!optBackground}}" checked="{{optAutoStart}}">Start automatically in background</paper-checkbox>
-  </div>
-  <div>
-    <paper-checkbox checked="{{optAllInterfaces}}" >Accessible to other computers</paper-checkbox>
-  </div>
-  <div>
-    <paper-checkbox checked="{{optRenderIndex}}" >Automatically show index.html</paper-checkbox>
-  </div>
+                </ul>
 
-  <div>
-    <paper-input is="iron-input" max="65535" min="1024"
-                 style="width:80px"
-                 label="Enter Port"
-                 auto-validate pattern="[0-9]*" error-message="Number between 1024 and 65535!"
-                 on-change="onPortChange"
-                 value="{{port}}">
-    </paper-input>
-  </div>
-</paper-card>
-</template>
-
-</dom-module>
-
-<wsc-options id="options"></wsc-options>
+              </div>
+            </paper-card>
+          </template>
+        </dom-module>
 
 
 
 
+        <wsc-controls></wsc-controls>
 
-<paper-card style="width:100%">
-  <div class="card-content">
+        <dom-module id="wsc-options">
+          <template>
+            <paper-card style="width:100%">
 
-<p>Need to <a target="_blank" href="https://github.com/kzahel/web-server-chrome/issues">Report a problem</a>?
-Open source, MIT license.</p>
+              <h4>Options (needs restart)</h4>
 
-  </div>
-</paper-card>
+              <div>
+                <paper-checkbox checked="{{optBackground}}">Run in background</paper-checkbox>
+              </div>
+              <div>
+                <paper-checkbox disabled="{{!optBackground}}" checked="{{optAutoStart}}">Start automatically in background</paper-checkbox>
+              </div>
+              <div>
+                <paper-checkbox checked="{{optAllInterfaces}}" >Accessible to other computers</paper-checkbox>
+              </div>
+              <div>
+                <paper-checkbox checked="{{optRenderIndex}}" >Automatically show index.html</paper-checkbox>
+              </div>
 
+              <div>
+                <paper-input is="iron-input" max="65535" min="1024"
+                             style="width:80px"
+                             label="Enter Port"
+                             auto-validate pattern="[0-9]*" error-message="Number between 1024 and 65535!"
+                             on-change="onPortChange"
+                             value="{{port}}">
+                </paper-input>
+              </div>
+            </paper-card>
+          </template>
 
+        </dom-module>
 
-    </div><!-- content -->
-
-
-
-<!-- onboard dialog -->
-    <paper-dialog id="animated" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
-      <h2>Welcome</h2>
-      <p>Thanks for installing Web Server for Chrome.</p>
-
-      <p>To get started, choose the folder to serve</p>
-
-    </paper-dialog>
-<!-- end dialog -->
-
-<!-- help dialog -->
-    <paper-dialog id="help-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
-      <h2>Help</h2>
-
-      <p>This is a web server. Pretty self explanitory, right?</p>
-<p>Please <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb/reviews">leave a nice review</a> to help others find this software.</p>
-
-<p>Need to <a target="_blank" href="https://github.com/kzahel/web-server-chrome/issues">Report a problem</a>?
-Open source, MIT license.</p>
-      
-
-    </paper-dialog>
-<!-- end dialog -->
+        <wsc-options id="options"></wsc-options>
 
 
-<script src="index.js"></script>
-</body>
+
+
+
+        <paper-card style="width:100%">
+          <div class="card-content">
+
+            <p>Need to <a target="_blank" href="https://github.com/kzahel/web-server-chrome/issues">Report a problem</a>?
+              Open source, MIT license.</p>
+
+          </div>
+        </paper-card>
+
+
+
+      </div><!-- content -->
+
+
+
+      <!-- onboard dialog -->
+      <paper-dialog id="animated" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+        <h2>Welcome</h2>
+        <p>Thanks for installing Web Server for Chrome.</p>
+
+        <p>To get started, choose the folder to serve</p>
+
+      </paper-dialog>
+      <!-- end dialog -->
+
+      <!-- help dialog -->
+      <paper-dialog id="help-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+        <h2>Help</h2>
+
+        <p>This is a web server. Pretty self explanitory, right?</p>
+        <p>Please <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb/reviews">leave a nice review</a> to help others find this software.</p>
+
+        <p>Need to <a target="_blank" href="https://github.com/kzahel/web-server-chrome/issues">Report a problem</a>?
+          Open source, MIT license.</p>
+        
+
+      </paper-dialog>
+      <!-- end dialog -->
+
+    </paper-header-panel>
+    <script src="index.js"></script>
+
+  </body>
 
 </html>

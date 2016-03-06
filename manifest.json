@@ -16,10 +16,10 @@
     "permissions": [
         "alarms",
         "unlimitedStorage",
-        "power",
-        "background",
         "storage",
         "notifications",
+        "power",
+        "background",
 	"system.network",
         {"fileSystem":["write","directory","retainEntries"]}
     ],

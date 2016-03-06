@@ -66,6 +66,9 @@ function setup_events() {
 }
 
 function create_polymer_elements() {
+    if (! window.Polymer) {
+        document.getElementById('polymerWarning').style.display = 'block'
+    }
     Polymer({
         is: 'wsc-controls',
         properties: {

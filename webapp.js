@@ -18,7 +18,6 @@
             chrome.fileSystem.restoreEntry( opts.retainstr, function(entry) {
                 if (entry) {
                     this.on_entry(entry)
-
                 } else {
                     console.error('error setting up retained entry')
                 }
@@ -83,7 +82,7 @@
             if (_DEBUG) {
                 console.log('setup handler for entry',entry)
             }
-            if (this.opts.optBackground) { this.start() }
+            //if (this.opts.optBackground) { this.start() }
         },
         get_host: function() {
             var host
@@ -168,6 +167,8 @@
             delete this.streams[stream.sockId]
         },
         start: function(callback, clear_urls) {
+            console.log('webapp.start',callback,clear_urls)
+            
             this.start_callback = callback
             if (clear_urls === undefined) { clear_urls = true }
             if (clear_urls) {

@@ -167,7 +167,7 @@ function create_polymer_elements() {
         },
         optRenderIndexChange: function(val) {
             console.log('persist setting renderIndex')
-            webapp.opts.optRnderIndex = this.optRenderIndex
+            webapp.opts.optRenderIndex = this.optRenderIndex
             chrome.storage.local.set({'optRenderIndex':this.optRenderIndex})
         },
         onPortChange: function(val) {

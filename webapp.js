@@ -60,6 +60,19 @@
                 lasterr: this.lasterr
             }
         },
+        updatedSleepSetting() {
+            if (! this.started) {
+                chrome.power.releaseKeepAwake()
+                return
+            }
+            if (this.opts.optPreventSleep) {
+                console.log('requesting keep awake system')
+                chrome.power.requestKeepAwake(chrome.power.Level.SYSTEM)
+            } else {
+                console.log('releasing keep awake system')
+                chrome.power.releaseKeepAwake()
+            }
+        },
         on_entry: function(entry) {
             var fs = new WSC.FileSystem(entry)
             this.fs = fs
@@ -94,9 +107,7 @@
             if (this.on_status_change) { this.on_status_change() }
         },
         success: function(data) {
-            if (this.opts.optStayAwake) {
-                chrome.power.requestKeepAwake('system') // TODO: support multiple WSC instances
-            }
+            this.updatedSleepSetting()
             var callback = this.start_callback
             this.start_callback = null
             if (callback) {

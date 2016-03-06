@@ -12,7 +12,6 @@ function ui_ready() {
         }
     }
 }
-
 function settings_ready(d) {
     window.localOptions = d
     console.log('fetched local settings',d)
@@ -131,6 +130,11 @@ function create_polymer_elements() {
                 observer: 'interfaceChange',
                 value: localOptions['optAllInterfaces']
             },
+            optPreventSleep: {
+                type: Boolean,
+                observer: 'preventSleepChange',
+                value: localOptions['optPreventSleep']
+            },
             optBackground: {
                 type: Boolean,
                 observer: 'backgroundChange',
@@ -152,6 +156,15 @@ function create_polymer_elements() {
             webapp.opts.optAllInterfaces = this.optAllInterfaces
             webapp.interfaces = []
             chrome.storage.local.set({'optAllInterfaces':this.optAllInterfaces})
+        },
+        preventSleepChange: function(val) {
+            /*
+              maybe make power an optional permission? only, it is automatically granted without user gesture... 
+            */
+            console.log('persist setting prevent sleep')
+            webapp.opts.optPreventSleep = this.optPreventSleep
+            webapp.updatedSleepSetting()
+            chrome.storage.local.set({'optPreventSleep':this.optPreventSleep})
         },
         autoStartChange: function(val) {
             console.log('persist setting autostart')

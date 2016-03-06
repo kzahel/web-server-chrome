@@ -9,6 +9,7 @@ if (navigator.userAgent.match('OS X')) {
 } else {
     OS = "Chrome"
 }
+
 function onchoosefolder(entry) {
     if (entry) {
         var retainstr = chrome.fileSystem.retainEntry(entry)
@@ -49,6 +50,9 @@ chrome.alarms.onAlarm.addListener( onAlarm )
 function backgroundSettingChange( opts ) {
     if (opts.optBackground !== undefined) {
         localOptions.optBackground = opts.optBackground
+    }
+    if (opts.optPreventSleep !== undefined) {
+        localOptions.optPreventSleep = opts.optPreventSleep
     }
     if (opts.optBackground !== undefined) {
         localOptions.optAutoStart = opts.optAutoStart

@@ -37,6 +37,11 @@ function sendWSCAwakeMessage() {
     if (localOptions.optBackground && localOptions.optAutoStart) {
         console.log('background && autostart. wake up!')
         get_webapp(window.localOptions)
+        if (app.started || app.starting || app.starting_interfaces) {
+            console.log('actually, dont wake up, im already started/starting')
+        } else {
+            app.start()
+        }
     }
 }
 function onAlarm( alarm ) {
@@ -90,6 +95,8 @@ function onAllAlarms( alarms ) {
 
 chrome.runtime.onStartup.addListener( function(evt) {
     // should fire when profile loads up...
+
+    // (needs "background" permission)
     window.ONSTARTUP_FIRED = true
     console.log('onStartup',evt)
 })
@@ -136,6 +143,7 @@ chrome.runtime.onSuspendCanceled.addListener( function(evt) {
 function launch(launchData) {
     launchData = launchData || {}
     if (launchData.source == 'reload') { console.log('app was reloaded'); return }
+    if (launchData.source == 'restart') { console.log('chrome restarted'); return }
 
     console.log('onLaunched with launchdata',launchData)
 
@@ -163,15 +171,11 @@ chrome.app.runtime.onLaunched.addListener(launch);
 
 function get_webapp(opts) {
     if (! window.app) {
-        window.app = create_app(opts)
+        window.app = new WSC.WebApplication(opts)
     }
-    return app
+    return window.app
 }
 
-function create_app(opts) {
-    var app = new WSC.WebApplication(opts)
-    return app
-}
 
 function get_status() {
     // gets current status of web server

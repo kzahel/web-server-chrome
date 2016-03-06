@@ -33,12 +33,14 @@
         this.lasterr = null
         this.stopped = false
         this.starting = false
+        this.starting_interfaces = false
         this.start_callback = null
         this.started = false
         this.fs = null
         this.streams = {}
         this.on_status_change = null
         this.interfaces = []
+        this.interface_retry_count = 0
         this.urls = []
         if (this.port > 65535 || this.port < 1024) {
             var err = 'bad port: ' + this.port
@@ -116,6 +118,7 @@
         },
         error: function(data) {
             chrome.power.releaseKeepAwake()
+            this.interface_retry_count=0
             var callback = this.start_callback
             this.start_callback = null
             console.error(data)
@@ -165,6 +168,7 @@
             delete this.streams[stream.sockId]
         },
         start: function(callback, clear_urls) {
+            this.start_callback = callback
             if (clear_urls === undefined) { clear_urls = true }
             if (clear_urls) {
                 this.urls = []
@@ -172,6 +176,14 @@
             }
 
             if (this.interfaces.length == 0 && this.opts.optAllInterfaces) {
+                this.starting_interfaces = true
+                if (this.interface_retry_count > 10) {
+                    // 10 seconds and still no interface, just start...
+                    this.error('could not find network interface. try turning off accessible to other computers option')
+                    this.starting_interfaces = false
+                    return
+                }
+                
                 // fetch interfaces and start again later...
                 chrome.system.network.getNetworkInterfaces( function(result) {
                     console.log('network interfaces',result)
@@ -184,18 +196,32 @@
                             }
                         }
                     }
-                    this.start(callback, false)
+                    // XXX interfaces can be length 0! if we just
+                    // booted and we have no interfaces ready yet (eg
+                    // not connected to wifi)
+
+                    if (this.interfaces.length == 0) {
+                        this.interface_retry_count++
+                        setTimeout( function() {
+                            this.start(callback, false)
+                        }.bind(this), 1000 )
+                    } else {
+                        this.starting_interfaces = false
+                        this.start(callback, false)
+                    }
                 }.bind(this))
                 return
             }
-            this.start_callback = callback
 	    this.lasterr = null
             if (_DEBUG) {
                 console.log('webapp attempt start with opts',this.opts)
             }
             this.change()
             //if (this.lasterr) { return }
-            if (this.starting || this.started) { return }
+            if (this.starting || this.started) { 
+                this.error("already starting or started")
+                return 
+            }
             this.stopped = false
             this.starting = true
             this.change()

@@ -205,7 +205,7 @@
                 }
 
                 function alldone(results) {
-                    if (this.app.opts.renderIndex) {
+                    if (this.app.opts.optRenderIndex) {
                         for (var i=0; i<results.length; i++) {
                             if (results[i].name == 'index.html') {
                                 this.setHeader('content-type','text/html; charset=utf-8')

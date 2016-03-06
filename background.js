@@ -1,5 +1,14 @@
+console.log('background.js')
 var ALARMID = "check_wsc_periodic"
 var WSCID = "ofhbbkphhbklhfoeikjpcbhemlocgigb"
+var OS
+if (navigator.userAgent.match('OS X')) {
+    OS = 'Mac'
+} else if (navigator.userAgent.match("Windows")) {
+    OS = "Win"
+} else {
+    OS = "Chrome"
+}
 function onchoosefolder(entry) {
     if (entry) {
         var retainstr = chrome.fileSystem.retainEntry(entry)
@@ -120,7 +129,10 @@ chrome.runtime.onSuspendCanceled.addListener( function(evt) {
     console.warn('onSuspendCanceled')
 })
 
-chrome.app.runtime.onLaunched.addListener(function(launchData) {
+function launch(launchData) {
+    launchData = launchData || {}
+    if (launchData.source == 'reload') { console.log('app was reloaded'); return }
+
     console.log('onLaunched with launchdata',launchData)
 
     var info = {type:'onLaunched',
@@ -133,12 +145,17 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
                              function(mainWindow) {
                                  window.mainWindow = mainWindow;
                                  mainWindow.onClosed.addListener( window_closed )
+                                 var hiddenwin = chrome.app.window.get('hidden')
+                                 if (hiddenwin) { hiddenwin.close() }
+                                 
 			     });
     //console.log('launched')
 
     if (window.app) { console.log('already have webapp',app); return }
 
-});
+}
+
+chrome.app.runtime.onLaunched.addListener(launch);
 
 function get_webapp(opts) {
     if (! window.app) {
@@ -171,10 +188,57 @@ function stop_app() {
     if (window.app) { app.stop() }
 }
 
-function window_closed() {
+function hidden_click_configure() {
+    // user clicked on the help info thing in the hidden page.
+    launch({source:"hidden_window"})
+}
+
+function create_hidden() {
+    if (OS != 'Chrome') { return }
+
+    if (app.opts && app.opts.optBackground && app.opts.optAllInterfaces) {
+        console.log('creating hidden window')
+        var W = 300
+        var H = 120
+        function oncreated(win) {
+            // can also set width/top etc properties directly
+            win.outerBounds.setPosition(screen.width - W, screen.availHeight - H - 60)
+            win.outerBounds.setSize(W, H)
+            win.show()
+            win.minimize()
+            win.onClosed.addListener( function() {
+                // depends on WHY we are closed...
+                var wins = chrome.app.window.getAll()
+                if (app.opts && app.opts.optBackground) {
+
+                    if ( (wins.length == 1 && win.id == 'hidden') ||
+                         wins.length == 0) {
+                        setTimeout( function() {
+                            create_hidden()
+                        }, 1000 )
+                    }
+                }
+            })
+        }
+        var opts = {id:'hidden',
+                    hidden:true,
+
+                   }
+
+        chrome.app.window.create("hidden.html",
+                                 opts,
+                                 oncreated)
+    }
+}
+
+function window_closed(win) {
+    console.log('window closed',win)
     if (window.app) {
         if (app.opts && app.opts.optBackground) {
-            chrome.app.window.create("hidden.html",{id:'hidden',hidden:true})
+            setTimeout( function() {
+                create_hidden()
+            }, 1)
+
             console.log('not stopping server, backgrounding mode on');
             return 
         }
@@ -190,4 +254,4 @@ function restart(port) {
         app.start();
     }
 }
-function reload() { chrome.runtime.reload() }
+window.reload = chrome.runtime.reload

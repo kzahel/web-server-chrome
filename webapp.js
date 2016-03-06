@@ -204,7 +204,9 @@
         ensureFirewallOpen: function() {
             // on chromeOS, if there are no foreground windows,
             if (this.opts.optAllInterfaces && chrome.app.window.getAll().length == 0) {
-                chrome.app.window.create("hidden.html",{id:'hidden',hidden:true})
+                if (chrome.app.window.getAll().length == 0) {
+                    create_hidden()
+                }
             }
         },
         onListen: function(result) {

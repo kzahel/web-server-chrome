@@ -37,6 +37,7 @@
         this.started = false
         this.fs = null
         this.streams = {}
+        //this.actives = {} // maybe store all active requests here, for debugging purposes? eh?
         this.on_status_change = null
         this.interfaces = []
         this.interface_retry_count = 0
@@ -239,11 +240,31 @@
                 }
             }.bind(this));
         },
+        refreshNetworkInterfaces: function() {
+            // want to call this if we switch networks. maybe better to just stop/start actually...
+            this.urls = []
+            this.urls.push({url:'http://127.0.0.1:' + this.port})
+            this.interfaces = []
+            chrome.system.network.getNetworkInterfaces( function(result) {
+                console.log('refreshed network interfaces',result)
+                if (result) {
+                    for (var i=0; i<result.length; i++) {
+                        if (result[i].prefixLength < 64) {
+                            this.urls.push({url:'http://'+result[i].address+':' + this.port})
+                            this.interfaces.push(result[i])
+                            console.log('found interface address: ' + result[i].address)
+                        }
+                    }
+                }
+            }.bind(this) )
+        },
         ensureFirewallOpen: function() {
             // on chromeOS, if there are no foreground windows,
             if (this.opts.optAllInterfaces && chrome.app.window.getAll().length == 0) {
                 if (chrome.app.window.getAll().length == 0) {
-                    create_hidden()
+                    if (window.create_hidden) {
+                        create_hidden() // only on chrome OS
+                    }
                 }
             }
         },
@@ -330,6 +351,11 @@
                     requestHandler.app = this
                     requestHandler.request = request
                     var handlerMethod = requestHandler[request.method.toLowerCase()]
+                    var preHandlerMethod = requestHandler['before_' + request.method.toLowerCase()]
+                    if (preHandlerMethod) {
+                        preHandlerMethod.apply(requestHandler, reresult.slice(1))
+                        return
+                    }
                     if (handlerMethod) {
                         handlerMethod.apply(requestHandler, reresult.slice(1))
                         return

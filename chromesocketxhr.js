@@ -23,6 +23,7 @@
 
     function ChromeSocketXMLHttpRequest() {
         this.onload = null
+        this._finished = false
         this.onerror = null
         this.opts = null
 
@@ -71,17 +72,19 @@
         createRequestHeaders: function() {
             var lines = []
             var headers = {'Connection': 'close',
-                           'Accept-Encoding': 'identity', // servers will send us chunked encoding even if we dont want it, bastards
+                           //'Accept-Encoding': 'identity', // servers will send us chunked encoding even if we dont want it, bastards
+                           'Accept-Encoding': 'identity;q=1.0 *;q=0', // servers will send us chunked encoding even if we dont want it, bastards
                            //                       'User-Agent': 'uTorrent/330B(30235)(server)(30235)', // setRequestHeader /extra header is doing this
                            'Host': this.uri.host}
             _.extend(headers, this.extraHeaders)
             if (this.opts.method == 'GET') {
-                headers['Content-Length'] == '0'
+//                headers['Content-Length'] == '0'
             } else {
                 this.error('unsupported method')
             }
 
             lines.push(this.opts.method + ' ' + this.uri.pathname + ' HTTP/1.1')
+            console.log('making request',lines[0],headers)
             for (var key in headers) {
                 lines.push( key + ': ' + headers[key] )
             }
@@ -151,18 +154,22 @@
         },
         onReadTCP: function(result) {
             if (result.data) {
-                //console.log('onread',result.data.byteLength)
+                //console.log('onreadTCP',result.data.byteLength)
             } else {
-                //console.log('onread',result)
+                //console.log('onreadTCP',result)
             }
             this.onRead(result)
         },
         onRead: function(result) {
             //console.log('onRead',this.responseBytesRead, this.responseLength)
             if (result.resultCode < 0) {
+                // https://code.google.com/p/chromium/codesearch#chromium/src/net/base/net_error_list.h&sq=package:chromium&l=111
+                // (list of codes)
                 this.closed = true
-                this.tryParseResponse()
-                return
+                if (! this._finished) {
+                    this.tryParseResponse()
+                    return
+                }
                 // all done!
             }
             //console.log('onread',result.data.byteLength, [WSC.ui82str(new Uint8Array(result.data))])
@@ -191,6 +198,7 @@
 
                     var response = parseHeaders(this.responseHeaders)
                     this.responseDataParsed = response
+                    this.responseHeadersParsed = response.headers
                     console.log('parsed http response',response)
                     this.responseLength = parseInt(response.headers['content-length'])
                     this.responseBytesRead = this.readBuffer.size()
@@ -200,7 +208,11 @@
                         console.warn('this will break!')
                         this.error('chunked encoding')
                     } else {
-                        this.tryParseBody()
+                        if (! response.headers['content-length']) {
+                            this.error("no content length in response")
+                        } else {
+                            this.tryParseBody()
+                        }
                     }
                 }
             } else {
@@ -214,9 +226,12 @@
                 var evt = {target: {headers:this.responseDataParsed.headers,
                                     code:this.responseDataParsed.code,
                                     responseHeaders:this.responseHeaders,
+                                    responseHeadersParsed:this.responseHeadersParsed,
                                     response:body}
                           }
                 this.onload(evt)
+                this._finished = true
+                // all done!!! (close connection...)
             }
         }
     }
@@ -226,7 +241,7 @@
         var firstLine = lines[0].split(/ +/)
         var proto = firstLine[0]
         var code = firstLine[1]
-        var status = firstLine[2]
+        var status = firstLine.slice(2,firstLine.length).join(' ')
         var headers = {}
 
         for (var i=1; i<lines.length; i++) {

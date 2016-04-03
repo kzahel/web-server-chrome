@@ -62,7 +62,7 @@
                 lasterr: this.lasterr
             }
         },
-        updatedSleepSetting() {
+        updatedSleepSetting: function() {
             if (! this.started) {
                 chrome.power.releaseKeepAwake()
                 return

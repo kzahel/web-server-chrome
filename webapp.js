@@ -342,11 +342,11 @@
                 this.streams[acceptInfo.clientSocketId] = stream
                 stream.addCloseCallback(this.onStreamClose.bind(this))
                 var connection = new WSC.HTTPConnection(stream)
-                connection.addRequestCallback(this.onRequest.bind(this))
+                connection.addRequestCallback(this.onRequest.bind(this,stream,connection))
                 connection.tryRead()
             }
         },
-        onRequest: function(request) {
+        onRequest: function(stream, connection, request) {
             console.log('Request',request.method, request.uri)
 
             if (this.opts.auth) {
@@ -381,8 +381,10 @@
                 if (reresult) {
                     var cls = this.handlersMatch[i][1]
                     var requestHandler = new cls(request)
+                    requestHandler.connection = connection
                     requestHandler.app = this
                     requestHandler.request = request
+                    stream.lastHandler = requestHandler
                     var handlerMethod = requestHandler[request.method.toLowerCase()]
                     var preHandlerMethod = requestHandler['before_' + request.method.toLowerCase()]
                     if (preHandlerMethod) {

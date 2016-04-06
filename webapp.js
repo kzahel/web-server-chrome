@@ -274,7 +274,6 @@
         },
         computePortRetry: function(i) {
             return this.port + i*3 + Math.pow(i,2)*2
-            debugger
         },
         tryListenOnPort: function(state, callback) {
             var host = this.get_host()
@@ -283,6 +282,7 @@
                 var tryPort = this.computePortRetry(state.port_attempts)
                 state.port_attempts++
                 console.log('attempting to listen on port',tryPort)
+                debugger
                 sockets.tcpServer.listen(this.sockInfo.socketId,
                                          host,
                                          tryPort,
@@ -290,7 +290,7 @@
                                              var lasterr = chrome.runtime.lastError
                                              if (lasterr || result < 0) {
                                                  console.log('lasterr listen on port',tryPort, lasterr, result)
-                                                 if (this.opts.tryOtherPorts && state.port_attempts < 5) {
+                                                 if (this.opts.optTryOtherPorts && state.port_attempts < 5) {
                                                      this.tryListenOnPort(state, callback)
                                                  } else {
                                                      var errInfo = {error:"Could not listen", attempts: state.port_attempts, code:result, lasterr:lasterr}

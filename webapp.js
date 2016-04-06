@@ -61,6 +61,7 @@
                 urls: this.urls,
                 opts: this.opts,
                 started: this.started,
+                starting: this.starting,
                 stopped: this.stopped,
                 lasterr: this.lasterr
             }
@@ -131,6 +132,7 @@
             this.interface_retry_count=0
             var callback = this.start_callback
             this.starting = false
+            this.stopped = true
             this.start_callback = null
             console.error('webapp error:',data)
             this.lasterr = data
@@ -161,6 +163,7 @@
             }
 
             this.started = false
+            this.stopped = true
             chrome.sockets.tcpServer.disconnect(this.sockInfo.socketId, this.onDisconnect.bind(this, reason))
             for (var key in this.streams) {
                 this.streams[key].close()

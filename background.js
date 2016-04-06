@@ -167,6 +167,17 @@ function launch(launchData) {
 
 }
 
+function teststart() {
+    var opts = {}
+    opts.port = 8887
+    opts.optAllInterfaces = true
+    opts.optTryOtherPorts = true
+    opts.optRetryInterfaces = true
+    opts.handlers = []
+    window.webapp = new WSC.WebApplication(opts)
+    webapp.start( function(result) { console.log('webapp start result',result) } )
+}
+
 chrome.app.runtime.onLaunched.addListener(launch);
 
 function get_webapp(opts) {

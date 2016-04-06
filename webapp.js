@@ -32,7 +32,6 @@
         this.lasterr = null
         this.stopped = false
         this.starting = false
-        this.starting_interfaces = false
         this.start_callback = null
         this._stop_callback = null
         this.started = false
@@ -44,7 +43,7 @@
         //this.actives = {} // maybe store all active requests here, for debugging purposes? eh?
         this.on_status_change = null
         this.interfaces = []
-        this.interface_retry_count = 0
+        this.interface_retry_count = 0 // when no network interfaces are available, wait for the wifi to come online...
         this.urls = []
         if (this.port > 65535 || this.port < 1024) {
             var err = 'bad port: ' + this.port
@@ -112,21 +111,28 @@
         change: function() {
             if (this.on_status_change) { this.on_status_change() }
         },
-        success: function(data) {
-            this.updatedSleepSetting()
+        start_success: function(data) {
+            if (this.opts.optPreventSleep) {
+                console.log('requesting keep awake system')
+                chrome.power.requestKeepAwake(chrome.power.Level.SYSTEM)
+            }
             var callback = this.start_callback
             this.start_callback = null
             this.registerIdle()
             if (callback) {
                 callback(this.get_info())
             }
+            this.change()
         },
         error: function(data) {
-            chrome.power.releaseKeepAwake()
+            if (this.opts.optPreventSleep) {
+                chrome.power.releaseKeepAwake()
+            }
             this.interface_retry_count=0
             var callback = this.start_callback
+            this.starting = false
             this.start_callback = null
-            console.error(data)
+            console.error('webapp error:',data)
             this.lasterr = data
             this.change()
             if (callback) {
@@ -134,13 +140,22 @@
             }
         },
         stop: function(reason) {
+            console.log('webserver stop:',reason)
+            if (this.starting) {
+                console.error('cant stop, currently starting')
+                return
+            }
             this.clearIdle()
-            
-            chrome.power.releaseKeepAwake()
+
+            if (this.opts.optPreventSleep) {
+                chrome.power.releaseKeepAwake()
+            }
             // TODO: remove hidden.html ensureFirewallOpen
             // also - support multiple instances.
-            
-            if (! (this.started || this.starting)) {
+
+            if (! this.started) {
+                // already stopped, trying to double stop
+                console.warn('webserver already stopped...')
                 this.change()
                 return
             }
@@ -191,89 +206,129 @@
             }
         },
         registerIdle: function() {
-            console.log('registerIdle')
-            this._idle_timeout_id = setTimeout( this.checkIdle.bind(this), this.opts.optStopIdleServer )
+            if (this.opts.optStopIdleServer) {
+                console.log('registerIdle')
+                this._idle_timeout_id = setTimeout( this.checkIdle.bind(this), this.opts.optStopIdleServer )
+            }
         },
         checkIdle: function() {
-            console.log('checkIdle')
-            for (var key in this.streams) {
-                console.log('hit checkIdle, but had streams. returning')
-                return
+            if (this.opts.optStopIdleServer) {
+                console.log('checkIdle')
+                for (var key in this.streams) {
+                    console.log('hit checkIdle, but had streams. returning')
+                    return
+                }
+                this.stop('idle')
             }
-            this.stop('idle')
         },
-        start: function(callback, clear_urls) {
-            console.log('webapp.start',callback?'with callback':'no callback',clear_urls)
-            
-            this.start_callback = callback
+        start: function(callback) {
+            this.lasterr = null
+            /*
             if (clear_urls === undefined) { clear_urls = true }
             if (clear_urls) {
                 this.urls = []
-                this.urls.push({url:'http://127.0.0.1:' + this.port})
-            }
-
-            if (this.interfaces.length == 0 && this.opts.optAllInterfaces) {
-                this.starting_interfaces = true
-                if (this.interface_retry_count > 10) {
-                    // 10 seconds and still no interface, just start...
-                    this.error('could not find network interface. try turning off accessible to other computers option')
-                    this.starting_interfaces = false
-                    return
-                }
-                
-                // fetch interfaces and start again later...
-                chrome.system.network.getNetworkInterfaces( function(result) {
-                    console.log('network interfaces',result)
-                    if (result) {
-                        for (var i=0; i<result.length; i++) {
-                            if (result[i].prefixLength < 64) {
-                                this.urls.push({url:'http://'+result[i].address+':' + this.port})
-                                this.interfaces.push(result[i])
-                                console.log('found interface address: ' + result[i].address)
-                            }
-                        }
-                    }
-                    // XXX interfaces can be length 0! if we just
-                    // booted and we have no interfaces ready yet (eg
-                    // not connected to wifi)
-
-                    if (this.interfaces.length == 0) {
-                        this.interface_retry_count++
-                        setTimeout( function() {
-                            this.start(callback, false)
-                        }.bind(this), 1000 )
-                    } else {
-                        this.starting_interfaces = false
-                        this.start(callback, false)
-                    }
-                }.bind(this))
+            }*/
+            if (this.starting || this.started) { 
+                console.error("already starting or started")
                 return
             }
-	    this.lasterr = null
-            if (_DEBUG) {
-                console.log('webapp attempt start with opts',this.opts)
-            }
-            this.change()
-            //if (this.lasterr) { return }
-            if (this.starting || this.started) { 
-                this.error("already starting or started")
-                return 
-            }
+            this.start_callback = callback
             this.stopped = false
             this.starting = true
             this.change()
+
+            // need to setup some things
+            if (this.interfaces.length == 0 && this.opts.optAllInterfaces) {
+                this.getInterfaces({interface_retry_count:0}, this.startOnInterfaces.bind(this))
+            } else {
+                this.startOnInterfaces()
+            }
+        },
+        startOnInterfaces: function() {
+            // this.interfaces should be populated now (or could be empty, but we tried!)
+            this.tryListenOnPort({port_attempts:0}, this.onListenPortReady.bind(this))
+        },
+        onListenPortReady: function(info) {
+            if (info.error) {
+                this.error(info)
+            } else {
+                console.log('listen port ready',info)
+                this.port = info.port
+                this.ensureFirewallOpen()
+                //console.log('onListen',result)
+                this.starting = false
+                this.started = true
+                console.log('Listening on','http://'+ this.get_host() + ':' + this.port)
+                this.bindAcceptCallbacks()
+                this.init_urls()
+                this.start_success({urls:this.urls}) // initialize URLs ?
+            }
+        },
+        init_urls: function() {
+            this.urls = []
+            this.urls.push({url:'http://127.0.0.1:' + this.port})
+            for (var i=0; i<this.interfaces.length; i++) {
+                this.urls.push({url:'http://'+this.interfaces[i].address+':' + this.port})
+            }
+            return this.urls
+        },
+        computePortRetry: function(i) {
+            return this.port + i*3 + Math.pow(i,2)*2
+        },
+        tryListenOnPort: function(state, callback) {
             var host = this.get_host()
             sockets.tcpServer.create({name:"listenSocket"},function(sockInfo) {
                 this.sockInfo = sockInfo
+                var tryPort = this.computePortRetry(state.port_attempts)
+                state.port_attempts++
+                console.log('attempting to listen on port',tryPort)
                 sockets.tcpServer.listen(this.sockInfo.socketId,
                                          host,
-                                         this.port,
-                                         this.onListen.bind(this))
-                var lasterr = chrome.runtime.lastError
-                if (lasterr) {
-                    console.log('lasterr listen',lasterr)
-                }
+                                         tryPort,
+                                         function(result) {
+                                             var lasterr = chrome.runtime.lastError
+                                             if (lasterr || result < 0) {
+                                                 console.log('lasterr listen on port',tryPort, lasterr, result)
+                                                 if (this.opts.tryOtherPorts && state.port_attempts < 5) {
+                                                     this.tryListenOnPort(state, callback)
+                                                 } else {
+                                                     var errInfo = {error:"Could not listen", attempts: state.port_attempts, code:result, lasterr:lasterr}
+                                                     //this.error(errInfo)
+                                                     callback(errInfo)
+                                                 }
+                                             } else {
+                                                 callback({port:tryPort})
+                                             }
+                                         }.bind(this)
+                                        )
             }.bind(this));
+        },
+        getInterfaces: function(state, callback) {
+            chrome.system.network.getNetworkInterfaces( function(result) {
+                console.log('network interfaces',result)
+                if (result) {
+                    for (var i=0; i<result.length; i++) {
+                        if (result[i].prefixLength < 64) {
+                            this.interfaces.push(result[i])
+                            console.log('found interface address: ' + result[i].address)
+                        }
+                    }
+                }
+
+                // maybe wifi not connected yet?
+                if (this.interfaces.length == 0 && this.optRetryInterfaces) {
+                    state.interface_retry_count++
+                    if (state.interface_retry_count > 5) {
+                        callback()
+                    } else {
+                        setTimeout( function() {
+                            this.getInterfaces(state, callback)
+                        }.bind(this), 1000 )
+                    }
+                } else {
+                    callback()
+                }
+            }.bind(this))
         },
         refreshNetworkInterfaces: function() {
             // want to call this if we switch networks. maybe better to just stop/start actually...
@@ -301,25 +356,6 @@
                         create_hidden() // only on chrome OS
                     }
                 }
-            }
-        },
-        onListen: function(result) {
-            this.ensureFirewallOpen()
-            //console.log('onListen',result)
-            this.starting = false
-            var lasterr = chrome.runtime.lastError
-            if (lasterr) {
-                this.error({message:lasterr})
-            } else if (result < 0) {
-                this.error({message:'unable to bind to port',
-                            errno:result})
-            } else {
-                this.started = true
-                var host = this.get_host()
-                console.log('Listening on','http://'+ host + ':' + this.port)
-                this.bindAcceptCallbacks()
-                this.change()
-                this.success({urls:this.urls})
             }
         },
         bindAcceptCallbacks: function() {

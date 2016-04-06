@@ -130,6 +130,18 @@ function create_polymer_elements() {
                 observer: 'interfaceChange',
                 value: localOptions['optAllInterfaces']
             },
+            optTryOtherPorts: {
+                type: Boolean,
+                value: false
+            },
+            optStopIdleServer: { // ms until stop inactive server
+                type: Number,
+                value: 0
+            },
+            optRetryInterfaces: {
+                type: Boolean,
+                value: true
+            },
             optPreventSleep: {
                 type: Boolean,
                 observer: 'preventSleepChange',

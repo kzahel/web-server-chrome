@@ -274,6 +274,7 @@
         },
         computePortRetry: function(i) {
             return this.port + i*3 + Math.pow(i,2)*2
+            debugger
         },
         tryListenOnPort: function(state, callback) {
             var host = this.get_host()

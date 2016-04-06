@@ -34,9 +34,13 @@
         this.starting = false
         this.starting_interfaces = false
         this.start_callback = null
+        this._stop_callback = null
         this.started = false
         this.fs = null
         this.streams = {}
+
+        this._idle_timeout_id = null
+
         //this.actives = {} // maybe store all active requests here, for debugging purposes? eh?
         this.on_status_change = null
         this.interfaces = []
@@ -112,6 +116,7 @@
             this.updatedSleepSetting()
             var callback = this.start_callback
             this.start_callback = null
+            this.registerIdle()
             if (callback) {
                 callback(this.get_info())
             }
@@ -129,6 +134,8 @@
             }
         },
         stop: function(reason) {
+            this.clearIdle()
+            
             chrome.power.releaseKeepAwake()
             // TODO: remove hidden.html ensureFirewallOpen
             // also - support multiple instances.
@@ -139,36 +146,64 @@
             }
 
             this.started = false
-            chrome.sockets.tcpServer.disconnect(this.sockInfo.socketId, this.onDisconnect.bind(this))
+            chrome.sockets.tcpServer.disconnect(this.sockInfo.socketId, this.onDisconnect.bind(this, reason))
             for (var key in this.streams) {
                 this.streams[key].close()
             }
             this.change()
             // also disconnect any open connections...
         },
-        onClose: function(info) {
+        onClose: function(reason, info) {
             var err = chrome.runtime.lastError
             if (err) { console.warn(err) }
             this.stopped = true
             this.started = false
+            if (this._stop_callback) {
+                this._stop_callback(reason)
+            }
             console.log('tcpserver onclose',info)
         },
-        onDisconnect: function(info) {
+        onDisconnect: function(reason, info) {
             var err = chrome.runtime.lastError
             if (err) { console.warn(err) }
             this.stopped = true
             this.started = false
             console.log('tcpserver ondisconnect',info)
             if (this.sockInfo) {
-                chrome.sockets.tcpServer.close(this.sockInfo.socketId, this.onClose.bind(this))
+                chrome.sockets.tcpServer.close(this.sockInfo.socketId, this.onClose.bind(this, reason))
             }
         },
         onStreamClose: function(stream) {
             console.assert(stream.sockId)
+            if (this.opts.optStopIdleServer) {
+                for (var key in this.streams) {
+                    this.registerIdle()
+                    break;
+                }
+            }
             delete this.streams[stream.sockId]
         },
+        clearIdle: function() {
+            console.log('clearIdle')
+            if (this._idle_timeout_id) {
+                clearTimeout(this._idle_timeout_id)
+                this._idle_timeout_id = null
+            }
+        },
+        registerIdle: function() {
+            console.log('registerIdle')
+            this._idle_timeout_id = setTimeout( this.checkIdle.bind(this), this.opts.optStopIdleServer )
+        },
+        checkIdle: function() {
+            console.log('checkIdle')
+            for (var key in this.streams) {
+                console.log('hit checkIdle, but had streams. returning')
+                return
+            }
+            this.stop('idle')
+        },
         start: function(callback, clear_urls) {
-            console.log('webapp.start',callback,clear_urls)
+            console.log('webapp.start',callback?'with callback':'no callback',clear_urls)
             
             this.start_callback = callback
             if (clear_urls === undefined) { clear_urls = true }
@@ -301,6 +336,7 @@
             //console.log('onAccept',acceptInfo,this.sockInfo)
             if (acceptInfo.socketId != this.sockInfo.socketId) { return }
             if (acceptInfo.socketId) {
+                this.clearIdle()
                 //var stream = new IOStream(acceptInfo.socketId)
                 var stream = new WSC.IOStream(acceptInfo.clientSocketId)
                 this.streams[acceptInfo.clientSocketId] = stream
@@ -308,9 +344,6 @@
                 var connection = new WSC.HTTPConnection(stream)
                 connection.addRequestCallback(this.onRequest.bind(this))
                 connection.tryRead()
-            }
-            if (! this.stopped) {
-                //this.doAccept() // new API no longer need to call this
             }
         },
         onRequest: function(request) {
@@ -437,6 +470,10 @@ Changes with nginx 0.7.9                                         12 Aug 2008
                 }
             }
 
+            if (this.app.opts.useCORSHeaders) {
+                lines.push('access-control-allow-origin: *')
+            }
+            
             for (key in this.responseHeaders) {
                 lines.push(key +': '+this.responseHeaders[key])
             }

@@ -333,7 +333,7 @@
                 }
             }.bind(this))
         },
-        refreshNetworkInterfaces: function() {
+        refreshNetworkInterfaces: function(callback) {
             // want to call this if we switch networks. maybe better to just stop/start actually...
             this.urls = []
             this.urls.push({url:'http://127.0.0.1:' + this.port})
@@ -343,12 +343,14 @@
                 if (result) {
                     for (var i=0; i<result.length; i++) {
                         if (result[i].prefixLength < 64) {
-                            this.urls.push({url:'http://'+result[i].address+':' + this.port})
+                            //this.urls.push({url:'http://'+result[i].address+':' + this.port})
                             this.interfaces.push(result[i])
                             console.log('found interface address: ' + result[i].address)
                         }
                     }
                 }
+                this.init_urls()
+                callback(this.get_info())
             }.bind(this) )
         },
         ensureFirewallOpen: function() {

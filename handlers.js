@@ -20,6 +20,9 @@
             // or cleanup the context at least
             console.error('entry.file() error',evt)
             debugger
+            evt.error = true
+            // could be NotFoundError
+            callback(evt)
         })
     }
 
@@ -254,6 +257,11 @@
         },
         renderFileContents: function(entry, file) {
             getEntryFile(entry, function(file) {
+                if (file instanceof FileError) {
+                    this.write("File not found", 404)
+                    this.finish()
+                    return
+                }
                 this.file = file
                 if (this.request.method == "HEAD") {
                     this.responseLength = this.file.size

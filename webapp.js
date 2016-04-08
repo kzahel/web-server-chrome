@@ -284,7 +284,7 @@
                 this.sockInfo = sockInfo
                 var tryPort = this.computePortRetry(state.port_attempts)
                 state.port_attempts++
-                console.log('attempting to listen on port',tryPort)
+                console.log('attempting to listen on port',host,tryPort)
                 sockets.tcpServer.listen(this.sockInfo.socketId,
                                          host,
                                          tryPort,

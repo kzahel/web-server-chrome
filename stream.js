@@ -5,8 +5,8 @@
 
     function onTCPReceive(info) {
         var sockId = info.socketId
-        if (peerSockMap[sockId]) {
-            peerSockMap[sockId].onReadTCP(info)
+        if (WSC.peerSockMap[sockId]) {
+            WSC.peerSockMap[sockId].onReadTCP(info)
         }
     }
 
@@ -26,6 +26,7 @@
 
         this.remoteclosed = false
         this.closed = false
+        this.connected = true
 
         this.halfclose = null
         this.onclose = null
@@ -49,18 +50,20 @@
             if (this.onclose) { this.onclose() }
         },
         onUnpaused: function(info) {
+            var lasterr = chrome.runtime.lastError
+            if (lasterr) {
+                this.close('set unpause fail')
+            }
             //console.log('sock unpaused',info)
         },
         readUntil: function(delimiter, callback) {
             this.readUntilDelimiter = delimiter
             this.readCallback = callback
-            //this.tryRead() // set unpaused instead
         },
         readBytes: function(numBytes, callback) {
             this.pleaseReadBytes = numBytes
             this.readCallback = callback
             this.checkBuffer()
-            //this.tryRead() // set unpaused instead
         },
         tryWrite: function(callback) {
             if (this.writing) { 
@@ -82,14 +85,15 @@
             var err = chrome.runtime.lastError
             if (err) {
                 console.log('socket.send lastError',err)
-                this.tryClose()
+                //this.tryClose()
+                this.close('writeerr'+err)
                 return
             }
 
             // look at evt!
             if (evt.bytesWritten <= 0) {
                 console.log('onwrite fail, closing',evt)
-                this.close()
+                this.close('writerr<0')
                 return
             }
             this.writing = false
@@ -104,6 +108,11 @@
             }
         },
         onReadTCP: function(evt) {
+            var lasterr = chrome.runtime.lastError
+            if (lasterr) {
+                this.close('read tcp lasterr'+lasterr)
+                return
+            }
             //console.log('onRead',evt)
             if (evt.resultCode == 0) {
                 //this.error({message:'remote closed connection'})
@@ -148,14 +157,23 @@
                 }
             }
         },
-        close: function() {
+        close: function(reason) {
+            this.connected = false
+            this.closed = true
             this.runCloseCallbacks()
             console.log('tcp sock close',this.sockId)
             delete peerSockMap[this.sockId]
-            sockets.tcp.disconnect(this.sockId)
+            sockets.tcp.close(this.sockId, this.onClosed.bind(this,reason))
             //this.sockId = null
-            this.closed = true
             this.cleanup()
+        },
+        onClosed: function(reason, info) {
+            var lasterr = chrome.runtime.lastError
+            if (lasterr) {
+                console.log('onClosed',reason,lasterr,info)
+            } else {
+                console.log('onClosed',reason,info)
+            }
         },
         error: function(data) {
             console.warn(this.sockId,'closed')

@@ -190,7 +190,7 @@ WSC.str2ab = str2ab
 */
 
 function parseUri(str) {
-    return new URL(str)
+    return new URL(str) // can throw exception, watch out!
 }
 
     

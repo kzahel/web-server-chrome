@@ -59,6 +59,7 @@
         readUntil: function(delimiter, callback) {
             this.readUntilDelimiter = delimiter
             this.readCallback = callback
+            this.checkBuffer()
         },
         readBytes: function(numBytes, callback) {
             this.pleaseReadBytes = numBytes
@@ -161,7 +162,7 @@
             this.connected = false
             this.closed = true
             this.runCloseCallbacks()
-            console.log('tcp sock close',this.sockId)
+            //console.log('tcp sock close',this.sockId)
             delete peerSockMap[this.sockId]
             sockets.tcp.close(this.sockId, this.onClosed.bind(this,reason))
             //this.sockId = null
@@ -172,7 +173,7 @@
             if (lasterr) {
                 console.log('onClosed',reason,lasterr,info)
             } else {
-                console.log('onClosed',reason,info)
+                //console.log('onClosed',reason,info)
             }
         },
         error: function(data) {

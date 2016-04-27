@@ -92,7 +92,7 @@
         get_host: function() {
             var host
             if (WSC.getchromeversion() >= 44 && this.opts.optAllInterfaces) {
-                host = this.opts.host || '0.0.0.0'
+                host = this.opts.host || '::'
             } else {
                 host = this.opts.host || '127.0.0.1'
             }
@@ -271,7 +271,12 @@
             this.urls = []
             this.urls.push({url:'http://127.0.0.1:' + this.port})
             for (var i=0; i<this.interfaces.length; i++) {
-                this.urls.push({url:'http://'+this.interfaces[i].address+':' + this.port})
+                var iface = this.interfaces[i]
+                if (iface.prefixLength >= 24) {
+                    this.urls.push({url:'http://['+iface.address+']:' + this.port})
+                } else {
+                    this.urls.push({url:'http://'+iface.address+':' + this.port})
+                }
             }
             return this.urls
         },
@@ -311,7 +316,7 @@
                 console.log('network interfaces',result)
                 if (result) {
                     for (var i=0; i<result.length; i++) {
-                        if (result[i].prefixLength < 64) {
+                        if (true || result[i].prefixLength <= 24) {
                             this.interfaces.push(result[i])
                             console.log('found interface address: ' + result[i].address)
                         }
@@ -332,7 +337,7 @@
                     callback()
                 }
             }.bind(this))
-        },
+        },/*
         refreshNetworkInterfaces: function(callback) {
             // want to call this if we switch networks. maybe better to just stop/start actually...
             this.urls = []
@@ -352,7 +357,7 @@
                 this.init_urls()
                 callback(this.get_info())
             }.bind(this) )
-        },
+        },*/
         ensureFirewallOpen: function() {
             // on chromeOS, if there are no foreground windows,
             if (this.opts.optAllInterfaces && chrome.app.window.getAll().length == 0) {
@@ -476,7 +481,7 @@
                 lines.push('HTTP/1.1 '+ code + ' ' + WSC.HTTPRESPONSES[code])
             }
             if (this.responseHeaders['transfer-encoding'] === 'chunked') {
-                // pass
+                // chunked encoding
             } else {
                 if (_DEBUG) {
                     console.log(this.request.connection.stream.sockId,'response code',code, 'clen',this.responseLength)

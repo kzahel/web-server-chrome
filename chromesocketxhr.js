@@ -50,6 +50,8 @@
         this.responseLength = null
         this.responseBytesRead = null
         this.requestBody = null
+
+        this.secured = false
     }
 
     ChromeSocketXMLHttpRequest.prototype = {
@@ -58,7 +60,7 @@
                           url:url,
                           async:true }
             this.uri = WSC.parseUri(this.opts.url)
-            console.assert(this.uri.protocol == 'http:') // https not supported for chrome.socket yet
+            //console.assert(this.uri.protocol == 'http:') // https not supported for chrome.socket yet
         },
         setRequestHeader: function(key, val) {
             this.extraHeaders[key] = val
@@ -107,11 +109,12 @@
             }
         },
         error: function(data) {
+            this._finished = true
+            //console.log('error:',data)
             this.haderror = true
             if (! this.stream.closed) {
                 this.stream.close()
             }
-            this._finished = true
             if (this.onerror) {
                 this.onerror(data)
             }
@@ -131,12 +134,13 @@
             var host = this.getHost()
             var port = this.getPort()
             //console.log('connecting to',host,port)
-            chrome.sockets.tcp.connect( sockInfo.socketId, host, port, _.bind(this.onConnect, this) )
+            chrome.sockets.tcp.setPaused( sockInfo.socketId, true, function() {
+                chrome.sockets.tcp.connect( sockInfo.socketId, host, port, _.bind(this.onConnect, this) )
+            }.bind(this))
         },
         onConnect: function(result) {
             //console.log('connected to',this.getHost())
             var lasterr = chrome.runtime.lastError
-
             if (this.closed) { return }
             this.connecting = false
             if (this.timedOut) {
@@ -147,6 +151,12 @@
                 this.error({error:'connection error',
                             code:result})
             } else {
+                if (this.uri.protocol == 'https:' && ! this.secured) {
+                    this.secured = true
+                    //console.log('securing socket',this.sockInfo.socketId)
+                    chrome.sockets.tcp.secure(this.sockInfo.socketId, this.onConnect.bind(this))
+                    return
+                }
                 var headers = this.createRequestHeaders()
                 //console.log('request to',this.getHost(),headers)
                 this.stream.writeBuffer.add( new TextEncoder('utf-8').encode(headers).buffer )
@@ -156,13 +166,18 @@
                 }
                 this.stream.tryWrite()
                 this.stream.readUntil('\r\n\r\n', this.onHeaders.bind(this))
+                chrome.sockets.tcp.setPaused( this.sockInfo.socketId, false, function(){})
             }
         },
         getHost: function() {
             return this.uri.hostname
         },
         getPort: function() {
-            return parseInt(this.uri.port) || 80
+            if (this.uri.protocol == 'https:') {
+                return parseInt(this.uri.port) || 443
+            } else {
+                return parseInt(this.uri.port) || 80
+            }
         },
         onHeaders: function(data) {
             // not sure what encoding for headers is exactly, latin1 or something? whatever.
@@ -180,20 +195,20 @@
             if (response.headers['transfer-encoding'] &&
                 response.headers['transfer-encoding'] == 'chunked') {
                 this.chunks = new WSC.Buffer
-                console.log('looking for an \\r\\n')
+                //console.log('looking for an \\r\\n')
                 this.stream.readUntil("\r\n", this.getNewChunk.bind(this))
                 //this.error('chunked encoding')
             } else {
                 if (! response.headers['content-length']) {
                     this.error("no content length in response")
                 } else {
+                    console.log('read bytes',this.responseLength)
                     this.stream.readBytes(this.responseLength, this.onBody.bind(this))
                 }
             }
         },
         onChunkDone: function(data) {
             this.chunks.add(data)
-            console.log(this.stream.readBuffer)
             this.stream.readUntil("\r\n", this.getNewChunk.bind(this))
         },
         getNewChunk: function(data) {
@@ -203,9 +218,9 @@
                 this.error('invalid chunked encoding response')
                 return
             }
-            console.log('looking for new chunk of len',len)
+            //console.log('looking for new chunk of len',len)
             if (len == 0) {
-                console.log('got all chunks',this.chunks)
+                //console.log('got all chunks',this.chunks)
                 var body = this.chunks.flatten()
                 this.onBody(body)
             } else {
@@ -258,9 +273,9 @@
         console.log('creating XHR')
         var xhr = new ChromeSocketXMLHttpRequest
         xhr.open("GET","https://www.google.com")
-        xhr.timeout = 4000
+        xhr.timeout = 8000
         xhr.onload = xhr.onerror = xhr.ontimeout = function(evt) {
-            console.log('xhr test load',evt)
+            console.log('xhr result:',evt)
         }
         xhr.send()
         window.txhr = xhr

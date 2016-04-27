@@ -85,7 +85,7 @@
         onWrite: function(callback, evt) {
             var err = chrome.runtime.lastError
             if (err) {
-                console.log('socket.send lastError',err)
+                //console.log('socket.send lastError',err)
                 //this.tryClose()
                 this.close('writeerr'+err)
                 return
@@ -93,7 +93,7 @@
 
             // look at evt!
             if (evt.bytesWritten <= 0) {
-                console.log('onwrite fail, closing',evt)
+                //console.log('onwrite fail, closing',evt)
                 this.close('writerr<0')
                 return
             }
@@ -114,7 +114,7 @@
                 this.close('read tcp lasterr'+lasterr)
                 return
             }
-            //console.log('onRead',evt)
+            //console.log('onRead',WSC.ui82str(new Uint8Array(evt.data)))
             if (evt.resultCode == 0) {
                 //this.error({message:'remote closed connection'})
                 this.log('remote closed connection (halfduplex)')
@@ -131,7 +131,6 @@
                 this.checkBuffer()
             }
         },
-
         log: function(msg,msg2,msg3) {
             console.log(this.sockId,msg,msg2,msg3)
         },
@@ -148,7 +147,7 @@
                     this.readCallback = null
                     callback(toret)
                 }
-            } else if (this.pleaseReadBytes) {
+            } else if (this.pleaseReadBytes !== null) {
                 if (this.readBuffer.size() >= this.pleaseReadBytes) {
                     var data = this.readBuffer.consume(this.pleaseReadBytes)
                     var callback = this.readCallback

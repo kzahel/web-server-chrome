@@ -112,17 +112,19 @@
             this._finished = true
             //console.log('error:',data)
             this.haderror = true
+            if (this.onerror) {
+                console.assert(typeof data == "object")
+                data.target = {error:true}
+                this.onerror(data)
+            }
             if (! this.stream.closed) {
                 this.stream.close()
-            }
-            if (this.onerror) {
-                this.onerror(data)
             }
         },
         onStreamClose: function(evt) {
             //console.log('xhr closed')
             if (! this._finished) {
-                this.error('stream closed')
+                this.error({error:'stream closed'})
             }
         },
         onCreate: function(sockInfo) {
@@ -202,7 +204,7 @@
                 if (! response.headers['content-length']) {
                     this.error("no content length in response")
                 } else {
-                    console.log('read bytes',this.responseLength)
+                    //console.log('read bytes',this.responseLength)
                     this.stream.readBytes(this.responseLength, this.onBody.bind(this))
                 }
             }

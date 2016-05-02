@@ -272,7 +272,7 @@
             this.urls.push({url:'http://127.0.0.1:' + this.port})
             for (var i=0; i<this.interfaces.length; i++) {
                 var iface = this.interfaces[i]
-                if (iface.prefixLength >= 24) {
+                if (iface.prefixLength > 24) {
                     this.urls.push({url:'http://['+iface.address+']:' + this.port})
                 } else {
                     this.urls.push({url:'http://'+iface.address+':' + this.port})

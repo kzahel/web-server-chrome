@@ -261,7 +261,7 @@
                 //console.log('onListen',result)
                 this.starting = false
                 this.started = true
-                console.log('Listening on','http://'+ this.get_host() + ':' + this.port)
+                console.log('Listening on','http://'+ this.get_host() + ':' + this.port+'/')
                 this.bindAcceptCallbacks()
                 this.init_urls()
                 this.start_success({urls:this.urls}) // initialize URLs ?
@@ -382,15 +382,18 @@
             //console.log('onAccept',acceptInfo,this.sockInfo)
             if (acceptInfo.socketId != this.sockInfo.socketId) { return }
             if (acceptInfo.socketId) {
-                this.clearIdle()
-                //var stream = new IOStream(acceptInfo.socketId)
                 var stream = new WSC.IOStream(acceptInfo.clientSocketId)
-                this.streams[acceptInfo.clientSocketId] = stream
-                stream.addCloseCallback(this.onStreamClose.bind(this))
-                var connection = new WSC.HTTPConnection(stream)
-                connection.addRequestCallback(this.onRequest.bind(this,stream,connection))
-                connection.tryRead()
+                this.adopt_stream(acceptInfo, stream)
             }
+        },
+        adopt_stream: function(acceptInfo, stream) {
+            this.clearIdle()
+            //var stream = new IOStream(acceptInfo.socketId)
+            this.streams[acceptInfo.clientSocketId] = stream
+            stream.addCloseCallback(this.onStreamClose.bind(this))
+            var connection = new WSC.HTTPConnection(stream)
+            connection.addRequestCallback(this.onRequest.bind(this,stream,connection))
+            connection.tryRead()
         },
         onRequest: function(stream, connection, request) {
             console.log('Request',request.method, request.uri)
@@ -541,7 +544,7 @@ Changes with nginx 0.7.9                                         12 Aug 2008
         write: function(data, code, opt_finish) {
             if (typeof data == "string") {
                 // using .write directly can be dumb/dangerous. Better to pass explicit array buffers
-                console.warn('putting strings into write is not well tested with multi byte characters')
+                //console.warn('putting strings into write is not well tested with multi byte characters')
                 data = new TextEncoder('utf-8').encode(data).buffer
             }
 

@@ -30,6 +30,8 @@
 
         this.halfclose = null
         this.onclose = null
+        this.ondata = null
+        this.source = null
         this._close_callbacks = []
 
         this.onWriteBufferEmpty = null
@@ -37,8 +39,14 @@
     }
 
     IOStream.prototype = {
+        removeHandler: function() {
+            delete peerSockMap[this.sockId]
+        },
         addCloseCallback: function(cb) {
             this._close_callbacks.push(cb)
+        },
+        peekstr: function(maxlen) {
+            return WSC.ui82str(new Uint8Array(this.readBuffer.deque[0], 0, maxlen))
         },
         removeCloseCallback: function(cb) {
             debugger
@@ -128,6 +136,7 @@
                 this.error({message:'error code',errno:evt.resultCode})
             } else {
                 this.readBuffer.add(evt.data)
+                if (this.onread) { this.onread() }
                 this.checkBuffer()
             }
         },

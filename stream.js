@@ -39,6 +39,9 @@
     }
 
     IOStream.prototype = {
+		set_close_callback: function(fn) {
+			this._close_callbacks = [fn]
+		},
         removeHandler: function() {
             delete peerSockMap[this.sockId]
         },
@@ -90,6 +93,10 @@
             //console.log(this.sockId,'tcp.send',WSC.ui82str(new Uint8Array(data)))
             sockets.tcp.send( this.sockId, data, this.onWrite.bind(this, callback) )
         },
+		write: function(data) {
+			this.writeBuffer.add(data)
+			this.tryWrite()
+		},
         onWrite: function(callback, evt) {
             var err = chrome.runtime.lastError
             if (err) {

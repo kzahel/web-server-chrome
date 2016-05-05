@@ -173,10 +173,16 @@ function teststart() {
     opts.optAllInterfaces = true
     opts.optTryOtherPorts = true
     opts.optRetryInterfaces = true
-    opts.handlers = []
+	opts.handlers = []
     window.webapp = new WSC.WebApplication(opts)
+	webapp.add_handler(['.*', WSC.ExampleWebSocketHandler])
+	webapp.init_handlers()
     webapp.start( function(result) { console.log('webapp start result',result) } )
 }
+
+chrome.runtime.onInstalled.addListener( function() {
+	teststart()
+})
 
 chrome.app.runtime.onLaunched.addListener(launch);
 

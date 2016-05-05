@@ -458,6 +458,7 @@
 
     function BaseHandler() {
         this.headersWritten = false
+		this.responseCode = null
         this.responseHeaders = {}
         this.responseData = []
         this.responseLength = null
@@ -470,11 +471,18 @@
                 return def
             }
         },
+		getHeader: function(k,defaultvalue) {
+			return this.request.headers[k] || defaultvalue
+		},
         setHeader: function(k,v) {
             this.responseHeaders[k] = v
         },
+		set_status: function(code) {
+			console.assert(! this.headersWritten)
+			this.responseCode = code
+		},
         writeHeaders: function(code, callback) {
-            if (code === undefined || isNaN(code)) { code = 200 }
+            if (code === undefined || isNaN(code)) { code = this.responseCode || 200 }
             this.headersWritten = true
             var lines = []
             if (code == 200) {
@@ -565,6 +573,10 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             }
         },
         finish: function() {
+			if (! this.headersWritten) {
+				this.responseLength = 0
+				this.writeHeaders()
+			}
             if (this.beforefinish) { this.beforefinish() }
             this.request.connection.curRequest = null
             if (this.request.isKeepAlive() && ! this.request.connection.stream.remoteclosed) {

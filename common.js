@@ -12,6 +12,43 @@ function getchromeversion() {
 }
 WSC.getchromeversion = getchromeversion
 
+
+	WSC.maybePromise = function(maybePromiseObj, resolveFn, ctx) {
+		if(maybePromiseObj && maybePromiseObj.then) {
+			return maybePromiseObj.then(function(ret){ return resolveFn.call(ctx, ret); });
+		} else {
+			return resolveFn.call(ctx, maybePromiseObj);
+		}
+	}
+	WSC.strformat = function(s) {
+		var args = Array.prototype.slice.call(arguments,1,arguments.length);
+		return s.replace(/{(\d+)}/g, function(match, number) {
+			return typeof args[number] != 'undefined'
+			    ? args[number]
+			    : match
+			;
+		});
+	}
+	WSC.parse_header = function(line) {
+		debugger
+	}
+	WSC.encode_header = function(name, d) {
+		if (!d) {
+			return name
+		}
+		var out = [name]
+		for (var k in d) {
+			var v = d[k]
+			if (! v) {
+				out.push(k)
+			} else {
+				// quote?
+				outpush(k + '=' + v)
+			}
+		}
+		return out.join('; ')
+	}
+	
 if (! String.prototype.endsWith) {
     String.prototype.endsWith = function(substr) {
         for (var i=0; i<substr.length; i++) {

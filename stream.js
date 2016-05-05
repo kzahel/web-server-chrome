@@ -174,6 +174,7 @@
             }
         },
         close: function(reason) {
+			if ( this.closed) { return }
             this.connected = false
             this.closed = true
             this.runCloseCallbacks()

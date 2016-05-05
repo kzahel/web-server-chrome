@@ -141,7 +141,8 @@
                 callback({error:data})
             }
         },
-        stop: function(reason) {
+        stop: function(reason, callback) {
+			if (callback) { this._stop_callback = callback }
             console.log('webserver stop:',reason)
             if (this.starting) {
                 console.error('cant stop, currently starting')

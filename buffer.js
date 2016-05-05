@@ -34,7 +34,7 @@ Buffer.prototype = {
     },
     add: function(data) {
         console.assert(data instanceof ArrayBuffer)
-		console.assert(data.byteLength > 0)
+		//console.assert(data.byteLength > 0)
         this._size = this._size + data.byteLength
         this.deque.push(data)
     },

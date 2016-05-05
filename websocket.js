@@ -150,7 +150,7 @@
 
 		this._messages_bytes_in = 0
 		this._messages_bytes_out = 0
-		
+
 		this._wire_bytes_out = 0
 		this._wire_bytes_out = 0
 	}
@@ -193,7 +193,7 @@
 					break
 				}
 			}
-			console.assert( subprot_header == '' && ext_header == '') // parsing not working yet
+			console.assert( ext_header == '') // parsing not working yet
 
 			
 			if (this.stream.closed) {
@@ -245,7 +245,6 @@
 			if (l < 126) {
 				b = new Uint8Array(1)
 				b[0] = l | mask_bit
-				frame.push(b)
 			} else if (l <= 0xffff) {
 				b = new Uint8Array(3)
 				b[0] = 126 | mask_bit
@@ -255,13 +254,18 @@
 				b[0] = 127 | mask_bit
 				new DataView(b.buffer).setUint32(5, l)
 			}
+			frame.push(b)
 			if (this.mask_outgoing) {
-				debugger
+				var mask = new Uint8Array(4)
+				crypto.getRandomValues(mask)
+				frame.push(mask)
+				frame.push(_websocket_mask(mask, data))
+			} else {
+				frame.push(data)
 			}
 			for (var i=0; i<frame.length; i++) {
-				this.stream.writeBuffer.add( frame[i].buffer )
+				this.stream.writeBuffer.add( frame[i].buffer || frame[i] )
 			}
-			this.stream.writeBuffer.add(data)
 			this.stream.tryWrite()
 		},
 		write_message: function(message, binary) {
@@ -275,7 +279,7 @@
 			} else {
 				var msgout = new TextEncoder('utf-8').encode(message).buffer
 			}
-			this._message_bytes_out += message.length
+			this._messages_bytes_out += message.byteLength
 			var flags = 0
 			if (this._compressor) {
 				debugger
@@ -312,46 +316,52 @@
 			this._masked_frame = !!(payloadlen & 0x80)
 			payloadlen = payloadlen & 0x7f
 			if (this._frame_opcode_is_control && payloadlen >= 126) {
-				console.log('control frames must have payload < 126')
+				//console.log('control frames must have payload < 126')
 				this._abort()
 				return
 			}
 			//todo try/catch read and abort
 			if (payloadlen < 126) {
-				console.log('payloadlen < 126')
+				//console.log('payloadlen < 126')
 				this._frame_length = payloadlen
 				if (this._masked_frame) {
-					console.log('masked frame')
+					//console.log('masked frame')
 					this.stream.readBytes(4, this._on_masking_key.bind(this) )
 				} else {
-					console.log('simple frame of len', this._frame_length)
+					//console.log('simple frame of len', this._frame_length)
 					this.stream.readBytes(this._frame_length, this._on_frame_data.bind(this) )
 				}
 			} else if (payloadlen == 126) {
-				debugger
 				this.stream.readBytes(2, this._on_frame_length_16.bind(this))
 			} else if (payloadlen == 127) {
-				debugger
 				this.stream.readBytes(8, this._on_frame_length_64.bind(this))
 			}
 		},
 		_on_frame_length_16: function(data) {
-			console.log('_on_frame_length_16',data.byteLength)
+			//console.log('_on_frame_length_16',data.byteLength)
 			this._wire_bytes_in += data.byteLength
 			var v = new DataView(data,0,2)
 			this._frame_length = v.getUint16(0)
+			this._on_frame_length_n(data)
+		},
+		_on_frame_length_64: function(data) {
+			this._wire_bytes_in += data.byteLength
+			var v = new DataView(data,0,8)
+			this._frame_length = v.getUint32(4)
+			this._on_frame_length_n(data)
+		},
+		_on_frame_length_n: function(data) {
 			// todo trycatch abort
 			if (this._masked_frame) {
+				console.log('masked frame')
 				this.stream.readBytes(4, this._on_masking_key.bind(this))
 			} else {
 				this.stream.readBytes(this._frame_length, this._on_frame_data.bind(this))
 			}
 		},
-		_on_frame_length_64: function(data) {
-			debugger
-		},
 		_on_masking_key: function(data) {
 			this._wire_bytes_in += data.byteLength
+			console.log('frame mask', new Uint8Array(data))
 			this._frame_mask = data
 			// todo try/catch
 			this.stream.readBytes(this._frame_length, this._on_masked_frame_data.bind(this))
@@ -406,12 +416,12 @@
 			if (this._frame_compressed) debugger
 
 			if (opcode == 0x1) { // utf-8
-				this._message_bytes_in += data.byteLength
+				this._messages_bytes_in += data.byteLength
 				var s = new TextDecoder('utf-8').decode(data)
 				// todo try/catch and abort
 				this._run_callback(this.handler.on_message, this.handler, s)
 			} else if (opcode == 0x2) { // binary
-				this._message_bytes_in += data.byteLength 
+				this._messages_bytes_in += data.byteLength 
 				this._run_callback(this.handler.on_message, this.handler, data)
 			} else if (opcode == 0x8) { // close
 				this.client_terminated = true
@@ -432,7 +442,42 @@
 			}
 		},
 		close: function(code, reason) {
-			debugger
+			if (! this.server_terminated) {
+				if (! this.stream.closed) {
+					var close_data
+					if (! code && reason) {
+						code = 1000 // normal closure
+					}
+					if (! code && code !== 0) {
+						close_data = new ArrayBuffer(0)
+					} else {
+						var b = new ArrayBuffer(2)
+						var v = new DataView(b)
+						v.setUint16(0, code)
+						close_data = b
+					}
+					if (reason) {
+						var extra = new TextEncoder('utf-8').encode(reason)
+						var arr = new Uint8Array(close_data.byteLength + extra.length)
+						arr.set(close_data, 0)
+						arr.set(extra, close_data.byteLength)
+						close_data = arr.buffer
+					}
+					this._write_frame(true, 0x8, close_data)
+				}
+				this.server_terminated = true
+			}
+			if (this.client_terminated) {
+				if (this._waiting) {
+					clearTimeout(this._waiting)
+					this._waiting = null
+				}
+			} else if (! this._waiting) {
+				// wait for a bit and then call _abort()
+				this._waiting = setTimeout( function() {
+					this._abort()
+				}.bind(this), 5)
+			}
 		},
 		_handle_websocket_headers: function() {
 			var fields = ["host","sec-websocket-key", "sec-websocket-version"]
@@ -469,7 +514,7 @@
 			//this.write_message("hello!")
 		},
 		on_message: function(msg) {
-			console.log('got ws message',msg)
+			console.log('got ws message',msg,msg.byteLength, new Uint8Array(msg))
 			//this.write_message('pong')
 		},
 		on_close: function() {
@@ -483,4 +528,4 @@
 	WSC.ExampleWebSocketHandler = ExampleWebSocketHandler
 	WSC.WebSocketHandler = WebSocketHandler
 	
-})()
+})();

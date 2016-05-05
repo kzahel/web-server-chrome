@@ -181,7 +181,7 @@ function teststart() {
 }
 
 chrome.runtime.onInstalled.addListener( function() {
-	teststart()
+	//teststart()
 })
 
 chrome.app.runtime.onLaunched.addListener(launch);

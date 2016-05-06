@@ -1,6 +1,7 @@
 console.log('background.js')
 var ALARMID = "check_wsc_periodic"
 var WSCID = "ofhbbkphhbklhfoeikjpcbhemlocgigb"
+var HADEVENT = false
 var OS
 if (navigator.userAgent.match('OS X')) {
     OS = 'Mac'
@@ -94,6 +95,7 @@ function onAllAlarms( alarms ) {
 
 
 chrome.runtime.onStartup.addListener( function(evt) {
+	HADEVENT = true
     // should fire when profile loads up...
 
     // (needs "background" permission)
@@ -141,11 +143,13 @@ chrome.runtime.onSuspendCanceled.addListener( function(evt) {
 })
 
 function launch(launchData) {
+	HADEVENT = true
+
     launchData = launchData || {}
-    if (launchData.source == 'reload') { console.log('app was reloaded'); return }
+    //if (launchData.source == 'reload') { console.log('app was reloaded'); return }
     if (launchData.source == 'restart') { console.log('chrome restarted'); return }
 
-    console.log('onLaunched with launchdata',launchData)
+    //console.log('onLaunched with launchdata',launchData)
 
     var info = {type:'onLaunched',
                 launchData: launchData}
@@ -181,6 +185,7 @@ function teststart() {
 }
 
 chrome.runtime.onInstalled.addListener( function() {
+	HADEVENT = true
 	//teststart()
 })
 
@@ -189,6 +194,7 @@ chrome.app.runtime.onLaunched.addListener(launch);
 function get_webapp(opts) {
     if (! window.app) {
         window.app = new WSC.WebApplication(opts)
+		window.webapp = app
     }
     return window.app
 }
@@ -280,3 +286,26 @@ function restart(port) {
     }
 }
 window.reload = chrome.runtime.reload
+
+setTimeout( function() {
+	if (! HADEVENT) {
+		console.log('background page was manually reloaded in devtools')
+		var testimg = new Image();
+		var triggered = false
+		testimg.__defineGetter__('id', devtools_open)
+		console.log(testimg)
+		function maybeRestart() {
+			if (! chrome.runtime.getManifest().update_url) {
+				console.log('running as unpacked app')
+				console.log('reload()')
+				chrome.runtime.reload()
+			}
+		}
+		function devtools_open() {
+			if (triggered) { return }
+			triggered = true
+			setTimeout( maybeRestart, 1 )
+			return 'test'
+		}
+	}
+}, 1000) // how long until chrome sends the runtime event?

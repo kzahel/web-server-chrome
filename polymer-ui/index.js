@@ -1,4 +1,5 @@
 var reload = chrome.runtime.reload
+document.addEventListener("DOMContentLoaded",ondom)
 function getel(id) { return document.getElementById(id) }
 
 function ui_ready() {
@@ -12,21 +13,22 @@ function ui_ready() {
         }
     }
 }
-function settings_ready(d) {
-    window.localOptions = d
-    console.log('fetched local settings',d)
-    window.webapp = bg.get_webapp(d) // retainStr in here
+function settings_ready() {
+    //window.localOptions = d
+    console.log('fetched local settings',appOptions)
+    window.webapp = bg.get_webapp(appOptions.getAll()) // retainStr in here
     create_polymer_elements()
     on_webapp_change()
     webapp.on_status_change = on_webapp_change
     setup_events()
     ui_ready()
 }
-
-chrome.runtime.getBackgroundPage( function(bg) {
-    window.bg = bg
-    chrome.storage.local.get(null, settings_ready)
-})
+function ondom() {
+    chrome.runtime.getBackgroundPage( function(bg) {
+        window.appOptions = new window.AppOptions(settings_ready)
+        window.bg = bg
+    })
+}
 
 function get_status() {
     return {
@@ -59,6 +61,24 @@ function on_webapp_change() {
 }
 
 function setup_events() {
+    function keydown(evt) {
+        if (evt.metaKey || evt.ctrlKey) {
+            if (evt.keyCode == 82) {
+                // ctrl-r
+                console.log('received ctrl(meta)-r, reload app')
+                if (window.fgapp) {
+                    fgapp.reload()
+                } else {
+                    chrome.runtime.reload()
+                }
+            }
+            //evt.preventDefault() // dont prevent ctrl-w
+        }
+    }
+    document.body.addEventListener('keydown', keydown)
+
+
+    
     document.getElementById('help-icon').addEventListener('click', function(evt) {
         document.getElementById('help-dialog').open()
     })
@@ -128,7 +148,16 @@ function create_polymer_elements() {
             optAllInterfaces: {
                 type: Boolean,
                 observer: 'interfaceChange',
-                value: localOptions['optAllInterfaces']
+                value: appOptions.options['optAllInterfaces']
+            },
+            optDoPortMapping: {
+                observer: 'portmapChange',
+                type: Boolean,
+                value: appOptions.options['optDoPortMapping']
+            },
+            optIPV6: {
+                type: Boolean,
+                value: appOptions.options['optIPV6']
             },
             optTryOtherPorts: {
                 type: Boolean,
@@ -145,62 +174,68 @@ function create_polymer_elements() {
             optPreventSleep: {
                 type: Boolean,
                 observer: 'preventSleepChange',
-                value: localOptions['optPreventSleep']
+                value: appOptions.options['optPreventSleep']
             },
             optBackground: {
                 type: Boolean,
                 observer: 'backgroundChange',
-                value: localOptions['optBackground']
+                value: appOptions.options['optBackground']
             },
             optAutoStart: {
                 type: Boolean,
                 observer: 'autoStartChange',
-                value: localOptions['optAutoStart']
+                value: appOptions.options['optAutoStart']
             },
             optRenderIndex: {
                 type: Boolean,
                 observer: 'optRenderIndexChange',
-                value: localOptions['optRenderIndex']
+                value: appOptions.options['optRenderIndex']
             }
         },
+        portmapChange: function(val) {
+            console.log('persist setting portmapping',val)
+            webapp.updateOption('optDoPortMapping',val)
+            appOptions.set('optDoPortMapping',val)
+        },
         interfaceChange: function(val) {
-            console.log('persist setting interface')
-            webapp.opts.optAllInterfaces = this.optAllInterfaces
+            console.log('persist setting interface',val)
+            webapp.opts.optAllInterfaces = val
             webapp.interfaces = []
-            chrome.storage.local.set({'optAllInterfaces':this.optAllInterfaces})
+            appOptions.set('optAllInterfaces',val)
         },
         preventSleepChange: function(val) {
             /*
               maybe make power an optional permission? only, it is automatically granted without user gesture... 
             */
-            console.log('persist setting prevent sleep')
-            webapp.opts.optPreventSleep = this.optPreventSleep
+            console.log('persist setting prevent sleep',val)
+            webapp.opts.optPreventSleep = val
             webapp.updatedSleepSetting()
-            chrome.storage.local.set({'optPreventSleep':this.optPreventSleep})
+            appOptions.set('optPreventSleep',val)
         },
         autoStartChange: function(val) {
             console.log('persist setting autostart')
-            webapp.opts.optAutoStart = this.optAutoStart
-            chrome.storage.local.set({'optAutoStart':this.optAutoStart})
-            bg.backgroundSettingChange({'optAutoStart':this.optAutoStart})
+            webapp.opts.optAutoStart = val
+            appOptions.set('optAutoStart', val)
+            bg.backgroundSettingChange({'optAutoStart':val})
         },
         backgroundChange: function(val) {
             console.log('persist setting background')
-            webapp.opts.optBackground = this.optBackground
-            chrome.storage.local.set({'optBackground':this.optBackground})
-            bg.backgroundSettingChange({'optBackground':this.optBackground})
+            webapp.opts.optBackground = val
+            appOptions.set('optBackground',val)
+            bg.backgroundSettingChange({'optBackground':val})
         },
         optRenderIndexChange: function(val) {
             console.log('persist setting renderIndex')
-            webapp.opts.optRenderIndex = this.optRenderIndex
-            chrome.storage.local.set({'optRenderIndex':this.optRenderIndex})
+            webapp.opts.optRenderIndex = val
+            appOptions.set('optRenderIndex',val)
         },
-        onPortChange: function(val) {
-            var port = parseInt(this.port)
+        onPortChange: function() {
+			var val = this.port
+            var port = parseInt(val)
             console.log('persist port',port)
             webapp.opts.port = port
             webapp.port = port
-            chrome.storage.local.set({'port':port})
+            appOptions.set('port',port)
         }
     })
 }

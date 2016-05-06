@@ -1,10 +1,9 @@
 (function(){
     var sockets = chrome.sockets
-    var _DEBUG = false
 
     function WebApplication(opts) {
         // need to support creating multiple WebApplication...
-        if (_DEBUG) {
+        if (WSC.DEBUG) {
             console.log('initialize webapp with opts',opts)
         }
         opts = opts || {}
@@ -12,22 +11,6 @@
         this.opts = opts
         this.handlers = opts.handlers || []
         this.init_handlers()
-        
-        if (opts.retainstr) {
-            // special option to setup a handler
-            chrome.fileSystem.restoreEntry( opts.retainstr, function(entry) {
-                if (entry) {
-                    this.on_entry(entry)
-                } else {
-                    console.error('error setting up retained entry')
-                }
-            }.bind(this))
-        }
-        if (opts.entry) {
-            this.on_entry(opts.entry)
-        }
-        this.host = this.get_host()
-        this.port = parseInt(opts.port || 8887)
         this.sockInfo = null
         this.lasterr = null
         this.stopped = false
@@ -37,24 +20,55 @@
         this.started = false
         this.fs = null
         this.streams = {}
+        this.upnp = null
+        if (opts.retainstr) {
+            // special option to setup a handler
+            chrome.fileSystem.restoreEntry( opts.retainstr, function(entry) {
+                if (entry) {
+                    this.on_entry(entry)
+                } else {
+                    this.error('error setting up retained entry')
+                }
+            }.bind(this))
+        }
+        if (opts.entry) {
+            this.on_entry(opts.entry)
+        }
+        this.host = this.get_host()
+        this.port = parseInt(opts.port || 8887)
 
         this._idle_timeout_id = null
 
-        //this.actives = {} // maybe store all active requests here, for debugging purposes? eh?
         this.on_status_change = null
         this.interfaces = []
-        this.interface_retry_count = 0 // when no network interfaces are available, wait for the wifi to come online...
+        this.interface_retry_count = 0
         this.urls = []
+        this.extra_urls = []
         if (this.port > 65535 || this.port < 1024) {
             var err = 'bad port: ' + this.port
             this.error(err)
         }
-        if (_DEBUG) {
-            console.log('webapp created',this)
-        }
     }
 
     WebApplication.prototype = {
+        updateOption: function(k,v) {
+            this.opts[k] = v
+            switch(k) {
+            case 'optDoPortMapping':
+                if (! v) {
+                    if (this.upnp) {
+                        this.upnp.removeMapping(this.port, 'TCP', function(result) {
+                            console.log('result of removing port mapping',result)
+                            this.extra_urls = []
+                            this.upnp = null
+                            //this.init_urls() // misleading because active connections are not terminated
+                            //this.change()
+                        }.bind(this))
+                    }
+                }
+                break
+            }
+        },
         get_info: function() {
             return {
                 interfaces: this.interfaces,
@@ -84,15 +98,19 @@
             this.fs = fs
             this.add_handler(['.*',WSC.DirectoryEntryHandler.bind(null, fs)])
             this.init_handlers()
-            if (_DEBUG) {
-                console.log('setup handler for entry',entry)
+            if (WSC.DEBUG) {
+                //console.log('setup handler for entry',entry)
             }
             //if (this.opts.optBackground) { this.start() }
         },
         get_host: function() {
             var host
             if (WSC.getchromeversion() >= 44 && this.opts.optAllInterfaces) {
-                host = this.opts.host || '::'
+                if (this.opts.optIPV6) {
+                    host = this.opts.host || '::'
+                } else {
+                    host = this.opts.host || '0.0.0.0'
+                }
             } else {
                 host = this.opts.host || '127.0.0.1'
             }
@@ -142,7 +160,7 @@
             }
         },
         stop: function(reason, callback) {
-			if (callback) { this._stop_callback = callback }
+            if (callback) { this._stop_callback = callback }
             console.log('webserver stop:',reason)
             if (this.starting) {
                 console.error('cant stop, currently starting')
@@ -258,18 +276,35 @@
             } else {
                 console.log('listen port ready',info)
                 this.port = info.port
-                this.ensureFirewallOpen()
-                //console.log('onListen',result)
-                this.starting = false
-                this.started = true
-                console.log('Listening on','http://'+ this.get_host() + ':' + this.port+'/')
-                this.bindAcceptCallbacks()
-                this.init_urls()
-                this.start_success({urls:this.urls}) // initialize URLs ?
+                if (this.opts.optDoPortMapping) {
+                    this.upnp = new WSC.UPNP({port:this.port,udp:false,searchtime:1000})
+                    this.upnp.reset(this.onPortmapResult.bind(this))
+                } else {
+                    this.onReady()
+                }
             }
         },
+        onPortmapResult: function(result) {
+            var gateway = this.upnp.validGateway
+            console.log('portmap result',result,gateway)
+            if (gateway.device && gateway.device.externalIP) {
+                var extIP = gateway.device.externalIP
+                this.extra_urls = [{url:'http://'+extIP+':' + this.port}]
+            }
+            this.onReady()
+        },
+        onReady: function() {
+            this.ensureFirewallOpen()
+            //console.log('onListen',result)
+            this.starting = false
+            this.started = true
+            console.log('Listening on','http://'+ this.get_host() + ':' + this.port+'/')
+            this.bindAcceptCallbacks()
+            this.init_urls()
+            this.start_success({urls:this.urls}) // initialize URLs ?
+        },
         init_urls: function() {
-            this.urls = []
+            this.urls = [].concat(this.extra_urls)
             this.urls.push({url:'http://127.0.0.1:' + this.port})
             for (var i=0; i<this.interfaces.length; i++) {
                 var iface = this.interfaces[i]
@@ -290,7 +325,7 @@
                 this.sockInfo = sockInfo
                 var tryPort = this.computePortRetry(state.port_attempts)
                 state.port_attempts++
-                console.log('attempting to listen on port',host,tryPort)
+                //console.log('attempting to listen on port',host,tryPort)
                 sockets.tcpServer.listen(this.sockInfo.socketId,
                                          host,
                                          tryPort,
@@ -317,7 +352,8 @@
                 console.log('network interfaces',result)
                 if (result) {
                     for (var i=0; i<result.length; i++) {
-                        if (true || result[i].prefixLength <= 24) {
+                        if (this.opts.optIPV6 || result[i].prefixLength <= 24) {
+                            if (result[i].address.startsWith('fe80::')) { continue }
                             this.interfaces.push(result[i])
                             console.log('found interface address: ' + result[i].address)
                         }
@@ -459,7 +495,7 @@
 
     function BaseHandler() {
         this.headersWritten = false
-		this.responseCode = null
+        this.responseCode = null
         this.responseHeaders = {}
         this.responseData = []
         this.responseLength = null
@@ -472,16 +508,16 @@
                 return def
             }
         },
-		getHeader: function(k,defaultvalue) {
-			return this.request.headers[k] || defaultvalue
-		},
+        getHeader: function(k,defaultvalue) {
+            return this.request.headers[k] || defaultvalue
+        },
         setHeader: function(k,v) {
             this.responseHeaders[k] = v
         },
-		set_status: function(code) {
-			console.assert(! this.headersWritten)
-			this.responseCode = code
-		},
+        set_status: function(code) {
+            console.assert(! this.headersWritten)
+            this.responseCode = code
+        },
         writeHeaders: function(code, callback) {
             if (code === undefined || isNaN(code)) { code = this.responseCode || 200 }
             this.headersWritten = true
@@ -495,7 +531,7 @@
             if (this.responseHeaders['transfer-encoding'] === 'chunked') {
                 // chunked encoding
             } else {
-                if (_DEBUG) {
+                if (WSC.DEBUG) {
                     console.log(this.request.connection.stream.sockId,'response code',code, 'clen',this.responseLength)
                 }
                 console.assert(typeof this.responseLength == 'number')
@@ -574,21 +610,21 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             }
         },
         finish: function() {
-			if (! this.headersWritten) {
-				this.responseLength = 0
-				this.writeHeaders()
-			}
+            if (! this.headersWritten) {
+                this.responseLength = 0
+                this.writeHeaders()
+            }
             if (this.beforefinish) { this.beforefinish() }
             this.request.connection.curRequest = null
             if (this.request.isKeepAlive() && ! this.request.connection.stream.remoteclosed) {
                 this.request.connection.tryRead()
-                if (_DEBUG) {
-                    console.log('webapp.finish(keepalive)')
+                if (WSC.DEBUG) {
+                    //console.log('webapp.finish(keepalive)')
                 }
             } else {
                 this.request.connection.close()
-                if (_DEBUG) {
-                    console.log('webapp.finish(close)')
+                if (WSC.DEBUG) {
+                    //console.log('webapp.finish(close)')
                 }
             }
         }

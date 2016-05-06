@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="">
+<html lang="" style="overflow-y:auto">
 
   <head>
     <link rel="import" href="elements/elements.html">
@@ -8,7 +8,7 @@
 
   <body>
 
-  <body class="fullbleed layout vertical">
+  <body class="fullbleed layout vertical" style="overflow-y:auto">
     <paper-header-panel><!-- is content invisible? paper header panel has some problems.... make it end right after the toolbar...-->
 
       <paper-toolbar>
@@ -44,8 +44,12 @@
             <paper-card style="width:100%">
               <div class="card-actions" style="padding-top:1em">
                 <paper-button on-click="onChooseFolder" id="choose-folder-button" raised>Choose Folder</paper-button>Current: <span id="current-folder">{{ displayFolder(folder) }}</span>
-                <div>
-                  <paper-toggle-button active$="[[started]]" disabled$="[[starting]]" on-click="onStartStop" id="start-stop"></paper-toggle-button><span style="padding-left:8px">Web Server: </span><span id="status-text">{{ state }}</span>
+                <div style="padding:4px">
+                  <paper-toggle-button active$="[[started]]" disabled$="[[starting]]" on-click="onStartStop" id="start-stop"></paper-toggle-button>
+				  <div style="padding:8px">
+					<span style="padding-left:2px">Web Server:</span>
+					<span id="status-text">{{ state }}</span>
+				  </div>
                 </div>
 
                 <!--paper-spinner active hidden$="[[!starting]]" id="status-spinner"></paper-spinner-->
@@ -82,7 +86,10 @@
                 <paper-checkbox disabled="{{!optBackground}}" checked="{{optAutoStart}}">Start automatically in background</paper-checkbox>
               </div>
               <div>
-                <paper-checkbox checked="{{optAllInterfaces}}" >Accessible to other computers</paper-checkbox>
+                <paper-checkbox checked="{{optAllInterfaces}}">Accessible on local network</paper-checkbox>
+              </div>
+              <div>
+                <paper-checkbox disabled="{{!optAllInterfaces}}" checked="{{optDoPortMapping}}" >Accessible on internet</paper-checkbox>
               </div>
               <div>
                 <paper-checkbox checked="{{optPreventSleep}}" >Prevent computer from sleeping</paper-checkbox>
@@ -150,6 +157,7 @@
       </paper-dialog>
       <!-- end dialog -->
     <!--/paper-header-panel--><!-- for older polymer, it needs to end here instead -->
+    <script src="options.js"></script>
     <script src="index.js"></script>
 
   </body>

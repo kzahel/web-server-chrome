@@ -142,6 +142,7 @@
                     // do we even have a request yet? or like what to do ...
                 }
             } else if (evt.resultCode < 0) {
+				debugger
                 this.log('remote killed connection',evt.resultCode)
                 this.error({message:'error code',errno:evt.resultCode})
             } else {

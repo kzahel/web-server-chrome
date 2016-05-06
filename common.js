@@ -1,6 +1,7 @@
 (function() {
 
-  window.WSC = {store_id:"ofhbbkphhbklhfoeikjpcbhemlocgigb"}
+	window.WSC = {store_id:"ofhbbkphhbklhfoeikjpcbhemlocgigb"}
+	WSC.DEBUG = true
 
 function getchromeversion() {
     var version

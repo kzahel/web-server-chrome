@@ -7,10 +7,10 @@
     "version": "0.3.4",
     "manifest_version": 2,
     "offline_enabled": true,
-    "minimum_chrome_version": "33",
+    "minimum_chrome_version": "45",
     "app": {
         "background": {
-            "scripts": ["underscore.js","encoding.js","common.js","mime.js","buffer.js","request.js","stream.js","chromesocketxhr.js","connection.js","webapp.js","websocket.js","handlers.js","httplib.js","background.js"]
+            "scripts": ["underscore.js","encoding.js","common.js","log-full.js","mime.js","buffer.js","request.js","stream.js","chromesocketxhr.js","connection.js","webapp.js","websocket.js","handlers.js","httplib.js","upnp.js","background.js"]
         }
     },
     "permissions": [
@@ -19,14 +19,17 @@
         "storage",
         "notifications",
         "power",
-        "background",
 	"system.network",
         {"fileSystem":["write","directory","retainEntries"]}
     ],
+	"optional_permissions": [
+        "background"
+	],
     "sockets": {
        "udp": {
          "send": [""],
-         "bind": [""]
+         "bind": [""],
+         "multicastMembership": ""
        },
        "tcp": {
          "connect": [""]

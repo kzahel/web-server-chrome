@@ -42,6 +42,9 @@
 		set_close_callback: function(fn) {
 			this._close_callbacks = [fn]
 		},
+		set_nodelay: function() {
+			chrome.sockets.tcp.setNoDelay(this.sockId, true, function(){})
+		},
         removeHandler: function() {
             delete peerSockMap[this.sockId]
         },

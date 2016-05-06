@@ -295,7 +295,7 @@
 			// XXX have this throw exception if stream is closed on read event
 		},
 		_on_frame_start: function(data) {
-			console.log('_on_frame_start',data.byteLength)
+			//console.log('_on_frame_start',data.byteLength)
 			this._wire_bytes_in += data.byteLength
 			var v = new DataView(data,0,2)
 			var header = v.getUint8(0)
@@ -353,7 +353,7 @@
 		_on_frame_length_n: function(data) {
 			// todo trycatch abort
 			if (this._masked_frame) {
-				console.log('masked frame')
+				//console.log('masked frame')
 				this.stream.readBytes(4, this._on_masking_key.bind(this))
 			} else {
 				this.stream.readBytes(this._frame_length, this._on_frame_data.bind(this))
@@ -361,7 +361,7 @@
 		},
 		_on_masking_key: function(data) {
 			this._wire_bytes_in += data.byteLength
-			console.log('frame mask', new Uint8Array(data))
+			//console.log('frame mask', new Uint8Array(data))
 			this._frame_mask = data
 			// todo try/catch
 			this.stream.readBytes(this._frame_length, this._on_masked_frame_data.bind(this))
@@ -370,7 +370,7 @@
 			this._on_frame_data(_websocket_mask(this._frame_mask, data))
 		},
 		_on_frame_data: function(data) {
-			console.log('_on_frame_data',data.byteLength)
+			//console.log('_on_frame_data',data.byteLength)
 			var opcode
 			this._wire_bytes_in += data.byteLength
 			if (this._frame_opcode_is_control) {

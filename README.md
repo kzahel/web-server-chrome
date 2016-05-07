@@ -60,6 +60,8 @@ Building
 ====
 Unfortunately there is a build process if you want to run this from source directly because I am using a Polymer (polymer-project.org) user interface. There is a bower.json in the polymer-ui folder and you will need to install node+npm+bower and then run bower install from that folder. Oh, and then you will need to "Refactor for CSP" (chrome apps do not allow inline scripts), the way I do this is using https://chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg (open the folder and right click and select refactor for CSP)
 
+I'm now using a script that can do this (look in polymer-ui/build.sh. You'll need to npm install -g vulcanize crisper)
+
 ====
 
 Get it in the chrome web store:

@@ -55,7 +55,7 @@
                 <!--paper-spinner active hidden$="[[!starting]]" id="status-spinner"></paper-spinner-->
                 <h3>Web Server URL(s)</h3>
 
-                <ul>
+                <ul style="-webkit-user-select:text">
                   <template is="dom-repeat" items="{{interfaces}}">
                     <li><a href="{{item.url}}" target="_blank">{{item.url}}</a> </li>
                   </template>
@@ -82,14 +82,14 @@
               <div>
                 <paper-checkbox checked="{{optBackground}}">Run in background</paper-checkbox>
               </div>
-              <div>
-                <paper-checkbox disabled="{{!optBackground}}" checked="{{optAutoStart}}">Start automatically in background</paper-checkbox>
+              <div style="margin-left:24px">
+                <paper-checkbox disabled="{{!optBackground}}" checked="{{optAutoStart}}" id="start-background" on-click="onClickStartBackground">Start on login</paper-checkbox>
               </div>
               <div>
                 <paper-checkbox checked="{{optAllInterfaces}}">Accessible on local network</paper-checkbox>
               </div>
-              <div>
-                <paper-checkbox disabled="{{!optAllInterfaces}}" checked="{{optDoPortMapping}}" >Accessible on internet</paper-checkbox>
+              <div style="margin-left:24px">
+                <paper-checkbox disabled="{{!optAllInterfaces}}" checked="{{optDoPortMapping}}" >Also on internet</paper-checkbox>
               </div>
               <div>
                 <paper-checkbox checked="{{optPreventSleep}}" >Prevent computer from sleeping</paper-checkbox>
@@ -107,6 +107,32 @@
                              value="{{port}}">
                 </paper-input>
               </div>
+
+			  <div style="margin-bottom:1em">
+				<a href="#" on-click="toggleShowAdvanced">
+				  <template is="dom-if" if="{{showAdvanced}}">
+					Hide Advanced Settings
+					</template>
+				  <template is="dom-if" if="{{!showAdvanced}}">
+					Show Advanced Settings
+					</template>
+				</a>
+			  </div>
+
+			  <template is="dom-if" if="{{showAdvanced}}">
+
+				<div>
+                  <paper-checkbox checked="{{optCORS}}" >Set CORS headers</paper-checkbox>
+				</div>
+				<div>
+                  <paper-checkbox checked="{{optIPV6}}" >Listen on IPV6</paper-checkbox>
+				</div>
+				<div>
+                  <paper-checkbox checked="{{optStatic}}" >Plain (static) files view</paper-checkbox>
+				</div>
+				
+			  </template>
+			  
             </paper-card>
           </template>
 

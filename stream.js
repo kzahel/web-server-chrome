@@ -142,7 +142,6 @@
                     // do we even have a request yet? or like what to do ...
                 }
             } else if (evt.resultCode < 0) {
-				debugger
                 this.log('remote killed connection',evt.resultCode)
                 this.error({message:'error code',errno:evt.resultCode})
             } else {
@@ -152,7 +151,9 @@
             }
         },
         log: function(msg,msg2,msg3) {
-            console.log(this.sockId,msg,msg2,msg3)
+			if (WSC.VERBOSE) {
+				console.log(this.sockId,msg,msg2,msg3)
+			}
         },
         checkBuffer: function() {
             //console.log('checkBuffer')

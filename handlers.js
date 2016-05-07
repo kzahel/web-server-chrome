@@ -231,7 +231,8 @@
                         }
                     }
                     if (this.request.arguments && this.request.arguments.static == '1' ||
-                        this.request.arguments.static == 'true'
+                        this.request.arguments.static == 'true' ||
+						this.app.opts.optStatic
                        ) {
                         this.renderDirectoryListing(results)
                     } else {
@@ -385,7 +386,6 @@
             }
             html.push('</ul></html>')
             this.setHeader('content-type','text/html; charset=utf-8')
-            this.setHeader('test-foo-bar','999')
             this.write(html.join('\n'))
         },
         onReadEntry: function(evt) {

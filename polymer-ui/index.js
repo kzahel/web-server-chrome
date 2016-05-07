@@ -143,6 +143,8 @@ function create_polymer_elements() {
     Polymer({
         is: 'wsc-options',
         properties: {
+			showAdvanced: { type: Boolean,
+							value: false },
             port: { type: Number,
                     value: webapp.port },
             optAllInterfaces: {
@@ -157,7 +159,18 @@ function create_polymer_elements() {
             },
             optIPV6: {
                 type: Boolean,
+				observer: 'optIPV6Change',
                 value: appOptions.options['optIPV6']
+            },
+            optCORS: {
+                type: Boolean,
+				observer: 'optCORSChange',
+                value: appOptions.options['optCORS']
+            },
+            optStatic: {
+                type: Boolean,
+				observer: 'optStaticChange',
+                value: appOptions.options['optStatic']
             },
             optTryOtherPorts: {
                 type: Boolean,
@@ -192,6 +205,33 @@ function create_polymer_elements() {
                 value: appOptions.options['optRenderIndex']
             }
         },
+		optStaticChange: function(val) {
+			var k = 'optStatic'
+			this.updateAndSave(k,val)
+		},
+		optCORSChange: function(val) {
+			var k = 'optCORS'
+			this.updateAndSave(k,val)
+		},
+		optIPV6Change: function(val) {
+			var k = 'optIPV6'
+			this.updateAndSave(k,val)
+		},
+		updateAndSave: function(k,v) {
+			console.log('update and save',k,v)
+			webapp.updateOption(k,v)
+			appOptions.set(k,v)
+		},
+        ready: function() {
+            console.log('wsc-options ready')
+			window.opts = this
+        },
+		attributeChanged: function(name, type) {
+			console.log("attribute change",name,type)
+		},
+		propertyObserver: function() {
+			console.log('property observer',arguments)
+		},
         portmapChange: function(val) {
             console.log('persist setting portmapping',val)
             webapp.updateOption('optDoPortMapping',val)
@@ -203,6 +243,10 @@ function create_polymer_elements() {
             webapp.interfaces = []
             appOptions.set('optAllInterfaces',val)
         },
+		toggleShowAdvanced: function(evt) {
+			this.showAdvanced = ! this.showAdvanced
+			evt.preventDefault()
+		},
         preventSleepChange: function(val) {
             /*
               maybe make power an optional permission? only, it is automatically granted without user gesture... 
@@ -214,14 +258,13 @@ function create_polymer_elements() {
         },
         autoStartChange: function(val) {
             console.log('persist setting autostart')
-            webapp.opts.optAutoStart = val
             appOptions.set('optAutoStart', val)
             bg.backgroundSettingChange({'optAutoStart':val})
         },
         backgroundChange: function(val) {
-            console.log('persist setting background')
-            webapp.opts.optBackground = val
-            appOptions.set('optBackground',val)
+            console.log('background setting changed',val)
+			webapp.updateOption('optBackground',val)
+            appOptions.set('optBackground', val)
             bg.backgroundSettingChange({'optBackground':val})
         },
         optRenderIndexChange: function(val) {
@@ -236,6 +279,29 @@ function create_polymer_elements() {
             webapp.opts.port = port
             webapp.port = port
             appOptions.set('port',port)
-        }
+        },
+		onClickStartBackground: function(evt) {
+			var val = this.$$('#start-background').active
+			if (val) {
+				chrome.permissions.request({permissions:['background']}, function(result) {
+					console.log('request perm bg',result)
+					if (result) {
+						success()
+					}
+				})
+			} else {
+				chrome.permissions.remove({permissions:['background']}, function(result) {
+					console.log('drop perm bg',result)
+					success()
+				})
+			}
+			function success() {
+				console.log('persist setting start in background',val)
+				webapp.opts.optBackground = val
+				appOptions.set('optBackground',val)
+				bg.backgroundSettingChange({'optBackground':val})
+			}
+		}
+
     })
 }

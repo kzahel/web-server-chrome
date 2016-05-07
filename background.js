@@ -31,10 +31,13 @@ function onchoosefolder(entry) {
 }
 function settings_ready(d) {
     window.localOptions = d
-    chrome.alarms.getAll( onAllAlarms )
+	console.log('settings:',d)
+	maybeStartup()
+    //chrome.alarms.getAll( onAllAlarms )
 }
 chrome.storage.local.get(null, settings_ready)
-function sendWSCAwakeMessage() {
+
+function maybeStartup() {
     if (localOptions.optBackground && localOptions.optAutoStart) {
         console.log('background && autostart. wake up!')
         get_webapp(window.localOptions)
@@ -48,11 +51,11 @@ function sendWSCAwakeMessage() {
 function onAlarm( alarm ) {
     console.log('alarm fired',alarm)
     if (alarm.name == ALARMID) {
-        sendWSCAwakeMessage()
+        //sendWSCAwakeMessage()
     }
 }
 
-chrome.alarms.onAlarm.addListener( onAlarm )
+//chrome.alarms.onAlarm.addListener( onAlarm )
 function backgroundSettingChange( opts ) {
     if (opts.optBackground !== undefined) {
         localOptions.optBackground = opts.optBackground
@@ -63,13 +66,15 @@ function backgroundSettingChange( opts ) {
     if (opts.optBackground !== undefined) {
         localOptions.optAutoStart = opts.optAutoStart
     }
+	/*
     if (localOptions.optBackground && localOptions.optAutoStart) {
         chrome.alarms.getAll( onAllAlarms )
     } else {
         chrome.alarms.clearAll()
-    }
+    }*/
 }
 function onAllAlarms( alarms ) {
+	return
     if (! localOptions.optBackground) {
         return
     }
@@ -127,10 +132,37 @@ function triggerKeepAwake() {
     xhr.send()
 }
 
+chrome.sockets.tcpServer.onAccept.addListener(backgroundAccept)
+var bgacceptqueue = []
+var getting_settings = false
+function backgroundAccept(sockInfo) {
+    if (window.webapp && webapp.started) {
+        return
+    }
+	HADEVENT = true
+	
+    bgacceptqueue.push(sockInfo)
+    
+    if (getting_settings) return
+    getting_settings = true
+    chrome.storage.local.get(null, function(d) {
+		console.log('got settings',d)
+		console.log('starting')
+        get_webapp(d).start( function(result) {
+			console.log('started.')
+            webapp.acceptQueue = bgacceptqueue
+			bgacceptqueue = []
+			webapp.processAcceptQueue()
+        })
+    })
+}
+
 chrome.runtime.onSuspend.addListener( function(evt) {
     //createNotification("onSuspend")
     console.warn('onSuspend')
-    
+    return
+
+	// using a persistent socket now...
     if (localOptions.optBackground) {
         triggerKeepAwake()
     } else {
@@ -153,7 +185,10 @@ function launch(launchData) {
 
     var info = {type:'onLaunched',
                 launchData: launchData}
-    var opts = {id:'index'}
+    var opts = {id:'index',
+				outerBounds: { width: 410,
+							   height: 700 }
+			   }
     //var page = 'index.html'
     var page = 'polymer-ui/index.html'
     chrome.app.window.create(page,
@@ -252,8 +287,7 @@ function create_hidden() {
             })
         }
         var opts = {id:'hidden',
-                    hidden:true,
-
+                    hidden:true
                    }
 
         chrome.app.window.create("hidden.html",
@@ -263,7 +297,7 @@ function create_hidden() {
 }
 
 function window_closed(win) {
-    console.log('window closed',win)
+    console.log('main window closed')
     if (window.app) {
         if (app.opts && app.opts.optBackground) {
             setTimeout( function() {
@@ -289,7 +323,8 @@ window.reload = chrome.runtime.reload
 
 setTimeout( function() {
 	if (! HADEVENT) {
-		console.log('background page was manually reloaded in devtools')
+		console.log('background page was manually reloaded in devtools? or resumed from suspended state...')
+		return
 		var testimg = new Image();
 		var triggered = false
 		testimg.__defineGetter__('id', devtools_open)

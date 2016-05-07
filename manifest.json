@@ -18,8 +18,9 @@
         "unlimitedStorage",
         "storage",
         "notifications",
+		"browser",
         "power",
-	"system.network",
+		"system.network",
         {"fileSystem":["write","directory","retainEntries"]}
     ],
 	"optional_permissions": [

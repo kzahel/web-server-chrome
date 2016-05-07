@@ -56,7 +56,6 @@
             console.log('process accept queue len',this.acceptQueue.length)
             while (this.acceptQueue.length > 0) {
                 var sockInfo = this.acceptQueue.shift()
-                console.log('doing sockinfo',sockInfo)
                 this.onAccept(sockInfo)
             }
         },

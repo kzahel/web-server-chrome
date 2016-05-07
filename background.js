@@ -3,6 +3,7 @@ var ALARMID = "check_wsc_periodic"
 var WSCID = "ofhbbkphhbklhfoeikjpcbhemlocgigb"
 var HADEVENT = false
 var OS
+var localOptions
 if (navigator.userAgent.match('OS X')) {
     OS = 'Mac'
 } else if (navigator.userAgent.match("Windows")) {
@@ -29,18 +30,21 @@ function onchoosefolder(entry) {
         // reload UI, restart server... etc
     }
 }
+
 function settings_ready(d) {
-    window.localOptions = d
+    localOptions = d
 	console.log('settings:',d)
-	maybeStartup()
+	setTimeout( maybeStartup, 2000 ) // give background accept handler some time to trigger
     //chrome.alarms.getAll( onAllAlarms )
 }
 chrome.storage.local.get(null, settings_ready)
 
 function maybeStartup() {
+	if (getting_settings) { return } // accept handler
+	if (had_backgroundaccept) { return }
     if (localOptions.optBackground && localOptions.optAutoStart) {
         console.log('background && autostart. wake up!')
-        get_webapp(window.localOptions)
+        get_webapp(localOptions)
         if (app.started || app.starting || app.starting_interfaces) {
             console.log('actually, dont wake up, im already started/starting')
         } else {
@@ -135,26 +139,39 @@ function triggerKeepAwake() {
 chrome.sockets.tcpServer.onAccept.addListener(backgroundAccept)
 var bgacceptqueue = []
 var getting_settings = false
+var had_backgroundaccept = false
 function backgroundAccept(sockInfo) {
+	console.log('background onaccept')
+	had_backgroundaccept = true
     if (window.webapp && webapp.started) {
-        return
+        return // app registered an accept handler.
     }
 	HADEVENT = true
 	
     bgacceptqueue.push(sockInfo)
     
     if (getting_settings) return
-    getting_settings = true
-    chrome.storage.local.get(null, function(d) {
-		console.log('got settings',d)
-		console.log('starting')
-        get_webapp(d).start( function(result) {
+
+	if (localOptions) {
+		console.log('already had settings')
+		onsettings(localOptions)
+	} else {
+		getting_settings = true
+		console.log('getting settings')
+		chrome.storage.local.get(null, onsettings)
+	}
+    
+	function onsettings(d) {
+		getting_settings = false
+		localOptions = d
+		console.log('starting...')
+		get_webapp(d).start( function(result) {
 			console.log('started.')
-            webapp.acceptQueue = bgacceptqueue
+			webapp.acceptQueue = bgacceptqueue
 			bgacceptqueue = []
 			webapp.processAcceptQueue()
-        })
-    })
+		})
+	}
 }
 
 chrome.runtime.onSuspend.addListener( function(evt) {

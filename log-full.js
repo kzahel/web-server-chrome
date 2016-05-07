@@ -42,4 +42,4 @@
             ORIGINALCONSOLE.log.apply(console,args)
         }
     }
-})()
+})();

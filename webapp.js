@@ -181,7 +181,8 @@
             if (true || this.opts.optPreventSleep) {
                 if (WSC.VERBOSE)
                     console.log('trying release keep awake')
-                chrome.power.releaseKeepAwake()
+				if (chrome.power)
+					chrome.power.releaseKeepAwake()
             }
             // TODO: remove hidden.html ensureFirewallOpen
             // also - support multiple instances.
@@ -304,10 +305,12 @@
         onPortmapResult: function(result) {
             var gateway = this.upnp.validGateway
             console.log('portmap result',result,gateway)
-            if (gateway.device && gateway.device.externalIP) {
-                var extIP = gateway.device.externalIP
-                this.extra_urls = [{url:'http://'+extIP+':' + this.port}]
-            }
+			if (! result.error) {
+				if (gateway.device && gateway.device.externalIP) {
+					var extIP = gateway.device.externalIP
+					this.extra_urls = [{url:'http://'+extIP+':' + this.port}]
+				}
+			}
             this.onReady()
         },
         onReady: function() {
@@ -348,12 +351,15 @@
                         this.sockInfo = m
                         this.port = m.localPort
                         callback({port:m.localPort})
+						return
                     }
+					this.doTryListenOnPort(state, callback)
                 }
             }.bind(this))
         },
         doTryListenOnPort: function(state, callback) {
-            sockets.tcpServer.create({name:"WSCListenSocket", persistent:this.opts.optBackground}, this.onServerSocket.bind(this,state,callback))
+			var opts = this.opts.optBackground ? {name:"WSCListenSocket", persistent:true} : {}
+            sockets.tcpServer.create(opts, this.onServerSocket.bind(this,state,callback))
         },
         onServerSocket: function(state,callback,sockInfo) {
             var host = this.get_host()

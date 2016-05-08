@@ -64,6 +64,7 @@
             chrome.system.network.getNetworkInterfaces( function(interfaces) {
                 this.interfaces = interfaces
                 this.devices = []
+				// TODO -- remove event listeners
                 this.ssdp.addEventListener('device',this.onDevice.bind(this))
                 this.ssdp.addEventListener('stop',this.onSearchStop.bind(this))
                 this.ssdp.search() // stop searching after a bit.

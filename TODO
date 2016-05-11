@@ -1,1 +1,2 @@
-if webserver turned off and close it, dont start even if bg mode on
+- if webserver turned off and close it, dont start even if bg mode on
+- clean up server socket when fail on listen or other failure

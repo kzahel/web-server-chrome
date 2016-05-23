@@ -168,6 +168,7 @@
             }
         },
         stop: function(reason, callback) {
+            this.lasterr = ''
             this.urls = []
             this.change()
             if (callback) { this._stop_callback = callback }
@@ -295,7 +296,8 @@
                     console.log('listen port ready',info)
                 this.port = info.port
                 if (this.opts.optAllInterfaces && this.opts.optDoPortMapping) {
-                    this.upnp = new WSC.UPNP({port:this.port,udp:false,searchtime:1000})
+                    console.clog("WSC","doing port mapping")
+                    this.upnp = new WSC.UPNP({port:this.port,udp:false,searchtime:2000})
                     this.upnp.reset(this.onPortmapResult.bind(this))
                 } else {
                     this.onReady()
@@ -305,7 +307,7 @@
         onPortmapResult: function(result) {
             var gateway = this.upnp.validGateway
             console.log('portmap result',result,gateway)
-			if (! result.error) {
+			if (result && ! result.error) {
 				if (gateway.device && gateway.device.externalIP) {
 					var extIP = gateway.device.externalIP
 					this.extra_urls = [{url:'http://'+extIP+':' + this.port}]
@@ -388,6 +390,7 @@
                                     )
         },
         getInterfaces: function(state, callback) {
+            console.clog('WSC','no interfaces yet',state)
             chrome.system.network.getNetworkInterfaces( function(result) {
                 console.log('network interfaces',result)
                 if (result) {

@@ -17,6 +17,7 @@ function settings_ready() {
     //window.localOptions = d
     console.log('fetched local settings',appOptions)
     window.webapp = bg.get_webapp(appOptions.getAll()) // retainStr in here
+    bg.WSC.VERBOSE = bg.WSC.DEBUG = appOptions.get('optVerbose')
     create_polymer_elements()
     on_webapp_change()
     webapp.on_status_change = on_webapp_change
@@ -162,6 +163,11 @@ function create_polymer_elements() {
 				observer: 'optIPV6Change',
                 value: appOptions.options['optIPV6']
             },
+            optVerbose: {
+                type: Boolean,
+				observer: 'optVerboseChange',
+                value: appOptions.options['optVerbose']
+            },
             optCORS: {
                 type: Boolean,
 				observer: 'optCORSChange',
@@ -212,6 +218,11 @@ function create_polymer_elements() {
 		optCORSChange: function(val) {
 			var k = 'optCORS'
 			this.updateAndSave(k,val)
+		},
+		optVerboseChange: function(val) {
+			var k = 'optVerbose'
+			this.updateAndSave(k,val)
+            bg.WSC.VERBOSE = bg.WSC.DEBUG = val
 		},
 		optIPV6Change: function(val) {
 			var k = 'optIPV6'

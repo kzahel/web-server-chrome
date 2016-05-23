@@ -1,13 +1,11 @@
 // add this file to your "blackbox" e.g. blackboxing, making devtools not show logs as coming from here
 (function() {
 	if (console.clog) { return }
-	if (! WSC.DEBUG) {
-		console.clog = function() {}
-		return
-	}
 	var L = {
-		UPNP: { show: true, color:'green' }
+		UPNP: { show: true, color:'green' },
+		WSC: { show: true, color:'green' }
 	}
+    Object.keys(L).forEach( function(k) { L[k].name = k } )
     window.ORIGINALCONSOLE = {log:console.log, warn:console.warn, error:console.error}
     window.LOGLISTENERS = []
     function wrappedlog(method) {
@@ -27,6 +25,7 @@
     console.warn = wrappedlog('warn')
     console.error = wrappedlog('error')
     console.clog = function() {
+        if (! WSC.DEBUG) { return }
         // category specific logging
         var tolog = arguments[0]
 		tolog = L[tolog]

@@ -50,6 +50,7 @@
                         var ipre = iparts.slice(0,i).join('.')
                         if (ipre == pre) {
                             match = this.interfaces[j].address
+                            console.clog("UPNP","selected internal address",match)
                             return match
                         }
                     }
@@ -71,9 +72,12 @@
             }.bind(this) )
         },
         onSearchStop: function(info) {
+            console.clog('UPNP', "search stop")
             this.searching = false
-            this.getIP( function() {
+            this.getIP( function(gotIP) {
+                if (! gotIP) { return this.allDone(false) }
                 this.getMappings( function(mappings) {
+                    if (! mappings) { return this.allDone(false) }
                     // check if already exists nice mapping we can use.
                     var internal = this.getInternalAddress()
                     console.clog('UPNP','got current mappings',mappings,'internal address',internal)
@@ -225,6 +229,8 @@
                     var info = infos[i]
                     info.device.runService(info.service,'GetExternalIPAddress',[],oneResult.bind(this, info))
                 }
+            } else {
+                callback(null)
             }
         }
     }
@@ -275,7 +281,7 @@
         },
         getDescription: function(callback) {
             var xhr = new WSC.ChromeSocketXMLHttpRequest
-            //console.clog('UPNP','query',this.description_url)
+            console.clog('UPNP','query',this.description_url)
             xhr.open("GET",this.description_url)
             xhr.setRequestHeader('connection','close')
             xhr.responseType = 'xml'
@@ -374,6 +380,8 @@
                 chrome.sockets.udp.close(parseInt(socketId))
             }
             this.sockMap = {}
+            chrome.sockets.udp.onReceive.removeListener( this._onReceive )
+            chrome.sockets.udp.onReceiveError.removeListener( this._onReceive )
         },
         stopsearch: function() {
             console.clog('UPNP', "stopping ssdp search")
@@ -381,8 +389,6 @@
             this.searching = false
             this.cleanup()
             this.trigger('stop')
-            chrome.sockets.udp.onReceive.removeListener( this._onReceive )
-            chrome.sockets.udp.onReceiveError.removeListener( this._onReceive )
         },
         search: function(opts) {
             if (this.searching) { return }

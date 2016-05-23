@@ -22,6 +22,10 @@
             type: Boolean,
             default: false
         },
+        optVerbose: {
+            type: Boolean,
+            default: false
+        },
         optStatic: {
             type: Boolean,
             default: false

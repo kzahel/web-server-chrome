@@ -55,7 +55,7 @@
             type: Boolean,
             default: true
         },
-        optRenderStatic: {
+        optUpload: {
             type: Boolean,
             default: false
         }

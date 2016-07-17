@@ -178,6 +178,11 @@ function create_polymer_elements() {
 				observer: 'optStaticChange',
                 value: appOptions.options['optStatic']
             },
+            optUpload: {
+                type: Boolean,
+				observer: 'optUploadChange',
+                value: appOptions.options['optUpload']
+            },
             optTryOtherPorts: {
                 type: Boolean,
                 value: false
@@ -213,6 +218,10 @@ function create_polymer_elements() {
         },
 		optStaticChange: function(val) {
 			var k = 'optStatic'
+			this.updateAndSave(k,val)
+		},
+		optUploadChange: function(val) {
+			var k = 'optUpload'
 			this.updateAndSave(k,val)
 		},
 		optCORSChange: function(val) {

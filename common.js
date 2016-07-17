@@ -129,12 +129,13 @@ if (! String.prototype.startsWith) {
     window.WSC.entryFileCache = new EntryCache
 
 WSC.recursiveGetEntry = function(filesystem, path, callback) {
+    var useCache = false
     // XXX duplication with jstorrent
     var cacheKey = filesystem.filesystem.name +
         filesystem.fullPath +
         '/' + path.join('/')
     var inCache = WSC.entryCache.get(cacheKey)
-    if (inCache) { 
+    if (useCache && inCache) { 
         //console.log('cache hit');
         callback(inCache); return
     }
@@ -146,11 +147,11 @@ WSC.recursiveGetEntry = function(filesystem, path, callback) {
             if (e.name == 'TypeMismatchError') {
                 state.e.getDirectory(state.path, {create:false}, recurse, recurse)
             } else if (e.isFile) {
-                WSC.entryCache.set(cacheKey,e)
+                if (useCache) WSC.entryCache.set(cacheKey,e)
                 callback(e)
             } else if (e.isDirectory) {
                 //console.log(filesystem,path,cacheKey,state)
-                WSC.entryCache.set(cacheKey,e)
+                if (useCache) WSC.entryCache.set(cacheKey,e)
                 callback(e)
             } else {
                 callback({error:'path not found'})

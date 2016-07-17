@@ -535,4 +535,76 @@ var i18nTemplate = (function() {
 
 
 i18nTemplate.process(document, loadTimeData);
+
+document.addEventListener("DOMContentLoaded", function(e) {
+    console.log("DOM CONTENT LOADED")
+    // apparently for drop to work everywhere, you have to prevent default for enter/over/leave
+    // but we lose the cool icon hmm -- tried dropEffect "copy" everywhere, seems to work
+    // http://www.quirksmode.org/blog/archives/2009/09/the_html5_drag.html
+    document.addEventListener("dragover", dragOver, false);
+    document.addEventListener("dragleave", dragLeave, false);
+    document.addEventListener("dragenter", dragEnter, false);
+    document.addEventListener("drop", drop, false);
+})
+
+function dragOver(evt) {
+    console.log(arguments.callee.name)
+    evt.dataTransfer.dropEffect = 'copy'
+    evt.preventDefault();
+    return false;
+}
+function dragLeave(evt) {
+    console.log(arguments.callee.name)
+    evt.dataTransfer.dropEffect = 'copy'
+    evt.preventDefault();
+    return false;
+}
+function dragEnter(evt) {
+    console.log(arguments.callee.name)
+    evt.dataTransfer.dropEffect = 'copy'
+    evt.preventDefault();
+    return false;
+}
+function drop(evt) {
+    console.log(arguments.callee.name)
+    evt.dataTransfer.dropEffect = 'copy'
+    evt.preventDefault();
+    handleDrop(evt)
+    return false;
+}
+
+function handleDrop(evt) {
+        var items = evt.dataTransfer.items
+        if (items) {
+            for (var i=0; i<items.length; i++) {
+                item = items[i]
+                //console.log('drop found item',item)
+                if (item.kind == 'file') {
+                    var entry = item.webkitGetAsEntry()
+                    handleEntry(entry)
+                    }
+                    }
+                    }
+}
+function handleEntry(entry) {
+    console.log('handle entry',entry)
+
+    function onread(evt) {
+        doupload(entry, evt.target.result)
+    }
+
+    var fr = new FileReader
+    fr.onload = fr.onerror = onread
+
+    entry.file( function(f) {
+        fr.readAsArrayBuffer(f)
+    })
+}
+
+function doupload(entry, data) {
+    console.log('doupload',entry,data)
+    fetch(window.location.pathname + encodeURIComponent(entry.name), {method:'PUT',body:data}).then(
+                                          function(r){console.log('upload resp',r); window.location.reload()}).catch(
+                                          function(e){console.log('upload err',e)})
+}
 </script>

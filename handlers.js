@@ -94,6 +94,49 @@
         head: function() {
             this.get()
         },
+        put: function() {
+            if (! this.app.opts.optUpload) {
+                this.responseLength = 0
+                this.writeHeaders(400)
+                this.finish()
+                return
+            }
+
+            // if upload enabled in options...
+            // check if file exists...
+            this.fs.getByPath(this.request.path, this.onPutEntry.bind(this))
+        },
+        onPutEntry: function(entry) {
+            if (entry && entry.error == 'path not found') {
+                // good, we can upload it here ...
+                var parts = this.request.path.split('/')
+                var path = parts.slice(0,parts.length-1).join('/')
+                var filename = parts[parts.length-1]
+                this.fs.getByPath(path, this.onPutFolder.bind(this,filename))
+            } else {
+                console.log('file already exists')
+            }
+        },
+        onPutFolder: function(filename, folder) {
+            var onwritten = function(evt) {
+                console.log('write complete',evt)
+                // TODO write 400 in other cases...
+                this.responseLength = 0
+                this.writeHeaders(200)
+                this.finish()
+            }.bind(this)
+            var body = this.request.body
+            function onfile(entry) {
+                if (entry && entry.isFile) {
+                    function onwriter(writer) {
+                        writer.onwrite = writer.onerror = onwritten
+                        writer.write(new Blob([body]))
+                    }
+                    entry.createWriter(onwriter, onwriter)
+                }
+            }
+            folder.getFile(filename, {create:true}, onfile, onfile)
+        },
         get: function() {
             //this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
 

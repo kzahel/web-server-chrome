@@ -107,14 +107,19 @@
             this.fs.getByPath(this.request.path, this.onPutEntry.bind(this))
         },
         onPutEntry: function(entry) {
+            var parts = this.request.path.split('/')
+            var path = parts.slice(0,parts.length-1).join('/')
+            var filename = parts[parts.length-1]
+
             if (entry && entry.error == 'path not found') {
                 // good, we can upload it here ...
-                var parts = this.request.path.split('/')
-                var path = parts.slice(0,parts.length-1).join('/')
-                var filename = parts[parts.length-1]
                 this.fs.getByPath(path, this.onPutFolder.bind(this,filename))
             } else {
-                console.log('file already exists')
+                var allowReplaceFile = true
+                console.log('file already exists', entry)
+                if (allowReplaceFile) {
+                    this.fs.getByPath(path, this.onPutFolder.bind(this,filename))
+                }
             }
         },
         onPutFolder: function(filename, folder) {

@@ -5,6 +5,9 @@ https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoe
 
 Chrome Web Server - an HTTP web server for Chrome (chrome.sockets)
 
+How to include into your own chrome app
+===
+run minimize.sh to concatenate all the required files together and then include the resulting wsc-chrome.min.js in your project. Here is an example of another project's usage: https://github.com/zebradog/kiosk/blob/f7a398f697edc1c22b90c14f959779f1e850012a/src/js/main.js#L124
 ===
 Basic usage:
 

@@ -10,6 +10,9 @@ Features
 - configure listening port
 - custom http handlers possible
 - websocket support available
+- works nice with chrome.runtime.onSuspend
+- options for autostart, start in background, etc etc.
+- See relevant options: https://github.com/kzahel/web-server-chrome/blob/master/polymer-ui/options.js
 
 
 How to include into your own chrome app

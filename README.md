@@ -1,9 +1,11 @@
 <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">![Try it now in CWS](https://raw.github.com/GoogleChrome/chrome-app-samples/master/tryitnowbutton.png "Click here to install this sample from the Chrome Web Store")</a>
 
+# Chrome Web Server - an HTTP web server for Chrome (chrome.sockets)
+
 Get it in the chrome web store:
 https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb
 
-Chrome Web Server - an HTTP web server for Chrome (chrome.sockets)
+Many people have found the webstore version useful for doing some basic web development as an alternative to python -m SimpleHTTPServer. But it can also be used for quick file sharing over a local network.
 
 Features
 - serve local files

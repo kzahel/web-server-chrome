@@ -16,6 +16,8 @@ Features
 - handles range requests, HEAD, etc
 - options for CORS
 - optional PUT, DELETE request (for upload files)
+- sets MIME types
+- can render directory listing
 - See relevant options: https://github.com/kzahel/web-server-chrome/blob/master/polymer-ui/options.js
 
 
@@ -35,6 +37,7 @@ options: object, with keys
 - optBackground: whether to run even if the window is closed
 - optAutoStart: whether to auto start when chrome starts
 - port: int (port to listen on)
+- See relevant options: https://github.com/kzahel/web-server-chrome/blob/master/polymer-ui/options.js
 
 Handlers
     var handlers = [
@@ -77,7 +80,7 @@ todo: create small example pages
 ====
 Building
 ====
-Unfortunately there is a build process if you want to run this from source directly because I am using a Polymer (polymer-project.org) user interface. There is a bower.json in the polymer-ui folder and you will need to install node+npm+bower and then run bower install from that folder. Oh, and then you will need to "Refactor for CSP" (chrome apps do not allow inline scripts), the way I do this is using https://chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg (open the folder and right click and select refactor for CSP)
+Unfortunately there is a build process if you want to run this from source directly because I am using a Polymer (polymer-project.org) user interface. There is a bower.json in the polymer-ui folder and you will need to install node+npm+bower and then run bower install from that folder. Oh, and then you will need to "Refactor for CSP" (chrome apps do not allow inline scripts), one way of doing this is using https://chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg (open the folder and right click and select refactor for CSP)
 
 I'm now using a script that can do this (look in polymer-ui/build.sh. You'll need to npm install -g vulcanize crisper)
 

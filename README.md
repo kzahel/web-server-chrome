@@ -5,6 +5,13 @@ https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoe
 
 Chrome Web Server - an HTTP web server for Chrome (chrome.sockets)
 
+Features
+- serve local files
+- configure listening port
+- custom http handlers possible
+- websocket support available
+
+
 How to include into your own chrome app
 ===
 

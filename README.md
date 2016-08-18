@@ -31,7 +31,10 @@ run minimize.sh to concatenate all the required files together and then include 
 ===
 Basic usage:
 
-var app = new chrome.WebApplication(options)
+```
+var app = new WSC.WebApplication(options)
+app.start( callback )
+```
 
 options: object, with keys
 - handlers: array of handlers,
@@ -41,6 +44,7 @@ options: object, with keys
 - port: int (port to listen on)
 - See relevant options: https://github.com/kzahel/web-server-chrome/blob/master/polymer-ui/options.js
 
+```
 Handlers
     var handlers = [
         ['/favicon.ico',FavIconHandler],
@@ -48,14 +52,15 @@ Handlers
         ['/static/(.*)',StaticHandler],
         ['.*', DefaultHandler]
     ]
+```
 
-handlers is an array of 2 element arrays where the first item is a regular expression for the URL and the second is the handler class, which should extend BaseHandler
+handlers is an array of 2 element arrays where the first item is a regular expression for the URL and the second is the handler class, which should extend WSC.BaseHandler
 
 ```
     function StaticHandler() {
         this.disk = null
         chrome.runtime.getPackageDirectoryEntry( function(entry) { this.disk = entry }.bind(this) )
-        BaseHandler.prototype.constructor.call(this)
+        WSC.BaseHandler.prototype.constructor.call(this)
     }
     var FavIconHandlerprototype = {
         get: function(path) {
@@ -72,11 +77,9 @@ handlers is an array of 2 element arrays where the first item is a regular expre
     }
     _.extend(StaticHandler.prototype,
              StaticHandlerprototype,
-             BaseHandler.prototype
+             WSC.BaseHandler.prototype
             )
 ```
-
-todo: create small example pages
 
 
 ====

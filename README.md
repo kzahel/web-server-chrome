@@ -8,10 +8,14 @@ Chrome Web Server - an HTTP web server for Chrome (chrome.sockets)
 Features
 - serve local files
 - configure listening port
+- configure listening interface (e.g. localhost or all interfaces)
 - custom http handlers possible
 - websocket support available
 - works nice with chrome.runtime.onSuspend
 - options for autostart, start in background, etc etc.
+- handles range requests, HEAD, etc
+- options for CORS
+- optional PUT, DELETE request (for upload files)
 - See relevant options: https://github.com/kzahel/web-server-chrome/blob/master/polymer-ui/options.js
 
 

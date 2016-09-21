@@ -306,7 +306,7 @@
         },
         renderFileContents: function(entry, file) {
             getEntryFile(entry, function(file) {
-                if (file instanceof FileError) {
+                if (file instanceof DOMException) {
                     this.write("File not found", 404)
                     this.finish()
                     return
@@ -456,7 +456,7 @@
         chrome.runtime.getPackageDirectoryEntry( function(pentry) {
             var template_filename = 'directory-listing-template.html'
             var onfile = function(e) {
-                if (e instanceof FileError) {
+                if (e instanceof DOMException) {
                     console.error('template fetch:',e)
                 } else {
                     var onfile = function(file) {

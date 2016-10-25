@@ -271,7 +271,7 @@
                 function alldone(results) {
                     if (this.app.opts.optRenderIndex) {
                         for (var i=0; i<results.length; i++) {
-                            if (results[i].name == 'index.html') {
+                            if (results[i].name == 'index.html' || results[i].name == 'index.htm') {
                                 this.setHeader('content-type','text/html; charset=utf-8')
                                 this.renderFileContents(results[i])
                                 return

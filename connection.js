@@ -17,8 +17,7 @@
         },
         write: function(data) {
             if (typeof data == 'string') {
-                // convert to arraybuffer
-                // TODO fix with multi byte chars ( use encoding library )
+                // this is using TextEncoder with utf-8
                 var buf = WSC.stringToUint8Array(data).buffer
             } else {
                 var buf = data

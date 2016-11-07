@@ -417,7 +417,13 @@
                     callback()
                 }
             }.bind(this))
-        },/*
+        },
+        refreshNetworkInterfaces: function(callback) {
+            this.stop( 'refreshNetworkInterfaces', function() {
+                this.start(callback)
+            }.bind(this))
+        },
+        /*
         refreshNetworkInterfaces: function(callback) {
             // want to call this if we switch networks. maybe better to just stop/start actually...
             this.urls = []

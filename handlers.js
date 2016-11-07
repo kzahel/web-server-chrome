@@ -278,7 +278,11 @@
                             }
                         }
                     }
-                    if (this.request.arguments && this.request.arguments.static == '1' ||
+                    if (this.request.arguments && this.request.arguments.json == '1' ||
+                        (this.request.headers['accept'] && this.request.headers['accept'].toLowerCase() == 'applicaiton/json')
+                       ) {
+                        this.renderDirectoryListingJSON(results)
+                    } else if (this.request.arguments && this.request.arguments.static == '1' ||
                         this.request.arguments.static == 'true' ||
 						this.app.opts.optStatic
                        ) {
@@ -387,6 +391,14 @@
                 return anl.localeCompare(bnl)
             }
                 
+        },
+        renderDirectoryListingJSON: function(results) {
+            this.setHeader('content-type','application/json; charset=utf-8')
+            this.write(JSON.stringify(results.map(function(f) { return { name:f.name,
+                                                                         fullPath:f.fullPath,
+                                                                         isFile:f.isFile,
+                                                                         isDirectory:f.isDirectory }
+                                                              }), null, 2))
         },
         renderDirectoryListingTemplate: function(results) {
             if (! WSC.template_data) {

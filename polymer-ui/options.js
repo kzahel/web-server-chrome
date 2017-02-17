@@ -58,6 +58,22 @@
         optUpload: {
             type: Boolean,
             default: false
+        },
+        optModRewriteEnable: {
+            type: Boolean,
+            default: false
+        },
+        optModRewriteRegexp: {
+            type: String,
+            default: ".*\\.[\\d\\w]+$" // looks like a file extension
+        },
+        optModRewriteNegate: {
+            type: Boolean,
+            default: true
+        },
+        optModRewriteTo: {
+            type: String,
+            default: '/index.html'
         }
 	}
 

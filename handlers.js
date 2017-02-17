@@ -155,7 +155,9 @@
 
             // strip '/' off end of path
 
-            if (this.fs.isFile) {
+            if (this.rewrite_to) {
+                this.fs.getByPath(this.rewrite_to, this.onEntry.bind(this))
+            } else if (this.fs.isFile) {
                 this.onEntry(this.fs)
             } else {
                 this.fs.getByPath(this.request.path, this.onEntry.bind(this))
@@ -252,7 +254,7 @@
                     this.writeHeaders(404)
                     this.finish()
                 } else {
-                    this.write('entry not found',404)
+                    this.write('entry not found: ' + (this.rewrite_to || this.request.path), 404)
                 }
             } else if (entry.isFile) {
                 this.renderFileContents(entry)

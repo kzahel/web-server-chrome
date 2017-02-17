@@ -509,36 +509,59 @@
                 }
             }
 
-            
-            for (var i=0; i<this.handlersMatch.length; i++) {
-                var re = this.handlersMatch[i][0]
-                var reresult = re.exec(request.uri)
-                if (reresult) {
-                    var cls = this.handlersMatch[i][1]
-                    var requestHandler = new cls(request)
-                    requestHandler.connection = connection
-                    requestHandler.app = this
-                    requestHandler.request = request
-                    stream.lastHandler = requestHandler
-                    var handlerMethod = requestHandler[request.method.toLowerCase()]
-                    var preHandlerMethod = requestHandler['before_' + request.method.toLowerCase()]
-                    if (preHandlerMethod) {
-                        preHandlerMethod.apply(requestHandler, reresult.slice(1))
-                        return
-                    }
-                    if (handlerMethod) {
-                        handlerMethod.apply(requestHandler, reresult.slice(1))
-                        return
+            if (this.opts.optModRewriteEnable) {
+                var matches = request.uri.match(this.opts.optModRewriteRegexp)
+                if (matches === null && this.opts.optModRewriteNegate ||
+                    matches !== null && ! this.opts.optModRewriteNegate
+                   ) {
+                    console.log("Mod rewrite rule matched", matches, this.opts.optModRewriteRegexp, request.uri)
+                    var handler = new WSC.DirectoryEntryHandler(this.fs, request)
+                    handler.rewrite_to = this.opts.optModRewriteTo
+                }
+            }
+
+            function on_handler(re_match, app, requestHandler) {
+                requestHandler.connection = connection
+                requestHandler.app = app
+                requestHandler.request = request
+                stream.lastHandler = requestHandler
+                var handlerMethod = requestHandler[request.method.toLowerCase()]
+                var preHandlerMethod = requestHandler['before_' + request.method.toLowerCase()]
+                if (preHandlerMethod) {
+                    preHandlerMethod.apply(requestHandler, re_match)
+                }
+                if (handlerMethod) {
+                    handlerMethod.apply(requestHandler, re_match)
+                    return true
+                }
+            }
+            var handled = false;
+
+            if (handler) {
+                handled = on_handler(null, this, handler)
+            } else {
+                for (var i=0; i<this.handlersMatch.length; i++) {
+                    var re = this.handlersMatch[i][0]
+                    var reresult = re.exec(request.uri)
+                    if (reresult) {
+                        var re_match = reresult.slice(1)
+                        var cls = this.handlersMatch[i][1]
+                        var requestHandler = new cls(request)
+                        handled = on_handler(re_match, this, requestHandler)
+                        if (handled) { break }
                     }
                 }
             }
-            console.error('unhandled request',request)
-            // create a default handler...
-            var handler = new WSC.BaseHandler(request)
-            handler.app = this
-            handler.request = request
-            handler.write("Unhandled request. Did you select a folder to serve?", 404)
-            handler.finish()
+
+            if (! handled) {
+                console.error('unhandled request',request)
+                // create a default handler...
+                var handler = new WSC.BaseHandler(request)
+                handler.app = this
+                handler.request = request
+                handler.write("Unhandled request. Did you select a folder to serve?", 404)
+                handler.finish()
+            }
         }
     }
 

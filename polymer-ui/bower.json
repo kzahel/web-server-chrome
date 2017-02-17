@@ -27,6 +27,7 @@
     "paper-spinner": "PolymerElements/paper-spinner#^1.0.0",
     "paper-dialog": "PolymerElements/paper-dialog#^1.0.0",
     "neon-animation": "PolymerElements/neon-animation#^1.0.0",
-    "paper-header-panel": "PolymerElements/paper-header-panel#^1.0.0"
+    "paper-header-panel": "PolymerElements/paper-header-panel#^1.0.0",
+    "paper-tooltip": "PolymerElements/paper-tooltip#^1.1.3"
   }
 }

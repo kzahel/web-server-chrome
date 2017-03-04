@@ -118,7 +118,11 @@
                 var allowReplaceFile = true
                 console.log('file already exists', entry)
                 if (allowReplaceFile) {
-                    this.fs.getByPath(path, this.onPutFolder.bind(this,filename))
+                    // truncate file
+                    var onremove = function(evt) {
+                        this.fs.getByPath(path, this.onPutFolder.bind(this,filename))
+                    }.bind(this)
+                    entry.remove( onremove, onremove )
                 }
             }
         },

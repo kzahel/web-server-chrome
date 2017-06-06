@@ -692,7 +692,9 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             }
             this.responseData = []
             if (opt_finish !== false) {
+              this.request.connection.stream.onWriteBufferEmpty = () => {
                 this.finish()
+              }
             }
         },
         finish: function() {

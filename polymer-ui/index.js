@@ -15,9 +15,8 @@ function ui_ready() {
 }
 function settings_ready() {
     //window.localOptions = d
-    var allOpts = appOptions.getAll()
-    console.log('fetched local settings',appOptions, allOpts)
-    window.webapp = bg.get_webapp(allOpts) // retainStr in here
+    console.log('fetched local settings',appOptions)
+    window.webapp = bg.get_webapp(appOptions.getAll()) // retainStr in here
     bg.WSC.VERBOSE = bg.WSC.DEBUG = appOptions.get('optVerbose')
     create_polymer_elements()
     on_webapp_change()
@@ -152,37 +151,42 @@ function create_polymer_elements() {
             optAllInterfaces: {
                 type: Boolean,
                 observer: 'interfaceChange',
-                value: appOptions.get('optAllInterfaces')
+                value: appOptions.options['optAllInterfaces']
             },
             optDoPortMapping: {
                 observer: 'portmapChange',
                 type: Boolean,
-                value: appOptions.get('optDoPortMapping')
+                value: appOptions.options['optDoPortMapping']
             },
             optIPV6: {
                 type: Boolean,
 				observer: 'optIPV6Change',
-                value: appOptions.get('optIPV6')
+                value: appOptions.options['optIPV6']
             },
             optVerbose: {
                 type: Boolean,
 				observer: 'optVerboseChange',
-                value: appOptions.get('optVerbose')
+                value: appOptions.options['optVerbose']
             },
             optCORS: {
                 type: Boolean,
 				observer: 'optCORSChange',
-                value: appOptions.get('optCORS')
+                value: appOptions.options['optCORS']
             },
             optStatic: {
                 type: Boolean,
 				observer: 'optStaticChange',
-                value: appOptions.get('optStatic')
+                value: appOptions.options['optStatic']
+            },
+            optCached: {
+                type: Boolean,
+				observer: 'optCachedChange',
+                value: appOptions.options['optCached']
             },
             optUpload: {
                 type: Boolean,
 				observer: 'optUploadChange',
-                value: appOptions.get('optUpload')
+                value: appOptions.options['optUpload']
             },
             optTryOtherPorts: {
                 type: Boolean,
@@ -199,62 +203,30 @@ function create_polymer_elements() {
             optPreventSleep: {
                 type: Boolean,
                 observer: 'preventSleepChange',
-                value: appOptions.get('optPreventSleep')
+                value: appOptions.options['optPreventSleep']
             },
             optBackground: {
                 type: Boolean,
                 observer: 'backgroundChange',
-                value: appOptions.get('optBackground')
+                value: appOptions.options['optBackground']
             },
             optAutoStart: {
                 type: Boolean,
                 observer: 'autoStartChange',
-                value: appOptions.get('optAutoStart')
+                value: appOptions.options['optAutoStart']
             },
             optRenderIndex: {
                 type: Boolean,
                 observer: 'optRenderIndexChange',
-                value: appOptions.get('optRenderIndex')
-            },
-            optModRewriteEnable: {
-                type: Boolean,
-                observer: 'optModRewriteEnableChange',
-                value: appOptions.get('optModRewriteEnable')
-            },
-            optModRewriteRegexp: {
-                type: String,
-                observer: 'optModRewriteRegexpChange',
-                value: appOptions.get('optModRewriteRegexp')
-            },
-            optModRewriteNegate: {
-                type: Boolean,
-                observer: 'optModRewriteNegateChange',
-                value: appOptions.get('optModRewriteNegate')
-            },
-            optModRewriteTo: {
-                type: String,
-                observer: 'optModRewriteToChange',
-                value: appOptions.get('optModRewriteTo')
+                value: appOptions.options['optRenderIndex']
             }
-        },
-        optModRewriteEnableChange: function(val) {
-			var k = 'optModRewriteEnable'
-			this.updateAndSave(k,val)
-        },
-        optModRewriteNegateChange: function(val) {
-			var k = 'optModRewriteNegate'
-			this.updateAndSave(k,val)
-        },
-        optModRewriteToChange: function(val) {
-			var k = 'optModRewriteTo'
-			this.updateAndSave(k,val)
-        },
-        optModRewriteRegexpChange: function(val) {
-			var k = 'optModRewriteRegexp'
-			this.updateAndSave(k,val)
         },
 		optStaticChange: function(val) {
 			var k = 'optStatic'
+			this.updateAndSave(k,val)
+		},
+		optCachedChange: function(val) {
+			var k = 'optCached'
 			this.updateAndSave(k,val)
 		},
 		optUploadChange: function(val) {
@@ -306,7 +278,7 @@ function create_polymer_elements() {
 		},
         preventSleepChange: function(val) {
             /*
-              maybe make power an optional permission? only, it is automatically granted without user gesture... 
+              maybe make power an optional permission? only, it is automatically granted without user gesture...
             */
             console.log('persist setting prevent sleep',val)
             webapp.opts.optPreventSleep = val

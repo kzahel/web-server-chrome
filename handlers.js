@@ -6,8 +6,8 @@
         
         var cacheKey = entry.filesystem.name + '/' + entry.fullPath
         var inCache = WSC.entryFileCache.get(cacheKey)
-        if (inCache) { 
-            //console.log('file cache hit'); 
+        if (inCache) {
+            //console.log('file cache hit');
             callback(inCache); return }
         
         entry.file( function(file) {
@@ -118,11 +118,7 @@
                 var allowReplaceFile = true
                 console.log('file already exists', entry)
                 if (allowReplaceFile) {
-                    // truncate file
-                    var onremove = function(evt) {
-                        this.fs.getByPath(path, this.onPutFolder.bind(this,filename))
-                    }.bind(this)
-                    entry.remove( onremove, onremove )
+                    this.fs.getByPath(path, this.onPutFolder.bind(this,filename))
                 }
             }
         },
@@ -159,9 +155,7 @@
 
             // strip '/' off end of path
 
-            if (this.rewrite_to) {
-                this.fs.getByPath(this.rewrite_to, this.onEntry.bind(this))
-            } else if (this.fs.isFile) {
+            if (this.fs.isFile) {
                 this.onEntry(this.fs)
             } else {
                 this.fs.getByPath(this.request.path, this.onEntry.bind(this))
@@ -258,7 +252,7 @@
                     this.writeHeaders(404)
                     this.finish()
                 } else {
-                    this.write('entry not found: ' + (this.rewrite_to || this.request.path), 404)
+                    this.write('entry not found',404)
                 }
             } else if (entry.isFile) {
                 this.renderFileContents(entry)
@@ -279,6 +273,11 @@
                         for (var i=0; i<results.length; i++) {
                             if (results[i].name == 'index.html' || results[i].name == 'index.htm') {
                                 this.setHeader('content-type','text/html; charset=utf-8')
+                                this.renderFileContents(results[i])
+                                return
+                            }
+                            else if (results[i].name == 'index.xhtml' || results[i].name == 'index.xhtm') {
+                                this.setHeader('content-type','application/xhtml+xml; charset=utf-8')
                                 this.renderFileContents(results[i])
                                 return
                             }
@@ -424,7 +423,7 @@
                 var filesize = '""'
                 //var modified = '10/13/15, 10:38:40 AM'
                 var modified = ''
-                // raw, urlencoded, isdirectory, size, 
+                // raw, urlencoded, isdirectory, size,
                 html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+','+filesize+',"'+modified+'");</script>')
             }
             var data = html.join('\n')
@@ -436,7 +435,12 @@
         renderDirectoryListing: function(results) {
             var html = ['<html>']
             html.push('<style>li.directory {background:#aab}</style>')
-            html.push('<a href="../?static=1">parent</a>')
+            if (this.app.opts.optCached) {
+            	html.push('<a href="../?static=1">parent</a>')
+            }
+            else {
+            	html.push('<a href="../">parent</a>')
+            }
             html.push('<ul>')
             results.sort( this.entriesSortFunc )
             
@@ -444,11 +448,20 @@
 
             for (var i=0; i<results.length; i++) {
                 var name = _.escape(results[i].name)
-                if (results[i].isDirectory) {
-                    html.push('<li class="directory"><a href="' + name + '/?static=1">' + name + '</a></li>')
-                } else {
-                    html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
-                }
+                if (this.app.opts.optCached) {
+	                if (results[i].isDirectory) {
+	                    html.push('<li class="directory"><a href="' + name + '/?static=1">' + name + '</a></li>')
+	                } else {
+	                    html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
+	                }
+				}
+				else {
+	                if (results[i].isDirectory) {
+	                    html.push('<li class="directory"><a href="' + name + '/">' + name + '</a></li>')
+	                } else {
+	                    html.push('<li><a href="' + name + '">' + name + '</a></li>')
+	                }
+				}
             }
             html.push('</ul></html>')
             this.setHeader('content-type','text/html; charset=utf-8')

@@ -282,6 +282,11 @@
                                 this.renderFileContents(results[i])
                                 return
                             }
+                            else if (results[i].name == 'index.xhtml' || results[i].name == 'index.xhtm') {
+                                this.setHeader('content-type','application/xhtml+xml; charset=utf-8')
+                                this.renderFileContents(results[i])
+                                return
+                            }
                         }
                     }
                     if (this.request.arguments && this.request.arguments.json == '1' ||

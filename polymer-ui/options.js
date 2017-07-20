@@ -30,6 +30,10 @@
             type: Boolean,
             default: false
         },
+        optCached: {
+        	type: Boolean,
+        	default: true
+        },
         optTryOtherPorts: {
             type: Boolean,
             default: false

@@ -436,7 +436,12 @@
         renderDirectoryListing: function(results) {
             var html = ['<html>']
             html.push('<style>li.directory {background:#aab}</style>')
-            html.push('<a href="../?static=1">parent</a>')
+            if (this.app.opts.optCached) {
+            	html.push('<a href="../?static=1">parent</a>')
+            }
+            else {
+            	html.push('<a href="../">parent</a>')
+            }
             html.push('<ul>')
             results.sort( this.entriesSortFunc )
             
@@ -444,11 +449,20 @@
 
             for (var i=0; i<results.length; i++) {
                 var name = _.escape(results[i].name)
-                if (results[i].isDirectory) {
-                    html.push('<li class="directory"><a href="' + name + '/?static=1">' + name + '</a></li>')
-                } else {
-                    html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
-                }
+                if (this.app.opts.optCached) {
+	                if (results[i].isDirectory) {
+	                    html.push('<li class="directory"><a href="' + name + '/?static=1">' + name + '</a></li>')
+	                } else {
+	                    html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
+	                }
+				}
+				else {
+	                if (results[i].isDirectory) {
+	                    html.push('<li class="directory"><a href="' + name + '/">' + name + '</a></li>')
+	                } else {
+	                    html.push('<li><a href="' + name + '">' + name + '</a></li>')
+	                }
+		}
             }
             html.push('</ul></html>')
             this.setHeader('content-type','text/html; charset=utf-8')

@@ -3,15 +3,13 @@
 
   <head>
 	<!-- for dev -->
-    <!--link rel="import" href="elements/elements.html">
+    <!--link rel="import" href="elements/elements.html"-->
 
 	<!-- for prod -->
     <link rel="import" href="build.html">
 
-	<link rel="stylesheet" href="styles.css"-->
+	<link rel="stylesheet" href="styles.css">
   </head>
-
-  <body>
 
   <body class="fullbleed layout vertical" style="overflow-y:auto">
     <paper-header-panel><!-- is content invisible? paper header panel has some problems.... make it end right after the toolbar...-->
@@ -48,18 +46,9 @@
           <template>
             <paper-card style="width:100%">
               <div class="card-actions" style="padding-top:1em">
-                <span>
-                  <paper-button on-click="onChooseFolder" id="choose-folder-button" raised>Choose Folder</paper-button>Current: <span id="current-folder">{{ displayFolder(folder) }}</span>
-                  <paper-tooltip offset="0">Choose a folder that the Web Server should serve files from</paper-tooltip>
-
-                  </span>
+                <paper-button on-click="onChooseFolder" id="choose-folder-button" raised>Choose Folder</paper-button>Current: <span id="current-folder">{{ displayFolder(folder) }}</span>
                 <div style="padding:4px">
-                  <span>
                   <paper-toggle-button active$="[[started]]" disabled$="[[starting]]" on-click="onStartStop" id="start-stop"></paper-toggle-button>
-
-                  <paper-tooltip offset="0">Click to start or stop the server</paper-tooltip>
-                  </span>
-
 				  <div style="padding:8px">
 					<span style="padding-left:2px">Web Server:</span>
 					<span id="status-text">{{ state }}</span>
@@ -90,34 +79,26 @@
           <template>
             <paper-card style="width:100%">
 
-              <div>
-                <h4>Options (needs restart)</h4>
-                <paper-tooltip offset="0">Many options will require a restart of the server. Restart by pressing the toggle button above</paper-tooltip>
-              </div>
+
+              <h4>Options (needs restart)</h4>
 
               <div>
                 <paper-checkbox checked="{{optBackground}}">Run in background</paper-checkbox>
-                <paper-tooltip offset="0">Allow the web server to continue running, even if you close this window</paper-tooltip>
               </div>
               <div style="margin-left:24px">
                 <paper-checkbox disabled="{{!optBackground}}" checked="{{optAutoStart}}" id="start-background" on-click="onClickStartBackground">Start on login</paper-checkbox>
-                <paper-tooltip offset="0">Start the web server when you login to Chrome, even if the web server window is not opened</paper-tooltip>
               </div>
               <div>
                 <paper-checkbox checked="{{optAllInterfaces}}">Accessible on local network</paper-checkbox>
-                <paper-tooltip offset="0">Make the web server available to other computers on the local area network</paper-tooltip>
               </div>
               <div style="margin-left:24px">
                 <paper-checkbox disabled="{{!optAllInterfaces}}" checked="{{optDoPortMapping}}" >Also on internet</paper-checkbox>
-                <paper-tooltip offset="0">Attempt to communicate with the router to open an external port accessible on the internet</paper-tooltip>
               </div>
               <div>
                 <paper-checkbox checked="{{optPreventSleep}}" >Prevent computer from sleeping</paper-checkbox>
-                <paper-tooltip offset="0">If the server is running, prevent the computer from going into sleep mode</paper-tooltip>
               </div>
               <div>
                 <paper-checkbox checked="{{optRenderIndex}}" >Automatically show index.html</paper-checkbox>
-                <paper-tooltip offset="0">If the URL is a directory, automatically show an index.html if it is present</paper-tooltip>
               </div>
 
               <div>
@@ -128,7 +109,6 @@
                              on-change="onPortChange"
                              value="{{port}}">
                 </paper-input>
-                <paper-tooltip offset="0">Which port the web server will listen on</paper-tooltip>
               </div>
 
 			  <div style="margin-bottom:1em">
@@ -146,56 +126,22 @@
 
 				<div>
                   <paper-checkbox checked="{{optCORS}}" >Set CORS headers</paper-checkbox>
-                  <paper-tooltip offset="0">To allow XMLHttpRequests from other origins</paper-tooltip>
 				</div>
 				<div>
                   <paper-checkbox checked="{{optIPV6}}" >Listen on IPV6</paper-checkbox>
-                  <paper-tooltip offset="0">To have the server listen with IPV6</paper-tooltip>
 				</div>
 				<div>
                   <paper-checkbox checked="{{optStatic}}" >Plain (static) files view</paper-checkbox>
-                  <paper-tooltip offset="0">The files directory listing will not use any javascript</paper-tooltip>
+				</div>
+				<div>
+                  <paper-checkbox checked="{{optCached}}" >Use cached files for directory listing</paper-checkbox>
 				</div>
 				<div>
                   <paper-checkbox checked="{{optUpload}}" >Allow File upload (drag and drop)</paper-checkbox>
-                  <paper-tooltip offset="0">The files directory listing allows drag-and-drop to upload files</paper-tooltip>
 				</div>
 				<div>
                   <paper-checkbox checked="{{optVerbose}}" >Verbose logging (navigate to "chrome://inspect", Extensions)</paper-checkbox>
 				</div>
-				<div>
-                  <paper-checkbox checked="{{optModRewriteEnable}}" >Enable mod-rewrite (for SPA)</paper-checkbox>
-                  <paper-tooltip offset="0">For SPA (single page apps) that support HTML5 History location rewrite</paper-tooltip>
-				</div>
-				<template is="dom-if" if="{{optModRewriteEnable}}">
-                  <div style="margin-left:24px">
-
-                    <span>
-                    <paper-input is="iron-input" 
-                                 label="Regular Expression"
-                                 on-change="onModRewriteRegexpChange"
-                                 value="{{optModRewriteRegexp}}">
-                    </paper-input>
-                    <paper-tooltip offset="0">Any URL Matching this regular expression will be rewritten</paper-tooltip>
-                    </span>
-
-                    <span>
-                    <paper-checkbox checked="{{optModRewriteNegate}}" >Negate Regexp</paper-checkbox>
-                    <paper-tooltip offset="0">Negate the matching logic in the above Regexp</paper-tooltip>
-                    </span>
-
-                    <span>
-                    <paper-input is="iron-input" 
-                                 label="Rewrite To"
-                                 on-change="onModRewriteTo"
-                                 value="{{optModRewriteTo}}">
-                    </paper-input>
-                    <paper-tooltip offset="0">Which file to serve instead of the actual path. For example, "/index.html" </paper-tooltip>
-                    </span>
-
-
-                  </div>
-                  </template>
 				
 			  </template>
 			  

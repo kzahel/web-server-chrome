@@ -64,13 +64,7 @@
                 }
             }
 
-            
-            if (method == 'GET') {
-                this.onRequest(this.curRequest)
-            } else if (method == 'HEAD') {
-                this.onRequest(this.curRequest)
-            } else if (method == 'PUT') {
-                // handle request BODY?
+            if (['GET','HEAD','PUT','OPTIONS'].includes(method)) {
                 this.onRequest(this.curRequest)
             } else {
                 console.error('how to handle',this.curRequest)

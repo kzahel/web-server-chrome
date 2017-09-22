@@ -373,7 +373,7 @@
             this.searching = false
             // clear out all sockets in sockmap
             this.cleanup()
-			this.allDone(false)
+            if (this.allDone) this.allDone(false)
         },
         cleanup: function() {
             for (var socketId in this.sockMap) {

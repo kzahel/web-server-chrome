@@ -574,7 +574,7 @@
     }
     _.extend(BaseHandler.prototype, {
         options: function() {
-            if (this.app.optCORS) {
+            if (this.app.opts.optCORS) {
                 this.set_status(200)
                 this.finish()
             } else {
@@ -584,7 +584,7 @@
         },
         setCORS: function() {
             this.setHeader('access-control-allow-origin','*')
-            this.setHeader('access-control-allow-methods','GET, POST')
+            this.setHeader('access-control-allow-methods','GET, POST, PUT')
             this.setHeader('access-control-max-age','120')
         },
         get_argument: function(key,def) {

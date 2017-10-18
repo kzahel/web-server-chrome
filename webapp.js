@@ -583,6 +583,7 @@
             }
         },
         setCORS: function() {
+	    this.setHeader('access-control-allow-headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');		
             this.setHeader('access-control-allow-origin','*')
             this.setHeader('access-control-allow-methods','GET, POST, PUT')
             this.setHeader('access-control-max-age','120')

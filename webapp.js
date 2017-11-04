@@ -692,9 +692,7 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             }
             this.responseData = []
             if (opt_finish !== false) {
-              this.request.connection.stream.onWriteBufferEmpty = () => {
-                this.finish()
-              }
+              this.finish()
             }
         },
         finish: function() {
@@ -710,10 +708,13 @@ Changes with nginx 0.7.9                                         12 Aug 2008
                     //console.log('webapp.finish(keepalive)')
                 }
             } else {
+              console.assert(! this.request.connection.stream.onWriteBufferEmpty)
+              this.request.connection.stream.onWriteBufferEmpty = () => {
                 this.request.connection.close()
                 if (WSC.DEBUG) {
                     //console.log('webapp.finish(close)')
                 }
+              }
             }
         }
     })

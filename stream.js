@@ -91,7 +91,7 @@
             }
             //console.log('tryWrite')
             this.writing = true
-            var data = this.writeBuffer.consume_any_max(4096)
+            var data = this.writeBuffer.consume_any_max(4096*1024)
             //console.log(this.sockId,'tcp.send',data.byteLength)
             //console.log(this.sockId,'tcp.send',WSC.ui82str(new Uint8Array(data)))
             sockets.tcp.send( this.sockId, data, this.onWrite.bind(this, callback) )

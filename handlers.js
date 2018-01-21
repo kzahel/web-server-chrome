@@ -104,7 +104,7 @@
 
             // if upload enabled in options...
             // check if file exists...
-            this.fs.getByPath(this.request.path, this.onPutEntry.bind(this))
+            this.fs.getByPath(this.request.path, this.onPutEntry.bind(this), true)
         },
         onPutEntry: function(entry) {
             var parts = this.request.path.split('/')

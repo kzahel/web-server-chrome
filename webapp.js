@@ -723,14 +723,14 @@ Changes with nginx 0.7.9                                         12 Aug 2008
         this.entry = entry
     }
     _.extend(FileSystem.prototype, {
-        getByPath: function(path, callback) {
+        getByPath: function(path, callback, allowFolderCreation) {
             if (path == '/') { 
                 callback(this.entry)
                 return
             }
             var parts = path.split('/')
             var newpath = parts.slice(1,parts.length)
-            WSC.recursiveGetEntry(this.entry, newpath, callback)
+            WSC.recursiveGetEntry(this.entry, newpath, callback, allowFolderCreation)
         }
     })
 

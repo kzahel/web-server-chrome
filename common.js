@@ -128,7 +128,7 @@ if (! String.prototype.startsWith) {
     window.WSC.entryCache = new EntryCache
     window.WSC.entryFileCache = new EntryCache
 
-WSC.recursiveGetEntry = function(filesystem, path, callback) {
+WSC.recursiveGetEntry = function(filesystem, path, callback, allowFolderCreation) {
     var useCache = false
     // XXX duplication with jstorrent
     var cacheKey = filesystem.filesystem.name +
@@ -159,7 +159,7 @@ WSC.recursiveGetEntry = function(filesystem, path, callback) {
         } else if (e.isDirectory) {
             if (path.length > 1) {
                 // this is not calling error callback, simply timing out!!!
-                e.getDirectory(path.shift(), {create:false}, recurse, recurse)
+                e.getDirectory(path.shift(), {create:!!allowFolderCreation}, recurse, recurse)
             } else {
                 state.e = e
                 state.path = _.clone(path)

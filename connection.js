@@ -90,7 +90,7 @@
                     var bodyparams = {}
                     var items = bodydata.split('&')
                     for (var i=0; i<items.length; i++) {
-                        var kv = items[i].split('=')
+                        var kv = items[i].replace(/\+/g, ' ').split('=')
                         bodyparams[ decodeURIComponent(kv[0]) ] = decodeURIComponent(kv[1])
                     }
                     req.bodyparams = bodyparams

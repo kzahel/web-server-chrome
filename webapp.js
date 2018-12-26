@@ -30,6 +30,10 @@
                     this.error('error setting up retained entry')
                 }
             }.bind(this))
+          //Unchecked runtime.lastError while running fileSystem.restoreEntry: Error getting fileEntry, code: 0
+          /*
+            Select a folder in "Linux files" (ChromeOS) and then delete the folder. You will get this error. If you re-create the folder with the same name and path, it will work again.
+           */
         }
         if (opts.entry) {
             this.on_entry(opts.entry)

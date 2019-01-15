@@ -290,7 +290,7 @@
                         }
                     }
                     if (this.request.arguments && this.request.arguments.json == '1' ||
-                        (this.request.headers['accept'] && this.request.headers['accept'].toLowerCase() == 'applicaiton/json')
+                        (this.request.headers['accept'] && this.request.headers['accept'].toLowerCase() == 'application/json')
                        ) {
                         this.renderDirectoryListingJSON(results)
                     } else if (this.request.arguments && this.request.arguments.static == '1' ||

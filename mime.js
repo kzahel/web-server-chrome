@@ -872,6 +872,7 @@ var MIMETYPES = {
   "vxml": "application/voicexml+xml", 
   "w3d": "application/x-director", 
   "wad": "application/x-doom", 
+  "wasm": "application/wasm", 
   "wav": "audio/x-wav", 
   "wax": "audio/x-ms-wax", 
   "wbmp": "image/vnd.wap.wbmp", 

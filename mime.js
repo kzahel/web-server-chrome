@@ -565,6 +565,7 @@ var MIMETYPES = {
   "p7r": "application/x-pkcs7-certreqresp", 
   "p7s": "application/pkcs7-signature", 
   "p8": "application/pkcs8", 
+  "pac": "application/x-ns-proxy-autoconfig",
   "pas": "text/x-pascal", 
   "paw": "application/vnd.pawaafile", 
   "pbd": "application/vnd.powerbuilder6", 

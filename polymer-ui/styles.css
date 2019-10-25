@@ -10,6 +10,8 @@ paper-card {
 
 paper-checkbox {
     margin-bottom: 10px;
+    display: flex !important;
+    white-space: normal !important;
 }
     paper-button {
 

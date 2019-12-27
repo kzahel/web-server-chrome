@@ -474,7 +474,7 @@
         }
     }, WSC.BaseHandler.prototype)
 
-    if (chrome.runtime.id == WSC.store_id) {
+    if (chrome.runtime.id == WSC.store_id || true) {
         
         chrome.runtime.getPackageDirectoryEntry( function(pentry) {
             var template_filename = 'directory-listing-template.html'

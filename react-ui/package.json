@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "watch": "./node_modules/.bin/babel js --verbose --watch --out-dir nojsx --source-maps"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/plugin-syntax-class-properties": "^7.2.0",
+    "@babel/plugin-transform-react-jsx": "^7.7.0"
+  }
+}

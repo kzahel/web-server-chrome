@@ -64,6 +64,8 @@
             }
         },
         updateOption: function(k,v) {
+            if (WSC.VERBOSE) console.log('updateOption', k, v)
+
             this.opts[k] = v
             switch(k) {
             case 'optDoPortMapping':

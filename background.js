@@ -207,7 +207,7 @@ function launch(launchData) {
 							   height: 700 }
 			   }
     //var page = 'index.html'
-    var page = 'polymer-ui/index.html'
+    var page = 'react-ui/index.html'
     chrome.app.window.create(page,
                              opts,
                              function(mainWindow) {

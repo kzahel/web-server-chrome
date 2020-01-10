@@ -13,7 +13,7 @@ export function AppOption({disabled, indent, name, value, appOptions, onChange: 
 
   const [error, setError] = React.useState(false);
   React.useEffect(() => {
-    onChange(null, value)
+    // onChange(null, value) // why ?
   }, []);
 
   function onChange(evt, inval) {

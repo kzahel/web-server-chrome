@@ -25,7 +25,7 @@ const theme = createMuiTheme({
     primary: {
       main: '#3f51b5',
     },
-    secondary: colors.green,
+    secondary: colors.blueGrey,
   },
   status: {
     danger: 'orange',
@@ -33,7 +33,12 @@ const theme = createMuiTheme({
 });
 
 
+// these arent tested yet
 const functions = {
+  optVerbose: function(app, k, val) {
+    const {bg} = app;
+    bg.WSC.VERBOSE = bg.WSC.DEBUG = val
+  },
 	optVerboseChange: function(val) {
 		var k = 'optVerbose'
 		this.updateAndSave(k,val)
@@ -53,11 +58,19 @@ const functions = {
     webapp.updateOption('optDoPortMapping',val)
     appOptions.set('optDoPortMapping',val)
   },
+  optAllInterfaces: function(app, k, val) {
+    const {webapp} = app;
+    webapp.interfaces = []
+  },
   interfaceChange: function(val) {
     console.log('persist setting interface',val)
     webapp.opts.optAllInterfaces = val
     webapp.interfaces = []
     appOptions.set('optAllInterfaces',val)
+  },
+  optPreventSleep: function(app, k, val) {
+    const {webapp} = app;
+    webapp.updatedSleepSetting()
   },
   preventSleepChange: function(val) {
     console.log('persist setting prevent sleep',val)
@@ -70,10 +83,12 @@ const functions = {
     appOptions.set('optAutoStart', val)
     bg.backgroundSettingChange({'optAutoStart':val})
   },
-  backgroundChange: function(val) {
+  // backgroundChange: function(val) {
+  optBackground: function(app, k, val) {
+    const {webapp, bg} = app;
     console.log('background setting changed',val)
 		webapp.updateOption('optBackground',val)
-    appOptions.set('optBackground', val)
+    // appOptions.set('optBackground', val)
     bg.backgroundSettingChange({'optBackground':val})
   },
   optRenderIndexChange: function(val) {
@@ -94,8 +109,11 @@ const functions = {
     webapp.port = port
     appOptions.set('port',port)
   },
-	onClickStartBackground: function(evt) {
-		var val = this.$$('#start-background').active
+	// onClickStartBackground: function(evt) {
+  optAutoStart: function(app, k, val) {
+    // get existing value
+    const {bg, webapp} = app;
+		// var val = this.$$('#start-background').active
 		if (val) {
 			chrome.permissions.request({permissions:['background']}, function(result) {
 				console.log('request perm bg',result)
@@ -112,7 +130,7 @@ const functions = {
 		function success() {
 			console.log('persist setting start in background',val)
 			webapp.opts.optBackground = val
-			appOptions.set('optBackground',val)
+			// appOptions.set('optBackground',val)
 			bg.backgroundSettingChange({'optBackground':val})
 		}
 	}
@@ -170,6 +188,7 @@ class App extends React.Component {
     this.webapp.on_status_change = this.on_webapp_change.bind(this)
     this.setState(allOpts);
     this.on_webapp_change()
+    this.ui_ready()
   }
   get_status() {
     const result = {
@@ -226,9 +245,12 @@ class App extends React.Component {
   }
   onChange(k, v) {
 		console.log('update and save',k,v)
-		this.webapp.updateOption(k,v)
+		this.webapp.updateOption(k,v) // also set on webapp.opts ?
     // certain options require special manual handling (e.g. port has to set this.webapp.opts.port)
-    if (functions[k]) functions[k](this, k, v)
+    if (functions[k]) {
+      console.log('special handling for', k);
+      functions[k](this, k, v)
+    }
 		this.appOptions.set(k,v)
     this.setState({[k]:v})
   }
@@ -275,8 +297,11 @@ class App extends React.Component {
 
     const options = renderOpts(optDisplay)
     const advOptions = renderOpts(optAdvanced)
-    
-    const advancedButton = (<div><a href="#" onClick={() => this.setState({showAdvanced: !this.state.showAdvanced})}>{this.state.showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}</a></div>)
+    const advancedButton = (<div><a href="#" onClick={e => {
+      e.preventDefault();
+      this.setState({showAdvanced: !this.state.showAdvanced})
+    }}
+    >{this.state.showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}</a></div>)
     const {state} = this;
     return (<div>
       <ThemeProvider theme={theme}>

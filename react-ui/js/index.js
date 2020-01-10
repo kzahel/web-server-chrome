@@ -8,10 +8,29 @@ const {
   FormGroup,
   Switch,
   AppBar,
+  Container,
   Toolbar,
   Typography,
-  Button
+  Button,
+  ThemeProvider,
 } = MaterialUI
+
+const {createMuiTheme, colors, withStyles} = MaterialUI;
+const styles = {
+  card: {margin: '10px'},
+  appicon: {marginRight: '10px'},
+};
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#3f51b5',
+    },
+    secondary: colors.green,
+  },
+  status: {
+    danger: 'orange',
+  },
+});
 
 
 const functions = {
@@ -134,6 +153,7 @@ class App extends React.Component {
   }
   constructor(props) {
     super(props)
+    this.classes = props.classes; // styling api
     window.app = this
     console.log('app created');
     this.init()
@@ -258,19 +278,19 @@ class App extends React.Component {
     
     const advancedButton = (<div><a href="#" onClick={() => this.setState({showAdvanced: !this.state.showAdvanced})}>{this.state.showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}</a></div>)
     const {state} = this;
-    
     return (<div>
+      <ThemeProvider theme={theme}>
 
-      <AppBar position="static" color="default">
+      <AppBar position="static" color="primary">
         <Toolbar>
-          <img src="/icons/icon-64.png" className="appicon" />
-          <Typography type="title" color="inherit">
-            Web Server
+          <img className={this.classes.appicon} src="/images/200ok-64.png" />
+          <Typography variant="h6" type="title" color="inherit">
+            Web Server for Chrome
           </Typography>
         </Toolbar>
       </AppBar>
-
-      <Card>
+      <Container>
+      <Card className={this.classes.card}>
         <CardContent>
           <p>Please <a
                       target="_blank"
@@ -280,7 +300,7 @@ class App extends React.Component {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className={this.classes.card}>
         <CardContent>
 
           <FormGroup>
@@ -312,7 +332,7 @@ class App extends React.Component {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className={this.classes.card}>
         <CardContent>
           <Tooltip title={'Some options may require a restart of the server. Restart by pressing the toggle button above'}>
             <span>Options (may require restart)</span>
@@ -325,16 +345,20 @@ class App extends React.Component {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className={this.classes.card}>
         <CardContent>
           <p>Need to <a target="_blank" href="https://github.com/kzahel/web-server-chrome/issues">Report a problem</a>?
             Open source, MIT license.</p>
         </CardContent>
       </Card>
+      </Container>
 
+    </ThemeProvider>
     </div>)
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('app'))
+const AppWithStyles = withStyles(styles)(App);
+
+ReactDOM.render(<AppWithStyles />, document.getElementById('app'))
 

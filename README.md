@@ -1,6 +1,8 @@
 <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">![Try it now in CWS](https://raw.github.com/GoogleChrome/chrome-app-samples/master/tryitnowbutton.png "Click here to install this sample from the Chrome Web Store")</a>
 
-# Chrome Web Server - an HTTP web server for Chrome (chrome.sockets)
+## Web Server for Chrome
+
+an HTTP web server for Chrome (chrome.sockets)
 
 Get it in the chrome web store:
 https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb
@@ -28,8 +30,7 @@ How to include into your own chrome app
 
 run minimize.sh to concatenate all the required files together and then include the resulting wsc-chrome.min.js in your project. Here is an example of another project's usage: https://github.com/zebradog/kiosk/blob/f7a398f697edc1c22b90c14f959779f1e850012a/src/js/main.js#L124
 
-===
-Basic usage:
+### Basic usage:
 
 ```
 var app = new WSC.WebApplication(options)
@@ -82,14 +83,25 @@ handlers is an array of 2 element arrays where the first item is a regular expre
 ```
 
 
-====
-Building
-====
-Unfortunately there is a build process if you want to run this from source directly because I am using a Polymer (polymer-project.org) user interface. There is a bower.json in the polymer-ui folder and you will need to install node+npm+bower and then run bower install from that folder. Oh, and then you will need to "Refactor for CSP" (chrome apps do not allow inline scripts), one way of doing this is using https://chrome.google.com/webstore/detail/chrome-dev-editor-develop/pnoffddplpippgcfjdhbmhkofpnaalpg (open the folder and right click and select refactor for CSP)
 
-I'm now using a script that can do this (look in polymer-ui/build.sh. You'll need to npm install -g vulcanize crisper)
+### Building
 
-====
+```
+cd web-server-chrome
+cd makedeps
+npm install
+npm run make # this builds the app dependencies such as react and material-ui into a bundle
+cd ../react-ui
+npm run watch # Press ctrl-c if you just want to build it once.
+# press ctrl-C if you are done editing
+cd ../
+bash package.sh
+```
+
+This creates package.zip, which can then be distributed.
+
+
+### Where to get it
 
 Get it in the chrome web store:
 https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb
@@ -101,7 +113,7 @@ handle range requests. It also sets mime types correctly.
 Here is an example project based on it:
 https://chrome.google.com/webstore/detail/flv-player/dhogabmliblgpadclikpkjfnnipeebjm
 
-====
+---
 
 MIT license
 

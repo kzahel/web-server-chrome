@@ -2,6 +2,7 @@ const { FormControlLabel } = MaterialUI
 const { FormGroup } = MaterialUI
 const {
   Switch,
+  Checkbox,
   Tooltip,
   TextField,
 } = MaterialUI
@@ -54,7 +55,7 @@ export function AppOption({disabled, indent, name, value, appOptions, onChange: 
             <FormControlLabel
               label={meta.label}
               control={(
-                <Switch
+                <Checkbox
                   disabled={disabled}
                            checked={!!value}
                            onChange={onChange}

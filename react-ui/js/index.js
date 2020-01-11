@@ -33,57 +33,24 @@ const theme = createMuiTheme({
 });
 
 
-// these arent tested yet
 const functions = {
   optVerbose: function(app, k, val) {
     const {bg} = app;
     bg.WSC.VERBOSE = bg.WSC.DEBUG = val
   },
-	optVerboseChange: function(val) {
-		var k = 'optVerbose'
-		this.updateAndSave(k,val)
-    bg.WSC.VERBOSE = bg.WSC.DEBUG = val
-	},
-	updateAndSave: function(k,v) {
-		console.log('update and save',k,v)
-		webapp.updateOption(k,v)
-		appOptions.set(k,v)
-	},
-  Ready: function() {
-    console.log('wsc-options ready')
-		window.opts = this
-  },
-  portmapChange: function(val) {
-    console.log('persist setting portmapping',val)
-    webapp.updateOption('optDoPortMapping',val)
-    appOptions.set('optDoPortMapping',val)
-  },
   optAllInterfaces: function(app, k, val) {
-    const {webapp} = app;
-    webapp.interfaces = []
+    app.webapp.interfaces = []
   },
-  interfaceChange: function(val) {
-    console.log('persist setting interface',val)
-    webapp.opts.optAllInterfaces = val
-    webapp.interfaces = []
-    appOptions.set('optAllInterfaces',val)
+  optIPV6: function(app, k, val) {
+    // reset the list of interfaces
+    app.webapp.interfaces = []
   },
   optPreventSleep: function(app, k, val) {
-    const {webapp} = app;
-    webapp.updatedSleepSetting()
+    // do it after the setting is changed
+    setTimeout(() => {
+      app.webapp.updatedSleepSetting()
+    }, 1);
   },
-  preventSleepChange: function(val) {
-    console.log('persist setting prevent sleep',val)
-    webapp.opts.optPreventSleep = val
-    webapp.updatedSleepSetting()
-    appOptions.set('optPreventSleep',val)
-  },
-  autoStartChange: function(val) {
-    console.log('persist setting autostart')
-    appOptions.set('optAutoStart', val)
-    bg.backgroundSettingChange({'optAutoStart':val})
-  },
-  // backgroundChange: function(val) {
   optBackground: function(app, k, val) {
     const {webapp, bg} = app;
     console.log('background setting changed',val)
@@ -91,29 +58,14 @@ const functions = {
     // appOptions.set('optBackground', val)
     bg.backgroundSettingChange({'optBackground':val})
   },
-  optRenderIndexChange: function(val) {
-    console.log('persist setting renderIndex')
-    webapp.opts.optRenderIndex = val
-    appOptions.set('optRenderIndex',val)
-  },
   port: (app, k, v) => {
     console.log('persist port', v)
+    console.assert(typeof v === 'number')
     app.webapp.opts.port = v
-    app.webapp.port = v
+    app.webapp.port = v // does it still need to be set here?
   },
-  onPortChange: function() {
-		var val = this.port
-    var port = parseInt(val)
-    console.log('persist port',port)
-    webapp.opts.port = port
-    webapp.port = port
-    appOptions.set('port',port)
-  },
-	// onClickStartBackground: function(evt) {
   optAutoStart: function(app, k, val) {
-    // get existing value
     const {bg, webapp} = app;
-		// var val = this.$$('#start-background').active
 		if (val) {
 			chrome.permissions.request({permissions:['background']}, function(result) {
 				console.log('request perm bg',result)
@@ -130,7 +82,6 @@ const functions = {
 		function success() {
 			console.log('persist setting start in background',val)
 			webapp.opts.optBackground = val
-			// appOptions.set('optBackground',val)
 			bg.backgroundSettingChange({'optBackground':val})
 		}
 	}
@@ -343,7 +294,6 @@ class App extends React.Component {
           </FormGroup>
 
           <div>
-            
             <Button variant="contained" onClick={this.choose_folder.bind(this)}>Choose Folder</Button>
             <span>{state.folder ? ` Current: ${state.folder}` : 'NO FOLDER SELECTED'}</span>
           </div>

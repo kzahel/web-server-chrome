@@ -64,6 +64,8 @@
             }
         },
         updateOption: function(k,v) {
+            if (WSC.VERBOSE) console.log('updateOption', k, v)
+
             this.opts[k] = v
             switch(k) {
             case 'optDoPortMapping':
@@ -334,7 +336,7 @@
             this.urls.push({url:'http://127.0.0.1:' + this.port})
             for (var i=0; i<this.interfaces.length; i++) {
                 var iface = this.interfaces[i]
-                if (iface.prefixLength > 24) {
+                if (iface.prefixLength === 64) {
                     this.urls.push({url:'http://['+iface.address+']:' + this.port})
                 } else {
                     this.urls.push({url:'http://'+iface.address+':' + this.port})
@@ -399,7 +401,7 @@
                 console.log('network interfaces',result)
                 if (result) {
                     for (var i=0; i<result.length; i++) {
-                        if (this.opts.optIPV6 || result[i].prefixLength <= 24) {
+                        if (this.opts.optIPV6 || result[i].prefixLength >= 24) {
                             if (result[i].address.startsWith('fe80::')) { continue }
                             this.interfaces.push(result[i])
                             console.log('found interface address: ' + result[i].address)

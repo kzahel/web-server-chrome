@@ -12,4 +12,7 @@ window.MaterialUI = m
 m = require('underscore')
 window._ = m
 
+m = require('node-forge')
+window.forge = m
+
 module.exports = {}

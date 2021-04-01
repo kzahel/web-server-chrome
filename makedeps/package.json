@@ -7,9 +7,12 @@
     "make": "./node_modules/.bin/browserify index.js > ../assets/bundle.js"
   },
   "dependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.13.12",
     "@material-ui/core": "^4.6.1",
     "@material-ui/icons": "^4.5.1",
+    "babel": "^6.23.0",
     "browserify": "^16.5.0",
+    "node-forge": "^0.8.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "underscore": "^1.9.1"

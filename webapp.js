@@ -1,5 +1,4 @@
 (function(){
-    var sockets = chrome.sockets
 
     function WebApplication(opts) {
         // need to support creating multiple WebApplication...
@@ -7,6 +6,7 @@
             console.log('initialize webapp with opts',opts)
         }
         opts = opts || {}
+        opts.optUseTls = true; /// FIXME hack this into a gui selectable thing
         this.id = Math.random().toString()
         this.opts = opts
         this.handlers = opts.handlers || []
@@ -348,7 +348,7 @@
             return this.port + i*3 + Math.pow(i,2)*2
         },
         tryListenOnPort: function(state, callback) {
-            sockets.tcpServer.getSockets( function(sockets) {
+            chrome.sockets.tcpServer.getSockets( function(sockets) {
                 if (sockets.length == 0) {
                     this.doTryListenOnPort(state, callback)
                 } else {
@@ -367,15 +367,15 @@
         },
         doTryListenOnPort: function(state, callback) {
 			var opts = this.opts.optBackground ? {name:"WSCListenSocket", persistent:true} : {}
-            sockets.tcpServer.create(opts, this.onServerSocket.bind(this,state,callback))
+            chrome.sockets.tcpServer.create(opts, this.onServerSocket.bind(this,state,callback))
         },
         onServerSocket: function(state,callback,sockInfo) {
             var host = this.get_host()
             this.sockInfo = sockInfo
             var tryPort = this.computePortRetry(state.port_attempts)
-            state.port_attempts++
-            //console.log('attempting to listen on port',host,tryPort)
-            sockets.tcpServer.listen(this.sockInfo.socketId,
+            state.port_attempts++;
+            console.log('attempting to listen on port',host,tryPort)
+            chrome.sockets.tcpServer.listen(this.sockInfo.socketId,
                                      host,
                                      tryPort,
                                      function(result) {
@@ -461,8 +461,8 @@
             }
         },
         bindAcceptCallbacks: function() {
-            sockets.tcpServer.onAcceptError.addListener(this.onAcceptError.bind(this))
-            sockets.tcpServer.onAccept.addListener(this.onAccept.bind(this))
+            chrome.sockets.tcpServer.onAcceptError.addListener(this.onAcceptError.bind(this))
+            chrome.sockets.tcpServer.onAccept.addListener(this.onAccept.bind(this))
         },
         onAcceptError: function(acceptInfo) {
             if (acceptInfo.socketId != this.sockInfo.socketId) { return }
@@ -474,7 +474,13 @@
             //console.log('onAccept',acceptInfo,this.sockInfo)
             if (acceptInfo.socketId != this.sockInfo.socketId) { return }
             if (acceptInfo.socketId) {
-                var stream = new WSC.IOStream(acceptInfo.clientSocketId)
+                let stream;
+                if (this.opts.optUseTls) {
+                    //this._initializeTls();
+                    //this._tls.handshake(null); // No handshake in server mode
+                    stream = new WSC.IOStreamTls(acceptInfo.clientSocketId);
+                } else
+                    stream = new WSC.IOStream(acceptInfo.clientSocketId)
                 this.adopt_stream(acceptInfo, stream)
             }
         },
@@ -569,7 +575,8 @@
                 handler.finish()
             }
         }
-    }
+  };
+
 
     function BaseHandler() {
         this.headersWritten = false

@@ -326,7 +326,8 @@
             //console.log('onListen',result)
             this.starting = false
             this.started = true
-            console.log('Listening on','http://'+ this.get_host() + ':' + this.port+'/')
+			let prot = this.opts.optUseTls ? 'http' : 'https';
+            console.log('Listening on',prot+'://'+ this.get_host() + ':' + this.port+'/')
             this.bindAcceptCallbacks()
             this.init_urls()
             this.start_success({urls:this.urls}) // initialize URLs ?

@@ -1,6 +1,5 @@
 (function() {
 
-
 // function to create certificate
 var createCert = function(cn, data) {
   console.log(
@@ -22,13 +21,13 @@ var createCert = function(cn, data) {
     value: 'SE'
   }, {
     shortName: 'ST',
-    value: 'Kronoberg'
+    value: 'test-st'
   }, {
     name: 'localityName',
-    value: 'Växjö'
+    value: 'test-locality'
   }, {
     name: 'organizationName',
-    value: 'Test'
+    value: 'Testapp'
   }, {
     shortName: 'OU',
     value: 'Test'
@@ -57,7 +56,7 @@ var createCert = function(cn, data) {
   cert.publicKey = keys.publicKey;
 
   // self-sign certificate
-  cert.sign(keys.privateKey);
+  cert.sign(keys.privateKey, forge.md.sha256.create());
 
   // save data
   data[cn] = {
@@ -65,7 +64,7 @@ var createCert = function(cn, data) {
     privateKey: forge.pki.privateKeyToPem(keys.privateKey)
   };
 
-  console.log('certificate created for \"' + cn + '\": \n' + data[cn].cert);
+  //console.log('certificate created for \"' + cn + '\": \n' + data[cn].cert);
 };
 
 var end = {};
@@ -73,12 +72,13 @@ var data = {};
 
 // create certificate for server and client
 createCert('server', data);
-//createCert('client', data);
+createCert('client', data);
 console.log(data.server.privateKey);
 console.log(data.server.cert);
 
-/*
+
 var success = false;
+let secret = "My secret message", response, roundtrip;
 
 // create TLS client
 end.client = forge.tls.createConnection({
@@ -99,12 +99,12 @@ end.client = forge.tls.createConnection({
   },
   connected: function(c) {
     console.log('Client connected...');
-
+/*
     // send message to server
     setTimeout(function() {
       c.prepareHeartbeatRequest('heartbeat');
       c.prepare('Hello Server');
-    }, 1);
+    }, 1);*/
   },
   getCertificate: function(c, hint) {
     console.log('Client getting certificate ...');
@@ -118,9 +118,9 @@ end.client = forge.tls.createConnection({
     end.server.process(c.tlsData.getBytes());
   },
   dataReady: function(c) {
-    var response = c.data.getBytes();
-    console.log('Client received \"' + response + '\"');
-    success = (response === 'Hello Client');
+    roundtrip = c.data.getBytes();
+    console.log('Client received \"' + roundtrip + '\"');
+    success = (roundtrip === secret);
     c.close();
   },
   heartbeatReceived: function(c, payload) {
@@ -172,10 +172,11 @@ end.server = forge.tls.createConnection({
     end.client.process(c.tlsData.getBytes());
   },
   dataReady: function(c) {
-    console.log('Server received \"' + c.data.getBytes() + '\"');
+    response = c.data.getBytes();
+    console.log('Server received \"' + response + '\"');
 
     // send response
-    c.prepare('Hello Client');
+    c.prepare(response);
     c.close();
   },
   heartbeatReceived: function(c, payload) {
@@ -189,238 +190,15 @@ end.server = forge.tls.createConnection({
   }
 });
 
-//console.log('created TLS client and server, doing handshake...');
-//end.client.handshake();
+console.log('created TLS client and server, doing handshake...');
+end.client.handshake();
+end.client.prepare(secret);
+console.log("sucess:" + success);
 
 //WSC.Tls = {end: end, data: data };
-*/
 
 
 
-
-  // the Ssl sockets
-  var string2ArrayBuffer = function(string, callback) {
-    var buf = new ArrayBuffer(string.length);
-    var bufView = new Uint8Array(buf);
-    for (var i=0; i < string.length; i++) {
-      bufView[i] = string.charCodeAt(i);
-    }
-    callback(buf);
-  };
-
-  var arrayBuffer2String = function(buf, callback) {
-    var bufView = new Uint8Array(buf);
-    var chunkSize = 65536;
-    var result = '';
-    for (var i = 0; i < bufView.length; i += chunkSize) {
-      result += String.fromCharCode.apply(null, bufView.subarray(i, Math.min(i + chunkSize, bufView.length)));
-    }
-    callback(result);
-  };
-
-  var SocketSslTcp = function() {
-    this._buffer = '';
-    this._requiredBytes = 0;
-    this._onReceive = this._onReceive.bind(this);
-    this._onReceiveError = this._onReceiveError.bind(this);
-    //chrome.sockets.tcp.apply(this); //net.AbstractTCPSocket.apply(this);
-  };
-
-  //SocketSslTcp.prototype.__proto__ = net.AbstractTCPSocket.prototype;
-  SocketSslTcp.prototype = Object.create(chrome.sockets.tcp, {constructor: {value: SocketSslTcp}})
-
-/* // implementation in webapp.js
-  SocketSslTcp.prototype.connect = function(addr, port) {
-    var _this = this;
-    this._active();
-    chrome.sockets.tcp.create({}, function(si) {
-      _this.socketId = si.socketId;
-      if (_this.socketId > 0) {
-        registerSocketConnection(si.socketId);
-        chrome.sockets.tcp.setPaused(_this.socketId, true);
-        // Port will be of the form +port# given that it is using SSL.
-        chrome.sockets.tcp.connect(_this.socketId, addr, parseInt(port.substr(1)),
-            _this._onConnect.bind(_this));
-      } else {
-        _this.emit('error', "Couldn\'t create socket");
-      }
-    });
-  };*/
-
-  SocketSslTcp.prototype._onConnect = function(rc) {
-    if (rc < 0) {
-      this.emit('error', 'Couldn\'t connect to socket: ' +
-          chrome.runtime.lastError.message + ' (error ' + (-rc) + ')');
-      return;
-    }
-    this._initializeTls({});
-    this._tls.handshake(this._tlsOptions.sessionId || null);
-    chrome.sockets.tcp.onReceive.addListener(this._onReceive);
-    chrome.sockets.tcp.onReceiveError.addListener(this._onReceiveError);
-    chrome.sockets.tcp.setPaused(this.socketId, false);
-  };
-
-  SocketSslTcp.prototype._initializeTls = function(options) {
-    var _this = this;
-    this._tlsOptions = options;
-    this._tls = window.forge.tls.createConnection({
-        server: false,
-        sessionId: options.sessionId || null,
-        caStore: options.caStore || [],
-        sessionCache: options.sessionCache || null,
-        cipherSuites: options.cipherSuites || [
-          window.forge.tls.CipherSuites.TLS_RSA_WITH_AES_128_CBC_SHA,
-          window.forge.tls.CipherSuites.TLS_RSA_WITH_AES_256_CBC_SHA],
-        virtualHost: options.virtualHost,
-        verify: options.verify || function() { return true },
-        getCertificate: options.getCertificate,
-        getPrivateKey: options.getPrivateKey,
-        getSignature: options.getSignature,
-        deflate: options.deflate,
-        inflate: options.inflate,
-        connected: function(c) {
-          // first handshake complete, call handler
-//          if(c.handshakes === 1) {
-            console.log('TLS socket connected');
-            _this.emit('connect');
-//          }
-        },
-        tlsDataReady: function(c) {
-          // send TLS data over socket
-          var bytes = c.tlsData.getBytes();
-          string2ArrayBuffer(bytes, function(data) {
-            chrome.sockets.tcp.send(_this.socketId, data, function(sendInfo) {
-              if (sendInfo.resultCode < 0) {
-                console.error('SOCKET ERROR on write: ' +
-                    chrome.runtime.lastError.message + ' (error ' + (-sendInfo.resultCode) + ')');
-              }
-              if (sendInfo.bytesSent === data.byteLength) {
-                _this.emit('drain');
-              } else {
-                if (sendInfo.bytesSent >= 0) {
-                  console.error('Can\'t handle non-complete writes: wrote ' +
-                      sendInfo.bytesSent + ' expected ' + data.byteLength);
-                }
-                _this.emit('error', 'Invalid write on socket, code: ' + sendInfo.resultCode);
-              }
-            });
-          });
-        },
-        dataReady: function(c) {
-          // indicate application data is ready
-          var data = c.data.getBytes();
-          irc.util.toSocketData(forge.util.decodeUtf8(data), function(data) {
-            _this.emit('data', data);
-          });
-        },
-        closed: function(c) {
-          // close socket
-          _this._close();
-        },
-        error: function(c, e) {
-          // send error, close socket
-          _this.emit('error', 'tlsError: ' + e.message);
-          _this._close();
-        }
-      });
-  };
-
-  SocketSslTcp.prototype._onClosed = function() {
-    if (this._tls && this._tls.open && this._tls.handshaking) {
-      this.emit('error', 'Connection closed during handshake');
-    }
-  };
-
-  SocketSslTcp.prototype.close = function() {
-    if (this._tls)
-      this._tls.close();
-  };
-
-  SocketSslTcp.prototype._close = function() {
-    if (this.socketId != null) {
-      chrome.sockets.tcp.onReceive.removeListener(this._onReceive);
-      chrome.sockets.tcp.onReceiveError.removeListener(this._onReceiveError);
-      chrome.sockets.tcp.disconnect(this.socketId);
-      chrome.sockets.tcp.close(this.socketId);
-      registerSocketConnection(this.socketId, true);
-    }
-    this.emit('close');
-  };
-
-  SocketSslTcp.prototype.write = function(data) {
-    var _this = this;
-    arrayBuffer2String(data, function(data) {
-      _this._tls.prepare(data);
-    });
-  };
-
-  SocketSslTcp.prototype._onReceive = function(receiveInfo) {
-    if (receiveInfo.socketId != this.socketId)
-      return;
-    this._active();
-    if (!this._tls.open)
-      return;
-    var _this = this;
-    arrayBuffer2String(receiveInfo.data, function (data) {
-      _this._buffer += data;
-      if (_this._buffer.length >= _this._requiredBytes) {
-        _this._requiredBytes = _this._tls.process(_this._buffer);
-        _this._buffer = '';
-      }
-    });
-  };
-
-  SocketSslTcp.prototype._onReceiveError = function (readInfo) {
-    if (readInfo.socketId != this.socketId)
-      return;
-    this._active();
-    if (info.resultCode === -100) {  // connection closed
-      this.emit('end');
-      this._close();
-    }
-    else {
-      var message = '';
-      if (chrome.runtime.lastError)
-        message = chrome.runtime.lastError.message;
-      this.emit('error', 'read from socket: ' + message + ' (error ' +
-          (-readInfo.resultCode) + ')');
-      this._close();
-      return;
-    }
-  };
-
-
-    // wrapper for socket.tcp
-    var SocketTcp = function() { }
-    SocketTcp.prototype = Object.create(chrome.sockets.tcp, {constructor: {value: SocketTcp}});
-    SocketTcp.prototype.onReceive = {
-      addListener:function(cb) {
-        chrome.sockets.tcp.onReceive.addListener(function(){
-          console.log("SocketTcp.onReceive", arguments);
-          cb.apply(this, arguments);
-        });
-      }
-    }
-
-
-    
-    var SocketsSingleton = function() { }
-    SocketsSingleton.prototype = Object.create(chrome.sockets, {constructor: {value: SocketsSingleton}});
-    SocketsSingleton.prototype.setSsl = function(useSsl) {
-        if (!useSsl) {
-            SocketsSingleton.prototype.tcp = new SocketTcp; //chrome.sockets.tcp;
-            SocketsSingleton.prototype.udp = chrome.sockets.udp;
-            SocketsSingleton.prototype.tcpServer = chrome.sockets.tcpServer;
-        } else {
-            console.warn("Not ready yet");
-            SocketsSingleton.prototype.tcp = new SocketSslTcp; //chrome.sockets.tcp;
-            SocketsSingleton.prototype.udp = chrome.sockets.udp;
-            SocketsSingleton.prototype.tcpServer = chrome.sockets.tcpServer;
-        }
-    }
-
-    WSC.Sockets = new SocketsSingleton;
-    WSC.Sockets.setSsl(true);
     
   
 })();

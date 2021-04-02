@@ -10,7 +10,9 @@
     "minimum_chrome_version": "45",
     "app": {
         "background": {
-            "scripts": ["underscore.js","encoding.js","common.js", "assets/bundle.js", "log-full.js","mime.js","buffer.js","request.js","socket.js","stream.js","chromesocketxhr.js","connection.js","webapp.js","websocket.js","handlers.js","httplib.js","upnp.js","background.js"]
+            "scripts": ["underscore.js","encoding.js","common.js","assets/bundle.js",
+            "log-full.js", "mime.js", "buffer.js","request.js","socket.js","stream.js", "chromesocketxhr.js",
+            "connection.js","webapp.js","websocket.js","handlers.js","httplib.js","upnp.js","background.js"]
         }
     },
     "permissions": [

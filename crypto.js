@@ -68,6 +68,12 @@ var createCrypto = function(cn, data) {
   //console.log('certificate created for \"' + cn + '\": \n' + data[cn].cert);
 };
 
+
+WSC.createCrypto = (name) => { return createCrypto(name, {}); }
+
+
+/*
+// testing tls
 var end = {};
 var data = {};
 
@@ -76,10 +82,6 @@ createCrypto('server', data);
 createCrypto('client', data);
 console.log(data.server.privateKey);
 console.log(data.server.cert);
-
-WSC.createCrypto = (name) => { return createCrypto(name, {}); }
-
-
 var success = false;
 let secret = "My secret message", response, roundtrip;
 
@@ -107,7 +109,7 @@ end.client = forge.tls.createConnection({
     setTimeout(function() {
       c.prepareHeartbeatRequest('heartbeat');
       c.prepare('Hello Server');
-    }, 1);*/
+    }, 1);*//*
   },
   getCertificate: function(c, hint) {
     console.log('Client getting certificate ...');
@@ -200,7 +202,7 @@ console.log("sucess:" + success);
 
 //WSC.Tls = {end: end, data: data };
 
-
+*/
 
     
   

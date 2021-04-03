@@ -6,7 +6,7 @@
             console.log('initialize webapp with opts',opts)
         }
         opts = opts || {}
-        opts.optUseTls = true; /// FIXME hack this into a gui selectable thing
+        //opts.optUseHttps = true; /// FIXME hack this into a gui selectable thing
         this.id = Math.random().toString()
         this.opts = opts
         this.handlers = opts.handlers || []
@@ -94,6 +94,7 @@
                 lasterr: this.lasterr
             }
         },
+        createCrypto: WSC.createCrypto,
         updatedSleepSetting: function() {
             if (! this.started) {
                 chrome.power.releaseKeepAwake()
@@ -326,7 +327,7 @@
             //console.log('onListen',result)
             this.starting = false
             this.started = true
-			let prot = this.opts.optUseTls ? 'http' : 'https';
+			let prot = this.opts.optUseHttps ? 'https' : 'http';
             console.log('Listening on',prot+'://'+ this.get_host() + ':' + this.port+'/')
             this.bindAcceptCallbacks()
             this.init_urls()
@@ -334,13 +335,14 @@
         },
         init_urls: function() {
             this.urls = [].concat(this.extra_urls)
-            this.urls.push({url:'http://127.0.0.1:' + this.port})
+			let prot = this.opts.optUseHttps ? 'https' : 'http';
+            this.urls.push({url:prot+'://127.0.0.1:' + this.port})
             for (var i=0; i<this.interfaces.length; i++) {
                 var iface = this.interfaces[i]
                 if (iface.prefixLength === 64) {
-                    this.urls.push({url:'http://['+iface.address+']:' + this.port})
+                    this.urls.push({url:prot+'://['+iface.address+']:' + this.port})
                 } else {
-                    this.urls.push({url:'http://'+iface.address+':' + this.port})
+                    this.urls.push({url:prot+'://'+iface.address+':' + this.port})
                 }
             }
             return this.urls
@@ -476,10 +478,10 @@
             if (acceptInfo.socketId != this.sockInfo.socketId) { return }
             if (acceptInfo.socketId) {
                 let stream;
-                if (this.opts.optUseTls) {
+                if (this.opts.optUseHttps) {
                     //this._initializeTls();
                     //this._tls.handshake(null); // No handshake in server mode
-                    stream = new WSC.IOStreamTls(acceptInfo.clientSocketId);
+                    stream = new WSC.IOStreamTls(acceptInfo.clientSocketId, this.opts.optPrivateKey, this.opts.optCertificate);
                 } else
                     stream = new WSC.IOStream(acceptInfo.clientSocketId)
                 this.adopt_stream(acceptInfo, stream)

@@ -1,5 +1,6 @@
 (function() {
 
+/*
 	const serverCert = 
 "-----BEGIN CERTIFICATE-----\n\
 MIICgjCCAeugAwIBAgIBATANBgkqhkiG9w0BAQsFADBpMQ8wDQYDVQQDEwZzZXJ2\n\
@@ -34,7 +35,7 @@ KfkEiJIVYIVBDosy8Ho4CBmWAGqhzqICYe8FYwsU67ur2NEPRU3m395PYEAadjok\n\
 yil1kn+r+kTR+m6RAkEAkIOQOleOZ+btbQTETMEDFnO/g6cuVhSXoemGmY6BY8k4\n\
 14AmYpksffL217BZU5OUcWVfCyNBfYZCklaakhK9Jw==\n\
 -----END RSA PRIVATE KEY-----";
-
+*/
     var peerSockMap = {}
     WSC.peerSockMap = peerSockMap
 
@@ -281,48 +282,37 @@ yil1kn+r+kTR+m6RAkEAkIOQOleOZ+btbQTETMEDFnO/g6cuVhSXoemGmY6BY8k4\n\
      }
 
 
-    var IOStreamTls = function(sockId) {
+    var IOStreamTls = function(sockId, privateKey, serverCert) {
         this.writeCallbacks = [];
         this.readCallbacks = [];
         var _t = this;
 
 		this.tlsServer = forge.tls.createConnection({
 		  server: true,
-		  //caStore: [WSC.Tls.data.client.cert],
 		  sessionCache: {},
 		  // supported cipher suites in order of preference
 		  cipherSuites: [
 			forge.tls.CipherSuites.TLS_RSA_WITH_AES_128_CBC_SHA,
 			forge.tls.CipherSuites.TLS_RSA_WITH_AES_256_CBC_SHA],
 		  connected: function(c) {
-			console.log('Server connected');
+			//console.log('Server connected');
 			//c.prepareHeartbeatRequest('heartbeat');
 		  },
-		  verifyClient: false,// true,
-//		  verify: function(c, verified, depth, certs) {
-//			console.log(
-//			  'Server verifying certificate w/CN: \"' +
-//			  certs[0].subject.getField('CN').value +
-//			  '\", verified: ' + verified + '...');
-//			return verified;
-//		  },
+		  verifyClient: false,
 		  getCertificate: function(c, hint) {
-			console.log('Server getting certificate for \"' + hint[0] + '\"...');
+			//console.log('Server getting certificate for \"' + hint[0] + '\"...');
 			return serverCert; //WSC.Tls.data.server.cert;
 		  },
 		  getPrivateKey: function(c, cert) {
-			console.log('Server getting privateKey for \"' + cert + '\"...');
+			//console.log('Server getting privateKey for \"' + cert + '\"...');
 			return privateKey;//WSC.Tls.data.server.privateKey;
-
-
 		  },
 		  tlsDataReady: function(c) {
 			// send TLS data to client
-			//end.client.process(c.tlsData.getBytes());
-			var cb = _t.writeCallbacks.pop() || function(){}; // || function(){_t.error(c.tlsData);}
+			var cb = _t.writeCallbacks.pop() || function(){};
 			let str = c.tlsData.getBytes();
 			var b = WSC.str2ab(str);
-			console.log('encrypt to client: ' + str);
+			//console.log('encrypt to client: ' + str);
 			if (this.connected)
                 chrome.sockets.tcp.send( _t.sockId, b, cb);
             else
@@ -331,17 +321,13 @@ yil1kn+r+kTR+m6RAkEAkIOQOleOZ+btbQTETMEDFnO/g6cuVhSXoemGmY6BY8k4\n\
 		  dataReady: function(c) {
 		  	// decrypted data from client
 		  	let str = c.data.getBytes();
-			console.log('client sent \"' + str + '\"');
+			//console.log('client sent \"' + str + '\"');
 			_t.readBuffer.add(WSC.str2ab(str));
             if (_t.onread) { _t.onread() }
             _t.checkBuffer()
-
-			// send response
-			//c.prepare('Hello Client');
-			//c.close();
 		  },
 		  heartbeatReceived: function(c, payload) {
-			console.log('Server received heartbeat: ' + payload.getBytes());
+			//console.log('Server received heartbeat: ' + payload.getBytes());
 		  },
 		  closed: function(c) {
 			console.log('Server disconnected.');
@@ -355,21 +341,18 @@ yil1kn+r+kTR+m6RAkEAkIOQOleOZ+btbQTETMEDFnO/g6cuVhSXoemGmY6BY8k4\n\
     }
     IOStreamTls.prototype = {
         _writeToTcp: function(data, cb) {
-        	let str = WSC.arrayBufferToString(data);
-        	console.log('send to client: ' + str);
+        	let s = WSC.ui82str(new Uint8Array(data));
         	this.writeCallbacks.push(cb);
-        	this.tlsServer.prepare(str);
+        	this.tlsServer.prepare(s);
         },
         _fillReadBuffer: function(data) {
         	let str = arrayBuffer2String(data);
         	let n = this.tlsServer.process(str);
-            console.log('from client: ' + str);
         }
     };
-    IOStreamTls.prototype.__proto__ = IOStream.prototype; //; = Object.create(chrome.sockets.tcp, {constructor: {value: IOStream}})
+    IOStreamTls.prototype.__proto__ = IOStream.prototype;
      
     WSC.IOStreamTls = IOStreamTls;
-
     WSC.IOStream = IOStream;
 
 })();

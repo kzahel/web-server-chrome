@@ -10,6 +10,7 @@
     "@babel/plugin-transform-react-jsx": "^7.13.12",
     "@material-ui/core": "^4.6.1",
     "@material-ui/icons": "^4.5.1",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "babel": "^6.23.0",
     "browserify": "^16.5.0",
     "node-forge": "^0.10.0",

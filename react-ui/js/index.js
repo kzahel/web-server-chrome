@@ -12,8 +12,10 @@ const {
   Toolbar,
   Typography,
   Button,
-  ThemeProvider,
+  ThemeProvider
 } = MaterialUI
+
+const {Alert} = MaterialUILab;
 
 const {createMuiTheme, colors, withStyles} = MaterialUI;
 const styles = {
@@ -84,7 +86,25 @@ const functions = {
 			webapp.opts.optBackground = val
 			bg.backgroundSettingChange({'optBackground':val})
 		}
-	}
+  },
+  optPrivateKey: (app, k, val) => {
+    console.log('privateKey')
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optPrivateKey', val);
+  },
+  optCertificate: (app, k, val) => {
+    console.log('certificate', val);
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCertificate', val);
+  },
+  optUseHttps: (app, k, val) => {
+    console.log("useHttps", val);
+    app.webapp.updateOption('optUseHttps', val);
+    if (app.webapp.started) {
+      app.webapp.stop();
+      app.webapp.start();
+    }
+  }
 };
 
 
@@ -118,7 +138,7 @@ class App extends React.Component {
     starting: false,
     lasterr: null,
     folder: null,
-    message: '',
+    message: ''
   }
   constructor(props) {
     super(props)
@@ -174,6 +194,21 @@ class App extends React.Component {
       interfaces: this.webapp.urls.slice()
     })
   }
+  gen_crypto() {
+  	let reasonStr = this.webapp.opts.optPrivateKey ? "private key" :
+  	                   this.webapp.opts.optCertificate ? "certificate" : "";
+  	if (reasonStr) {
+      console.warn("Would overwrite existing " + reasonStr + ", erase it first\nMake sure to save a copy first");
+      return;
+    }
+    let cn = "WebServerForChrome" + (new Date()).toISOString();
+    let data = this.webapp.createCrypto(cn);
+    this.setState({optPrivateKey: data[cn].privateKey, optCertificate: data[cn].cert});
+    this.appOptions.set('optPrivateKey', data[cn].privateKey);
+    this.appOptions.set('optCertificate', data[cn].cert);
+    this.webapp.updateOption('optPrivateKey', data[cn].privateKey);
+    this.webapp.updateOption('optCertificate', data[cn].cert);
+  }
   ui_ready() {
     if (this.webapp) {
       if (! (this.webapp.started || this.webapp.starting)) {
@@ -225,9 +260,12 @@ class App extends React.Component {
       optModRewriteEnable: null,
       optModRewriteRegexp: ['optModRewriteEnable'],
       optModRewriteNegate: ['optModRewriteEnable'],
-      optModRewriteTo: ['optModRewriteEnable']
-    }
-    console.assert(this)
+      optModRewriteTo: ['optModRewriteEnable'],
+      optUseHttps: null,
+      optPrivateKey: null,
+      optCertificate: null
+    };
+    console.assert(this);
 
     const renderOpts = (opts) => {
       const _this = this;
@@ -253,6 +291,19 @@ class App extends React.Component {
       this.setState({showAdvanced: !this.state.showAdvanced})
     }}
     >{this.state.showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}</a></div>)
+
+    const genCryptoButton = (<div>
+        {this.webapp && (this.webapp.opts.optPrivateKey || this.webapp.opts.optCertificate) &&
+            <Alert severity="info">To regenerate, remove key and cert. Be sure to take a copy first, for possible later use!</Alert>}
+        <Button variant="contained"
+             disabled={this.webapp && (this.webapp.opts.optPrivateKey || this.webapp.opts.optCertificate)  ? true : false}
+             onClick={e => {
+				  e.preventDefault();
+				  this.gen_crypto();
+				  //this.setState({showAdvanced: !this.state.showAdvanced})
+				}}>Generate crypto</Button>
+	</div>)
+
     const {state} = this;
     return (<div>
       <ThemeProvider theme={theme}>
@@ -316,7 +367,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}</div>}
+          {state.showAdvanced && <div>{advOptions}{genCryptoButton}</div> }
         </CardContent>
       </Card>
 

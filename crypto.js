@@ -1,7 +1,7 @@
 (function() {
 
 // function to create certificate
-var createCert = function(cn, data) {
+var createCrypto = function(cn, data) {
   console.log(
     'Generating 1024-bit key-pair and certificate for \"' + cn + '\".');
   var keys = forge.pki.rsa.generateKeyPair(1024);
@@ -12,7 +12,7 @@ var createCert = function(cn, data) {
   cert.validity.notBefore = new Date();
   cert.validity.notAfter = new Date();
   cert.validity.notAfter.setFullYear(
-    cert.validity.notBefore.getFullYear() + 1);
+    cert.validity.notBefore.getFullYear() + 10);
   var attrs = [{
     name: 'commonName',
     value: cn
@@ -24,13 +24,13 @@ var createCert = function(cn, data) {
     value: 'test-st'
   }, {
     name: 'localityName',
-    value: 'test-locality'
+    value: 'testing server'
   }, {
     name: 'organizationName',
-    value: 'Testapp'
+    value: 'Web server for chrome'
   }, {
     shortName: 'OU',
-    value: 'Test'
+    value: 'WSC'
   }];
   cert.setSubject(attrs);
   cert.setIssuer(attrs);
@@ -64,6 +64,7 @@ var createCert = function(cn, data) {
     privateKey: forge.pki.privateKeyToPem(keys.privateKey)
   };
 
+  return data;
   //console.log('certificate created for \"' + cn + '\": \n' + data[cn].cert);
 };
 
@@ -71,10 +72,12 @@ var end = {};
 var data = {};
 
 // create certificate for server and client
-createCert('server', data);
-createCert('client', data);
+createCrypto('server', data);
+createCrypto('client', data);
 console.log(data.server.privateKey);
 console.log(data.server.cert);
+
+WSC.createCrypto = (name) => { return createCrypto(name, {}); }
 
 
 var success = false;

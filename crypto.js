@@ -68,7 +68,7 @@ var createCrypto = function(cn, data) {
   console.log('certificate created for \"' + cn + '\": \n');
 };
 
-WSC.createCrypto = (name) => { return createCrypto(name, {}); }  
+WSC.createCrypto = (name, data) => { return createCrypto(name, data || {}); }
   
 })();
 

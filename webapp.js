@@ -6,7 +6,6 @@
             console.log('initialize webapp with opts',opts)
         }
         opts = opts || {}
-        //opts.optUseHttps = true; /// FIXME hack this into a gui selectable thing
         this.id = Math.random().toString()
         this.opts = opts
         this.handlers = opts.handlers || []
@@ -327,7 +326,7 @@
             //console.log('onListen',result)
             this.starting = false
             this.started = true
-			let prot = this.opts.optUseHttps ? 'https' : 'http';
+            let prot = this.opts.optUseHttps ? 'https' : 'http';
             console.log('Listening on',prot+'://'+ this.get_host() + ':' + this.port+'/')
             this.bindAcceptCallbacks()
             this.init_urls()

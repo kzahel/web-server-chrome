@@ -281,7 +281,7 @@
                 chrome.sockets.tcp.send( _t.sockId, b, cb);
             else
                 _t.error("tlsData on closed socket");
-		  },
+          },
 		  dataReady: function(c) {
 		  	// decrypted data from client
 		  	let str = c.data.getBytes();

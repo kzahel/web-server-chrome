@@ -1,0 +1,7 @@
+**/node_modules
+**/package-lock.json
+react-ui/nojsx
+wsc-chrome.min.js
+assets
+package.json
+package.zip

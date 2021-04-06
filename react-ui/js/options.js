@@ -69,6 +69,7 @@ export function AppOption({disabled, indent, name, value, appOptions, onChange: 
           <TextField
             disabled={disabled}
             onChange={onChange}
+            helperText={meta.label}
             label={meta.label}
             margin="normal"
             value={value}
@@ -198,6 +199,22 @@ const options = {
     help: 'Which file to server instead of the actual path. For example, /index.html',
     type: String,
     default: '/index.html'
+  },
+  optUseHttps: {
+    label: 'Use https://',
+    help: 'Serve pages through https://',
+    type: Boolean,
+    default: false
+  },
+  optPrivateKey: {
+  	label: 'Private key string',
+  	help: "String containg private key, used in pair with certificate string.\nEdit them in pairs",
+  	type: String
+  },
+  optCertificate: {
+  	label: 'Certificate string',
+  	help: "String containg certificate, used in pair with private key string.\nEdit them in pairs",
+  	type: String 
   }
 }
 

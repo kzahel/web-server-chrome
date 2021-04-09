@@ -58,19 +58,15 @@
                 if (clen > 0) {
                     console.log('request had content length',clen)
                     this.stream.readBytes(clen, this.onRequestBody.bind(this))
-                    return
                 } else {
-                    this.curRequest.body = null
+                    console.log('request had an empty body')
+                    this.curRequest.body = new Uint8Array(0)
+                    this.onRequestBody(this.curRequest.body)
                 }
+                return
             }
 
-            
-            if (method == 'GET') {
-                this.onRequest(this.curRequest)
-            } else if (method == 'HEAD') {
-                this.onRequest(this.curRequest)
-            } else if (method == 'PUT') {
-                // handle request BODY?
+            if (['GET','HEAD','PUT','OPTIONS'].includes(method)) {
                 this.onRequest(this.curRequest)
             } else {
                 console.error('how to handle',this.curRequest)
@@ -96,7 +92,7 @@
                     var bodyparams = {}
                     var items = bodydata.split('&')
                     for (var i=0; i<items.length; i++) {
-                        var kv = items[i].split('=')
+                        var kv = items[i].replace(/\+/g, ' ').split('=')
                         bodyparams[ decodeURIComponent(kv[0]) ] = decodeURIComponent(kv[1])
                     }
                     req.bodyparams = bodyparams

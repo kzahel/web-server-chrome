@@ -4,13 +4,15 @@
     "short_name": "Web Server",
     "description": "A Web Server for Chrome, serves web pages from a local folder over the network, using HTTP. Runs offline.",
     "author": "Kyle Graehl",
-    "version": "0.4.5",
+    "version": "0.5.0",
     "manifest_version": 2,
     "offline_enabled": true,
     "minimum_chrome_version": "45",
     "app": {
         "background": {
-            "scripts": ["underscore.js","encoding.js","common.js","log-full.js","mime.js","buffer.js","request.js","stream.js","chromesocketxhr.js","connection.js","webapp.js","websocket.js","handlers.js","httplib.js","upnp.js","background.js"]
+            "scripts": ["underscore.js","encoding.js","common.js","assets/bundle.js",
+            "log-full.js", "mime.js", "buffer.js","request.js","crypto.js","stream.js", "chromesocketxhr.js",
+            "connection.js","webapp.js","websocket.js","handlers.js","httplib.js","upnp.js","background.js"]
         }
     },
     "permissions": [

@@ -128,7 +128,7 @@ if (! String.prototype.startsWith) {
     window.WSC.entryCache = new EntryCache
     window.WSC.entryFileCache = new EntryCache
 
-WSC.recursiveGetEntry = function(filesystem, path, callback) {
+WSC.recursiveGetEntry = function(filesystem, path, callback, allowFolderCreation) {
     var useCache = false
     // XXX duplication with jstorrent
     var cacheKey = filesystem.filesystem.name +
@@ -159,7 +159,7 @@ WSC.recursiveGetEntry = function(filesystem, path, callback) {
         } else if (e.isDirectory) {
             if (path.length > 1) {
                 // this is not calling error callback, simply timing out!!!
-                e.getDirectory(path.shift(), {create:false}, recurse, recurse)
+                e.getDirectory(path.shift(), {create:!!allowFolderCreation}, recurse, recurse)
             } else {
                 state.e = e
                 state.path = _.clone(path)
@@ -205,11 +205,12 @@ function ui82arr(arr, startOffset) {
     return outarr
 }
 function str2ab(s) {
-    var arr = []
+    var buf = new ArrayBuffer(s.length);
+    var bufView = new Uint8Array(buf);
     for (var i=0; i<s.length; i++) {
-        arr.push(s.charCodeAt(i))
+        bufView[i] = s.charCodeAt(i);
     }
-    return new Uint8Array(arr).buffer
+    return buf;
 }
     WSC.ui82str = ui82str
 WSC.str2ab = str2ab

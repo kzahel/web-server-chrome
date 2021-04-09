@@ -104,7 +104,7 @@
 
             // if upload enabled in options...
             // check if file exists...
-            this.fs.getByPath(this.request.path, this.onPutEntry.bind(this))
+            this.fs.getByPath(this.request.path, this.onPutEntry.bind(this), true)
         },
         onPutEntry: function(entry) {
             var parts = this.request.path.split('/')
@@ -118,7 +118,11 @@
                 var allowReplaceFile = true
                 console.log('file already exists', entry)
                 if (allowReplaceFile) {
-                    this.fs.getByPath(path, this.onPutFolder.bind(this,filename))
+                    // truncate file
+                    var onremove = function(evt) {
+                        this.fs.getByPath(path, this.onPutFolder.bind(this,filename))
+                    }.bind(this)
+                    entry.remove( onremove, onremove )
                 }
             }
         },
@@ -273,7 +277,12 @@
                 function alldone(results) {
                     if (this.app.opts.optRenderIndex) {
                         for (var i=0; i<results.length; i++) {
-                            if (results[i].name == 'index.html' || results[i].name == 'index.htm') {
+                            if (results[i].name == 'index.xhtml' || results[i].name == 'index.xhtm') {
+                                this.setHeader('content-type','application/xhtml+xml; charset=utf-8')
+                                this.renderFileContents(results[i])
+                                return
+                            }
+                            else if (results[i].name == 'index.html' || results[i].name == 'index.htm') {
                                 this.setHeader('content-type','text/html; charset=utf-8')
                                 this.renderFileContents(results[i])
                                 return
@@ -281,7 +290,7 @@
                         }
                     }
                     if (this.request.arguments && this.request.arguments.json == '1' ||
-                        (this.request.headers['accept'] && this.request.headers['accept'].toLowerCase() == 'applicaiton/json')
+                        (this.request.headers['accept'] && this.request.headers['accept'].toLowerCase() == 'application/json')
                        ) {
                         this.renderDirectoryListingJSON(results)
                     } else if (this.request.arguments && this.request.arguments.static == '1' ||
@@ -465,7 +474,7 @@
         }
     }, WSC.BaseHandler.prototype)
 
-    if (chrome.runtime.id == WSC.store_id) {
+    if (chrome.runtime.id == WSC.store_id || true) {
         
         chrome.runtime.getPackageDirectoryEntry( function(pentry) {
             var template_filename = 'directory-listing-template.html'

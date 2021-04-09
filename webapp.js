@@ -1,5 +1,4 @@
 (function(){
-    var sockets = chrome.sockets
 
     function WebApplication(opts) {
         // need to support creating multiple WebApplication...
@@ -30,6 +29,10 @@
                     this.error('error setting up retained entry')
                 }
             }.bind(this))
+          //Unchecked runtime.lastError while running fileSystem.restoreEntry: Error getting fileEntry, code: 0
+          /*
+            Select a folder in "Linux files" (ChromeOS) and then delete the folder. You will get this error. If you re-create the folder with the same name and path, it will work again.
+           */
         }
         if (opts.entry) {
             this.on_entry(opts.entry)
@@ -60,6 +63,8 @@
             }
         },
         updateOption: function(k,v) {
+            if (WSC.VERBOSE) console.log('updateOption', k, v)
+
             this.opts[k] = v
             switch(k) {
             case 'optDoPortMapping':
@@ -88,6 +93,7 @@
                 lasterr: this.lasterr
             }
         },
+        createCrypto: WSC.createCrypto,
         updatedSleepSetting: function() {
             if (! this.started) {
                 chrome.power.releaseKeepAwake()
@@ -320,20 +326,22 @@
             //console.log('onListen',result)
             this.starting = false
             this.started = true
-            console.log('Listening on','http://'+ this.get_host() + ':' + this.port+'/')
+            let prot = this.opts.optUseHttps ? 'https' : 'http';
+            console.log('Listening on',prot+'://'+ this.get_host() + ':' + this.port+'/')
             this.bindAcceptCallbacks()
             this.init_urls()
             this.start_success({urls:this.urls}) // initialize URLs ?
         },
         init_urls: function() {
             this.urls = [].concat(this.extra_urls)
-            this.urls.push({url:'http://127.0.0.1:' + this.port})
+			let prot = this.opts.optUseHttps ? 'https' : 'http';
+            this.urls.push({url:prot+'://127.0.0.1:' + this.port})
             for (var i=0; i<this.interfaces.length; i++) {
                 var iface = this.interfaces[i]
-                if (iface.prefixLength > 24) {
-                    this.urls.push({url:'http://['+iface.address+']:' + this.port})
+                if (iface.prefixLength === 64) {
+                    this.urls.push({url:prot+'://['+iface.address+']:' + this.port})
                 } else {
-                    this.urls.push({url:'http://'+iface.address+':' + this.port})
+                    this.urls.push({url:prot+'://'+iface.address+':' + this.port})
                 }
             }
             return this.urls
@@ -342,7 +350,7 @@
             return this.port + i*3 + Math.pow(i,2)*2
         },
         tryListenOnPort: function(state, callback) {
-            sockets.tcpServer.getSockets( function(sockets) {
+            chrome.sockets.tcpServer.getSockets( function(sockets) {
                 if (sockets.length == 0) {
                     this.doTryListenOnPort(state, callback)
                 } else {
@@ -361,15 +369,15 @@
         },
         doTryListenOnPort: function(state, callback) {
 			var opts = this.opts.optBackground ? {name:"WSCListenSocket", persistent:true} : {}
-            sockets.tcpServer.create(opts, this.onServerSocket.bind(this,state,callback))
+            chrome.sockets.tcpServer.create(opts, this.onServerSocket.bind(this,state,callback))
         },
         onServerSocket: function(state,callback,sockInfo) {
             var host = this.get_host()
             this.sockInfo = sockInfo
             var tryPort = this.computePortRetry(state.port_attempts)
-            state.port_attempts++
-            //console.log('attempting to listen on port',host,tryPort)
-            sockets.tcpServer.listen(this.sockInfo.socketId,
+            state.port_attempts++;
+            console.log('attempting to listen on port',host,tryPort)
+            chrome.sockets.tcpServer.listen(this.sockInfo.socketId,
                                      host,
                                      tryPort,
                                      function(result) {
@@ -395,7 +403,7 @@
                 console.log('network interfaces',result)
                 if (result) {
                     for (var i=0; i<result.length; i++) {
-                        if (this.opts.optIPV6 || result[i].prefixLength <= 24) {
+                        if (this.opts.optIPV6 || result[i].prefixLength >= 24) {
                             if (result[i].address.startsWith('fe80::')) { continue }
                             this.interfaces.push(result[i])
                             console.log('found interface address: ' + result[i].address)
@@ -455,8 +463,8 @@
             }
         },
         bindAcceptCallbacks: function() {
-            sockets.tcpServer.onAcceptError.addListener(this.onAcceptError.bind(this))
-            sockets.tcpServer.onAccept.addListener(this.onAccept.bind(this))
+            chrome.sockets.tcpServer.onAcceptError.addListener(this.onAcceptError.bind(this))
+            chrome.sockets.tcpServer.onAccept.addListener(this.onAccept.bind(this))
         },
         onAcceptError: function(acceptInfo) {
             if (acceptInfo.socketId != this.sockInfo.socketId) { return }
@@ -468,7 +476,13 @@
             //console.log('onAccept',acceptInfo,this.sockInfo)
             if (acceptInfo.socketId != this.sockInfo.socketId) { return }
             if (acceptInfo.socketId) {
-                var stream = new WSC.IOStream(acceptInfo.clientSocketId)
+                let stream;
+                if (this.opts.optUseHttps) {
+                    //this._initializeTls();
+                    //this._tls.handshake(null); // No handshake in server mode
+                    stream = new WSC.IOStreamTls(acceptInfo.clientSocketId, this.opts.optPrivateKey, this.opts.optCertificate);
+                } else
+                    stream = new WSC.IOStream(acceptInfo.clientSocketId)
                 this.adopt_stream(acceptInfo, stream)
             }
         },
@@ -563,7 +577,8 @@
                 handler.finish()
             }
         }
-    }
+  };
+
 
     function BaseHandler() {
         this.headersWritten = false
@@ -574,7 +589,7 @@
     }
     _.extend(BaseHandler.prototype, {
         options: function() {
-            if (this.app.optCORS) {
+            if (this.app.opts.optCORS) {
                 this.set_status(200)
                 this.finish()
             } else {
@@ -584,7 +599,7 @@
         },
         setCORS: function() {
             this.setHeader('access-control-allow-origin','*')
-            this.setHeader('access-control-allow-methods','GET, POST')
+            this.setHeader('access-control-allow-methods','GET, POST, PUT')
             this.setHeader('access-control-max-age','120')
         },
         get_argument: function(key,def) {
@@ -692,7 +707,7 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             }
             this.responseData = []
             if (opt_finish !== false) {
-                this.finish()
+              this.finish()
             }
         },
         finish: function() {
@@ -708,10 +723,13 @@ Changes with nginx 0.7.9                                         12 Aug 2008
                     //console.log('webapp.finish(keepalive)')
                 }
             } else {
+              console.assert(! this.request.connection.stream.onWriteBufferEmpty)
+              this.request.connection.stream.onWriteBufferEmpty = () => {
                 this.request.connection.close()
                 if (WSC.DEBUG) {
                     //console.log('webapp.finish(close)')
                 }
+              }
             }
         }
     })
@@ -720,14 +738,14 @@ Changes with nginx 0.7.9                                         12 Aug 2008
         this.entry = entry
     }
     _.extend(FileSystem.prototype, {
-        getByPath: function(path, callback) {
+        getByPath: function(path, callback, allowFolderCreation) {
             if (path == '/') { 
                 callback(this.entry)
                 return
             }
             var parts = path.split('/')
             var newpath = parts.slice(1,parts.length)
-            WSC.recursiveGetEntry(this.entry, newpath, callback)
+            WSC.recursiveGetEntry(this.entry, newpath, callback, allowFolderCreation)
         }
     })
 

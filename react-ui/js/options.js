@@ -172,7 +172,7 @@ const options = {
   },
   optDir404: {
     label: '404 instead of directory listing',
-    help: 'When no index.html is found in a directory, you will get a 404 error.',
+    help: 'When no index.html is found in a directory, you will get a 404 error',
     type: Boolean,
     default: false
   },

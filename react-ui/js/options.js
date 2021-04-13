@@ -170,6 +170,12 @@ const options = {
     type: Boolean,
     default: true
   },
+  optDir404: {
+    label: '404 instead of directory listing',
+    help: 'When no index.html is found, you will get a 404 error.',
+    type: Boolean,
+    default: false
+  },
   optUpload: {
     label: 'Allow File upload',
     help: 'The files directory listing allows drag-and-drop to upload small files',

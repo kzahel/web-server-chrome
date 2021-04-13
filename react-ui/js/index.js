@@ -255,6 +255,7 @@ class App extends React.Component {
       optDoPortMapping: ['optAllInterfaces'],
       optPreventSleep: null,
       optRenderIndex: null,
+      optDir404: ['optRenderIndex'],
       port: null,
     };
     const optAdvanced = {

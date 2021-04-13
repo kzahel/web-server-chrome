@@ -293,12 +293,15 @@
                         (this.request.headers['accept'] && this.request.headers['accept'].toLowerCase() == 'application/json')
                        ) {
                         this.renderDirectoryListingJSON(results)
-                    } else if (this.request.arguments && this.request.arguments.static == '1' ||
+                    } else if (this.app.opts.optDir404 && this.app.opts.optRenderIndex) {
+                            this.write("404 - File not found", 404)
+                            this.finish()
+                        } else if (this.request.arguments && this.request.arguments.static == '1' ||
                         this.request.arguments.static == 'true' ||
 						this.app.opts.optStatic
                        ) {
                         this.renderDirectoryListing(results)
-                    } else {
+                        } else {
                         this.renderDirectoryListingTemplate(results)
                     }
                 }

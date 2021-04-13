@@ -754,4 +754,3 @@ Changes with nginx 0.7.9                                         12 Aug 2008
     WSC.WebApplication = WebApplication
 
 })();
-

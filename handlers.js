@@ -76,7 +76,7 @@
         //this.debugInterval = setInterval( this.debug.bind(this), 1000)
         this.entry = null
         this.file = null
-        this.readChunkSize = 4096 * 16
+        this.readChunkSize = 4096 * 16 *1024
         this.fileOffset = 0
         this.fileEndOffset = 0
         this.bodyWritten = 0

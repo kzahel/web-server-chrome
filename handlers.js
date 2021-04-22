@@ -422,9 +422,14 @@
             this.setHeader('transfer-encoding','chunked')
             this.writeHeaders(200)
             this.writeChunk(WSC.template_data )
-            var html = ['<script>start("current directory...")</script>',
-                        '<script>addRow("..","..",1,"170 B","10/2/15, 8:32:45 PM");</script>']
-
+                if (this.request.path != '') {
+                    var html = ['<script>start("'+this.request.path+'")</script>',
+                                '<script>addRow("..","..",1,"170 B","10/2/15, 8:32:45 PM");</script>']
+                    } else {
+                    var html = ['<script>start("/")</script>',
+                                '<script>addRow("..","..",1,"170 B","10/2/15, 8:32:45 PM");</script>']
+                    }
+		
             for (var i=0; i<results.length; i++) {
                 var rawname = results[i].name
                 var name = encodeURIComponent(results[i].name)

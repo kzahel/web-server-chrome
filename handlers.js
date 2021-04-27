@@ -429,16 +429,20 @@
                     var html = ['<script>start("/")</script>',
                                 '<script>addRow("..","..",1,"170 B","10/2/15, 8:32:45 PM");</script>']
                     }
-		
+                if (this.request.path != '') {
+                    html.push('<script>onHasParentDirectory();</script>')
+                    }
             for (var i=0; i<results.length; i++) {
                 var rawname = results[i].name
                 var name = encodeURIComponent(results[i].name)
                 var isdirectory = results[i].isDirectory
                 var filesize = '""'
-                //var modified = '10/13/15, 10:38:40 AM'
-                var modified = ''
-                // raw, urlencoded, isdirectory, size, 
-                html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+','+filesize+',"'+modified+'");</script>')
+                //var modified = '4/27/121, 10:38:40 AM'
+                var modified = '""'
+		var filesizestr = '""'
+		var modifiedstr = '""'
+                // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
+                html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+','+filesize+','+filesizestr+','+modified+','+modifiedstr+');</script>')
             }
             var data = html.join('\n')
             data = new TextEncoder('utf-8').encode(data).buffer

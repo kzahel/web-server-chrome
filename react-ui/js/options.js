@@ -176,6 +176,18 @@ const options = {
     type: Boolean,
     default: false
   },
+  optCustom404: {
+    label: 'Custom 404 page',
+    help: 'Custom 404 page',
+    type: Boolean,
+    default: false
+  },
+  optCustom404location: {
+    label: 'Location of 404 page',
+    help: 'Where is the 404 html page',
+    type: String,
+    default: '/404.html'
+  },
   optUpload: {
     label: 'Allow File upload',
     help: 'The files directory listing allows drag-and-drop to upload small files',

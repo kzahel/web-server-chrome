@@ -188,6 +188,18 @@ const options = {
     type: String,
     default: '/404.html'
   },
+  optCustom404usevar: {
+    label: 'Send variable? (Javascript)',
+    help: 'Javascript Variable to customize html (Variable is equal to user request path)',
+    type: Boolean,
+    default: false
+  },
+  optCustom404usevarvar: {
+    label: 'Variable name',
+    help: 'Name of variable to send',
+    type: String,
+    default: 'locationoflostuser'
+  },
   optUpload: {
     label: 'Allow File upload',
     help: 'The files directory listing allows drag-and-drop to upload small files',

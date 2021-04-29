@@ -87,6 +87,10 @@ const functions = {
 			bg.backgroundSettingChange({'optBackground':val})
 		}
   },
+  optCustom404location: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCustom404location', val);
+  },
   optPrivateKey: (app, k, val) => {
     //console.log('privateKey')
     console.assert(typeof val === 'string')
@@ -264,6 +268,8 @@ class App extends React.Component {
       optUpload: null,
       optDelete: null,
       optVerbose: null,
+      optCustom404: null,
+      optCustom404location: ['optCustom404'],
       optModRewriteEnable: null,
       optModRewriteRegexp: ['optModRewriteEnable'],
       optModRewriteNegate: ['optModRewriteEnable'],

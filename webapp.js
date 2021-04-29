@@ -316,7 +316,8 @@
 			if (result && ! result.error) {
 				if (gateway.device && gateway.device.externalIP) {
 					var extIP = gateway.device.externalIP
-					this.extra_urls = [{url:'http://'+extIP+':' + this.port}]
+					let prot = this.opts.optUseHttps ? 'https' : 'http';
+					this.extra_urls = [{url:prot+'://'+extIP+':' + this.port}]
 				}
 			}
             this.onReady()

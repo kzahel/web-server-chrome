@@ -91,6 +91,10 @@ const functions = {
     console.assert(typeof val === 'string')
     app.webapp.updateOption('optCustom404location', val);
   },
+  optCustom404usevarvar: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCustom404usevarvar', val);
+  },
   optPrivateKey: (app, k, val) => {
     //console.log('privateKey')
     console.assert(typeof val === 'string')
@@ -270,6 +274,8 @@ class App extends React.Component {
       optVerbose: null,
       optCustom404: null,
       optCustom404location: ['optCustom404'],
+      optCustom404usevar: ['optCustom404'],
+      optCustom404usevarvar: ['optCustom404','optCustom404usevar'],
       optModRewriteEnable: null,
       optModRewriteRegexp: ['optModRewriteEnable'],
       optModRewriteNegate: ['optModRewriteEnable'],

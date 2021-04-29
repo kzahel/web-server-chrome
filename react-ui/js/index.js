@@ -262,6 +262,7 @@ class App extends React.Component {
       optIPV6: null,
       optStatic: null,
       optUpload: null,
+      optDelete: null,
       optVerbose: null,
       optModRewriteEnable: null,
       optModRewriteRegexp: ['optModRewriteEnable'],

@@ -94,6 +94,21 @@
         head: function() {
             this.get()
         },
+        delete: function() {
+            if (! this.app.opts.optDelete) {
+                this.responseLength = 0
+                this.writeHeaders(400)
+                this.finish()
+                return
+            }
+            this.fs.getByPath(this.request.path, (entry) => {
+                entry.remove(()=>{
+                    this.responseLength = 0
+                    this.writeHeaders(200)
+                    this.finish()
+                });
+            });
+        },
         put: function() {
             if (! this.app.opts.optUpload) {
                 this.responseLength = 0

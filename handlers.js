@@ -265,15 +265,50 @@
                     this.writeHeaders(404)
                     this.finish()
                 } else {
+                    if (this.app.opts.optCustom404) {
+                        this.fs.getByPath(this.app.opts.optCustom404location, (file) => {
+                        if (! file.error) {
+                            file.file( function(filee) {
+                            var reader = new FileReader();
+                            reader.onload = function(e){
+                                var data = e.target.result
+                                    this.write(data, 404)
+                                    this.finish() 
+                        }.bind(this)
+                        reader.readAsText(filee)
+                        }.bind(this))
+                        } else {
+                        this.write('Path of 404 html was not found - 404 path is set to: '+this.app.opts.optCustom404location, 500)
+                        this.finish()
+                        }})
+                    } else {
                     this.write('no entry',404)
-                }
+                }}
             } else if (entry.error) {
                 if (this.request.method == "HEAD") {
                     this.responseLength = 0
                     this.writeHeaders(404)
                     this.finish()
                 } else {
-                    this.write('entry not found: ' + (this.rewrite_to || this.request.path), 404)
+                    if (this.app.opts.optCustom404) {
+                        this.fs.getByPath(this.app.opts.optCustom404location, (file) => {
+                        if (! file.error) {
+                            file.file( function(filee) {
+                            var reader = new FileReader();
+                            reader.onload = function(e){
+                                var data = e.target.result
+                                    this.write(data, 404)
+                                    this.finish() 
+                        }.bind(this)
+                        reader.readAsText(filee)
+                        }.bind(this))
+                        } else {
+                        this.write('Path of 404 html was not found - 404 path is set to: '+this.app.opts.optCustom404location, 500)
+                        this.finish()
+                        }})
+                    } else {
+                        this.write('entry not found: ' + (this.rewrite_to || this.request.path), 404)
+                    }
                 }
             } else if (entry.isFile) {
                 this.renderFileContents(entry)
@@ -309,8 +344,26 @@
                        ) {
                         this.renderDirectoryListingJSON(results)
                     } else if (this.app.opts.optDir404 && this.app.opts.optRenderIndex) {
+                        if (this.app.opts.optCustom404) {
+                            this.fs.getByPath(this.app.opts.optCustom404location, (file) => {
+                            if (! file.error) {
+                                file.file( function(filee) {
+                                var reader = new FileReader();
+                                reader.onload = function(e){
+                                    var data = e.target.result
+                                        this.write(data, 404)
+                                        this.finish() 
+                            }.bind(this)
+                            reader.readAsText(filee)
+                            }.bind(this))
+                            } else {
+                            this.write('Path of 404 html was not found - 404 path is set to: '+this.app.opts.optCustom404location, 500)
+                            this.finish()
+                            }})
+                        } else {
                             this.write("404 - File not found", 404)
                             this.finish()
+                            }
                         } else if (this.request.arguments && this.request.arguments.static == '1' ||
                         this.request.arguments.static == 'true' ||
 						this.app.opts.optStatic
@@ -340,10 +393,27 @@
         renderFileContents: function(entry, file) {
             getEntryFile(entry, function(file) {
                 if (file instanceof DOMException) {
+                    if (this.app.opts.optCustom404) {
+                        this.fs.getByPath(this.app.opts.optCustom404location, (file) => {
+                        if (! file.error) {
+                            file.file( function(filee) {
+                            var reader = new FileReader();
+                            reader.onload = function(e){
+                                var data = e.target.result
+                                    this.write(data, 404)
+                                    this.finish() 
+                        }.bind(this)
+                        reader.readAsText(filee)
+                        }.bind(this))
+                        } else {
+                        this.write('Path of 404 html was not found - 404 path is set to: '+this.app.opts.optCustom404location, 500)
+                        this.finish()
+                        }})
+                    } else {
                     this.write("File not found", 404)
                     this.finish()
                     return
-                }
+                }}
                 this.file = file
                 if (this.request.method == "HEAD") {
                     this.responseLength = this.file.size
@@ -452,8 +522,8 @@
                 var filesize = '""'
                 //var modified = '4/27/121, 10:38:40 AM'
                 var modified = '""'
-		var filesizestr = '""'
-		var modifiedstr = '""'
+		        var filesizestr = '""'
+		        var modifiedstr = '""'
                 // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
                 html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+','+filesize+','+filesizestr+','+modified+','+modifiedstr+');</script>')
             }
@@ -522,7 +592,6 @@
             pentry.getFile(template_filename,{create:false},onfile,onfile)
         })
     }
-
 
     WSC.DirectoryEntryHandler = DirectoryEntryHandler
 

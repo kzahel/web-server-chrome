@@ -182,6 +182,12 @@ const options = {
     type: Boolean,
     default: false
   },
+  optDelete: {
+    label: 'Allow Deleting Files',
+    help: 'Enables the delete request',
+    type: Boolean,
+    default: false
+  },
   optModRewriteEnable: {
     label: 'Enable mod-rewrite (for SPA)',
     help: 'For SPA (single page apps) that support HTML5 history location',

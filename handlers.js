@@ -272,8 +272,20 @@
                             var reader = new FileReader();
                             reader.onload = function(e){
                                 var data = e.target.result
-                                    this.write(data, 404)
-                                    this.finish() 
+                                    if (this.app.opts.optCustom404usevar) {
+                                        if (this.app.opts.optCustom404usevarvar != '') {
+                                        var html = ['<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.path+'";</script>']
+                                    } else {
+                                        this.write('javascript location variable is blank', 500)
+                                        return
+                                    }
+                                    } else {
+                                    var html = ['']
+                                    }
+                                    html.push(data)
+                                    var finaldata = html.join('\n')
+                                    this.write(finaldata, 404)
+                                    this.finish()
                         }.bind(this)
                         reader.readAsText(filee)
                         }.bind(this))
@@ -297,8 +309,20 @@
                             var reader = new FileReader();
                             reader.onload = function(e){
                                 var data = e.target.result
-                                    this.write(data, 404)
-                                    this.finish() 
+                                    if (this.app.opts.optCustom404usevar) {
+                                        if (this.app.opts.optCustom404usevarvar != '') {
+                                        var html = ['<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.path+'";</script>']
+                                    } else {
+                                        this.write('javascript location variable is blank', 500)
+                                        return
+                                    }
+                                    } else {
+                                    var html = ['']
+                                    }
+                                    html.push(data)
+                                    var finaldata = html.join('\n')
+                                    this.write(finaldata, 404)
+                                    this.finish()
                         }.bind(this)
                         reader.readAsText(filee)
                         }.bind(this))
@@ -350,10 +374,22 @@
                                 file.file( function(filee) {
                                 var reader = new FileReader();
                                 reader.onload = function(e){
-                                    var data = e.target.result
-                                        this.write(data, 404)
-                                        this.finish() 
-                            }.bind(this)
+                                var data = e.target.result
+                                    if (this.app.opts.optCustom404usevar) {
+                                        if (this.app.opts.optCustom404usevarvar != '') {
+                                        var html = ['<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.path+'";</script>']
+                                    } else {
+                                        this.write('javascript location variable is blank', 500)
+                                        return
+                                    }
+                                    } else {
+                                    var html = ['']
+                                    }
+                                    html.push(data)
+                                    var finaldata = html.join('\n')
+                                    this.write(finaldata, 404)
+                                    this.finish()
+                                }.bind(this)
                             reader.readAsText(filee)
                             }.bind(this))
                             } else {
@@ -400,8 +436,20 @@
                             var reader = new FileReader();
                             reader.onload = function(e){
                                 var data = e.target.result
-                                    this.write(data, 404)
-                                    this.finish() 
+                                    if (this.app.opts.optCustom404usevar) {
+                                        if (this.app.opts.optCustom404usevarvar != '') {
+                                        var html = ['<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.path+'";</script>']
+                                    } else {
+                                        this.write('javascript location variable is blank', 500)
+                                        return
+                                    }
+                                    } else {
+                                    var html = ['']
+                                    }
+                                    html.push(data)
+                                    var finaldata = html.join('\n')
+                                    this.write(finaldata, 404)
+                                    this.finish()
                         }.bind(this)
                         reader.readAsText(filee)
                         }.bind(this))

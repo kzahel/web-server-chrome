@@ -102,7 +102,6 @@ const functions = {
     app.webapp.updateOption('optUseHttps', val);
     if (app.webapp.started) {
       app.webapp.stop();
-      app.webapp.start();
     }
   }
 };

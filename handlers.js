@@ -509,15 +509,13 @@
             this.writeChunk(WSC.template_data )
                 if (this.request.path != '') {
                     var html = ['<script>start("'+this.request.path+'")</script>']
+                    html.push('<script>onHasParentDirectory();</script>')
                     } else {
                     var html = ['<script>start("/")</script>']
                     }
-                if (this.request.path != '') {
-                    html.push('<script>onHasParentDirectory();</script>')
-                    }
             for (var i=0; i<results.length; i++) {
-                var rawname = results[i].name
-                var name = encodeURIComponent(results[i].name)
+                var rawname = '"'+results[i].name+'"'
+                var name = '"'+encodeURIComponent(results[i].name)+'"'
                 var isdirectory = results[i].isDirectory
                 var filesize = '""'
                 //var modified = '4/27/121, 10:38:40 AM'
@@ -525,7 +523,7 @@
 		        var filesizestr = '""'
 		        var modifiedstr = '""'
                 // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
-                html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+','+filesize+','+filesizestr+','+modified+','+modifiedstr+');</script>')
+                html.push('<script>addRow('+rawname+','+name+','+isdirectory+','+filesize+','+filesizestr+','+modified+','+modifiedstr+');</script>')
             }
             var data = html.join('\n')
             data = new TextEncoder('utf-8').encode(data).buffer

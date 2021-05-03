@@ -237,8 +237,8 @@ const options = {
     default: '/index.html'
   },
   optExcludeDotHtml: {
-    label: 'Exclude .html in url (BETA)',
-    help: 'Will not show .html extension in request path (BETA - MAY BREAK LONGER REQUEST URLS)',
+    label: 'Exclude .html extension from url',
+    help: 'Will not show .html extension in url path',
     type: Boolean,
     default: false
   },

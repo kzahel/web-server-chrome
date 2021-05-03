@@ -271,7 +271,8 @@ class App extends React.Component {
       optStatic: null,
       optUpload: null,
       optDelete: null,
-      optVerbose: null
+      optVerbose: null,
+      optExcludeDotHtml: null
     };
     const optCustom404Main = {
       optCustom404: null

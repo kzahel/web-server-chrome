@@ -174,6 +174,17 @@
 
             // strip '/' off end of path
 
+            if (this.app.opts.optExcludeDotHtml){
+                var extension = this.request.path.split('.').pop();
+                if (extension == 'html') {
+                    var path = this.request.path
+                    var newpath = path.substring(0, path.length - 5);
+                    this.setHeader('location', newpath)
+                    this.writeHeaders(307)
+                    this.finish()
+                }
+            }
+
             if (this.rewrite_to) {
                 this.fs.getByPath(this.rewrite_to, this.onEntry.bind(this))
             } else if (this.fs.isFile) {
@@ -242,15 +253,31 @@
         onEntry: function(entry) {
             this.entry = entry
 
-            if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
-                var newloc = this.request.origpath + '/'
-                this.setHeader('location', newloc) // XXX - encode latin-1 somehow?
-                this.responseLength = 0
-                //console.log('redirect ->',newloc)
-                this.writeHeaders(301)
+            if (this.app.opts.optExcludeDotHtml && this.request.path != '') {
+                this.fs.getByPath(this.request.path+'.html', (file) => {
+                if (! file.error) {
+                    this.renderFileContents(file)
+                    return
+                } else {
+                    if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
+                    var newloc = this.request.origpath + '/'
+                    this.setHeader('location', newloc) // XXX - encode latin-1 somehow?
+                    this.responseLength = 0
+                    //console.log('redirect ->',newloc)
+                    this.writeHeaders(301)
 
-                this.finish()
-                return
+                    this.finish()
+                    return
+                    }
+                }})} else if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
+                    var newloc = this.request.origpath + '/'
+                    this.setHeader('location', newloc) // XXX - encode latin-1 somehow?
+                    this.responseLength = 0
+                    //console.log('redirect ->',newloc)
+                    this.writeHeaders(301)
+
+                    this.finish()
+                    return
             }
 
 

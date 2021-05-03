@@ -294,6 +294,7 @@ var MIMETYPES = {
   "gv": "text/vnd.graphviz", 
   "gxf": "application/gxf", 
   "gxt": "application/vnd.geonext", 
+  "gz": "application/gzip", 
   "h": "text/x-c", 
   "h261": "video/h261", 
   "h263": "video/h263", 

@@ -236,6 +236,12 @@ const options = {
     type: String,
     default: '/index.html'
   },
+  optExcludeDotHtml: {
+    label: 'Exclude .html in url',
+    help: 'Will not show .html extension in request path',
+    type: Boolean,
+    default: false
+  },
   optUseHttps: {
     label: 'Use https://',
     help: 'Serve pages through https://',

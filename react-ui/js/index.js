@@ -279,6 +279,8 @@ class App extends React.Component {
     const optCustom404Info = {
       optCustom404location: ['optCustom404'],
       optCustom404usevar: ['optCustom404'],
+    };
+    const optCustom404InfoPt2 = {
       optCustom404usevarvar: ['optCustom404','optCustom404usevar']
     };
     const optRewrite = {
@@ -329,6 +331,12 @@ class App extends React.Component {
       let disabletwo = (!this.webapp || !this.webapp.opts.optCustom404);
       const textboxestwo = renderOpts(optCustom404Info)
       return [(<div>{!disabletwo && textboxestwo}</div>)];
+    })();
+
+    const Custom404OptionsPt2 = (() => {
+      let disablethree = (!this.webapp || !this.webapp.opts.optCustom404 || !this.webapp.opts.optCustom404usevar);
+      const textboxesthree = renderOpts(optCustom404InfoPt2)
+      return [(<div>{!disablethree && textboxesthree}</div>)];
     })();
 
     const rewriteMain = renderOpts(optRewrite)
@@ -417,7 +425,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{Custom404Main}{Custom404Options}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
+          {state.showAdvanced && <div>{advOptions}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
         </CardContent>
       </Card>
 

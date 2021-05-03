@@ -253,13 +253,8 @@
         onEntry: function(entry) {
             this.entry = entry
 
-            if (this.app.opts.optExcludeDotHtml && this.request.path != '') {
-                this.fs.getByPath(this.request.path+'.html', (file) => {
-                if (! file.error) {
-                    this.renderFileContents(file)
-                    return
-                } else {
-                    if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
+            function onEntryMain() {
+                if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
                     var newloc = this.request.origpath + '/'
                     this.setHeader('location', newloc) // XXX - encode latin-1 somehow?
                     this.responseLength = 0
@@ -268,20 +263,8 @@
 
                     this.finish()
                     return
-                    }
-                }})} else if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
-                    var newloc = this.request.origpath + '/'
-                    this.setHeader('location', newloc) // XXX - encode latin-1 somehow?
-                    this.responseLength = 0
-                    //console.log('redirect ->',newloc)
-                    this.writeHeaders(301)
-
-                    this.finish()
-                    return
-            }
-
-
-
+                }
+                
             if (this.request.connection.stream.closed) {
                 console.warn(this.request.connection.stream.sockId,'request closed while processing request')
                 return
@@ -452,6 +435,21 @@
                 reader.readEntries( onreadsuccess.bind(this),
                                     onreaderr.bind(this))
             }
+            }
+
+            if (this.app.opts.optExcludeDotHtml && this.request.path != '') {
+                this.fs.getByPath(this.request.path+'.html', (file) => {
+                if (! file.error) {
+                    this.renderFileContents(file)
+                    console.log('file found')
+                    return
+                } else {
+                    onEntryMain.bind(this)()
+                    }
+                })} else {
+                onEntryMain.bind(this)()
+            }
+
         },
         renderFileContents: function(entry, file) {
             getEntryFile(entry, function(file) {

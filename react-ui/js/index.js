@@ -271,15 +271,25 @@ class App extends React.Component {
       optStatic: null,
       optUpload: null,
       optDelete: null,
-      optVerbose: null,
-      optCustom404: null,
+      optVerbose: null
+    };
+    const optCustom404Main = {
+      optCustom404: null
+    };
+    const optCustom404Info = {
       optCustom404location: ['optCustom404'],
       optCustom404usevar: ['optCustom404'],
-      optCustom404usevarvar: ['optCustom404','optCustom404usevar'],
-      optModRewriteEnable: null,
+      optCustom404usevarvar: ['optCustom404','optCustom404usevar']
+    };
+    const optRewrite = {
+      optModRewriteEnable: null
+    };
+    const optRewriteInfo = {
       optModRewriteRegexp: ['optModRewriteEnable'],
       optModRewriteNegate: ['optModRewriteEnable'],
-      optModRewriteTo: ['optModRewriteEnable'],
+      optModRewriteTo: ['optModRewriteEnable']
+    };
+    const optHttps = {
       optUseHttps: null
     };
     const optHttpsInfo = {
@@ -312,6 +322,24 @@ class App extends React.Component {
       this.setState({showAdvanced: !this.state.showAdvanced})
     }}
     >{this.state.showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}</a></div>)
+
+    const Custom404Main = renderOpts(optCustom404Main)
+
+    const Custom404Options = (() => {
+      let disabletwo = (!this.webapp || !this.webapp.opts.optCustom404);
+      const textboxestwo = renderOpts(optCustom404Info)
+      return [(<div>{!disabletwo && textboxestwo}</div>)];
+    })();
+
+    const rewriteMain = renderOpts(optRewrite)
+
+    const rewriteOptions = (() => {
+      let disableone = (!this.webapp || !this.webapp.opts.optModRewriteEnable);
+      const textboxesone = renderOpts(optRewriteInfo)
+      return [(<div>{!disableone && textboxesone}</div>)];
+    })();
+
+    const httpsMain = renderOpts(optHttps)
 
     const httpsOptions = (() => {
       let disable = (!this.webapp || !this.webapp.opts.optUseHttps);
@@ -389,7 +417,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{httpsOptions}</div> }
+          {state.showAdvanced && <div>{advOptions}{Custom404Main}{Custom404Options}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
         </CardContent>
       </Card>
 

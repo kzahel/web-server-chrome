@@ -32,6 +32,7 @@
     }
     _.extend(ProxyHandler.prototype, {
         get: function() {
+            this.is404html = false
             if (! this.validator(this.request)) {
                 this.responseLength = 0
                 this.writeHeaders(403)
@@ -95,6 +96,7 @@
             this.get()
         },
         delete: function() {
+            this.is404html = false
             if (! this.app.opts.optDelete) {
                 this.responseLength = 0
                 this.writeHeaders(400)
@@ -110,6 +112,7 @@
             });
         },
         put: function() {
+            this.is404html = false
             if (! this.app.opts.optUpload) {
                 this.responseLength = 0
                 this.writeHeaders(400)
@@ -122,6 +125,7 @@
             this.fs.getByPath(this.request.path, this.onPutEntry.bind(this), true)
         },
         onPutEntry: function(entry) {
+            this.is404html = false
             var parts = this.request.path.split('/')
             var path = parts.slice(0,parts.length-1).join('/')
             var filename = parts[parts.length-1]
@@ -142,6 +146,7 @@
             }
         },
         onPutFolder: function(filename, folder) {
+            this.is404html = false
             var onwritten = function(evt) {
                 console.log('write complete',evt)
                 // TODO write 400 in other cases...
@@ -162,6 +167,7 @@
             folder.getFile(filename, {create:true}, onfile, onfile)
         },
         get: function() {
+            this.is404html = false
             //this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
 
             this.setHeader('accept-ranges','bytes')
@@ -254,6 +260,7 @@
             this.entry = entry
 
             function onEntryMain() {
+            this.is404html = false
                 if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
                     var newloc = this.request.origpath + '/'
                     this.setHeader('location', newloc) // XXX - encode latin-1 somehow?
@@ -281,6 +288,7 @@
                             file.file( function(filee) {
                             var reader = new FileReader();
                             reader.onload = function(e){
+                            this.is404html = true
                                 var data = e.target.result
                                     if (this.app.opts.optCustom404usevar) {
                                         if (this.app.opts.optCustom404usevarvar != '') {
@@ -294,8 +302,10 @@
                                     }
                                     html.push(data)
                                     var finaldata = html.join('\n')
+                                    this.setHeader('content-type','text/html; charset=utf-8')
                                     this.write(finaldata, 404)
                                     this.finish()
+                                    this.is404html = false
                         }.bind(this)
                         reader.readAsText(filee)
                         }.bind(this))
@@ -318,6 +328,7 @@
                             file.file( function(filee) {
                             var reader = new FileReader();
                             reader.onload = function(e){
+                            this.is404html = true
                                 var data = e.target.result
                                     if (this.app.opts.optCustom404usevar) {
                                         if (this.app.opts.optCustom404usevarvar != '') {
@@ -331,8 +342,10 @@
                                     }
                                     html.push(data)
                                     var finaldata = html.join('\n')
+                                    this.setHeader('content-type','text/html; charset=utf-8')
                                     this.write(finaldata, 404)
                                     this.finish()
+                                    this.is404html = false
                         }.bind(this)
                         reader.readAsText(filee)
                         }.bind(this))
@@ -384,6 +397,7 @@
                                 file.file( function(filee) {
                                 var reader = new FileReader();
                                 reader.onload = function(e){
+                                this.is404html = true
                                 var data = e.target.result
                                     if (this.app.opts.optCustom404usevar) {
                                         if (this.app.opts.optCustom404usevarvar != '') {
@@ -397,8 +411,10 @@
                                     }
                                     html.push(data)
                                     var finaldata = html.join('\n')
+                                    this.setHeader('content-type','text/html; charset=utf-8')
                                     this.write(finaldata, 404)
                                     this.finish()
+                                    this.is404html = false
                                 }.bind(this)
                             reader.readAsText(filee)
                             }.bind(this))
@@ -460,6 +476,7 @@
                             file.file( function(filee) {
                             var reader = new FileReader();
                             reader.onload = function(e){
+                            this.is404html = true
                                 var data = e.target.result
                                     if (this.app.opts.optCustom404usevar) {
                                         if (this.app.opts.optCustom404usevarvar != '') {
@@ -473,8 +490,10 @@
                                     }
                                     html.push(data)
                                     var finaldata = html.join('\n')
+                                    this.setHeader('content-type','text/html; charset=utf-8')
                                     this.write(finaldata, 404)
                                     this.finish()
+                                    this.is404html = false
                         }.bind(this)
                         reader.readAsText(filee)
                         }.bind(this))

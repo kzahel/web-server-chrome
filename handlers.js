@@ -457,7 +457,8 @@
                 this.fs.getByPath(this.request.path+'.html', (file) => {
                 if (! file.error) {
                     this.renderFileContents(file)
-                    console.log('file found')
+                    //console.log('file found')
+                    this.setHeader('content-type','text/html; charset=utf-8')
                     return
                 } else {
                     onEntryMain.bind(this)()

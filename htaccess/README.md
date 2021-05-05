@@ -10,6 +10,7 @@
 <p>301 - Moved Permanently. Tells the server that when chosen file is requested to move to a different directory or file. The browser will cache this</p>
 <p>302 - Found. Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser</p>
 <p>307 - Temporary Redirect. Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser.</p>
+<p>If you want more features - Make an issue!</p>
 <br>
 <h2>Planned features (Doesnt mean it will happen)</h2>
 <p>401 - Unauthorized</p>

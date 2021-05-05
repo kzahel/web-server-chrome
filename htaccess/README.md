@@ -17,6 +17,14 @@
 <br>
 <h1>Making the file</h1>
 <p>A wsc.htaccess file is actually a json string, which means one problem with the file will cause it not to work - So be careful. No additional info can be put into the file</p>
+<p>Note - If you are trying to redirect to some index.html file and you have the option to automatically show index.html turned on, your path will go from '/somepath/index.html' to '/somepath/'</p>
+<p>Note - If you are trying to redirect to some .html file and you have the option to remove .html extension turned on, your path will go from '/somepath/blah.html' to '/somepath/blah'</p>
+
+Note - when selecting the file to scan, if the file is index.html and you have the option to automatically show index.html turned on, leave the path blank. It should look like this:  `"request_path": "",`
+
+Note - when selecting the file to scan, if the file is some .html and you have the option to remove the .html extension turned on, remove the .html from the file. It should go from:  `"request_path": "somehtml.html",` to: `"request_path": "somehtml",`
+
+<p>Note - Currently, Only ONE ruleset can be set in a directory which means only 1 file per directory can use these features. Plan for this to change.</p>
 <br>
 <h2>301 Example</h2>
 

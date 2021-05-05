@@ -242,6 +242,12 @@ const options = {
     type: Boolean,
     default: false
   },
+  optScanForHtaccess: {
+    label: 'Look for wsc.htaccess files',
+    help: 'Check for more info',
+    type: Boolean,
+    default: false
+  },
   optUseHttps: {
     label: 'Use https://',
     help: 'Serve pages through https://',

@@ -260,7 +260,13 @@
             this.entry = entry
 
             function onEntryMain() {
-            this.is404html = false
+                this.is404html = false
+                if (entry.name == 'wsc.htaccess') {
+                    this.write('<h1>Forbidden</h1>', 403)
+                    this.finish()
+                    return
+                }
+                
                 if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
                     var newloc = this.request.origpath + '/'
                     this.setHeader('location', newloc) // XXX - encode latin-1 somehow?
@@ -453,6 +459,7 @@
             }
             }
 
+        function excludedothtmlcheck() {
             if (this.app.opts.optExcludeDotHtml && this.request.path != '') {
                 this.fs.getByPath(this.request.path+'.html', (file) => {
                 if (! file.error) {
@@ -466,7 +473,51 @@
                 })} else {
                 onEntryMain.bind(this)()
             }
-
+        }
+        
+            if (this.app.opts.optScanForHtaccess) {
+                var fullrequestpath = this.request.path
+                if (entry.isDirectory) {
+                    var finalpath = fullrequestpath+'/'
+                } else {
+                    var finapath = fullrequestpath
+                    var finpath = finapath.split('/').pop();
+                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
+                }
+                if (this.request.path == '') {
+                    var finalpath = '/'
+                }
+                var htaccesspath = finalpath+'wsc.htaccess'
+                this.fs.getByPath(htaccesspath, (file) => {
+                if (! file.error) {
+                    file.file( function(filee) {
+                        var reader = new FileReader();
+                        reader.onload = function(e){
+                            var dataa = e.target.result
+                            var data = JSON.parse(dataa)
+                            console.log(data)
+                            var filerequest = this.request.path
+                            var filerequested = filerequest.split('/').pop();
+                                if (data.type == 301 || data.type == 302 || data.type == 307) {
+                                    if (data.request_path == filerequested) {
+                                        this.setHeader('location', data.redirto)
+                                        this.writeHeaders(data.type)
+                                        this.finish()
+                                    } else {
+                                        excludedothtmlcheck.bind(this)()
+                                    }
+                            } else {
+                                excludedothtmlcheck.bind(this)()
+                            }
+                        }.bind(this)
+                        reader.readAsText(filee)
+                    }.bind(this))
+                } else {
+                    excludedothtmlcheck.bind(this)()
+                }})
+            } else {
+                excludedothtmlcheck.bind(this)()
+            }
         },
         renderFileContents: function(entry, file) {
             getEntryFile(entry, function(file) {

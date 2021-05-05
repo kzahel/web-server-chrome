@@ -284,6 +284,9 @@ class App extends React.Component {
     const optCustom404InfoPt2 = {
       optCustom404usevarvar: ['optCustom404','optCustom404usevar']
     };
+    const optHtaccess = {
+      optScanForHtaccess: null
+    };
     const optRewrite = {
       optModRewriteEnable: null
     };
@@ -327,6 +330,15 @@ class App extends React.Component {
     >{this.state.showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}</a></div>)
 
     const Custom404Main = renderOpts(optCustom404Main)
+
+    const HtaccessMain = renderOpts(optHtaccess)
+
+    const HtaccessInfo = (() => {
+      let disable = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
+      return [(<div style={{paddingLeft: 20}}>{!disable}
+        {!disable && <Alert severity="info">For more info on how to use wsc.htaccess files, go <a href="https://github.com/ethanaobrien/web-server-chrome/tree/master/htaccess#readme" target="_blank">here</a></Alert>}
+	  </div>)];
+    })();
 
     const Custom404Options = (() => {
       let disabletwo = (!this.webapp || !this.webapp.opts.optCustom404);
@@ -426,7 +438,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
+          {state.showAdvanced && <div>{advOptions}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{HtaccessMain}{HtaccessInfo}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
         </CardContent>
       </Card>
 

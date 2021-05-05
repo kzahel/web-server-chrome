@@ -25,6 +25,7 @@ Note - when selecting the file to scan, if the file is index.html and you have t
 Note - when selecting the file to scan, if the file is some .html and you have the option to remove the .html extension turned on, remove the .html from the file. It should go from:  `"request_path": "somehtml.html",` to: `"request_path": "somehtml",`
 
 <p>Note - Currently, Only ONE ruleset can be set in a directory which means only 1 file per directory can use these features. Plan for this to change.</p>
+<p>Note - wsc.htaccess file MUST be in the same directory as the file you want to change. The file does not need to exist, as it overrides rendering the file</p>
 <br>
 <h2>301 Example</h2>
 

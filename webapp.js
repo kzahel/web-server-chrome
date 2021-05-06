@@ -641,7 +641,7 @@
             }
 
             var p = this.request.path.split('.')
-            if (p.length > 1 && ! this.isDirectoryListing && this.is404html == false) {
+            if (p.length > 1 && ! this.isDirectoryListing && this.useDefaultMime) {
                 var ext = p[p.length-1].toLowerCase()
                 var type = WSC.MIMETYPES[ext]
                 if (type) {

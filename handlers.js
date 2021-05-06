@@ -494,7 +494,15 @@
                         var reader = new FileReader();
                         reader.onload = function(e){
                             var dataa = e.target.result
-                            var data = JSON.parse(dataa)
+                            if(true) {
+                                try {
+                                    var data = JSON.parse(dataa)
+                                } catch(e) {
+                                    this.write('wsc.htaccess file found, but it is not a valid json string', 500)
+                                    this.finish()
+                                    return
+                                }
+                            }
                             console.log(data)
                             var filerequest = this.request.path
                             var filerequested = filerequest.split('/').pop();

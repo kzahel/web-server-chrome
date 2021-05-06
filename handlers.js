@@ -498,15 +498,34 @@
                             console.log(data)
                             var filerequest = this.request.path
                             var filerequested = filerequest.split('/').pop();
+                            if (data.request_path == filerequested || data.request_path == 'all files') {
                                 if (data.type == 301 || data.type == 302 || data.type == 307) {
-                                    if (data.request_path == filerequested) {
                                         this.setHeader('location', data.redirto)
                                         this.writeHeaders(data.type)
                                         this.finish()
-                                    } else {
-                                        excludedothtmlcheck.bind(this)()
+                            } else if (data.type == 401) {
+                                var validAuth = false
+                                var auth = this.request.headers['authorization']
+                                if (auth) {
+                                    if (auth.slice(0,6).toLowerCase() == 'basic ') {
+                                        var userpass = atob(auth.slice(6,auth.length)).split(':')
+                                        if (userpass[0] == data.username && userpass[1] == data.password) {
+                                            validAuth = true
+                                        }
                                     }
+                                }
+                                if (! validAuth) {
+                                    this.setHeader("WWW-Authenticate", "Basic")
+                                    this.write("<h1>401 - Unauthorized</h1>", 401)
+                                    this.finish()
+                                    return
+                                }
+                                if (validAuth) {
+                                    excludedothtmlcheck.bind(this)()
+                                }
                             } else {
+                                excludedothtmlcheck.bind(this)()
+                            }} else {
                                 excludedothtmlcheck.bind(this)()
                             }
                         }.bind(this)

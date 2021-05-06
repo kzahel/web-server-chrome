@@ -10,11 +10,8 @@
 <p>301 - Moved Permanently. Tells the server that when chosen file is requested to move to a different directory or file. The browser will cache this</p>
 <p>302 - Found. Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser</p>
 <p>307 - Temporary Redirect. Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser.</p>
+<p>401 - Unauthorized. The page will require login. For some reason, I cannot find how to clear the cache of the authorization header, which means that once you type it in, the browser will not ask for a login, unless you have multiple password protected pages with different passwords, The authentication header will change whenever you enter a different password.</p>
 <p>If you want more features - Make an issue!</p>
-<br>
-<h2>Planned features (Doesnt mean it will happen)</h2>
-<p>401 - Unauthorized</p>
-<p>undetermined - requires Authentication</p>
 <br>
 <h1>Making the file</h1>
 <p>A wsc.htaccess file is actually a json string, which means one problem with the file will cause it not to work - So be careful. No additional info can be put into the file</p>
@@ -25,7 +22,8 @@ Note - when selecting the file to scan, if the file is index.html and you have t
 
 Note - when selecting the file to scan, if the file is some .html and you have the option to remove the .html extension turned on, remove the .html from the file. It should go from:  `"request_path": "somehtml.html",` to: `"request_path": "somehtml",`
 
-<p>Note - Currently, Only ONE ruleset can be set in a directory which means only 1 file per directory can use these features. Plan for this to change.</p>
+Note - Currently, Only ONE ruleset can be set per directory, you can set all of the files or one of the files to obey this. To protect / redirect all files in a directory, change the value of `"request_path"` to `"all files"` to make `"request_path": "all files",`. Expect for this to change
+
 <p>Note - wsc.htaccess file MUST be in the same directory as the file you want to change. The file does not need to exist, as it overrides rendering the file</p>
 <p>IMPORTANT NOTE - EVERYTHING IN THE FILE (AND THE FILE NAME) IS CASE SENSITIVE!!</p>
 <br>
@@ -33,7 +31,7 @@ Note - when selecting the file to scan, if the file is some .html and you have t
 
 ```
 {
-    "request_path": "name of file you want to modify the destination of",
+    "request_path": "name of file you want to modify",
     "type": 301, 
     "redirto": "/path/you/want/to/redirect/to"
 }
@@ -43,7 +41,7 @@ Note - when selecting the file to scan, if the file is some .html and you have t
 
 ```
 {
-    "request_path": "name of file you want to modify the destination of",
+    "request_path": "name of file you want to modify",
     "type": 302, 
     "redirto": "/path/you/want/to/redirect/to"
 }
@@ -53,8 +51,19 @@ Note - when selecting the file to scan, if the file is some .html and you have t
 
 ```
 {
-    "request_path": "name of file you want to modify the destination of",
+    "request_path": "name of file you want to modify",
     "type": 307, 
     "redirto": "/path/you/want/to/redirect/to"
+}
+```
+<br>
+<h2>401 Example</h2>
+
+```
+{
+    "request_path": "name of file you want to modify",
+    "type": 401,
+    "username": "test",
+    "password": "example"
 }
 ```

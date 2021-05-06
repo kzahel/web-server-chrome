@@ -497,7 +497,7 @@
                                     return
                                 }
                             }
-                            console.log(data)
+                            //console.log(data)
                             var filerequest = this.request.path
                             var filerequested = filerequest.split('/').pop();
                             if (data.request_path == filerequested || data.request_path == 'all files') {

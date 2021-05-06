@@ -16,11 +16,13 @@
 <h1>Making the file</h1>
 <p>A wsc.htaccess file is actually a json string, which means one problem with the file will cause it not to work - So be careful. No additional info can be put into the file</p>
 <p>Note - If you are trying to redirect to some index.html file and you have the option to automatically show index.html turned on, your path will go from '/somepath/index.html' to '/somepath/'</p>
-<p>Note - If you are trying to redirect to some .html file and you have the option to remove .html extension turned on, your path will go from '/somepath/blah.html' to '/somepath/blah'</p>
+<p>Note - If you are trying to redirect to some .html file and you have the option to remove .html extension turned on put the .html extension. The web server will handle the request and forward it to have no .html extension</p>
 
-Note - when selecting the file to scan, if the file is index.html and you have the option to automatically show index.html turned on, leave the path blank. It should look like this:  `"request_path": "",`
+Note - when selecting the file to scan, if the file is index.html and you have the option to automatically show index.html turned on, leave the path blank. It should look like this:  `"request_path": "",`.
 
-Note - when selecting the file to scan, if the file is some .html and you have the option to remove the .html extension turned on, remove the .html from the file. It should go from:  `"request_path": "somehtml.html",` to: `"request_path": "somehtml",`
+Note - There are security measures that when request_path = "" It will deny access to index.html, index (For no .html extension) and index.htm. Use `"request_path": "",`. if the file is index.html or index.htm - This will protect every way of access.
+
+Note - when selecting the file to scan, if the file is some .html and you have the option to remove the .html extension turned on, remove the .html from the file. It should go from:  `"request_path": "somehtml.html",` to: `"request_path": "somehtml",` - Plan for this to change 
 
 Note - Currently, Only ONE ruleset can be set per directory, you can set all of the files or one of the files to obey this. To protect / redirect all files in a directory, change the value of `"request_path"` to `"all files"` to make `"request_path": "all files",`. Do not expect this to change. It would be overly complicated (and make the performance extremely low) to use arrays and to find which one is what and I'ts just not going to happen.
 

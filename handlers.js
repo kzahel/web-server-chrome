@@ -262,7 +262,7 @@
             function onEntryMain() {
                 this.is404html = false
                 if (entry.name == 'wsc.htaccess') {
-                    this.write('<h1>Forbidden</h1>', 403)
+                    this.write('<h1>403 - Forbidden</h1>', 403)
                     this.finish()
                     return
                 }
@@ -686,8 +686,9 @@
 		        var filesizestr = '""'
 		        var modifiedstr = '""'
                 // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
+                if (rawname != '"wsc.htaccess"') {
                 html.push('<script>addRow('+rawname+','+name+','+isdirectory+','+filesize+','+filesizestr+','+modified+','+modifiedstr+');</script>')
-            }
+            }}
             var data = html.join('\n')
             data = new TextEncoder('utf-8').encode(data).buffer
             this.writeChunk(data)
@@ -708,7 +709,9 @@
                 if (results[i].isDirectory) {
                     html.push('<li class="directory"><a href="' + name + '/?static=1">' + name + '</a></li>')
                 } else {
-                    html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
+                    if (name != 'wsc.htaccess') {
+                        html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
+                    }
                 }
             }
             html.push('</ul></html>')

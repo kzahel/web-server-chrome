@@ -500,6 +500,9 @@
                             //console.log(data)
                             var filerequest = this.request.path
                             var filerequested = filerequest.split('/').pop();
+                            if (filerequested == 'index.html' || filerequested == 'index' || filerequested == 'index.htm') {
+                                var filerequested = ''
+                            }
                             if (data.request_path == filerequested || data.request_path == 'all files') {
                                 if (data.type == 301 || data.type == 302 || data.type == 307) {
                                         this.setHeader('location', data.redirto)

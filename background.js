@@ -1,4 +1,5 @@
 console.log('background.js')
+this.useDefaultMime = true
 var ALARMID = "check_wsc_periodic"
 var WSCID = "ofhbbkphhbklhfoeikjpcbhemlocgigb"
 var HADEVENT = false

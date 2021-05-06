@@ -503,9 +503,6 @@
                             if (filerequested == 'index.html' || filerequested == 'index' || filerequested == 'index.htm') {
                                 var filerequested = ''
                             }
-                            if (this.app.opts.optExcludeDotHtml) {
-                                var filerequested = filerequested+'.html'
-                            }
                             if (data.request_path == filerequested || data.request_path == 'all files') {
                                 if (data.type == 301 || data.type == 302 || data.type == 307) {
                                         this.setHeader('location', data.redirto)

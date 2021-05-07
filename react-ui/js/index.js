@@ -91,6 +91,14 @@ const functions = {
     console.assert(typeof val === 'string')
     app.webapp.updateOption('optCustom404location', val);
   },
+  optCustom403location: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCustom403location', val);
+  },
+  optCustom401location: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCustom401location', val);
+  },
   optCustom404usevarvar: (app, k, val) => {
     console.assert(typeof val === 'string')
     app.webapp.updateOption('optCustom404usevarvar', val);
@@ -255,15 +263,27 @@ class App extends React.Component {
   }
   render() {
     // option: [dependencies]
-    const optDisplay = {
-      optBackground: null,
-      optAutoStart: ['optBackground'],
-      optAllInterfaces: null,
-      optDoPortMapping: ['optAllInterfaces'],
+    const backgroundMain = {
+      optBackground: null
+    };
+    const backgroundOptions = {
+      optAutoStart: ['optBackground']
+    };
+    const availabilityMain = {
+      optAllInterfaces: null
+    };
+    const availabilityOptions = {
+      optDoPortMapping: ['optAllInterfaces']
+    };
+    const optIndexMain = {
       optPreventSleep: null,
-      optRenderIndex: null,
-      optDir404: ['optRenderIndex'],
-      port: null,
+      optRenderIndex: null
+    };
+    const optIndexOptions = {
+      optDir404: ['optRenderIndex']
+    };
+    const optPortOption = {
+      port: null
     };
     const optAdvanced = {
       optCORS: null,
@@ -279,10 +299,22 @@ class App extends React.Component {
     };
     const optCustom404Info = {
       optCustom404location: ['optCustom404'],
-      optCustom404usevar: ['optCustom404'],
+      optCustom404usevar: ['optCustom404']
     };
     const optCustom404InfoPt2 = {
       optCustom404usevarvar: ['optCustom404','optCustom404usevar']
+    };
+    const optCustom403Main = {
+      optCustom403: null
+    };
+    const optCustom403Info = {
+      optCustom403location: ['optCustom403']
+    };
+    const optCustom401Main = {
+      optCustom401: null
+    };
+    const optCustom401Info = {
+      optCustom401location: ['optCustom401']
     };
     const optHtaccess = {
       optScanForHtaccess: null
@@ -321,7 +353,6 @@ class App extends React.Component {
       return options;
     }
 
-    const options = renderOpts(optDisplay)
     const advOptions = renderOpts(optAdvanced)
     const advancedButton = (<div><a href="#" onClick={e => {
       e.preventDefault();
@@ -330,37 +361,68 @@ class App extends React.Component {
     >{this.state.showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}</a></div>)
 
     const Custom404Main = renderOpts(optCustom404Main)
-
     const HtaccessMain = renderOpts(optHtaccess)
+    const rewriteMain = renderOpts(optRewrite)
+    const httpsMain = renderOpts(optHttps)
+    const Portoption = renderOpts(optPortOption)
+    const IndexMain = renderOpts(optIndexMain)
+    const AvailabilityMain = renderOpts(availabilityMain)
+    const BackgroundMain = renderOpts(backgroundMain)
 
     const HtaccessInfo = (() => {
-      let disable = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
-      return [(<div style={{paddingLeft: 20}}>{!disable}
-        {!disable && <Alert severity="info">For more info on how to use wsc.htaccess files, go <a href="https://github.com/ethanaobrien/web-server-chrome/tree/master/htaccess#readme" target="_blank">here</a></Alert>}
+      let disablezero = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
+      return [(<div style={{paddingLeft: 20}}>{!disablezero}
+        {!disablezero && <Alert severity="info">For more info on how to use wsc.htaccess files, go <a href="https://github.com/ethanaobrien/web-server-chrome/tree/master/htaccess#readme" target="_blank">here</a></Alert>}
 	  </div>)];
     })();
 
-    const Custom404Options = (() => {
-      let disabletwo = (!this.webapp || !this.webapp.opts.optCustom404);
-      const textboxestwo = renderOpts(optCustom404Info)
-      return [(<div>{!disabletwo && textboxestwo}</div>)];
-    })();
-
-    const Custom404OptionsPt2 = (() => {
-      let disablethree = (!this.webapp || !this.webapp.opts.optCustom404 || !this.webapp.opts.optCustom404usevar);
-      const textboxesthree = renderOpts(optCustom404InfoPt2)
-      return [(<div>{!disablethree && textboxesthree}</div>)];
-    })();
-
-    const rewriteMain = renderOpts(optRewrite)
-
-    const rewriteOptions = (() => {
-      let disableone = (!this.webapp || !this.webapp.opts.optModRewriteEnable);
-      const textboxesone = renderOpts(optRewriteInfo)
+    const Custom403Options = (() => {
+      let disableone = (!this.webapp || !this.webapp.opts.optCustom403);
+      const textboxesone = renderOpts(optCustom403Info)
       return [(<div>{!disableone && textboxesone}</div>)];
     })();
 
-    const httpsMain = renderOpts(optHttps)
+    const Custom401Options = (() => {
+      let disabletwo = (!this.webapp || !this.webapp.opts.optCustom401);
+      const textboxestwo = renderOpts(optCustom401Info)
+      return [(<div>{!disabletwo && textboxestwo}</div>)];
+    })();
+
+    const Custom404Options = (() => {
+      let disablethree = (!this.webapp || !this.webapp.opts.optCustom404);
+      const textboxesthree = renderOpts(optCustom404Info)
+      return [(<div>{!disablethree && textboxesthree}</div>)];
+    })();
+
+    const Custom404OptionsPt2 = (() => {
+      let disablefour = (!this.webapp || !this.webapp.opts.optCustom404 || !this.webapp.opts.optCustom404usevar);
+      const textboxesfour = renderOpts(optCustom404InfoPt2)
+      return [(<div>{!disablefour && textboxesfour}</div>)];
+    })();
+
+    const rewriteOptions = (() => {
+      let disablefive = (!this.webapp || !this.webapp.opts.optModRewriteEnable);
+      const textboxefive = renderOpts(optRewriteInfo)
+      return [(<div>{!disablefive && textboxefive}</div>)];
+    })();
+
+    const IndexOptions = (() => {
+      let disablesix = (!this.webapp || !this.webapp.opts.optRenderIndex);
+      const textboxessix = renderOpts(optIndexOptions)
+      return [(<div>{!disablesix && textboxessix}</div>)];
+    })();
+
+    const AvailabilityOptions = (() => {
+      let disableseven = (!this.webapp || !this.webapp.opts.optAllInterfaces);
+      const textboxesseven = renderOpts(availabilityOptions)
+      return [(<div>{!disableseven && textboxesseven}</div>)];
+    })();
+
+    const BackgroundOptions = (() => {
+      let disableeight = (!this.webapp || !this.webapp.opts.optBackground);
+      const textboxeseight = renderOpts(backgroundOptions)
+      return [(<div>{!disableeight && textboxeseight}</div>)];
+    })();
 
     const httpsOptions = (() => {
       let disable = (!this.webapp || !this.webapp.opts.optUseHttps);
@@ -435,10 +497,10 @@ class App extends React.Component {
             <span>Options (may require restart)</span>
           </Tooltip>
           
-          {options}
+          {BackgroundMain}{BackgroundOptions}{AvailabilityMain}{AvailabilityOptions}{IndexMain}{IndexOptions}{Portoption}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{HtaccessMain}{HtaccessInfo}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
+          {state.showAdvanced && <div>{advOptions}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{HtaccessMain}{HtaccessInfo}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
         </CardContent>
       </Card>
 

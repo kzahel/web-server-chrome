@@ -200,6 +200,30 @@ const options = {
     type: String,
     default: 'locationoflostuser'
   },
+  optCustom403: {
+    label: 'Custom 403 page',
+    help: 'Custom 403 page',
+    type: Boolean,
+    default: false
+  },
+  optCustom403location: {
+    label: 'Location of 403 page',
+    help: 'Where is the 403 html page',
+    type: String,
+    default: '/403.html'
+  },
+  optCustom401: {
+    label: 'Custom 401 page',
+    help: 'Custom 401 page',
+    type: Boolean,
+    default: false
+  },
+  optCustom401location: {
+    label: 'Location of 401 page',
+    help: 'Where is the 401 html page',
+    type: String,
+    default: '/401.html'
+  },
   optUpload: {
     label: 'Allow File upload',
     help: 'The files directory listing allows drag-and-drop to upload small files',

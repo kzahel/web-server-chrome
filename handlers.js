@@ -256,10 +256,30 @@
             function onEntryMain() {
                 this.useDefaultMime = true
                 if (entry.name == 'wsc.htaccess') {
-                    this.write('<h1>403 - Forbidden</h1>', 403)
-                    this.finish()
-                    return
-                }
+                    if (this.app.opts.optCustom403) {
+                        this.fs.getByPath(this.app.opts.optCustom403location, (file) => {
+                        if (! file.error) {
+                            file.file( function(filee) {
+                                var reader = new FileReader();
+                                reader.onload = function(e){
+                                    this.useDefaultMime = false
+                                    var data = e.target.result
+                                    this.setHeader('content-type','text/html; charset=utf-8')
+                                    this.write(data, 403)
+                                    this.finish()
+                                    this.useDefaultMime = true
+                                }.bind(this)
+                                reader.readAsText(filee)
+                            }.bind(this))
+                        } else {
+                            this.write('Path of 403 html was not found - 403 path is set to: '+this.app.opts.optCustom403location, 500)
+                            this.finish()
+                        }})
+                    } else {
+                        this.write('<h1>403 - Forbidden</h1>', 403)
+                        this.finish()
+                        return
+                }}
                 
                 if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
                     var newloc = this.request.origpath + '/'
@@ -520,27 +540,71 @@
                                     }
                                 }
                                 if (! validAuth) {
-                                    this.useDefaultMime = false
-                                    this.setHeader('content-type','text/html; charset=utf-8')
-                                    this.setHeader("WWW-Authenticate", "Basic")
-                                    this.write("<h1>401 - Unauthorized</h1>", 401)
-                                    this.finish()
-                                    return
-                                    this.useDefaultMime = true
+                                    if (this.app.opts.optCustom401) {
+                                        this.fs.getByPath(this.app.opts.optCustom401location, (file) => {
+                                        if (! file.error) {
+                                            file.file( function(filee) {
+                                                var reader = new FileReader();
+                                                reader.onload = function(e){
+                                                    this.useDefaultMime = false
+                                                    var data = e.target.result
+                                                    this.setHeader('content-type','text/html; charset=utf-8')
+                                                    this.setHeader("WWW-Authenticate", "Basic")
+                                                    this.write(data, 401)
+                                                    this.finish()
+                                                    this.useDefaultMime = true
+                                                }.bind(this)
+                                                reader.readAsText(filee)
+                                            }.bind(this))
+                                        } else {
+                                            this.write('Path of 401 html was not found - 401 path is set to: '+this.app.opts.optCustom401location, 500)
+                                            this.finish()
+                                        }})
+                                    } else {
+                                        this.useDefaultMime = false
+                                        this.setHeader('content-type','text/html; charset=utf-8')
+                                        this.setHeader("WWW-Authenticate", "Basic")
+                                        this.write("<h1>401 - Unauthorized</h1>", 401)
+                                        this.finish()
+                                        return
+                                        this.useDefaultMime = true
+                                    }
                                 }
                                 if (validAuth) {
                                     excludedothtmlcheck.bind(this)()
                                 }
                             } else if (data.type == 403) {
                                 var method = this.request.headers['sec-fetch-dest']
-                                console.log(method)
+                                //console.log(method)
                                 var name = this.request.path
                                 var extension = name.split('.').pop();
-                                console.log(extension)
+                                //console.log(extension)
                                 if (method == "document") {
                                     if (extension != 'html' && extension != 'htm' && ! this.request.origpath.endsWith('/') && this.request.path != '') {
-                                        this.write('<h1>403 - Forbidden</h1>')
-                                        this.finish()
+                                        if (this.app.opts.optCustom403) {
+                                            this.fs.getByPath(this.app.opts.optCustom403location, (file) => {
+                                            if (! file.error) {
+                                                file.file( function(filee) {
+                                                    var reader = new FileReader();
+                                                    reader.onload = function(e){
+                                                        this.useDefaultMime = false
+                                                        var data = e.target.result
+                                                        this.setHeader('content-type','text/html; charset=utf-8')
+                                                        this.write(data, 403)
+                                                        this.finish()
+                                                        this.useDefaultMime = true
+                                                    }.bind(this)
+                                                    reader.readAsText(filee)
+                                                }.bind(this))
+                                            } else {
+                                                this.write('Path of 403 html was not found - 403 path is set to: '+this.app.opts.optCustom403location, 500)
+                                                this.finish()
+                                            }})
+                                        } else {
+                                            this.write('<h1>403 - Forbidden</h1>', 403)
+                                            this.finish()
+                                            return
+                                    }
                                     } else {
                                         excludedothtmlcheck.bind(this)()
                                     }
@@ -648,11 +712,6 @@
                         this.responseLength = this.file.size
                         this.writeHeaders(200)
                     }
-                    
-                    
-
-
-
                 } else {
                     //console.log(entry,file)
                     var fr = new FileReader

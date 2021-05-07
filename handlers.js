@@ -533,13 +533,13 @@
                                 }
                             } else if (data.type == 403) {
                                 var method = this.request.headers['sec-fetch-dest']
-                                //console.log(method)
+                                console.log(method)
                                 var name = this.request.path
                                 var extension = name.split('.').pop();
-                                //console.log(extension)
+                                console.log(extension)
                                 if (method == "document") {
                                     if (extension != 'html' && extension != 'htm' && ! this.request.origpath.endsWith('/') && this.request.path != '') {
-                                        this.write('403 - Forbidden')
+                                        this.write('<h1>403 - Forbidden</h1>')
                                         this.finish()
                                     } else {
                                         excludedothtmlcheck.bind(this)()

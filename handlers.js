@@ -531,6 +531,22 @@
                                 if (validAuth) {
                                     excludedothtmlcheck.bind(this)()
                                 }
+                            } else if (data.type == 403) {
+                                var method = this.request.headers['sec-fetch-dest']
+                                console.log(method)
+                                var name = this.request.path
+                                var extension = name.split('.').pop();
+                                console.log(extension)
+                                if (method == "document") {
+                                    if (extension != 'html' && extension != 'htm' && ! this.request.origpath.endsWith('/') && this.request.path != '') {
+                                        this.write('403 - Forbidden')
+                                        this.finish()
+                                    } else {
+                                        excludedothtmlcheck.bind(this)()
+                                    }
+                                } else {
+                                    excludedothtmlcheck.bind(this)()
+                                }
                             } else {
                                 excludedothtmlcheck.bind(this)()
                             }} else {

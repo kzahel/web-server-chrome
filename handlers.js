@@ -519,7 +519,11 @@
                             }
                             //console.log(data)
                             var filerequest = this.request.path
+                            if (entry.isDirectory) {
+                                var filerequest = filerequested+'/'
+                            }
                             var filerequested = filerequest.split('/').pop();
+                            //console.log(filerequested)
                             if (filerequested == 'index.html' || filerequested == 'index' || filerequested == 'index.htm') {
                                 var filerequested = ''
                             }

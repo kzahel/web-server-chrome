@@ -11,7 +11,7 @@
 <p>302 - Found. Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser</p>
 <p>307 - Temporary Redirect. Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser.</p>
 <p>401 - Unauthorized. The page will require login. For some reason, I cannot find how to clear the cache of the authorization header, which means that once you type it in, the browser will not ask for a login, unless you have multiple password protected pages with different passwords, The authentication header will change whenever you enter a different password.</p>
-<p>403 - Forbidden. This will deny direct access to image/video/audio files. This option only works if https is enabled/p>
+<p>403 - Forbidden. This will deny direct access to image/video/audio files. This option only works if https is enabled</p>
 <p>If you want more features - Make an issue!</p>
 <br>
 <h1>Making the file</h1>
@@ -25,7 +25,7 @@ Note - There are security measures that when request_path = "" It will deny acce
 
 Note - when selecting the file to scan, if the file is some .html and you have the option to remove the .html extension turned on, remove the .html from the file. It should go from:  `"request_path": "somehtml.html",` to: `"request_path": "somehtml",`.
 
-Note - Currently, Only ONE ruleset can be set per directory, you can set all of the files or one of the files to obey this. To protect / redirect all files in a directory, change the value of `"request_path"` to `"all files"` to make `"request_path": "all files",`. Do not expect this to change. It would be overly complicated (and make the performance extremely low) to use arrays and to find which one is what and I'ts just not going to happen.
+Note - Currently, Only ONE ruleset can be set per directory, you can set all of the files or one of the files to obey this. To protect / redirect all files in a directory, change the value of `"request_path"` to `"all files"` to make `"request_path": "all files",`. Do not expect this to change. It would be overly complicated (and make the performance extremely slow) to use arrays and to find which one is what and I'ts just not going to happen.
 
 <p>Note - wsc.htaccess file MUST be in the same directory as the file you want to change. The file does not need to exist, as it overrides rendering the file</p>
 <p>IMPORTANT NOTE - EVERYTHING IN THE FILE (AND THE FILE NAME) IS CASE SENSITIVE!!</p>

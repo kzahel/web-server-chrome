@@ -11,6 +11,7 @@
 <p>302 - Found. Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser</p>
 <p>307 - Temporary Redirect. Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser.</p>
 <p>401 - Unauthorized. The page will require login. For some reason, I cannot find how to clear the cache of the authorization header, which means that once you type it in, the browser will not ask for a login, unless you have multiple password protected pages with different passwords, The authentication header will change whenever you enter a different password.</p>
+<p>403 - Forbidden. This will deny direct access to image/video/audio files. This option onyl works is https is enabled/p>
 <p>If you want more features - Make an issue!</p>
 <br>
 <h1>Making the file</h1>
@@ -67,5 +68,14 @@ Note - Currently, Only ONE ruleset can be set per directory, you can set all of 
     "type": 401,
     "username": "test",
     "password": "example"
+}
+```
+<br>
+<h2>403 Example</h2>
+
+```
+{
+    "request_path": "name of file you want to modify",
+    "type": 403
 }
 ```

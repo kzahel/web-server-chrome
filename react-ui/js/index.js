@@ -263,16 +263,16 @@ class App extends React.Component {
   }
   render() {
     // option: [dependencies]
-    const backgroundMain = {
+    const optbackgroundMain = {
       optBackground: null
     };
-    const backgroundOptions = {
+    const optbackgroundOptions = {
       optAutoStart: ['optBackground']
     };
-    const availabilityMain = {
+    const optavailabilityMain = {
       optAllInterfaces: null
     };
-    const availabilityOptions = {
+    const optavailabilityOptions = {
       optDoPortMapping: ['optAllInterfaces']
     };
     const optIndexMain = {
@@ -366,9 +366,11 @@ class App extends React.Component {
     const httpsMain = renderOpts(optHttps)
     const Portoption = renderOpts(optPortOption)
     const IndexMain = renderOpts(optIndexMain)
-    const AvailabilityMain = renderOpts(availabilityMain)
-    const BackgroundMain = renderOpts(backgroundMain)
-
+    const AvailabilityMain = renderOpts(optavailabilityMain)
+    const BackgroundMain = renderOpts(optbackgroundMain)
+    const Custom401Main = renderOpts(optCustom401Main)
+    const Custom403Main = renderOpts(optCustom403Main)
+    
     const HtaccessInfo = (() => {
       let disablezero = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
       return [(<div style={{paddingLeft: 20}}>{!disablezero}
@@ -414,13 +416,13 @@ class App extends React.Component {
 
     const AvailabilityOptions = (() => {
       let disableseven = (!this.webapp || !this.webapp.opts.optAllInterfaces);
-      const textboxesseven = renderOpts(availabilityOptions)
+      const textboxesseven = renderOpts(optavailabilityOptions)
       return [(<div>{!disableseven && textboxesseven}</div>)];
     })();
 
     const BackgroundOptions = (() => {
       let disableeight = (!this.webapp || !this.webapp.opts.optBackground);
-      const textboxeseight = renderOpts(backgroundOptions)
+      const textboxeseight = renderOpts(optbackgroundOptions)
       return [(<div>{!disableeight && textboxeseight}</div>)];
     })();
 

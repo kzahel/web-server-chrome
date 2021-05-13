@@ -179,6 +179,7 @@
                 if (extension == 'html') {
                     var path = this.request.path
                     var newpath = path.substring(0, path.length - 5);
+                    this.responseLength = 0
                     this.setHeader('location', newpath)
                     this.writeHeaders(307)
                     this.finish()
@@ -530,6 +531,7 @@
                             if (data.request_path == filerequested || data.request_path == 'all files') {
                                 if (data.type == 301 || data.type == 302 || data.type == 307) {
                                         this.setHeader('location', data.redirto)
+                                        this.responseLength = 0
                                         this.writeHeaders(data.type)
                                         this.finish()
                             } else if (data.type == 401) {

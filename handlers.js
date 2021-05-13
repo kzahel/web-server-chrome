@@ -183,6 +183,7 @@
                     this.setHeader('location', newpath)
                     this.writeHeaders(307)
                     this.finish()
+                    return
                 }
             }
 

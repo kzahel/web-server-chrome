@@ -257,31 +257,6 @@
 
             function onEntryMain() {
                 this.useDefaultMime = true
-                if (entry.name == 'wsc.htaccess') {
-                    if (this.app.opts.optCustom403) {
-                        this.fs.getByPath(this.app.opts.optCustom403location, (file) => {
-                        if (! file.error) {
-                            file.file( function(filee) {
-                                var reader = new FileReader();
-                                reader.onload = function(e){
-                                    this.useDefaultMime = false
-                                    var data = e.target.result
-                                    this.setHeader('content-type','text/html; charset=utf-8')
-                                    this.write(data, 403)
-                                    this.finish()
-                                    this.useDefaultMime = true
-                                }.bind(this)
-                                reader.readAsText(filee)
-                            }.bind(this))
-                        } else {
-                            this.write('Path of 403 html was not found - 403 path is set to: '+this.app.opts.optCustom403location, 500)
-                            this.finish()
-                        }})
-                    } else {
-                        this.write('<h1>403 - Forbidden</h1>', 403)
-                        this.finish()
-                        return
-                }}
                 
                 if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
                     var newloc = this.request.origpath + '/'

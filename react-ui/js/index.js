@@ -319,6 +319,11 @@ class App extends React.Component {
     const optHtaccess = {
       optScanForHtaccess: null
     };
+    const optHtaccessOptions = {
+      optGETHtaccess: ['optScanForHtaccess'],
+      optPUTPOSTHtaccess: ['optScanForHtaccess'],
+      optDELETEHtaccess: ['optScanForHtaccess']
+    };
     const optRewrite = {
       optModRewriteEnable: null
     };
@@ -373,7 +378,8 @@ class App extends React.Component {
     
     const HtaccessInfo = (() => {
       let disablezero = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
-      return [(<div style={{paddingLeft: 20}}>{!disablezero}
+      const htaccesstextbox = renderOpts(optHtaccessOptions)
+      return [(<div style={{paddingLeft: 20}}>{!disablezero && htaccesstextbox}
         {!disablezero && <Alert severity="info">For more info on how to use wsc.htaccess files, go <a href="https://github.com/ethanaobrien/web-server-chrome/tree/master/htaccess#readme" target="_blank">here</a></Alert>}
 	  </div>)];
     })();

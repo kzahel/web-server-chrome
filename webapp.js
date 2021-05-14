@@ -499,6 +499,44 @@
         onRequest: function(stream, connection, request) {
             console.log('Request',request.method, request.uri)
 
+            //console.log(request)
+            var filename = request.path.split('/').pop()
+            if (filename == 'wsc.htaccess') {
+                if (request.method == 'GET' && this.opts.optGETHtaccess == false) {
+                    var handler = new WSC.BaseHandler(request)
+                    handler.app = this
+                    handler.request = request
+                    handler.write('<h1>400 - Bad Request</h1>', 400)
+                    handler.finish()
+                    return
+                }
+                if (request.method == 'PUT' && this.opts.optPUTPOSTHtaccess == false) {
+                    var handler = new WSC.BaseHandler(request)
+                    handler.app = this
+                    handler.request = request
+                    handler.write('<h1>400 - Bad Request</h1>', 400)
+                    handler.finish()
+                    return
+                }
+                if (request.method == 'POST' && this.opts.optPUTPOSTHtaccess == false) {
+                    var handler = new WSC.BaseHandler(request)
+                    handler.app = this
+                    handler.request = request
+                    handler.write('<h1>400 - Bad Request</h1>', 400)
+                    handler.finish()
+                    return
+                }
+                if (request.method == 'DELETE' && this.opts.optPUTPOSTHtaccess == false) {
+                    var handler = new WSC.BaseHandler(request)
+                    handler.app = this
+                    handler.request = request
+                    handler.write('<h1>400 - Bad Request</h1>', 400)
+                    handler.finish()
+                    return
+                }
+            }
+
+
             if (this.opts.auth) {
                 var validAuth = false
                 var auth = request.headers['authorization']
@@ -600,7 +638,7 @@
         },
         setCORS: function() {
             this.setHeader('access-control-allow-origin','*')
-            this.setHeader('access-control-allow-methods','GET, POST, PUT')
+            this.setHeader('access-control-allow-methods','GET, POST, PUT, DELETE')
             this.setHeader('access-control-max-age','120')
         },
         get_argument: function(key,def) {

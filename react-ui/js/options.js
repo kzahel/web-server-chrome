@@ -272,6 +272,24 @@ const options = {
     type: Boolean,
     default: false
   },
+  optGETHtaccess: {
+    label: 'Allow GET request for htaccess files',
+    help: 'will allow the user to request and view htaccess files',
+    type: Boolean,
+    default: false
+  },
+  optPUTPOSTHtaccess: {
+    label: 'Allow PUT/POST requests for htaccess files',
+    help: 'Will allow user to upload wsc.htaccess files',
+    type: Boolean,
+    default: false
+  },
+  optDELETEHtaccess: {
+    label: 'Allow Delete request for htaccess files',
+    help: 'Will allow user to delete htaccess files',
+    type: Boolean,
+    default: false
+  },
   optUseHttps: {
     label: 'Use https://',
     help: 'Serve pages through https://',

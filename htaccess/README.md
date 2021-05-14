@@ -14,6 +14,13 @@
 <p>403 - Forbidden. This will deny direct access to image/video/audio files. This option only works if https is enabled or if the user is on a localhost address.</p>
 <p>If you want more features - Make an issue!</p>
 <br>
+<h1>Extra Features</h1>
+<p>You can now control the amount of access the user has.</p>
+<p>You can now allow/deny the user the option to view (GET request) wsc.htaccess files</p>
+<p>You can now allow/deny uploading (PUT request) wsc.htaccess files (Helpful for when making something like a file hosting, the only question with doing that is why are you using a web server as simple as this)</p>
+<p>You can now allow/deny deleting (DELETE request) wsc.htaccess files (Why you would enable this - I dont know)</p>
+<p>FOR MAXIMUM SECURITY - IT IS RECOMMENDED TO LEAVE THESE ALL TURNED OFF!!</p>
+<p>Custom 400 (Bad Request) page not supported</p>
 <h1>Making the file</h1>
 <p>A wsc.htaccess file is actually a json string, which means one problem with the file will cause it not to work - So be careful. No additional info can be put into the file</p>
 <p>Note - If you are trying to redirect to some index.html file and you have the option to automatically show index.html turned on, your path will go from '/somepath/index.html' to '/somepath/'</p>

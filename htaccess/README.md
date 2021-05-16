@@ -35,6 +35,7 @@ Note - when selecting the file to scan, if the file is some .html and you have t
 
 Note - To set more than 1 ruleset per file, see instruction at bottom of the page
 
+Note - 401 (unauthorized) username and passwords are CASE SENSITIVE!!
 <p>Note - wsc.htaccess file MUST be in the same directory as the file you want to change. The file does need to exist, due to the way the web server works.</p>
 <p>IMPORTANT NOTE - EVERYTHING IN THE FILE (AND THE FILE NAME) IS CASE SENSITIVE!!</p>
 <br>
@@ -111,6 +112,7 @@ Note - To set more than 1 ruleset per file, see instruction at bottom of the pag
 <h1>How to use more than 1 ruleset per file</h1>
 <p>Pay VERY close attention to the syntax. One thing wrong will cause an error!!</p>
 <p>First, I provide an example</p>
+
 ```
 [
     {
@@ -124,6 +126,7 @@ Note - To set more than 1 ruleset per file, see instruction at bottom of the pag
     }
 ]
 ```
+
 You basically have `[` and `]` surrounding the entire file and each ruleset inside `{` these `}`
 You MUST separate each ruleset with a comma (As shown in the example). The failure to do so will result in an error.
 For the last ruleset, no comma can be after the `}`. This will break the array and give you an error.

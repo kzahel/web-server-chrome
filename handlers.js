@@ -851,7 +851,13 @@
                         }
                     }.bind(this), function(error) {
                         console.log('error reading metadata '+error.code)
-                    })}
+                        if (w != results.length - 1) {
+                            w++
+                            sendFileList.bind(this, results)()
+                        } else {
+                            DirRenderFinish.bind(this, results)()
+                        }
+                    }.bind(this))}
                 this.setHeader('transfer-encoding','chunked')
                 this.writeHeaders(200)
                 this.writeChunk(WSC.template_data )
@@ -905,19 +911,19 @@
             if (! file.error) {
                 file.file( function(filee) {
                 var reader = new FileReader();
-                    reader.onload = function(e){
-                        this.useDefaultMime = false
-                        var data = e.target.result
-                        if (this.app.opts.optCustom404usevar) {
-                            if (this.app.opts.optCustom404usevarvar != '') {
-                            var html = ['<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.path+'";</script>']
-                        } else {
-                            this.write('javascript location variable is blank', 500)
-                            return
-                        }
-                        } else {
-                            var html = ['']
-                        }
+                reader.onload = function(e){
+                    this.useDefaultMime = false
+                    var data = e.target.result
+                    if (this.app.opts.optCustom404usevar) {
+                        if (this.app.opts.optCustom404usevarvar != '') {
+                        var html = ['<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.path+'";</script>']
+                    } else {
+                        this.write('javascript location variable is blank', 500)
+                        return
+                    }
+                    } else {
+                        var html = ['']
+                    }
                     html.push(data)
                     var finaldata = html.join('\n')
                     this.setHeader('content-type','text/html; charset=utf-8')

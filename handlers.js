@@ -413,8 +413,18 @@
                             function htaccessMain(filerequested) {
                                 var filefound = false
                                 for (var i=0; i<origdata.length; i++) {
-                                    if (origdata[i].request_path == filerequested || 
-                                        origdata[i].request_path == 'all files' || 
+                                    origdata[i].original_request_path = origdata[i].request_path
+                                    if (origdata[i].request_path == 'index.html' ||
+                                        origdata[i].request_path == 'index.htm' ||
+                                        origdata[i].request_path == 'index' ||
+                                        origdata[i].request_path == 'index.xhtm' ||
+                                        origdata[i].request_path == 'index.xhtml' ||
+                                        origdata[i].request_path == '') {
+                                        origdata[i].request_path = ''
+                                    }
+                                    //console.log(origdata)
+                                    if (origdata[i].request_path == filerequested ||
+                                        origdata[i].request_path == 'all files' ||
                                         (origdata[i].type == 'directory listing' && filerequested == '')) {
                                         var data = origdata[i]
                                         //console.log(data)
@@ -424,8 +434,16 @@
                                 }
                                 //console.log(filefound)
                                 if (filefound) {
-                                    if (data.request_path == filerequested || 
-                                        data.request_path == 'all files' || 
+                                    if (data.request_path == 'index.html' ||
+                                        data.request_path == 'index.htm' ||
+                                        data.request_path == 'index' ||
+                                        data.request_path == 'index.xhtm' ||
+                                        data.request_path == 'index.xhtml' ||
+                                        data.request_path == '') {
+                                        data.request_path = ''
+                                    }
+                                    if (data.request_path == filerequested ||
+                                        data.request_path == 'all files' ||
                                         (data.type == 'directory listing' && filerequested == '')) {
                                         if (data.type == 301 || data.type == 302 || data.type == 307) {
                                             this.setHeader('location', data.redirto)
@@ -570,13 +588,26 @@
                                 if (! file.error) {
                                     if (this.request.origpath.endsWith("/")) {
                                         var filerequested = filerequest.split('/').pop();
-                                        if (filerequested == 'index.html' || filerequested == 'index.htm' || filerequested == 'index') {
+                                        if (filerequested == 'index.html' ||
+                                            filerequested == 'index.htm' ||
+                                            filerequested == 'index' ||
+                                            filerequested == 'index.xhtm' ||
+                                            filerequested == 'index.xhtml' ||
+                                            filerequested == '') {
                                             var filerequested = ''
                                         }
                                         htaccessMain.bind(this)(filerequested)
                                     }
                                     var filerequested = this.request.path+'.html'
                                     var filerequested = filerequested.split('/').pop();
+                                    if (filerequested == 'index.html' ||
+                                        filerequested == 'index.htm' ||
+                                        filerequested == 'index' ||
+                                        filerequested == 'index.xhtm' ||
+                                        filerequested == 'index.xhtml' ||
+                                        filerequested == '') {
+                                        var filerequested = ''
+                                    }
                                     htaccessMain.bind(this)(filerequested)
                                     return
                                 } else {
@@ -591,7 +622,12 @@
                                     }
                                     var filerequested = filerequest.split('/').pop();
                                     //console.log(filerequested)
-                                    if (filerequested == 'index.html' || filerequested == 'index.htm') {
+                                    if (filerequested == 'index.html' ||
+                                        filerequested == 'index.htm' ||
+                                        filerequested == 'index' ||
+                                        filerequested == 'index.xhtm' ||
+                                        filerequested == 'index.xhtml' ||
+                                        filerequested == '') {
                                         var filerequested = ''
                                     }
                                     htaccessMain.bind(this)(filerequested)
@@ -608,7 +644,11 @@
                                     }
                                     var filerequested = filerequest.split('/').pop();
                                     //console.log(filerequested)
-                                    if (filerequested == 'index.html' || filerequested == 'index.htm') {
+                                    if (filerequested == 'index.html' ||
+                                        filerequested == 'index.htm' ||
+                                        filerequested == 'index.xhtm' ||
+                                        filerequested == 'index.xhtml' ||
+                                        filerequested == '') {
                                         var filerequested = ''
                                     }
                                     htaccessMain.bind(this)(filerequested)
@@ -785,12 +825,12 @@
                             var lastModifiedAmPm = 'AM'
                         }
                         var lastModifiedStr = lastModifiedMonth+'/'+
-                                           lastModifiedDay+'/'+
-                                           lastModifiedYear+', '+
-                                           lastModifiedHours+':'+
-                                           lastModifiedMinutes+':'+
-                                           lastModifiedSeconds +' '+
-                                           lastModifiedAmPm
+                                              lastModifiedDay+'/'+
+                                              lastModifiedYear+', '+
+                                              lastModifiedHours+':'+
+                                              lastModifiedMinutes+':'+
+                                              lastModifiedSeconds +' '+
+                                              lastModifiedAmPm
 
                         var name = encodeURIComponent(results[w].name)
                         var isdirectory = results[w].isDirectory

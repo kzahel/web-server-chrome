@@ -6,6 +6,7 @@
 <p>Also, Web Server for Chrome DOES NOT have support for .htaccess files. Instead, we have wsc.htaccess files, which gets the same thing done (Not all features implimented).</p>
 <br><br>
 <h1>How to</h1>
+<p>All Htaccess features are built to have 100% compatibility with changes in settings</p>
 <h2>Currently supported</h2>
 <p>301 - Moved Permanently. Tells the server that when chosen file is requested to move to a different directory or file. The browser will cache this</p>
 <p>302 - Found. Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser</p>
@@ -27,9 +28,7 @@
 <p>Note - If you are trying to redirect to some index.html file and you have the option to automatically show index.html turned on, your path will go from '/somepath/index.html' to '/somepath/'</p>
 <p>Note - If you are trying to redirect to some .html file and you have the option to remove .html extension turned on, leave the .html extension. The web server will handle the request and forward it to have no .html extension</p>
 
-Note - when selecting the file to scan for, if the file is index.html and the file is `index.html` or `index.htm`, leave the path blank. It should look like this:  `"request_path": "",`. The web server will take care of the rest
-
-Note - There are security measures that when request_path = "" It will deny access to index.html, index (For no .html extension) and index.htm. Use `"request_path": "",`. if the file is index.html or index.htm - This will protect every way of access.
+Note - when selecting the file to scan for, if you are trying to edit some index.html (or index.htm, or index.xhtml, or index.xhtm) Put the file name in place of request path. example: `"request_path": "index.html",`. Security will scan any way to get the the file
 
 Note - when selecting the file to scan, if the file is some .html and you have the option to remove the .html extension turned on, leave the .html extension. The Web Server is programed to handle the request!
 
@@ -40,6 +39,7 @@ Note - 401 (unauthorized) username and passwords are CASE SENSITIVE!!
 <p>IMPORTANT NOTE - EVERYTHING IN THE FILE (AND THE FILE NAME) IS CASE SENSITIVE!!</p>
 <br>
 <h2>301 Example</h2>
+<p>Tells the server that when chosen file is requested to move to a different directory or file. The browser will cache this</p>
 
 ```
 [
@@ -52,6 +52,7 @@ Note - 401 (unauthorized) username and passwords are CASE SENSITIVE!!
 ```
 <br>
 <h2>302 Example</h2>
+<p>Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser</p>
 
 ```
 [
@@ -64,6 +65,7 @@ Note - 401 (unauthorized) username and passwords are CASE SENSITIVE!!
 ```
 <br>
 <h2>307 Example</h2>
+<p>Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser.</p>
 
 ```
 [
@@ -76,6 +78,7 @@ Note - 401 (unauthorized) username and passwords are CASE SENSITIVE!!
 ```
 <br>
 <h2>401 Example</h2>
+<p>The page will require login.</p>
 
 ```
 [
@@ -89,6 +92,7 @@ Note - 401 (unauthorized) username and passwords are CASE SENSITIVE!!
 ```
 <br>
 <h2>403 Example</h2>
+<p>This will deny direct access to image/video/audio files. This option only works if https is enabled or if the user is on a localhost address.</p>
 
 ```
 [
@@ -100,6 +104,7 @@ Note - 401 (unauthorized) username and passwords are CASE SENSITIVE!!
 ```
 <br>
 <h2>Directory Listing</h2>
+<p>Ignores the value of 404 instead of directory listing and renders the directory listing</p>
 
 ```
 [

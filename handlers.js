@@ -174,7 +174,7 @@
 
             // strip '/' off end of path
 
-            if (this.app.opts.optExcludeDotHtml){
+            if (this.app.opts.optExcludeDotHtml && ! this.request.origpath.endsWith("/")) {
                 var extension = this.request.path.split('.').pop();
                 if (extension == 'html') {
                     var path = this.request.path
@@ -280,36 +280,7 @@
                     this.finish()
                 } else {
                     if (this.app.opts.optCustom404) {
-                        this.fs.getByPath(this.app.opts.optCustom404location, (file) => {
-                        if (! file.error) {
-                            file.file( function(filee) {
-                            var reader = new FileReader();
-                            reader.onload = function(e){
-                            this.useDefaultMime = false
-                                var data = e.target.result
-                                    if (this.app.opts.optCustom404usevar) {
-                                        if (this.app.opts.optCustom404usevarvar != '') {
-                                        var html = ['<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.path+'";</script>']
-                                    } else {
-                                        this.write('javascript location variable is blank', 500)
-                                        return
-                                    }
-                                    } else {
-                                    var html = ['']
-                                    }
-                                    html.push(data)
-                                    var finaldata = html.join('\n')
-                                    this.setHeader('content-type','text/html; charset=utf-8')
-                                    this.write(finaldata, 404)
-                                    this.finish()
-                                    this.useDefaultMime = true
-                        }.bind(this)
-                        reader.readAsText(filee)
-                        }.bind(this))
-                        } else {
-                        this.write('Path of 404 html was not found - 404 path is set to: '+this.app.opts.optCustom404location, 500)
-                        this.finish()
-                        }})
+                        this.renderCustom404Html.bind(this)()
                     } else {
                     this.write('no entry',404)
                 }}
@@ -320,36 +291,7 @@
                     this.finish()
                 } else {
                     if (this.app.opts.optCustom404) {
-                        this.fs.getByPath(this.app.opts.optCustom404location, (file) => {
-                        if (! file.error) {
-                            file.file( function(filee) {
-                            var reader = new FileReader();
-                            reader.onload = function(e){
-                            this.useDefaultMime = false
-                                var data = e.target.result
-                                    if (this.app.opts.optCustom404usevar) {
-                                        if (this.app.opts.optCustom404usevarvar != '') {
-                                        var html = ['<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.path+'";</script>']
-                                    } else {
-                                        this.write('javascript location variable is blank', 500)
-                                        return
-                                    }
-                                    } else {
-                                    var html = ['']
-                                    }
-                                    html.push(data)
-                                    var finaldata = html.join('\n')
-                                    this.setHeader('content-type','text/html; charset=utf-8')
-                                    this.write(finaldata, 404)
-                                    this.finish()
-                                    this.useDefaultMime = true
-                        }.bind(this)
-                        reader.readAsText(filee)
-                        }.bind(this))
-                        } else {
-                        this.write('Path of 404 html was not found - 404 path is set to: '+this.app.opts.optCustom404location, 500)
-                        this.finish()
-                        }})
+                        this.renderCustom404Html.bind(this)()
                     } else {
                         this.write('entry not found: ' + (this.rewrite_to || this.request.path), 404)
                     }
@@ -389,36 +331,7 @@
                         this.renderDirectoryListingJSON(results)
                     } else if (this.app.opts.optDir404 && this.app.opts.optRenderIndex) {
                         if (this.app.opts.optCustom404) {
-                            this.fs.getByPath(this.app.opts.optCustom404location, (file) => {
-                            if (! file.error) {
-                                file.file( function(filee) {
-                                var reader = new FileReader();
-                                reader.onload = function(e){
-                                this.useDefaultMime = false
-                                var data = e.target.result
-                                    if (this.app.opts.optCustom404usevar) {
-                                        if (this.app.opts.optCustom404usevarvar != '') {
-                                        var html = ['<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.path+'";</script>']
-                                    } else {
-                                        this.write('javascript location variable is blank', 500)
-                                        return
-                                    }
-                                    } else {
-                                    var html = ['']
-                                    }
-                                    html.push(data)
-                                    var finaldata = html.join('\n')
-                                    this.setHeader('content-type','text/html; charset=utf-8')
-                                    this.write(finaldata, 404)
-                                    this.finish()
-                                    this.useDefaultMime = true
-                                }.bind(this)
-                            reader.readAsText(filee)
-                            }.bind(this))
-                            } else {
-                            this.write('Path of 404 html was not found - 404 path is set to: '+this.app.opts.optCustom404location, 500)
-                            this.finish()
-                            }})
+                            this.renderCustom404Html.bind(this)()
                         } else {
                             this.write("404 - File not found", 404)
                             this.finish()
@@ -513,7 +426,7 @@
                                 if (filefound) {
                                     if (data.request_path == filerequested || 
                                         data.request_path == 'all files' || 
-                                        data.type == 'directory listing') {
+                                        (data.type == 'directory listing' && filerequested == '')) {
                                         if (data.type == 301 || data.type == 302 || data.type == 307) {
                                             this.setHeader('location', data.redirto)
                                             this.responseLength = 0
@@ -655,6 +568,13 @@
                             if (this.app.opts.optExcludeDotHtml) {
                                 this.fs.getByPath(this.request.path+'.html', (file) => {
                                 if (! file.error) {
+                                    if (this.request.origpath.endsWith("/")) {
+                                        var filerequested = filerequest.split('/').pop();
+                                        if (filerequested == 'index.html' || filerequested == 'index.htm' || filerequested == 'index') {
+                                            var filerequested = ''
+                                        }
+                                        htaccessMain.bind(this)(filerequested)
+                                    }
                                     var filerequested = this.request.path+'.html'
                                     var filerequested = filerequested.split('/').pop();
                                     htaccessMain.bind(this)(filerequested)
@@ -709,40 +629,11 @@
             getEntryFile(entry, function(file) {
                 if (file instanceof DOMException) {
                     if (this.app.opts.optCustom404) {
-                        this.fs.getByPath(this.app.opts.optCustom404location, (file) => {
-                        if (! file.error) {
-                            file.file( function(filee) {
-                            var reader = new FileReader();
-                            reader.onload = function(e){
-                            this.useDefaultMime = false
-                                var data = e.target.result
-                                    if (this.app.opts.optCustom404usevar) {
-                                        if (this.app.opts.optCustom404usevarvar != '') {
-                                        var html = ['<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.path+'";</script>']
-                                    } else {
-                                        this.write('javascript location variable is blank', 500)
-                                        return
-                                    }
-                                    } else {
-                                    var html = ['']
-                                    }
-                                    html.push(data)
-                                    var finaldata = html.join('\n')
-                                    this.setHeader('content-type','text/html; charset=utf-8')
-                                    this.write(finaldata, 404)
-                                    this.finish()
-                                    this.useDefaultMime = true
-                        }.bind(this)
-                        reader.readAsText(filee)
-                        }.bind(this))
-                        } else {
-                        this.write('Path of 404 html was not found - 404 path is set to: '+this.app.opts.optCustom404location, 500)
-                        this.finish()
-                        }})
+                        this.renderCustom404Html.bind(this)()
                     } else {
-                    this.write("File not found", 404)
-                    this.finish()
-                    return
+                        this.write("File not found", 404)
+                        this.finish()
+                        return
                 }}
                 this.file = file
                 if (this.request.method == "HEAD") {
@@ -828,34 +719,196 @@
             if (! WSC.template_data) {
                 return this.renderDirectoryListing(results)
             }
+            function DirRenderFinish() {
+                var data = html.join('\n')
+                data = new TextEncoder('utf-8').encode(data).buffer
+                this.writeChunk(data)
+                this.request.connection.write(WSC.str2ab('0\r\n\r\n'))
+                this.finish()
+            }
+            function sendFileList() {
+                var isdirectory = results[w].isDirectory
+                if (! isdirectory) {
+                    results[w].file(function(file) {
+                        //console.log(file)
+                        var rawname = file.name
+                        //from https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string/10420404
+                        function humanFileSize(bytes, si=false, dp=1) {
+                          const thresh = si ? 1000 : 1024;
 
-            this.setHeader('transfer-encoding','chunked')
-            this.writeHeaders(200)
-            this.writeChunk(WSC.template_data )
+                          if (Math.abs(bytes) < thresh) {
+                            return bytes + ' B';
+                          }
+
+                          const units = si 
+                            ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
+                            : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+                          let u = -1;
+                          const r = 10**dp;
+
+                          do {
+                            bytes /= thresh;
+                            ++u;
+                          } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+
+                          return bytes.toFixed(dp) + ' ' + units[u];
+                        }
+                        
+                        var lastModifiedMonth = file.lastModifiedDate.getMonth() + 1
+                        var lastModifiedDay = file.lastModifiedDate.getDate()
+                        var lastModifiedYear = file.lastModifiedDate.getFullYear().toString().substring(2, 4)
+                        var lastModifiedHours = file.lastModifiedDate.getHours() + 1
+                        var lastModifiedMinutes = file.lastModifiedDate.getMinutes() + 1
+                        var lastModifiedSeconds = file.lastModifiedDate.getSeconds() + 1
+
+                        var lastModified = lastModifiedMonth+
+                                           lastModifiedDay+
+                                           lastModifiedYear+
+                                           lastModifiedHours+
+                                           lastModifiedMinutes+
+                                           lastModifiedSeconds
+                        if (lastModifiedSeconds.toString().length != 2) {
+                            var lastModifiedSeconds = '0' + lastModifiedSeconds
+                        }
+                        if (lastModifiedMinutes.toString().length != 2) {
+                            var lastModifiedMinutes = '0' + lastModifiedMinutes
+                        }
+                        if (lastModifiedDay.toString().length != 2) {
+                            var lastModifiedDay = '0' + lastModifiedDay
+                        }
+                        if (lastModifiedHours >= 12) {
+                            var lastModifiedAmPm = 'PM'
+                            if (lastModifiedHours > 12) {
+                                var lastModifiedHours = lastModifiedHours - 12
+                            }
+                        } else {
+                            var lastModifiedAmPm = 'AM'
+                        }
+                        var lastModifiedStr = lastModifiedMonth+'/'+
+                                           lastModifiedDay+'/'+
+                                           lastModifiedYear+', '+
+                                           lastModifiedHours+':'+
+                                           lastModifiedMinutes+':'+
+                                           lastModifiedSeconds +' '+
+                                           lastModifiedAmPm
+
+                        var name = encodeURIComponent(file.name)
+                        var isdirectory = results[w].isDirectory
+                        //var modified = '4/27/21, 10:38:40 AM'
+                        var modified = lastModified
+                        var filesize = file.size
+                        var filesizestr = humanFileSize(file.size)
+                        var modifiedstr = lastModifiedStr
+                        // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
+                        if (rawname != 'wsc.htaccess') {
+                        html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+                        }
+                        if (w != results.length - 1) {
+                            w++
+                            sendFileList.bind(this, results)()
+                        } else {
+                            DirRenderFinish.bind(this, results)()
+                        }
+                    }.bind(this))
+                } else {
+                    results[w].getMetadata(function(file) {
+                        //console.log(file)
+                        var rawname = results[w].name
+                        //from https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string/10420404
+                        function humanFileSize(bytes, si=false, dp=1) {
+                          const thresh = si ? 1000 : 1024;
+
+                          if (Math.abs(bytes) < thresh) {
+                            return bytes + ' B';
+                          }
+
+                          const units = si 
+                            ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
+                            : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+                          let u = -1;
+                          const r = 10**dp;
+
+                          do {
+                            bytes /= thresh;
+                            ++u;
+                          } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+
+                          return bytes.toFixed(dp) + ' ' + units[u];
+                        }
+                        var lastModifiedMonth = file.modificationTime.getMonth() + 1
+                        var lastModifiedDay = file.modificationTime.getDate()
+                        var lastModifiedYear = file.modificationTime.getFullYear().toString().substring(2, 4)
+                        var lastModifiedHours = file.modificationTime.getHours() + 1
+                        var lastModifiedMinutes = file.modificationTime.getMinutes() + 1
+                        var lastModifiedSeconds = file.modificationTime.getSeconds() + 1
+
+                        var lastModified = lastModifiedMonth+
+                                           lastModifiedDay+
+                                           lastModifiedYear+
+                                           lastModifiedHours+
+                                           lastModifiedMinutes+
+                                           lastModifiedSeconds
+                        if (lastModifiedSeconds.toString().length != 2) {
+                            var lastModifiedSeconds = '0' + lastModifiedSeconds
+                        }
+                        if (lastModifiedMinutes.toString().length != 2) {
+                            var lastModifiedMinutes = '0' + lastModifiedMinutes
+                        }
+                        if (lastModifiedDay.toString().length != 2) {
+                            var lastModifiedDay = '0' + lastModifiedDay
+                        }
+                        if (lastModifiedHours >= 12) {
+                            var lastModifiedAmPm = 'PM'
+                            if (lastModifiedHours > 12) {
+                                var lastModifiedHours = lastModifiedHours - 12
+                            }
+                        } else {
+                            var lastModifiedAmPm = 'AM'
+                        }
+                        var lastModifiedStr = lastModifiedMonth+'/'+
+                                           lastModifiedDay+'/'+
+                                           lastModifiedYear+', '+
+                                           lastModifiedHours+':'+
+                                           lastModifiedMinutes+':'+
+                                           lastModifiedSeconds +' '+
+                                           lastModifiedAmPm
+
+                        var name = encodeURIComponent(results[w].name)
+                        var isdirectory = results[w].isDirectory
+                        //var modified = '4/27/21, 10:38:40 AM'
+                        var modified = lastModified
+                        var filesize = file.size
+                        var filesizestr = humanFileSize(file.size)
+                        var modifiedstr = lastModifiedStr
+                        // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
+                        if (rawname != 'wsc.htaccess') {
+                        html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+                        }
+                        if (w != results.length - 1) {
+                            w++
+                            sendFileList.bind(this, results)()
+                        } else {
+                            DirRenderFinish.bind(this, results)()
+                        }
+
+
+                    }.bind(this), function(error) {
+                        console.log('error reading metadata '+error.code)
+                    })
+                }}
+                this.setHeader('transfer-encoding','chunked')
+                this.writeHeaders(200)
+                this.writeChunk(WSC.template_data )
                 if (this.request.path != '') {
-                    var html = ['<script>start("'+this.request.path+'")</script>']
-                    html.push('<script>onHasParentDirectory();</script>')
-                    } else {
+                    var html = ['<script>start("'+this.request.path+'")</script>',
+                                '<script>onHasParentDirectory();</script>']
+                } else {
                     var html = ['<script>start("/")</script>']
-                    }
-            for (var i=0; i<results.length; i++) {
-                var rawname = '"'+results[i].name+'"'
-                var name = '"'+encodeURIComponent(results[i].name)+'"'
-                var isdirectory = results[i].isDirectory
-                var filesize = '""'
-                //var modified = '4/27/121, 10:38:40 AM'
-                var modified = '""'
-		        var filesizestr = '""'
-		        var modifiedstr = '""'
-                // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
-                if (rawname != '"wsc.htaccess"') {
-                html.push('<script>addRow('+rawname+','+name+','+isdirectory+','+filesize+','+filesizestr+','+modified+','+modifiedstr+');</script>')
-            }}
-            var data = html.join('\n')
-            data = new TextEncoder('utf-8').encode(data).buffer
-            this.writeChunk(data)
-            this.request.connection.write(WSC.str2ab('0\r\n\r\n'))
-            this.finish()
+                }
+                var w = 0
+                sendFileList.bind(this, results)()
         },
         renderDirectoryListing: function(results) {
             var html = ['<html>']
@@ -892,6 +945,39 @@
                 this.write(evt.target.result)
             }
 
+        },
+        renderCustom404Html: function() {
+            this.fs.getByPath(this.app.opts.optCustom404location, (file) => {
+            if (! file.error) {
+                file.file( function(filee) {
+                var reader = new FileReader();
+                    reader.onload = function(e){
+                        this.useDefaultMime = false
+                        var data = e.target.result
+                        if (this.app.opts.optCustom404usevar) {
+                            if (this.app.opts.optCustom404usevarvar != '') {
+                            var html = ['<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.path+'";</script>']
+                        } else {
+                            this.write('javascript location variable is blank', 500)
+                            return
+                        }
+                        } else {
+                            var html = ['']
+                        }
+                    html.push(data)
+                    var finaldata = html.join('\n')
+                    this.setHeader('content-type','text/html; charset=utf-8')
+                    this.write(finaldata, 404)
+                    this.finish()
+                    this.useDefaultMime = true
+                }.bind(this)
+            reader.readAsText(filee)
+            }.bind(this))
+            } else {
+                this.write('Path of 404 html was not found - 404 path is set to: '+this.app.opts.optCustom404location, 500)
+                this.finish()
+            }})
+        
         }
     }, WSC.BaseHandler.prototype)
 

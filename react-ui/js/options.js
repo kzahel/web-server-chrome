@@ -176,6 +176,18 @@ const options = {
     type: Boolean,
     default: false
   },
+  optCustom400: {
+    label: 'Custom 400 page',
+    help: 'Custom 400 page',
+    type: Boolean,
+    default: false
+  },
+  optCustom400location: {
+    label: 'Location of 400 page',
+    help: 'Where is the 400 html page',
+    type: String,
+    default: '/400.html'
+  },
   optCustom404: {
     label: 'Custom 404 page',
     help: 'Custom 404 page',

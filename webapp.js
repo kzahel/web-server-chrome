@@ -496,42 +496,51 @@
             connection.addRequestCallback(this.onRequest.bind(this,stream,connection))
             connection.tryRead()
         },
+        render400HTML: function(request) {
+            var handler = new WSC.BaseHandler(request)
+            handler.app = this
+            handler.request = request
+            if (request.method == "HEAD") {
+                handler.responseLength = 0
+                handler.writeHeaders(400)
+                handler.finish()
+                return
+            }
+            if (this.opts.optCustom400) {
+                this.fs.getByPath(this.opts.optCustom400location, (file) => {
+                if (! file.error) {
+                    file.file( function(filee) {
+                    var reader = new FileReader();
+                    reader.onload = function(e){
+                        this.useDefaultMime = false
+                        var data = e.target.result
+                        handler.setHeader('content-type','text/html; charset=utf-8')
+                        handler.write(data, 400)
+                        handler.finish()
+                        this.useDefaultMime = true
+                    }.bind(this)
+                reader.readAsText(filee)
+                }.bind(this))
+                } else {
+                    handler.write('Path of 400 html was not found - 400 path is set to: '+this.opts.optCustom400location, 500)
+                    handler.finish()
+                }})
+            } else {
+                handler.write('<h1>400 - Bad Request</h1>', 400)
+                handler.finish()
+            }
+        },
         onRequest: function(stream, connection, request) {
             console.log('Request',request.method, request.uri)
 
             //console.log(request)
             var filename = request.path.split('/').pop()
             if (filename == 'wsc.htaccess') {
-                if (request.method == 'GET' && this.opts.optGETHtaccess == false) {
-                    var handler = new WSC.BaseHandler(request)
-                    handler.app = this
-                    handler.request = request
-                    handler.write('<h1>400 - Bad Request</h1>', 400)
-                    handler.finish()
-                    return
-                }
-                if (request.method == 'PUT' && this.opts.optPUTPOSTHtaccess == false) {
-                    var handler = new WSC.BaseHandler(request)
-                    handler.app = this
-                    handler.request = request
-                    handler.write('<h1>400 - Bad Request</h1>', 400)
-                    handler.finish()
-                    return
-                }
-                if (request.method == 'POST' && this.opts.optPUTPOSTHtaccess == false) {
-                    var handler = new WSC.BaseHandler(request)
-                    handler.app = this
-                    handler.request = request
-                    handler.write('<h1>400 - Bad Request</h1>', 400)
-                    handler.finish()
-                    return
-                }
-                if (request.method == 'DELETE' && this.opts.optPUTPOSTHtaccess == false) {
-                    var handler = new WSC.BaseHandler(request)
-                    handler.app = this
-                    handler.request = request
-                    handler.write('<h1>400 - Bad Request</h1>', 400)
-                    handler.finish()
+                if ((request.method == 'GET' && ! this.opts.optGETHtaccess) ||
+                    (request.method == 'PUT' && ! this.opts.optPUTPOSTHtaccess) ||
+                    (request.method == 'POST' && ! this.opts.optPUTPOSTHtaccess) ||
+                    (request.method == 'DELETE' && ! this.opts.optPUTPOSTHtaccess)) {
+                    this.render400HTML.bind(this)(request)
                     return
                 }
             }

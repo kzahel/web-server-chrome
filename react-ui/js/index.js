@@ -87,6 +87,10 @@ const functions = {
 			bg.backgroundSettingChange({'optBackground':val})
 		}
   },
+  optCustom400location: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCustom400location', val);
+  },
   optCustom404location: (app, k, val) => {
     console.assert(typeof val === 'string')
     app.webapp.updateOption('optCustom404location', val);
@@ -310,6 +314,12 @@ class App extends React.Component {
     const optCustom403Info = {
       optCustom403location: ['optCustom403']
     };
+    const optCustom400Main = {
+      optCustom400: null
+    };
+    const optCustom400Info = {
+      optCustom400location: ['optCustom400']
+    };
     const optCustom401Main = {
       optCustom401: null
     };
@@ -375,6 +385,7 @@ class App extends React.Component {
     const BackgroundMain = renderOpts(optbackgroundMain)
     const Custom401Main = renderOpts(optCustom401Main)
     const Custom403Main = renderOpts(optCustom403Main)
+    const Custom400Main = renderOpts(optCustom400Main)
     
     const HtaccessInfo = (() => {
       let disablezero = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
@@ -388,6 +399,12 @@ class App extends React.Component {
       let disableone = (!this.webapp || !this.webapp.opts.optCustom403);
       const textboxesone = renderOpts(optCustom403Info)
       return [(<div>{!disableone && textboxesone}</div>)];
+    })();
+
+    const Custom400Options = (() => {
+      let disablenine = (!this.webapp || !this.webapp.opts.optCustom400);
+      const textboxesnine = renderOpts(optCustom400Info)
+      return [(<div>{!disablenine && textboxesnine}</div>)];
     })();
 
     const Custom401Options = (() => {
@@ -508,7 +525,7 @@ class App extends React.Component {
           {BackgroundMain}{BackgroundOptions}{AvailabilityMain}{AvailabilityOptions}{IndexMain}{IndexOptions}{Portoption}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{HtaccessMain}{HtaccessInfo}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
+          {state.showAdvanced && <div>{advOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{HtaccessMain}{HtaccessInfo}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
         </CardContent>
       </Card>
 

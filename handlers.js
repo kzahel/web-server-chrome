@@ -173,10 +173,6 @@
             //var path = decodeURI(this.request.path)
 
             // strip '/' off end of path
-                console.log(this.request.path)
-                console.log(this.request.origpath)
-                console.log(this.request.uri)
-                console.log(this.request)
 
             if (this.app.opts.optExcludeDotHtml && ! this.request.origpath.endsWith("/")) {
                 var extension = this.request.path.split('.').pop();

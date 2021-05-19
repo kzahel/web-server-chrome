@@ -173,17 +173,33 @@
             //var path = decodeURI(this.request.path)
 
             // strip '/' off end of path
+                console.log(this.request.path)
+                console.log(this.request.origpath)
+                console.log(this.request.uri)
+                console.log(this.request)
 
             if (this.app.opts.optExcludeDotHtml && ! this.request.origpath.endsWith("/")) {
                 var extension = this.request.path.split('.').pop();
+                var more = this.request.uri.split('.html').pop()
                 if (extension == 'html') {
-                    var path = this.request.path
-                    var newpath = path.substring(0, path.length - 5);
-                    this.responseLength = 0
-                    this.setHeader('location', newpath)
-                    this.writeHeaders(307)
-                    this.finish()
-                    return
+                    if (more != this.request.uri) {
+                        var path = this.request.path
+                        var newpath = path.substring(0, path.length - 5);
+                        var newpath = newpath+more
+                        this.responseLength = 0
+                        this.setHeader('location', newpath)
+                        this.writeHeaders(307)
+                        this.finish()
+                        return
+                    } else {
+                        var path = this.request.path
+                        var newpath = path.substring(0, path.length - 5);
+                        this.responseLength = 0
+                        this.setHeader('location', newpath)
+                        this.writeHeaders(307)
+                        this.finish()
+                        return
+                    }
                 }
             }
 

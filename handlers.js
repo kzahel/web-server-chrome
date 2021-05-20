@@ -95,31 +95,166 @@
             this.get()
         },
         delete: function() {
-            if (! this.app.opts.optDelete) {
-                this.responseLength = 0
-                this.writeHeaders(400)
-                this.finish()
-                return
-            }
-            this.fs.getByPath(this.request.path, (entry) => {
-                entry.remove(()=>{
-                    this.responseLength = 0
-                    this.writeHeaders(200)
-                    this.finish()
+            function deleteMain() {
+                this.fs.getByPath(this.request.path, (entry) => {
+                    entry.remove(()=>{
+                        this.responseLength = 0
+                        this.writeHeaders(200)
+                        this.finish()
+                    });
                 });
-            });
+            }
+            function deleteCheck() {
+                if (! this.app.opts.optDelete) {
+                    this.responseLength = 0
+                    this.writeHeaders(400)
+                    this.finish()
+                    return
+                } else {
+                    deleteMain.bind(this)()
+                }
+            }
+            if (this.app.opts.optScanForHtaccess) {
+                var fullrequestpath = this.request.origpath
+                    var finapath = fullrequestpath
+                    var finpath = finapath.split('/').pop();
+                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
+                if (this.request.path == '') {
+                    var finalpath = '/'
+                }
+                var htaccesspath = finalpath+'wsc.htaccess'
+                //console.log(htaccesspath)
+                this.fs.getByPath(htaccesspath, (file) => {
+                if (! file.error) {
+                    file.file( function(filee) {
+                        var reader = new FileReader();
+                        reader.onload = function(e){
+                            var dataa = e.target.result
+                            if(true) {
+                                try {
+                                    var origdata = JSON.parse(dataa)
+                                } catch(e) {
+                                    this.responseLength = 0
+                                    this.writeHeaders(500)
+                                    this.finish()
+                                    return
+                                }
+                            }
+                            var filerequest = this.request.origpath
+                            var filerequested = filerequest.split('/').pop();
+                            var filefound = false
+                            for (var i=0; i<origdata.length; i++) {
+                                if ((origdata[i].type == 'allow delete' && origdata[i].request_path == filerequested) ||
+                                    (origdata[i].type == 'allow delete' && origdata[i].request_path == 'all files') ||
+                                    (origdata[i].type == 'deny delete' && origdata[i].request_path == filerequested) ||
+                                    (origdata[i].type == 'deny delete' && origdata[i].request_path == 'all files')) {
+                                    var data = origdata[i]
+                                    var filefound = true
+                                    break
+                                }
+                            }
+                            //console.log(filefound)
+                            if (filefound) {
+                                if (data.type == 'allow delete') {
+                                    deleteMain.bind(this)()
+                                } else if (data.type == 'deny delete') {
+                                    this.responseLength = 0
+                                    this.writeHeaders(400)
+                                    this.finish()
+                                    return
+                                }
+                            } else {
+                                deleteCheck.bind(this)()
+                            }
+                        }.bind(this)
+                        reader.readAsText(filee)
+                    }.bind(this))
+                } else {
+                    deleteCheck.bind(this)()
+                }})} else {
+                    deleteCheck.bind(this)()
+                }
         },
         put: function() {
-            if (! this.app.opts.optUpload) {
-                this.responseLength = 0
-                this.writeHeaders(400)
-                this.finish()
-                return
+            function putMain() {
+                
+                // if upload enabled in options...
+                // check if file exists...
+                this.fs.getByPath(this.request.path, this.onPutEntry.bind(this), true)
             }
-
-            // if upload enabled in options...
-            // check if file exists...
-            this.fs.getByPath(this.request.path, this.onPutEntry.bind(this), true)
+            function putCheck() {
+                if (! this.app.opts.optUpload) {
+                    this.responseLength = 0
+                    this.writeHeaders(400)
+                    this.finish()
+                    return
+                } else {
+                    putMain.bind(this)()
+                }
+            }
+            
+            if (this.app.opts.optScanForHtaccess) {
+                var fullrequestpath = this.request.origpath
+                    var finapath = fullrequestpath
+                    var finpath = finapath.split('/').pop();
+                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
+                if (this.request.path == '') {
+                    var finalpath = '/'
+                }
+                var htaccesspath = finalpath+'wsc.htaccess'
+                //console.log(htaccesspath)
+                this.fs.getByPath(htaccesspath, (file) => {
+                if (! file.error) {
+                    file.file( function(filee) {
+                        var reader = new FileReader();
+                        reader.onload = function(e){
+                            var dataa = e.target.result
+                            if(true) {
+                                try {
+                                    var origdata = JSON.parse(dataa)
+                                } catch(e) {
+                                    this.responseLength = 0
+                                    this.writeHeaders(500)
+                                    this.finish()
+                                    return
+                                }
+                            }
+                            var filerequest = this.request.origpath
+                            var filerequested = filerequest.split('/').pop();
+                            var filefound = false
+                            for (var i=0; i<origdata.length; i++) {
+                                if ((origdata[i].type == 'allow put' && origdata[i].request_path == filerequested) ||
+                                    (origdata[i].type == 'allow put' && origdata[i].request_path == 'all files') ||
+                                    (origdata[i].type == 'deny put' && origdata[i].request_path == filerequested) ||
+                                    (origdata[i].type == 'deny put' && origdata[i].request_path == 'all files')) {
+                                    var data = origdata[i]
+                                    var filefound = true
+                                    break
+                                }
+                            }
+                            //console.log(filefound)
+                            if (filefound) {
+                                if (data.type == 'allow put') {
+                                    putMain.bind(this)()
+                                } else if (data.type == 'deny put') {
+                                    this.responseLength = 0
+                                    this.writeHeaders(400)
+                                    this.finish()
+                                    return
+                                } else {
+                                    putCheck.bind(this)()
+                                }
+                            } else {
+                                putCheck.bind(this)()
+                            }
+                        }.bind(this)
+                        reader.readAsText(filee)
+                    }.bind(this))
+                } else {
+                    putCheck.bind(this)()
+                }})} else {
+                    putCheck.bind(this)()
+                }
         },
         onPutEntry: function(entry) {
             var parts = this.request.path.split('/')

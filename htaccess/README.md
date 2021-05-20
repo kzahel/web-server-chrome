@@ -14,6 +14,10 @@
 <p>401 - Unauthorized. The page will require login. For some reason, I cannot find how to clear the cache of the authorization header, which means that once you type it in, the browser will not ask for a login, unless you have multiple password protected pages with different passwords, The authentication header will change whenever you enter a different password.</p>
 <p>403 - Forbidden. This will deny direct access to image/video/audio files. This option only works if https is enabled or if the user is on a localhost address.</p>
 <p>Render Directory Listing - Ignores the value of 404 instead of directory listing and renders the directory listing</p>
+<p>Deny deleting for a specific file or directory - Ignores value of delete option and will deny delete to requested file (Currently only 1 delete can be set per htaccess file)</p>
+<p>Allow deleting for certian file - Ignores value of delete option and will allow deleting requested file (Currently only 1 delete can be set per htaccess file)</p>
+<p>Deny uploading for a specific file or directory - Ignores value of PUT option and will deny put to requested file (Currently only 1 put can be set per htaccess file)</p>
+<p>Allow uploading for certian file - Ignores value of PUT option and will allow deleting requested file (Currently only 1 put can be set per htaccess file)</p>
 <p>If you want more features - Make an issue!</p>
 <br>
 <h1>Extra Features</h1>
@@ -36,6 +40,10 @@ Note - To set more than 1 ruleset per file, see instruction at bottom of the pag
 Note - 401 (unauthorized) username and passwords are CASE SENSITIVE!!
 <p>Note - wsc.htaccess file MUST be in the same directory as the file you want to change. The file does need to exist, due to the way the web server works.</p>
 <p>IMPORTANT NOTE - EVERYTHING IN THE FILE (AND THE FILE NAME) IS CASE SENSITIVE!!</p>
+<br>
+
+To use option for all files, the value of request path will be 'all files' It should look like this `"request_path": "all files",`
+
 <br>
 <h2>301 Example</h2>
 <p>Tells the server that when chosen file is requested to move to a different directory or file. The browser will cache this</p>
@@ -113,6 +121,54 @@ Note - 401 (unauthorized) username and passwords are CASE SENSITIVE!!
 ]
 ```
 <br>
+<h2>Deny uploading</h2>
+<p>Ignores value of PUT option and will deny put to requested file (Currently only 1 put can be set per htaccess file)</p>
+
+```
+[
+    {
+        "request_path": "name of file you want to modify",
+        "type": "deny put"
+    }
+]
+```
+<br>
+<h2>Deny delete</h2>
+<p>Ignores value of delete option and will deny delete to requested file (Currently only 1 delete can be set per htaccess file)</p>
+
+```
+[
+    {
+        "request_path": "name of file you want to modify",
+        "type": "deny delete"
+    }
+]
+```
+<br>
+<h2>Allow Uploading</h2>
+<p>Ignores value of PUT option and will allow deleting requested file (Currently only 1 put can be set per htaccess file)</p>
+
+```
+[
+    {
+        "request_path": "name of file you want to modify",
+        "type": "allow put"
+    }
+]
+```
+<br>
+<h2>Allow delete</h2>
+<p>Ignores value of delete option and will allow deleting requested file (Currently only 1 delete can be set per htaccess file)</p>
+
+```
+[
+    {
+        "request_path": "name of file you want to modify",
+        "type": "allow delete"
+    }
+]
+```
+<br>
 <h1>How to use more than 1 ruleset per file</h1>
 <p>Pay VERY close attention to the syntax. One thing wrong will cause an error!!</p>
 <p>First, I provide an example</p>
@@ -127,6 +183,10 @@ Note - 401 (unauthorized) username and passwords are CASE SENSITIVE!!
     },
     {
         "type": "directory listing"
+    },
+    {
+        "request_path": "all files",
+        "type": "deny delete"
     }
 ]
 ```

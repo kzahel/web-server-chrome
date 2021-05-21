@@ -744,6 +744,7 @@
                                             var filerequested = ''
                                         }
                                         htaccessMain.bind(this)(filerequested)
+                                        return
                                     }
                                     var filerequested = this.request.path+'.html'
                                     var filerequested = filerequested.split('/').pop();
@@ -777,7 +778,8 @@
                                         filerequested == '') {
                                         var filerequested = ''
                                     }
-                                    htaccessMain.bind(this)(filerequested)
+                                        htaccessMain.bind(this)(filerequested)
+                                        return
                                     }
                                 })} else {
                                     if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
@@ -799,7 +801,7 @@
                                         var filerequested = ''
                                     }
                                     htaccessMain.bind(this)(filerequested)
-                                    
+                                    return
                                 }
                             
                         }.bind(this)

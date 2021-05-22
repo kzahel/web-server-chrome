@@ -267,26 +267,14 @@ class App extends React.Component {
   }
   render() {
     // option: [dependencies]
-    const optbackgroundMain = {
-      optBackground: null
-    };
-    const optbackgroundOptions = {
-      optAutoStart: ['optBackground']
-    };
-    const optavailabilityMain = {
-      optAllInterfaces: null
-    };
-    const optavailabilityOptions = {
-      optDoPortMapping: ['optAllInterfaces']
-    };
-    const optIndexMain = {
+    const optDisplay = {
+      optBackground: null,
+      optAutoStart: ['optBackground'],
+      optAllInterfaces: null,
+      optDoPortMapping: ['optAllInterfaces'],
       optPreventSleep: null,
-      optRenderIndex: null
-    };
-    const optIndexOptions = {
-      optDir404: ['optRenderIndex']
-    };
-    const optPortOption = {
+      optRenderIndex: null,
+      optDir404: ['optRenderIndex'],
       port: null
     };
     const optAdvanced = {
@@ -368,6 +356,7 @@ class App extends React.Component {
       return options;
     }
 
+    const options = renderOpts(optDisplay)
     const advOptions = renderOpts(optAdvanced)
     const advancedButton = (<div><a href="#" onClick={e => {
       e.preventDefault();
@@ -379,10 +368,6 @@ class App extends React.Component {
     const HtaccessMain = renderOpts(optHtaccess)
     const rewriteMain = renderOpts(optRewrite)
     const httpsMain = renderOpts(optHttps)
-    const Portoption = renderOpts(optPortOption)
-    const IndexMain = renderOpts(optIndexMain)
-    const AvailabilityMain = renderOpts(optavailabilityMain)
-    const BackgroundMain = renderOpts(optbackgroundMain)
     const Custom401Main = renderOpts(optCustom401Main)
     const Custom403Main = renderOpts(optCustom403Main)
     const Custom400Main = renderOpts(optCustom400Main)
@@ -429,24 +414,6 @@ class App extends React.Component {
       let disablefive = (!this.webapp || !this.webapp.opts.optModRewriteEnable);
       const textboxefive = renderOpts(optRewriteInfo)
       return [(<div>{!disablefive && textboxefive}</div>)];
-    })();
-
-    const IndexOptions = (() => {
-      let disablesix = (!this.webapp || !this.webapp.opts.optRenderIndex);
-      const textboxessix = renderOpts(optIndexOptions)
-      return [(<div>{!disablesix && textboxessix}</div>)];
-    })();
-
-    const AvailabilityOptions = (() => {
-      let disableseven = (!this.webapp || !this.webapp.opts.optAllInterfaces);
-      const textboxesseven = renderOpts(optavailabilityOptions)
-      return [(<div>{!disableseven && textboxesseven}</div>)];
-    })();
-
-    const BackgroundOptions = (() => {
-      let disableeight = (!this.webapp || !this.webapp.opts.optBackground);
-      const textboxeseight = renderOpts(optbackgroundOptions)
-      return [(<div>{!disableeight && textboxeseight}</div>)];
     })();
 
     const httpsOptions = (() => {
@@ -522,7 +489,7 @@ class App extends React.Component {
             <span>Options (may require restart)</span>
           </Tooltip>
           
-          {BackgroundMain}{BackgroundOptions}{AvailabilityMain}{AvailabilityOptions}{IndexMain}{IndexOptions}{Portoption}
+          {options}
 
           {advancedButton}
           {state.showAdvanced && <div>{advOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{HtaccessMain}{HtaccessInfo}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }

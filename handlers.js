@@ -908,116 +908,132 @@
             if (! WSC.template_data) {
                 return this.renderDirectoryListing(results)
             }
-            function DirRenderFinish() {
-                var data = html.join('\n')
-                data = new TextEncoder('utf-8').encode(data).buffer
-                this.writeChunk(data)
-                this.request.connection.write(WSC.str2ab('0\r\n\r\n'))
-                this.finish()
-            }
-            function sendFileList() {
-                var isdirectory = results[w].isDirectory
-                    results[w].getMetadata(function(file) {
-                        //console.log(file)
-                        var rawname = results[w].name
-                        //from https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string/10420404
-                        function humanFileSize(bytes, si=false, dp=1) {
-                          const thresh = si ? 1000 : 1024;
-
-                          if (Math.abs(bytes) < thresh) {
-                            return bytes + ' B';
-                          }
-
-                          const units = si 
-                            ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
-                            : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-                          let u = -1;
-                          const r = 10**dp;
-
-                          do {
-                            bytes /= thresh;
-                            ++u;
-                          } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
-
-
-                          return bytes.toFixed(dp) + ' ' + units[u];
-                        }
-                        
-                        var lastModifiedMonth = file.modificationTime.getMonth() + 1
-                        var lastModifiedDay = file.modificationTime.getDate()
-                        var lastModifiedYear = file.modificationTime.getFullYear().toString().substring(2, 4)
-                        var lastModifiedHours = file.modificationTime.getHours() + 1
-                        var lastModifiedMinutes = file.modificationTime.getMinutes() + 1
-                        var lastModifiedSeconds = file.modificationTime.getSeconds() + 1
-
-                        var lastModified = lastModifiedMonth+
-                                           lastModifiedDay+
-                                           lastModifiedYear+
-                                           lastModifiedHours+
-                                           lastModifiedMinutes+
-                                           lastModifiedSeconds
-                        if (lastModifiedSeconds.toString().length != 2) {
-                            var lastModifiedSeconds = '0' + lastModifiedSeconds
-                        }
-                        if (lastModifiedMinutes.toString().length != 2) {
-                            var lastModifiedMinutes = '0' + lastModifiedMinutes
-                        }
-                        if (lastModifiedDay.toString().length != 2) {
-                            var lastModifiedDay = '0' + lastModifiedDay
-                        }
-                        if (lastModifiedHours >= 12) {
-                            var lastModifiedAmPm = 'PM'
-                            if (lastModifiedHours > 12) {
-                                var lastModifiedHours = lastModifiedHours - 12
-                            }
-                        } else {
-                            var lastModifiedAmPm = 'AM'
-                        }
-                        var lastModifiedStr = lastModifiedMonth+'/'+
-                                              lastModifiedDay+'/'+
-                                              lastModifiedYear+', '+
-                                              lastModifiedHours+':'+
-                                              lastModifiedMinutes+':'+
-                                              lastModifiedSeconds +' '+
-                                              lastModifiedAmPm
-
-                        var name = encodeURIComponent(results[w].name)
-                        var isdirectory = results[w].isDirectory
-                        //var modified = '4/27/21, 10:38:40 AM'
-                        var modified = lastModified
-                        var filesize = file.size
-                        var filesizestr = humanFileSize(file.size)
-                        var modifiedstr = lastModifiedStr
-                        // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
-                        if (rawname != 'wsc.htaccess') {
-                        html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
-                        }
-                        if (w != results.length - 1) {
-                            w++
-                            sendFileList.bind(this, results)()
-                        } else {
-                            DirRenderFinish.bind(this, results)()
-                        }
-                    }.bind(this), function(error) {
-                        console.log('error reading metadata '+error.code)
-                        if (w != results.length - 1) {
-                            w++
-                            sendFileList.bind(this, results)()
-                        } else {
-                            DirRenderFinish.bind(this, results)()
-                        }
-                    }.bind(this))}
-                this.setHeader('transfer-encoding','chunked')
-                this.writeHeaders(200)
-                this.writeChunk(WSC.template_data )
-                if (this.request.path != '') {
-                    var html = ['<script>start("'+this.request.path+'")</script>',
-                                '<script>onHasParentDirectory();</script>']
-                } else {
-                    var html = ['<script>start("/")</script>']
+            if (results.length > 0) {
+                function DirRenderFinish() {
+                    var data = html.join('\n')
+                    data = new TextEncoder('utf-8').encode(data).buffer
+                    this.writeChunk(data)
+                    this.request.connection.write(WSC.str2ab('0\r\n\r\n'))
+                    this.finish()
                 }
-                var w = 0
-                sendFileList.bind(this, results)()
+                function sendFileList() {
+                        results[w].getMetadata(function(file) {
+                            //console.log(file)
+                            var rawname = results[w].name
+                            //from https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string/10420404
+                            function humanFileSize(bytes, si=false, dp=1) {
+                              const thresh = si ? 1000 : 1024;
+
+                              if (Math.abs(bytes) < thresh) {
+                                return bytes + ' B';
+                              }
+
+                              const units = si 
+                                ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
+                                : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+                              let u = -1;
+                              const r = 10**dp;
+
+                              do {
+                                bytes /= thresh;
+                                ++u;
+                              } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+
+                              return bytes.toFixed(dp) + ' ' + units[u];
+                            }
+
+                            var lastModifiedMonth = file.modificationTime.getMonth() + 1
+                            var lastModifiedDay = file.modificationTime.getDate()
+                            var lastModifiedYear = file.modificationTime.getFullYear().toString().substring(2, 4)
+                            var lastModifiedHours = file.modificationTime.getHours() + 1
+                            var lastModifiedMinutes = file.modificationTime.getMinutes() + 1
+                            var lastModifiedSeconds = file.modificationTime.getSeconds() + 1
+
+                            var lastModified = lastModifiedMonth+
+                                               lastModifiedDay+
+                                               lastModifiedYear+
+                                               lastModifiedHours+
+                                               lastModifiedMinutes+
+                                               lastModifiedSeconds
+                            if (lastModifiedSeconds.toString().length != 2) {
+                                var lastModifiedSeconds = '0' + lastModifiedSeconds
+                            }
+                            if (lastModifiedMinutes.toString().length != 2) {
+                                var lastModifiedMinutes = '0' + lastModifiedMinutes
+                            }
+                            if (lastModifiedDay.toString().length != 2) {
+                                var lastModifiedDay = '0' + lastModifiedDay
+                            }
+                            if (lastModifiedHours >= 12) {
+                                var lastModifiedAmPm = 'PM'
+                                if (lastModifiedHours > 12) {
+                                    var lastModifiedHours = lastModifiedHours - 12
+                                }
+                            } else {
+                                var lastModifiedAmPm = 'AM'
+                            }
+                            var lastModifiedStr = lastModifiedMonth+'/'+
+                                                  lastModifiedDay+'/'+
+                                                  lastModifiedYear+', '+
+                                                  lastModifiedHours+':'+
+                                                  lastModifiedMinutes+':'+
+                                                  lastModifiedSeconds +' '+
+                                                  lastModifiedAmPm
+
+                            var name = encodeURIComponent(results[w].name)
+                            var isdirectory = results[w].isDirectory
+                            //var modified = '4/27/21, 10:38:40 AM'
+                            var modified = lastModified
+                            var filesize = file.size
+                            var filesizestr = humanFileSize(file.size)
+                            var modifiedstr = lastModifiedStr
+                            // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
+                            if (rawname != 'wsc.htaccess') {
+                            html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+                            }
+                            if (w != results.length - 1) {
+                                w++
+                                sendFileList.bind(this, results)()
+                            } else {
+                                DirRenderFinish.bind(this, results)()
+                            }
+                        }.bind(this), function(error) {
+                            console.log('error reading metadata '+error.code)
+                            if (w != results.length - 1) {
+                                w++
+                                sendFileList.bind(this, results)()
+                            } else {
+                                DirRenderFinish.bind(this, results)()
+                            }
+                        }.bind(this))}
+                    this.setHeader('transfer-encoding','chunked')
+                    this.writeHeaders(200)
+                    this.writeChunk(WSC.template_data )
+                    if (this.request.path != '') {
+                        var html = ['<script>start("'+this.request.path+'")</script>',
+                                    '<script>onHasParentDirectory();</script>']
+                    } else {
+                        var html = ['<script>start("/")</script>']
+                    }
+                    var w = 0
+                    sendFileList.bind(this, results)()
+                } else {
+                    this.setHeader('transfer-encoding','chunked')
+                    this.writeHeaders(200)
+                    this.writeChunk(WSC.template_data )
+                    if (this.request.path != '') {
+                        var html = ['<script>start("'+this.request.path+'")</script>',
+                                    '<script>onHasParentDirectory();</script>']
+                    } else {
+                        var html = ['<script>start("/")</script>']
+                    }
+                    var data = html.join('\n')
+                    data = new TextEncoder('utf-8').encode(data).buffer
+                    this.writeChunk(data)
+                    this.request.connection.write(WSC.str2ab('0\r\n\r\n'))
+                    this.finish()
+                }
         },
         renderDirectoryListing: function(results) {
             var html = ['<html>']

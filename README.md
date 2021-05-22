@@ -1,4 +1,4 @@
-<a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">![Try it now in CWS](https://raw.githubusercontent.com/kzahel/web-server-chrome/master/images/200ok-128.png "Click here to install this sample from the Chrome Web Store")</a>
+<a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">![Try it now in CWS](https://raw.githubusercontent.com/GoogleChrome/chrome-extensions-samples/master/apps/tryitnowbutton.png "Click here to install this sample from the Chrome Web Store")</a>
 
 ## Web Server for Chrome
 
@@ -19,10 +19,14 @@ Features
 - options for autostart, start in background, etc etc.
 - handles range requests, HEAD, etc
 - options for CORS
-- optional PUT, DELETE request (for upload files)
+- optional PUT request (for uploading files)
+- optional DELETE request (for deleting files)
 - sets MIME types
 - can render directory listing
-- See relevant options: https://github.com/kzahel/web-server-chrome/blob/master/polymer-ui/options.js
+- Custom 400, 401, 403, and 404 pages
+- option to exclude .html extension
+- htaccess like feature: https://github.com/ethanaobrien/web-server-chrome/blob/master/htaccess/README.md
+- See relevant options: https://github.com/kzahel/web-server-chrome/blob/master/react-ui/js/options.js
 
 
 How to include into your own chrome app

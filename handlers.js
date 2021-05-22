@@ -591,7 +591,7 @@
                                     }
                                     if (data.request_path == filerequested ||
                                         data.request_path == 'all files' ||
-                                        (data.type == 'directory listing' && filerequested == '')) {
+                                        (data.type == 'directory listing' && this.request.uri.split('/').pop() == '')) {
                                         if (data.type == 301 || data.type == 302 || data.type == 307) {
                                             this.setHeader('location', data.redirto)
                                             this.responseLength = 0
@@ -688,7 +688,7 @@
                                                ) {
                                                 this.renderDirectoryListing(results)
                                                 return
-                                                } else {
+                                            } else {
                                                 this.renderDirectoryListingTemplate(results)
                                                 return
                                             }

@@ -14,10 +14,10 @@
 <p>401 - Unauthorized. The page will require login. For some reason, I cannot find how to clear the cache of the authorization header, which means that once you type it in, the browser will not ask for a login, unless you have multiple password protected pages with different passwords, The authentication header will change whenever you enter a different password.</p>
 <p>403 - Forbidden. This will deny direct access to image/video/audio files. This option only works if https is enabled or if the user is on a localhost address.</p>
 <p>Render Directory Listing - Ignores the value of 404 instead of directory listing and renders the directory listing</p>
-<p>Deny deleting for a specific file or directory - Ignores value of delete option and will deny delete to requested file (Currently only 1 delete can be set per htaccess file)</p>
-<p>Allow deleting for certian file - Ignores value of delete option and will allow deleting requested file (Currently only 1 delete can be set per htaccess file)</p>
-<p>Deny uploading for a specific file or directory - Ignores value of PUT option and will deny put to requested file (Currently only 1 put can be set per htaccess file)</p>
-<p>Allow uploading for certian file - Ignores value of PUT option and will allow deleting requested file (Currently only 1 put can be set per htaccess file)</p>
+<p>Deny deleting for a specific file or directory - Ignores value of delete option and will deny delete to requested file</p>
+<p>Allow deleting for certian file - Ignores value of delete option and will allow deleting requested file</p>
+<p>Deny uploading for a specific file or directory - Ignores value of PUT option and will deny put to requested file</p>
+<p>Allow uploading for certian file - Ignores value of PUT option and will allow deleting requested file.</p>
 <p>If you want more features - Make an issue!</p>
 <br>
 <h1>Extra Features</h1>
@@ -122,7 +122,7 @@ To use option for all files, the value of request path will be 'all files' It sh
 ```
 <br>
 <h2>Deny uploading</h2>
-<p>Ignores value of PUT option and will deny put to requested file (Currently only 1 put can be set per htaccess file)</p>
+<p>Ignores value of PUT option and will deny put to requested file</p>
 
 ```
 [
@@ -134,7 +134,7 @@ To use option for all files, the value of request path will be 'all files' It sh
 ```
 <br>
 <h2>Deny delete</h2>
-<p>Ignores value of delete option and will deny delete to requested file (Currently only 1 delete can be set per htaccess file)</p>
+<p>Ignores value of delete option and will deny delete to requested file</p>
 
 ```
 [
@@ -146,7 +146,7 @@ To use option for all files, the value of request path will be 'all files' It sh
 ```
 <br>
 <h2>Allow Uploading</h2>
-<p>Ignores value of PUT option and will allow deleting requested file (Currently only 1 put can be set per htaccess file)</p>
+<p>Ignores value of PUT option and will allow deleting requested file</p>
 
 ```
 [
@@ -158,7 +158,7 @@ To use option for all files, the value of request path will be 'all files' It sh
 ```
 <br>
 <h2>Allow delete</h2>
-<p>Ignores value of delete option and will allow deleting requested file (Currently only 1 delete can be set per htaccess file)</p>
+<p>Ignores value of delete option and will allow deleting requested file</p>
 
 ```
 [
@@ -194,4 +194,8 @@ To use option for all files, the value of request path will be 'all files' It sh
 You basically have `[` and `]` surrounding the entire file and each ruleset inside `{` these `}`
 You MUST separate each ruleset with a comma (As shown in the example). The failure to do so will result in an error.
 For the last ruleset, no comma can be after the `}`. This will break the array and give you an error.
-Currently, each file can only have 1 ruleset.
+
+When using multiple rulesets per file, the server will first check if an authentication rule is in place. If it is, the server will require the user to enter the password before it will allow the user to do anything. After the user has correct auth (if the auth is present) it will check for rulesets from the top of the file, to the bottom. The redirects and the directory listing cannot both be used, whatever the web server picks up first is what will be executed.
+
+
+

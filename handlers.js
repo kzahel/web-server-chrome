@@ -559,6 +559,8 @@
                             
                             function htaccessMain(filerequested) {
                                 var filefound = false
+                                var auth = false
+                                var authdata
                                 for (var i=0; i<origdata.length; i++) {
                                     origdata[i].original_request_path = origdata[i].request_path
                                     if (origdata[i].request_path == 'index.html' ||
@@ -569,79 +571,38 @@
                                         origdata[i].request_path == '') {
                                         origdata[i].request_path = ''
                                     }
+                                    if (origdata[i].type == 401 &&
+                                        (origdata[i].request_path == filerequested || origdata[i].request_path == 'all files')) {
+                                        var auth = true
+                                        var authdata = origdata[i]
+                                        break
+                                    }
+                                }
+                                for (var i=0; i<origdata.length; i++) {
                                     //console.log(origdata)
                                     if (origdata[i].request_path == filerequested ||
                                         origdata[i].request_path == 'all files' ||
-                                        (origdata[i].type == 'directory listing' && filerequested == '')) {
+                                        (origdata[i].type == 'directory listing' && this.request.uri.split('/').pop() == '')) {
+                                        if (origdata[i].type != 'allow delete' &&
+                                            origdata[i].type != 'allow put' &&
+                                            origdata[i].type != 'deny delete' &&
+                                            origdata[i].type != 'deny put' &&
+                                            origdata[i].type != 401) {
                                         var data = origdata[i]
                                         //console.log(data)
                                         var filefound = true
                                         break
+                                        }
                                     }
                                 }
                                 //console.log(filefound)
-                                if (filefound) {
-                                    if (data.request_path == 'index.html' ||
-                                        data.request_path == 'index.htm' ||
-                                        data.request_path == 'index' ||
-                                        data.request_path == 'index.xhtm' ||
-                                        data.request_path == 'index.xhtml' ||
-                                        data.request_path == '') {
-                                        data.request_path = ''
-                                    }
-                                    if (data.request_path == filerequested ||
-                                        data.request_path == 'all files' ||
-                                        (data.type == 'directory listing' && this.request.uri.split('/').pop() == '')) {
+                                    function htaccessCheck2() {
+                                        if (filefound) {
                                         if (data.type == 301 || data.type == 302 || data.type == 307) {
                                             this.setHeader('location', data.redirto)
                                             this.responseLength = 0
                                             this.writeHeaders(data.type)
                                             this.finish()
-                                    } else if (data.type == 401) {
-                                        var validAuth = false
-                                        var auth = this.request.headers['authorization']
-                                        if (auth) {
-                                            if (auth.slice(0,6).toLowerCase() == 'basic ') {
-                                                var userpass = atob(auth.slice(6,auth.length)).split(':')
-                                                if (userpass[0] == data.username && userpass[1] == data.password) {
-                                                    validAuth = true
-                                                }
-                                            }
-                                        }
-                                        if (! validAuth) {
-                                            if (this.app.opts.optCustom401) {
-                                                this.fs.getByPath(this.app.opts.optCustom401location, (file) => {
-                                                if (! file.error) {
-                                                    file.file( function(filee) {
-                                                        var reader = new FileReader();
-                                                        reader.onload = function(e){
-                                                            this.useDefaultMime = false
-                                                            var data = e.target.result
-                                                            this.setHeader('content-type','text/html; charset=utf-8')
-                                                            this.setHeader("WWW-Authenticate", "Basic")
-                                                            this.write(data, 401)
-                                                            this.finish()
-                                                            this.useDefaultMime = true
-                                                        }.bind(this)
-                                                        reader.readAsText(filee)
-                                                    }.bind(this))
-                                                } else {
-                                                    this.write('Path of 401 html was not found - 401 path is set to: '+this.app.opts.optCustom401location, 500)
-                                                    this.finish()
-                                                }})
-                                            } else {
-                                                this.useDefaultMime = false
-                                                this.setHeader('content-type','text/html; charset=utf-8')
-                                                this.setHeader("WWW-Authenticate", "Basic")
-                                                this.write("<h1>401 - Unauthorized</h1>", 401)
-                                                this.finish()
-                                                return
-                                                this.useDefaultMime = true
-                                            }
-                                        }
-                                        if (validAuth) {
-                                            excludedothtmlcheck.bind(this)()
-                                        }
                                     } else if (data.type == 403) {
                                         var method = this.request.headers['sec-fetch-dest']
                                         //console.log(method)
@@ -718,14 +679,61 @@
                                                             onreaderr.bind(this))
 
 
+                                        } else {
+                                            excludedothtmlcheck.bind(this)()
+                                        }
                                     } else {
                                         excludedothtmlcheck.bind(this)()
-                                    }} else {
-                                        excludedothtmlcheck.bind(this)()
                                     }
-                                } else {
-                                    excludedothtmlcheck.bind(this)()
-                                }
+                                    }
+                                    if (auth && authdata.type == 401) {
+                                            var validAuth = false
+                                            var auth = this.request.headers['authorization']
+                                            if (auth) {
+                                                if (auth.slice(0,6).toLowerCase() == 'basic ') {
+                                                    var userpass = atob(auth.slice(6,auth.length)).split(':')
+                                                    if (userpass[0] == authdata.username && userpass[1] == authdata.password) {
+                                                        validAuth = true
+                                                    }
+                                                }
+                                            }
+                                            if (! validAuth) {
+                                                if (this.app.opts.optCustom401) {
+                                                    this.fs.getByPath(this.app.opts.optCustom401location, (file) => {
+                                                    if (! file.error) {
+                                                        file.file( function(filee) {
+                                                            var reader = new FileReader();
+                                                            reader.onload = function(e){
+                                                                this.useDefaultMime = false
+                                                                var data = e.target.result
+                                                                this.setHeader('content-type','text/html; charset=utf-8')
+                                                                this.setHeader("WWW-Authenticate", "Basic")
+                                                                this.write(data, 401)
+                                                                this.finish()
+                                                                this.useDefaultMime = true
+                                                            }.bind(this)
+                                                            reader.readAsText(filee)
+                                                        }.bind(this))
+                                                    } else {
+                                                        this.write('Path of 401 html was not found - 401 path is set to: '+this.app.opts.optCustom401location, 500)
+                                                        this.finish()
+                                                    }})
+                                                } else {
+                                                    this.useDefaultMime = false
+                                                    this.setHeader('content-type','text/html; charset=utf-8')
+                                                    this.setHeader("WWW-Authenticate", "Basic")
+                                                    this.write("<h1>401 - Unauthorized</h1>", 401)
+                                                    this.finish()
+                                                    this.useDefaultMime = true
+                                                    return
+                                                }
+                                            }
+                                            if (validAuth) {
+                                                htaccessCheck2.bind(this)()
+                                            }
+                                        } else {
+                                            htaccessCheck2.bind(this)()
+                                        }
 
                             }
                             var filerequest = this.request.origpath

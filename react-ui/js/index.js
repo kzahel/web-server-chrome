@@ -107,6 +107,18 @@ const functions = {
     console.assert(typeof val === 'string')
     app.webapp.updateOption('optCustom404usevarvar', val);
   },
+  optUsebasicauth: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optUsebasicauth', val);
+  },
+  optAuthUsername: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optAuthUsername', val);
+  },
+  optAuthPassword: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optAuthPassword', val);
+  },
   optPrivateKey: (app, k, val) => {
     //console.log('privateKey')
     console.assert(typeof val === 'string')
@@ -314,6 +326,13 @@ class App extends React.Component {
     const optCustom401Info = {
       optCustom401location: ['optCustom401']
     };
+	const optAuthMain = {
+	  optUsebasicauth: null
+	};
+	const optAuthOptions = {
+	  optAuthUsername: ['optUsebasicauth'],
+	  optAuthPassword: ['optUsebasicauth']
+	}
     const optHtaccess = {
       optScanForHtaccess: null
     };
@@ -371,7 +390,8 @@ class App extends React.Component {
     const Custom401Main = renderOpts(optCustom401Main)
     const Custom403Main = renderOpts(optCustom403Main)
     const Custom400Main = renderOpts(optCustom400Main)
-    
+    const authMain = renderOpts(optAuthMain)
+	
     const HtaccessInfo = (() => {
       let disablezero = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
       const htaccesstextbox = renderOpts(optHtaccessOptions)
@@ -414,6 +434,12 @@ class App extends React.Component {
       let disablefive = (!this.webapp || !this.webapp.opts.optModRewriteEnable);
       const textboxefive = renderOpts(optRewriteInfo)
       return [(<div>{!disablefive && textboxefive}</div>)];
+    })();
+
+    const authOptions = (() => {
+      let disableeleven = (!this.webapp || !this.webapp.opts.optUsebasicauth);
+      const textboxeeleven = renderOpts(optAuthOptions)
+      return [(<div>{!disableeleven && textboxeeleven}</div>)];
     })();
 
     const httpsOptions = (() => {
@@ -492,7 +518,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{HtaccessMain}{HtaccessInfo}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
+          {state.showAdvanced && <div>{advOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
         </CardContent>
       </Card>
 

@@ -145,6 +145,24 @@ const options = {
     visible: false,
     default: true
   },
+  optUsebasicauth: {
+	label: 'Use basic auth',
+	help: 'Webserver will require auth to access',
+	type: Boolean,
+	default: false
+  },
+  optAuthUsername: {
+    label: 'Username',
+    help: 'Username',
+    type: String,
+    default: 'admin'
+  },
+  optAuthPassword: {
+    label: 'Password',
+    help: 'Password',
+    type: String,
+    default: 'admin'
+  },
   optPreventSleep: {
     label: 'Prevent computer from sleeping',
     help: 'If the server is running, prevent the computer from going into sleep mode',

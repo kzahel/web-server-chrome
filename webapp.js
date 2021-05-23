@@ -530,6 +530,41 @@
                 handler.finish()
             }
         },
+		render401HTML: function(request) {
+            var handler = new WSC.BaseHandler(request)
+		    handler.app = this
+            handler.request = request
+            if (this.opts.optCustom401) {
+                this.fs.getByPath(this.opts.optCustom401location, (file) => {
+                if (! file.error) {
+                    file.file( function(filee) {
+                        var reader = new FileReader();
+                        reader.onload = function(e){
+                            this.useDefaultMime = false
+                            var data = e.target.result
+                            handler.setHeader('content-type','text/html; charset=utf-8')
+                            handler.setHeader("WWW-Authenticate", "Basic")
+                            handler.write(data, 401)
+                            handler.finish()
+                            this.useDefaultMime = true
+                            return
+                        }.bind(this)
+                        reader.readAsText(filee)
+                    }.bind(this))
+                } else {
+                    handler.write('Path of 401 html was not found - 401 path is set to: '+this.opts.optCustom401location, 500)
+                    handler.finish()
+                }})
+            } else {
+                this.useDefaultMime = false
+                handler.setHeader('content-type','text/html; charset=utf-8')
+                handler.setHeader("WWW-Authenticate", "Basic")
+                handler.write("<h1>401 - Unauthorized</h1>", 401)
+                handler.finish()
+                this.useDefaultMime = true
+                return
+            }
+		},
         onRequest: function(stream, connection, request) {
             console.log('Request',request.method, request.uri)
 
@@ -546,27 +581,21 @@
             }
 
 
-            if (this.opts.auth) {
+            if (this.opts.optUsebasicauth) {
                 var validAuth = false
                 var auth = request.headers['authorization']
                 if (auth) {
                     if (auth.slice(0,6).toLowerCase() == 'basic ') {
                         var userpass = atob(auth.slice(6,auth.length)).split(':')
-                        if (userpass[0] == this.opts.auth.username &&
-                            userpass[1] == this.opts.auth.password) {
+                        if (userpass[0] == this.opts.optAuthUsername &&
+                            userpass[1] == this.opts.optAuthPassword) {
                             validAuth = true
                         }
                     }
                 }
 
                 if (! validAuth) {
-                    var handler = new WSC.BaseHandler(request)
-                    
-                    handler.app = this
-                    handler.request = request
-                    handler.setHeader("WWW-Authenticate", "Basic")
-                    handler.write("", 401)
-                    handler.finish()
+                    this.render401HTML.bind(this)(request)
                     return
                 }
             }

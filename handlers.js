@@ -954,9 +954,9 @@
                             var lastModifiedMonth = file.modificationTime.getMonth() + 1
                             var lastModifiedDay = file.modificationTime.getDate()
                             var lastModifiedYear = file.modificationTime.getFullYear().toString().substring(2, 4)
-                            var lastModifiedHours = file.modificationTime.getHours() + 1
-                            var lastModifiedMinutes = file.modificationTime.getMinutes() + 1
-                            var lastModifiedSeconds = file.modificationTime.getSeconds() + 1
+                            var lastModifiedHours = file.modificationTime.getHours()
+                            var lastModifiedMinutes = file.modificationTime.getMinutes()
+                            var lastModifiedSeconds = file.modificationTime.getSeconds()
 
                             var lastModified = lastModifiedMonth+
                                                lastModifiedDay+

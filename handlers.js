@@ -529,6 +529,9 @@
                 onEntryMain.bind(this)()
             }
         }
+            if (this.app.opts.optCacheControl) {
+                this.setHeader('Cache-Control',this.app.opts.optCacheControlValue)
+            }
         
             if (this.app.opts.optScanForHtaccess) {
                 var fullrequestpath = this.request.origpath

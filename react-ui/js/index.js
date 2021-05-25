@@ -87,6 +87,10 @@ const functions = {
 			bg.backgroundSettingChange({'optBackground':val})
 		}
   },
+  optCacheControlValue: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCacheControlValue', val);
+  },
   optCustom400location: (app, k, val) => {
     console.assert(typeof val === 'string')
     app.webapp.updateOption('optCustom400location', val);
@@ -332,7 +336,13 @@ class App extends React.Component {
 	const optAuthOptions = {
 	  optAuthUsername: ['optUsebasicauth'],
 	  optAuthPassword: ['optUsebasicauth']
-	}
+	};
+	const optCacheMain = {
+	  optCacheControl: null
+	};
+	const optCacheOptions = {
+	  optCacheControlValue: ['optCacheControl']
+	};
     const optHtaccess = {
       optScanForHtaccess: null
     };
@@ -391,6 +401,7 @@ class App extends React.Component {
     const Custom403Main = renderOpts(optCustom403Main)
     const Custom400Main = renderOpts(optCustom400Main)
     const authMain = renderOpts(optAuthMain)
+    const cacheMain = renderOpts(optCacheMain)
 	
     const HtaccessInfo = (() => {
       let disablezero = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
@@ -440,6 +451,12 @@ class App extends React.Component {
       let disableeleven = (!this.webapp || !this.webapp.opts.optUsebasicauth);
       const textboxeeleven = renderOpts(optAuthOptions)
       return [(<div>{!disableeleven && textboxeeleven}</div>)];
+    })();
+
+    const cacheOptions = (() => {
+      let disabletwelve = (!this.webapp || !this.webapp.opts.optCacheControl);
+      const textboxetwelve = renderOpts(optCacheOptions)
+      return [(<div>{!disabletwelve && textboxetwelve}</div>)];
     })();
 
     const httpsOptions = (() => {
@@ -518,7 +535,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
+          {state.showAdvanced && <div>{advOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
         </CardContent>
       </Card>
 

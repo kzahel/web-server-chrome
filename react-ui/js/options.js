@@ -163,6 +163,18 @@ const options = {
     type: String,
     default: 'admin'
   },
+  optCacheControl: {
+    label: 'Enable Cache Control Header',
+    help: 'Client will cache requests according to header value',
+    type: Boolean,
+    default: false
+  },
+  optCacheControlValue: {
+    label: 'Cache control header value',
+    help: 'Do not include "Cache-Control: " part of the header, only the info after that',
+    type: String,
+    default: 'must-revalidate'
+  },
   optPreventSleep: {
     label: 'Prevent computer from sleeping',
     help: 'If the server is running, prevent the computer from going into sleep mode',

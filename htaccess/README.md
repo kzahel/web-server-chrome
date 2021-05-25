@@ -38,7 +38,7 @@ Note - when selecting the file to scan, if the file is some .html and you have t
 Note - To set more than 1 ruleset per file, see instruction at bottom of the page
 
 Note - 401 (unauthorized) username and passwords are CASE SENSITIVE!!
-<p>Note - wsc.htaccess file MUST be in the same directory as the file you want to change. The file does not need to exist.</p>
+<p>Note - wsc.htaccess file MUST be in the same directory as the file you want to change. The file does not need to exist (Mainly for 301, 302, and 307).</p>
 <p>IMPORTANT NOTE - EVERYTHING IN THE FILE (AND THE FILE NAME) IS CASE SENSITIVE!!</p>
 <br>
 

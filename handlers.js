@@ -171,9 +171,10 @@
                     }.bind(this))
                 } else {
                     deleteCheck.bind(this)()
-                }})} else {
-                    deleteCheck.bind(this)()
-                }
+                }})
+            } else {
+                deleteCheck.bind(this)()
+            }
         },
         put: function() {
             function putMain() {
@@ -252,9 +253,10 @@
                     }.bind(this))
                 } else {
                     putCheck.bind(this)()
-                }})} else {
-                    putCheck.bind(this)()
-                }
+                }})
+            } else {
+                putCheck.bind(this)()
+            }
         },
         onPutEntry: function(entry) {
             var parts = this.request.path.split('/')
@@ -415,99 +417,99 @@
                     this.finish()
                     return
                 }
-                
-            if (this.request.connection.stream.closed) {
-                console.warn(this.request.connection.stream.sockId,'request closed while processing request')
-                return
-            }
-            if (! entry) {
-                if (this.request.method == "HEAD") {
-                    this.responseLength = 0
-                    this.writeHeaders(404)
-                    this.finish()
-                } else {
-                    if (this.app.opts.optCustom404) {
-                        this.renderCustom404Html.bind(this)()
-                    } else {
-                    this.write('no entry',404)
-                }}
-            } else if (entry.error) {
-                if (this.request.method == "HEAD") {
-                    this.responseLength = 0
-                    this.writeHeaders(404)
-                    this.finish()
-                } else {
-                    if (this.app.opts.optCustom404) {
-                        this.renderCustom404Html.bind(this)()
-                    } else {
-                        this.write('entry not found: ' + (this.rewrite_to || this.request.path), 404)
-                    }
-                }
-            } else if (entry.isFile) {
-                this.renderFileContents(entry)
-            } else {
-                // directory
-                var reader = entry.createReader()
-                var allresults = []
-                this.isDirectoryListing = true
 
-                function onreaderr(evt) {
-                    WSC.entryCache.unset(this.entry.filesystem.name + this.entry.fullPath)
-                    console.error('error reading dir',evt)
-                    this.request.connection.close()
+                if (this.request.connection.stream.closed) {
+                    console.warn(this.request.connection.stream.sockId,'request closed while processing request')
+                    return
                 }
-
-                function alldone(results) {
-                    if (this.app.opts.optRenderIndex) {
-                        for (var i=0; i<results.length; i++) {
-                            if (results[i].name.toLowerCase() == 'index.xhtml' || results[i].name.toLowerCase() == 'index.xhtm') {
-                                this.setHeader('content-type','application/xhtml+xml; charset=utf-8')
-                                this.renderFileContents(results[i])
-                                return
-                            }
-                            else if (results[i].name.toLowerCase() == 'index.html' || results[i].name.toLowerCase() == 'index.htm') {
-                                this.setHeader('content-type','text/html; charset=utf-8')
-                                this.renderFileContents(results[i])
-                                return
-                            }
-                        }
-                    }
-                    if (this.request.arguments && this.request.arguments.json == '1' ||
-                        (this.request.headers['accept'] && this.request.headers['accept'].toLowerCase() == 'application/json')
-                       ) {
-                        this.renderDirectoryListingJSON(results)
-                    } else if (this.app.opts.optDir404 && this.app.opts.optRenderIndex) {
+                if (! entry) {
+                    if (this.request.method == "HEAD") {
+                        this.responseLength = 0
+                        this.writeHeaders(404)
+                        this.finish()
+                    } else {
                         if (this.app.opts.optCustom404) {
                             this.renderCustom404Html.bind(this)()
                         } else {
-                            this.write("404 - File not found", 404)
-                            this.finish()
-                            }
-                        } else if (this.request.arguments && this.request.arguments.static == '1' ||
-                        this.request.arguments.static == 'true' ||
-						this.app.opts.optStatic
-                       ) {
-                        this.renderDirectoryListing(results)
-                        } else {
-                        this.renderDirectoryListingTemplate(results)
-                    }
-                }
-
-                function onreadsuccess(results) {
-                    //console.log('onreadsuccess',results.length)
-                    if (results.length == 0) {
-                        alldone.bind(this)(allresults)
+                        this.write('no entry',404)
+                    }}
+                } else if (entry.error) {
+                    if (this.request.method == "HEAD") {
+                        this.responseLength = 0
+                        this.writeHeaders(404)
+                        this.finish()
                     } else {
-                        allresults = allresults.concat( results )
-                        reader.readEntries( onreadsuccess.bind(this),
-                                            onreaderr.bind(this) )
+                        if (this.app.opts.optCustom404) {
+                            this.renderCustom404Html.bind(this)()
+                        } else {
+                            this.write('entry not found: ' + (this.rewrite_to || this.request.path), 404)
+                        }
                     }
-                }
+                } else if (entry.isFile) {
+                    this.renderFileContents(entry)
+                } else {
+                    // directory
+                    var reader = entry.createReader()
+                    var allresults = []
+                    this.isDirectoryListing = true
 
-                //console.log('readentries')
-                reader.readEntries( onreadsuccess.bind(this),
-                                    onreaderr.bind(this))
-            }
+                    function onreaderr(evt) {
+                        WSC.entryCache.unset(this.entry.filesystem.name + this.entry.fullPath)
+                        console.error('error reading dir',evt)
+                        this.request.connection.close()
+                    }
+
+                    function alldone(results) {
+                        if (this.app.opts.optRenderIndex) {
+                            for (var i=0; i<results.length; i++) {
+                                if (results[i].name.toLowerCase() == 'index.xhtml' || results[i].name.toLowerCase() == 'index.xhtm') {
+                                    this.setHeader('content-type','application/xhtml+xml; charset=utf-8')
+                                    this.renderFileContents(results[i])
+                                    return
+                                }
+                                else if (results[i].name.toLowerCase() == 'index.html' || results[i].name.toLowerCase() == 'index.htm') {
+                                    this.setHeader('content-type','text/html; charset=utf-8')
+                                    this.renderFileContents(results[i])
+                                    return
+                                }
+                            }
+                        }
+                        if (this.request.arguments && this.request.arguments.json == '1' ||
+                            (this.request.headers['accept'] && this.request.headers['accept'].toLowerCase() == 'application/json')
+                           ) {
+                            this.renderDirectoryListingJSON(results)
+                        } else if (this.app.opts.optDir404 && this.app.opts.optRenderIndex) {
+                            if (this.app.opts.optCustom404) {
+                                this.renderCustom404Html.bind(this)()
+                            } else {
+                                this.write("404 - File not found", 404)
+                                this.finish()
+                                }
+                            } else if (this.request.arguments && this.request.arguments.static == '1' ||
+                            this.request.arguments.static == 'true' ||
+                            this.app.opts.optStatic
+                           ) {
+                            this.renderDirectoryListing(results)
+                            } else {
+                            this.renderDirectoryListingTemplate(results)
+                        }
+                    }
+
+                    function onreadsuccess(results) {
+                        //console.log('onreadsuccess',results.length)
+                        if (results.length == 0) {
+                            alldone.bind(this)(allresults)
+                        } else {
+                            allresults = allresults.concat( results )
+                            reader.readEntries( onreadsuccess.bind(this),
+                                                onreaderr.bind(this) )
+                        }
+                    }
+
+                    //console.log('readentries')
+                    reader.readEntries( onreadsuccess.bind(this),
+                                        onreaderr.bind(this))
+                }
             }
 
         function excludedothtmlcheck() {
@@ -637,7 +639,7 @@
                                                     this.write('<h1>403 - Forbidden</h1>', 403)
                                                     this.finish()
                                                     return
-                                            }
+                                                }
                                             } else {
                                                 excludedothtmlcheck.bind(this)()
                                             }

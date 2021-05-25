@@ -407,7 +407,7 @@ class App extends React.Component {
       let disablezero = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
       const htaccesstextbox = renderOpts(optHtaccessOptions)
       return [(<div style={{paddingLeft: 20}}>{!disablezero && htaccesstextbox}
-        {!disablezero && <Alert severity="info">For more info on how to use wsc.htaccess files, go <a href="https://github.com/ethanaobrien/web-server-chrome/tree/master/htaccess#readme" target="_blank">here</a></Alert>}
+        {!disablezero && <Alert severity="info">For more info on how to use wsc.htaccess files, go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/htaccess/README.md" target="_blank">here</a></Alert>}
 	  </div>)];
     })();
 

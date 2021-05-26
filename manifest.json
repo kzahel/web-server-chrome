@@ -12,7 +12,7 @@
         "background": {
             "scripts": ["underscore.js","encoding.js","common.js","assets/bundle.js",
             "log-full.js", "mime.js", "buffer.js","request.js","crypto.js","stream.js", "chromesocketxhr.js",
-            "connection.js","webapp.js","websocket.js","handlers.js","httplib.js","upnp.js","background.js"]
+            "connection.js","webapp.js","websocket.js","handlers.js","httplib.js","upnp.js","background.js","utils.js"]
         }
     },
     "permissions": [

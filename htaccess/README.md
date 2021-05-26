@@ -18,6 +18,8 @@
 <p>Allow deleting for certian file - Ignores value of delete option and will allow deleting requested file</p>
 <p>Deny uploading for a specific file or directory - Ignores value of PUT option and will deny put to requested file</p>
 <p>Allow uploading for certian file - Ignores value of PUT option and will allow deleting requested file.</p>
+<p>send directory contents - Will send the current directory at the end of the file. See the How To for a more advanced description</p>
+<p>additional header - Will set an additional header</p>
 <p>If you want more features - Make an issue!</p>
 <br>
 <h1>Extra Features</h1>
@@ -168,6 +170,69 @@ To use option for all files, the value of request path will be 'all files' It sh
     }
 ]
 ```
+<br>
+<h2>additional header</h2>
+<p>Sends an additional header</p>
+
+```
+[
+    {
+        "request_path": "name of file you want to modify",
+        "type": "additional header",
+        "headerType": "the type of header",
+        "headerValue": "the value of the header"
+    }
+]
+```
+<p>If you go to a site (Like <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers">Mozilla</a>) it will show the header as</p>
+
+`Cookie: name=value`. The first part of the header (In this case, `Cookie`) will be the `headerType` and the second part of the header (In this case, `name=value`) will be the `headerValue`.
+The end result will be
+```
+[
+    {
+        "request_path": "name of file you want to modify",
+        "type": "additional header",
+        "headerType": "Cookie",
+        "headerValue": "name=value"
+    }
+]
+```
+
+<br>
+<h2>send directory contents</h2>
+<p>Will send the current directory along with the file</p>
+<p>Example:</p>
+
+```
+[
+    {
+        "request_path": "name of file you want to modify",
+        "type": "send directory contents"
+    }
+]
+```
+<p>More howto (send directory contents)</p>
+
+This feature CANNOT use the `all files` value for the `request_path` field. You must specify each file separately
+<p>Getting info from sent contents</p>
+<p>This is what is sent</p>
+
+```
+<script>addRow("index.html", "index.html", false, 6276, "6.1 KiB", 302113940, "5/25/21, 1:09:40 PM")</script>
+```
+<p>It will send as an addRow function. The contents are, as follows.</p>
+
+`addRow(filename, filenameencoded, isdirectory, size, sizestr, date, datestr)`
+
+
+`filename`: The raw file name.
+`filenameencoded`: The encoded file name (For things like setting link locations)
+`isdirectory`: If the sent row is a directory, this will be true. Will send as `true` or `false`
+`size`: File size (in Bytes) Example: `254014`
+`sizestr`: File size (As a string) Example: `248.1 KiB`
+`date`: Date not in a string format. Example: `142132146`
+`datestr`: Date as a string. Example: `3/11/21, 3:21:46 AM`
 <br>
 <h1>How to use more than 1 ruleset per file</h1>
 <p>Pay VERY close attention to the syntax. One thing wrong will cause an error!!</p>

@@ -260,7 +260,9 @@ You basically have `[` and `]` surrounding the entire file and each ruleset insi
 You MUST separate each ruleset with a comma (As shown in the example). The failure to do so will result in an error.
 For the last ruleset, no comma can be after the `}`. This will break the array and give you an error.
 
-When using multiple rulesets per file, the server will first check if an authentication rule is in place. If it is, the server will require the user to enter the password before it will allow the user to do anything. After the user has correct auth (if the auth is present) it will check for rulesets from the top of the file, to the bottom. The redirects and the directory listing cannot both be used, whatever the web server picks up first is what will be executed.
+When using multiple rulesets per file, the server will first check if an authentication rule is in place. If it is, the server will require the user to enter the password before it will allow the user to do anything. After the user has correct auth (if the auth is present) it will check for rulesets from the top of the file, to the bottom. The redirects, the directory listing, and sending the current directory with the file cannot both be used, whatever the web server picks up first is what will be executed.
+
+You can have as many additional headers as you like!
 
 
 

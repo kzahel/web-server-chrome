@@ -529,9 +529,9 @@
         
             if (this.app.opts.optScanForHtaccess) {
                 var fullrequestpath = this.request.origpath
-                    var finapath = fullrequestpath
-                    var finpath = finapath.split('/').pop();
-                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
+                var finapath = fullrequestpath
+                var finpath = finapath.split('/').pop();
+                var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
                 if (this.request.path == '') {
                     var finalpath = '/'
                 }
@@ -697,12 +697,12 @@
 
                                             } else if (data.type == 'send directory contents') {
                                                 function finished(results) {
-                                                    var filepath = this.request.uri
-                                                    if (filepath.endsWith("/")) {
-                                                        var filepath = filepath+data.original_request_path
-                                                    }
+                                                    var fullrequestpath = this.request.origpath
+                                                    var finapath = fullrequestpath
+                                                    var finpath = finapath.split('/').pop();
+                                                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length) + data.original_request_path
                                                     //console.log(filepath)
-                                                    this.fs.getByPath(filepath, (file) => {
+                                                    this.fs.getByPath(finalpath, (file) => {
                                                         if (! file.error) {
                                                             file.file( function(file) {
                                                                 var reader = new FileReader();
@@ -753,24 +753,33 @@
                                                         }
                                                     })
                                                 }
-                                                var reader = entry.createReader()
-                                                var allresults = []
-                                                function onreaderr(evt) {
-                                                    WSC.entryCache.unset(this.entry.filesystem.name + this.entry.fullPath)
-                                                    console.error('error reading dir',evt)
-                                                    this.request.connection.close()
-                                                }
-                                                function onreadsuccess(results) {
-                                                    if (results.length == 0) {
-                                                        finished.bind(this)(allresults)
-                                                    } else {
-                                                        allresults = allresults.concat( results )
-                                                        reader.readEntries( onreadsuccess.bind(this),
-                                                                            onreaderr.bind(this) )
+                                                var fullrequestpath = this.request.origpath
+                                                var finapath = fullrequestpath
+                                                var finpath = finapath.split('/').pop();
+                                                var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
+                                                //console.log(finalpath)
+                                                //console.log(data)
+                                                this.fs.getByPath(finalpath, function(entryy) {
+                                                    var reader = entryy.createReader()
+                                                    var allresults = []
+                                                    function onreaderr(evt) {
+                                                        WSC.entryCache.unset(this.entry.filesystem.name + this.entry.fullPath)
+                                                        console.error('error reading dir',evt)
+                                                        this.request.connection.close()
                                                     }
-                                                }
-                                                reader.readEntries( onreadsuccess.bind(this),
-                                                                    onreaderr.bind(this))
+                                                    function onreadsuccess(results) {
+                                                        if (results.length == 0) {
+                                                            finished.bind(this)(allresults)
+                                                        } else {
+                                                            allresults = allresults.concat( results )
+                                                            reader.readEntries( onreadsuccess.bind(this),
+                                                                                onreaderr.bind(this) )
+                                                        }
+                                                    }
+                                                    reader.readEntries( onreadsuccess.bind(this),
+                                                                        onreaderr.bind(this))
+                                                
+                                                }.bind(this))
                                             } else {
                                                 excludedothtmlcheck.bind(this)()
                                             }

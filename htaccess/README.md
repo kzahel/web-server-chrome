@@ -20,6 +20,7 @@
 <p>Allow uploading for certian file - Ignores value of PUT option and will allow deleting requested file.</p>
 <p>send directory contents - Will send the current directory at the end of the file. See the How To for a more advanced description</p>
 <p>additional header - Will set an additional header</p>
+<p>Versioning - relative file hosting</p>
 <p>If you want more features - Make an issue!</p>
 <br>
 <h1>Extra Features</h1>
@@ -170,6 +171,38 @@ To use option for all files, the value of request path will be 'all files' It sh
     }
 ]
 ```
+<br>
+<h2>Versioning</h2>
+<p>Versions of a file</p>
+
+```
+[
+    {
+        "request_path": "name of file you want to modify",
+        "type": "versioning",
+        "default": 4,
+		"variable": "v",
+        "version_data": {"1": "FULL path of file (From root of selected folder)",
+                         "2": "FULL path of file (From root of selected folder)",
+                         "3": "FULL path of file (From root of selected folder)",
+                         "4": "FULL path of file (From root of selected folder)"
+                        }
+    }
+]
+```
+<p>Example of request path</p>
+
+```
+{
+    "1": "/data/path/to/file/index.html"
+}
+```
+<p>You can add as many versions as you would like.</p>
+<p>Please be sure to correctly input the FULL path of the file (From root of selected folder)</p>
+<p>Please note - this feature is compatible with auth (you must use the request path, not the path of the file) and additional headers but you CANNOT use ANY other htaccess features!</p>
+
+The variable is what the user needs to request. If we use v, the user would request something like `localhost:8887/example.mp4?v=1`
+<p>Note that you do not need an extension for the requested file.</p>
 <br>
 <h2>additional header</h2>
 <p>Sends an additional header</p>

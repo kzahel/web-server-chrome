@@ -94,6 +94,87 @@
         head: function() {
             this.get()
         },
+        deletePutHtaccess: function(allow, deny, callback, callbackSkip) {
+            if (this.app.opts.optScanForHtaccess) {
+                var fullrequestpath = this.request.origpath
+                var finapath = fullrequestpath
+                var finpath = finapath.split('/').pop();
+                var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
+                if (this.request.path == '') {
+                    var finalpath = '/'
+                }
+                var htaccesspath = finalpath+'wsc.htaccess'
+                //console.log(htaccesspath)
+                this.fs.getByPath(htaccesspath, (file) => {
+                if (! file.error) {
+                    file.file( function(filee) {
+                        var reader = new FileReader();
+                        reader.onload = function(e){
+                            var dataa = e.target.result
+                            if(true) {
+                                try {
+                                    var origdata = JSON.parse(dataa)
+                                } catch(e) {
+                                    this.responseLength = 0
+                                    this.writeHeaders(500)
+                                    this.finish()
+                                    return
+                                }
+                            }
+                            var filerequest = this.request.origpath
+                            var filerequested = filerequest.split('/').pop();
+                            var filefound = false
+                            var invalid = false
+                            if (origdata.length == 0) {
+                                excludedothtmlcheck.bind(this)()
+                                return
+                            }
+                            for (var i=0; i<origdata.length; i++) {
+                                if (! origdata[i].type) {
+                                    this.htaccessError.bind(this)('missing type')
+                                    var invalid = true
+                                    break
+                                }
+                                if (! origdata[i].request_path && origdata[i].type != 'directory listing') {
+                                    this.htaccessError.bind(this)('missing request path')
+                                    var invalid = true
+                                    break
+                                }
+                                if ((origdata[i].type == allow && origdata[i].request_path == filerequested) ||
+                                    (origdata[i].type == allow && origdata[i].request_path == 'all files') ||
+                                    (origdata[i].type == deny && origdata[i].request_path == filerequested) ||
+                                    (origdata[i].type == deny && origdata[i].request_path == 'all files')) {
+                                    var data = origdata[i]
+                                    var filefound = true
+                                    break
+                                }
+                            }
+                            if (invalid) {
+                                return
+                            }
+                            //console.log(filefound)
+                            if (filefound) {
+                                if (data.type == allow) {
+                                    callbackSkip()
+                                } else if (data.type == deny) {
+                                    this.responseLength = 0
+                                    this.writeHeaders(400)
+                                    this.finish()
+                                    return
+                                }
+                            } else {
+                                callback()
+                            }
+                        }.bind(this)
+                        reader.readAsText(filee)
+                    }.bind(this))
+                } else {
+                    callback()
+                }})
+            } else {
+                callback()
+            }
+        },
         delete: function() {
             function deleteMain() {
                 this.fs.getByPath(this.request.path, (entry) => {
@@ -114,71 +195,10 @@
                     deleteMain.bind(this)()
                 }
             }
-            if (this.app.opts.optScanForHtaccess) {
-                var fullrequestpath = this.request.origpath
-                    var finapath = fullrequestpath
-                    var finpath = finapath.split('/').pop();
-                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
-                if (this.request.path == '') {
-                    var finalpath = '/'
-                }
-                var htaccesspath = finalpath+'wsc.htaccess'
-                //console.log(htaccesspath)
-                this.fs.getByPath(htaccesspath, (file) => {
-                if (! file.error) {
-                    file.file( function(filee) {
-                        var reader = new FileReader();
-                        reader.onload = function(e){
-                            var dataa = e.target.result
-                            if(true) {
-                                try {
-                                    var origdata = JSON.parse(dataa)
-                                } catch(e) {
-                                    this.responseLength = 0
-                                    this.writeHeaders(500)
-                                    this.finish()
-                                    return
-                                }
-                            }
-                            var filerequest = this.request.origpath
-                            var filerequested = filerequest.split('/').pop();
-                            var filefound = false
-                            for (var i=0; i<origdata.length; i++) {
-                                if ((origdata[i].type == 'allow delete' && origdata[i].request_path == filerequested) ||
-                                    (origdata[i].type == 'allow delete' && origdata[i].request_path == 'all files') ||
-                                    (origdata[i].type == 'deny delete' && origdata[i].request_path == filerequested) ||
-                                    (origdata[i].type == 'deny delete' && origdata[i].request_path == 'all files')) {
-                                    var data = origdata[i]
-                                    var filefound = true
-                                    break
-                                }
-                            }
-                            //console.log(filefound)
-                            if (filefound) {
-                                if (data.type == 'allow delete') {
-                                    deleteMain.bind(this)()
-                                } else if (data.type == 'deny delete') {
-                                    this.responseLength = 0
-                                    this.writeHeaders(400)
-                                    this.finish()
-                                    return
-                                }
-                            } else {
-                                deleteCheck.bind(this)()
-                            }
-                        }.bind(this)
-                        reader.readAsText(filee)
-                    }.bind(this))
-                } else {
-                    deleteCheck.bind(this)()
-                }})
-            } else {
-                deleteCheck.bind(this)()
-            }
+            this.deletePutHtaccess('allow delete', 'deny delete', deleteCheck.bind(this), deleteMain.bind(this))
         },
         put: function() {
             function putMain() {
-                
                 // if upload enabled in options...
                 // check if file exists...
                 this.fs.getByPath(this.request.path, this.onPutEntry.bind(this), true)
@@ -193,70 +213,7 @@
                     putMain.bind(this)()
                 }
             }
-            
-            if (this.app.opts.optScanForHtaccess) {
-                var fullrequestpath = this.request.origpath
-                    var finapath = fullrequestpath
-                    var finpath = finapath.split('/').pop();
-                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
-                if (this.request.path == '') {
-                    var finalpath = '/'
-                }
-                var htaccesspath = finalpath+'wsc.htaccess'
-                //console.log(htaccesspath)
-                this.fs.getByPath(htaccesspath, (file) => {
-                if (! file.error) {
-                    file.file( function(filee) {
-                        var reader = new FileReader();
-                        reader.onload = function(e){
-                            var dataa = e.target.result
-                            if(true) {
-                                try {
-                                    var origdata = JSON.parse(dataa)
-                                } catch(e) {
-                                    this.responseLength = 0
-                                    this.writeHeaders(500)
-                                    this.finish()
-                                    return
-                                }
-                            }
-                            var filerequest = this.request.origpath
-                            var filerequested = filerequest.split('/').pop();
-                            var filefound = false
-                            for (var i=0; i<origdata.length; i++) {
-                                if ((origdata[i].type == 'allow put' && origdata[i].request_path == filerequested) ||
-                                    (origdata[i].type == 'allow put' && origdata[i].request_path == 'all files') ||
-                                    (origdata[i].type == 'deny put' && origdata[i].request_path == filerequested) ||
-                                    (origdata[i].type == 'deny put' && origdata[i].request_path == 'all files')) {
-                                    var data = origdata[i]
-                                    var filefound = true
-                                    break
-                                }
-                            }
-                            //console.log(filefound)
-                            if (filefound) {
-                                if (data.type == 'allow put') {
-                                    putMain.bind(this)()
-                                } else if (data.type == 'deny put') {
-                                    this.responseLength = 0
-                                    this.writeHeaders(400)
-                                    this.finish()
-                                    return
-                                } else {
-                                    putCheck.bind(this)()
-                                }
-                            } else {
-                                putCheck.bind(this)()
-                            }
-                        }.bind(this)
-                        reader.readAsText(filee)
-                    }.bind(this))
-                } else {
-                    putCheck.bind(this)()
-                }})
-            } else {
-                putCheck.bind(this)()
-            }
+            this.deletePutHtaccess('allow put', 'deny put', putCheck.bind(this), putMain.bind(this))
         },
         onPutEntry: function(entry) {
             var parts = this.request.path.split('/')
@@ -312,11 +269,19 @@
             // strip '/' off end of path
 
             if (this.app.opts.optExcludeDotHtml && ! this.request.origpath.endsWith("/")) {
+				var htmhtml = 'html'
+				if (this.app.opts.optExcludeDotHtml) {
+					var htmhtml = 'htm'
+				}
                 var extension = this.request.uri.split('.').pop();
-                var more = this.request.uri.split('.html').pop()
-                if (extension == 'html') {
+                var more = this.request.uri.split('.'+htmhtml).pop()
+                if (extension == htmhtml) {
                     var path = this.request.path
-                    var newpath = path.substring(0, path.length - 5);
+					if (htmhtml == 'html') {
+						var newpath = path.substring(0, path.length - 5);
+					} else {
+						var newpath = path.substring(0, path.length - 4);
+					}
                     if (more != this.request.uri) {
                         var newpath = newpath+more
                     }
@@ -395,6 +360,7 @@
         },
         onEntry: function(entry) {
             this.entry = entry
+			this.useDefaultMime = true
 
             function onEntryMain() {
                 this.useDefaultMime = true
@@ -506,7 +472,12 @@
 
         function excludedothtmlcheck() {
             if (this.app.opts.optExcludeDotHtml && this.request.path != '') {
-                this.fs.getByPath(this.request.path+'.html', (file) => {
+                if (this.app.opts.optExcludeDotHtm) {
+                    var htmHtml = '.htm'
+                } else {
+                    var htmHtml = '.html'
+                }
+                this.fs.getByPath(this.request.path+htmHtml, (file) => {
                 if (! file.error) {
                     if (this.request.origpath.endsWith("/")) {
                         onEntryMain.bind(this)()
@@ -562,8 +533,23 @@
                                 var j=0
                                 var data
                                 var htaccessHeaders = [ ]
+                                var invalid = false
                                 var additionalHeaders = false
+                                if (origdata.length == 0) {
+                                    excludedothtmlcheck.bind(this)()
+                                    return
+                                }
                                 for (var i=0; i<origdata.length; i++) {
+                                    if (! origdata[i].type) {
+                                        this.htaccessError.bind(this)('missing type')
+                                        var invalid = true
+                                        break
+                                    }
+                                    if (! origdata[i].request_path && origdata[i].type != 'directory listing') {
+                                        this.htaccessError.bind(this)('missing request path')
+                                        var invalid = true
+                                        break
+                                    }
                                     origdata[i].original_request_path = origdata[i].request_path
                                     origdata[i].filerequested = filerequested
                                     origdata[i].request_path = WSC.utilityHandler.htaccessFileRequested(origdata[i].request_path)
@@ -612,9 +598,16 @@
                                 //console.log(data)
                                 //console.log(authdata)
                                 //console.log(filefound)
-                                    function htaccessCheck2() {
-                                        if (filefound) {
+                                if (invalid) {
+                                    return
+                                }
+                                function htaccessCheck2() {
+                                    if (filefound) {
                                         if (data.type == 301 || data.type == 302 || data.type == 307) {
+                                            if (! data.redirto) {
+                                                this.htaccessError.bind(this)('missing redirect location')
+                                                return
+                                            }
                                             this.setHeader('location', data.redirto)
                                             this.responseLength = 0
                                             this.writeHeaders(data.type)
@@ -696,6 +689,14 @@
 
 
                                             } else if (data.type == 'send directory contents') {
+                                                if (! data.headerType) {
+                                                    this.htaccessError.bind(this)('missing Header Type')
+                                                    return
+                                                }
+                                                if (! data.headerValue) {
+                                                    this.htaccessError.bind(this)('missing Header Value')
+                                                    return
+                                                }
                                                 function finished(results) {
                                                     var fullrequestpath = this.request.origpath
                                                     var finapath = fullrequestpath
@@ -780,6 +781,64 @@
                                                                         onreaderr.bind(this))
                                                 
                                                 }.bind(this))
+                                            } else if (data.type == 'versioning') {
+												//console.log('versioning')
+                                                if (! data.version_data || data.version_data.length == 0) {
+                                                    this.htaccessError.bind(this)('missing version data')
+                                                    return
+                                                }
+                                                if (! data.default) {
+                                                    this.htaccessError.bind(this)('missing default file selection')
+                                                    return
+                                                }
+                                                var vdata = this.request.uri.split("?").pop()
+                                                var vdata4
+												var versionData = data.version_data
+                                                if (vdata == this.request.uri) {
+                                                    var vdata4 = data.default
+                                                } else {
+													var vdata = '?'+vdata
+                                                    var vdata1 = vdata.split('?'+data.variable+'=').pop()
+													if (vdata1 == vdata) {
+														var vdata1 = vdata.split('&'+data.variable+'=').pop()
+													}
+                                                    var vdata2 = vdata1.split("&")
+                                                    var vdata3 = vdata2[0]
+                                                    var vdata4 = vdata3.toString()
+                                                }
+                                                if (versionData[vdata4]) {
+                                                    var vdataa = versionData[vdata4]
+                                                    //console.log(vdataa)
+                                                    this.fs.getByPath(vdataa, function(file) {
+                                                        if (! file.error) {
+															var entry = file
+															this.entry = entry
+															this.useDefaultMime = true
+															this.request.path = vdataa
+                                                            this.renderFileContents(entry)
+                                                            return
+                                                        } else {
+                                                            this.write('path in htaccess file for version '+vdata4+' is missing or the file does not exist. Please check to make sure you have properly inputed the value', 500)
+                                                            this.finish()
+                                                            return
+                                                        }
+                                                    }.bind(this))
+                                                } else {
+                                                    this.fs.getByPath(versionData[data.default.toString()], function(file) {
+														if (! file.error) {
+															var entry = file
+															this.entry = entry
+															this.useDefaultMime = true
+															this.request.path = versionData[data.default.toString()]
+															this.renderFileContents(entry)
+															return
+														} else {
+                                                            this.write('path in htaccess file for version '+data.default+' is missing or the file does not exist. Please check to make sure you have properly inputed the value', 500)
+                                                            this.finish()
+                                                            return
+                                                        }
+                                                    }.bind(this))
+                                                }
                                             } else {
                                                 excludedothtmlcheck.bind(this)()
                                             }
@@ -794,6 +853,14 @@
                                         }
                                     }
                                     if (auth && authdata.type == 401) {
+                                         if (! authdata.username) {
+                                             this.htaccessError.bind(this)('missing Auth Username')
+                                             return
+                                         }
+                                         if (! authdata.password) {
+                                             this.htaccessError.bind(this)('missing Auth Password')
+                                             return
+                                         }
                                             var validAuth = false
                                             var auth = this.request.headers['authorization']
                                             if (auth) {
@@ -845,7 +912,12 @@
                             var filerequest = this.request.origpath
                             
                             if (this.app.opts.optExcludeDotHtml) {
-                                this.fs.getByPath(this.request.path+'.html', (file) => {
+                                if (this.app.opts.optExcludeDotHtm) {
+                                    var htmHtml = '.htm'
+                                } else {
+                                    var htmHtml = '.html'
+                                }
+                                this.fs.getByPath(this.request.path+htmHtml, (file) => {
                                 if (! file.error) {
                                     if (this.request.origpath.endsWith("/")) {
                                         var filerequested = filerequest.split('/').pop();
@@ -853,7 +925,7 @@
                                         htaccessMain.bind(this)(filerequested)
                                         return
                                     }
-                                    var filerequested = this.request.path+'.html'
+                                    var filerequested = this.request.path+htmHtml
                                     var filerequested = filerequested.split('/').pop();
                                     var filerequested = WSC.utilityHandler.htaccessFileRequested(filerequested)
                                     htaccessMain.bind(this)(filerequested)
@@ -1126,6 +1198,11 @@
                 this.finish()
             }})
         
+        },
+        htaccessError: function(errormsg) {
+            this.write('Htaccess Configuration error. Please check to make sure that you are not missing some values.\n\nError Message: '+errormsg, 500)
+            this.finish()
+            return
         }
     }, WSC.BaseHandler.prototype)
 

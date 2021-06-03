@@ -300,7 +300,12 @@ class App extends React.Component {
       optUpload: null,
       optDelete: null,
       optVerbose: null,
+    };
+    const optnodothtmlMain = {
       optExcludeDotHtml: null
+    };
+    const optnodothtmlInfo = {
+      optExcludeDotHtm: ['optExcludeDotHtml']
     };
     const optCustom404Main = {
       optCustom404: null
@@ -402,6 +407,7 @@ class App extends React.Component {
     const Custom400Main = renderOpts(optCustom400Main)
     const authMain = renderOpts(optAuthMain)
     const cacheMain = renderOpts(optCacheMain)
+    const nodothtmlMain = renderOpts(optnodothtmlMain)
 	
     const HtaccessInfo = (() => {
       let disablezero = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
@@ -457,6 +463,12 @@ class App extends React.Component {
       let disabletwelve = (!this.webapp || !this.webapp.opts.optCacheControl);
       const textboxetwelve = renderOpts(optCacheOptions)
       return [(<div>{!disabletwelve && textboxetwelve}</div>)];
+    })();
+
+    const nodothtmlOptions = (() => {
+      let disabletenn = (!this.webapp || !this.webapp.opts.optExcludeDotHtml);
+      const textboxetenn = renderOpts(optnodothtmlInfo)
+      return [(<div>{!disabletenn && textboxetenn}</div>)];
     })();
 
     const httpsOptions = (() => {
@@ -535,7 +547,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
+          {state.showAdvanced && <div>{advOptions}{nodothtmlMain}{nodothtmlOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
         </CardContent>
       </Card>
 

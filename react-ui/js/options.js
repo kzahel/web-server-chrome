@@ -308,6 +308,12 @@ const options = {
     type: Boolean,
     default: false
   },
+  optExcludeDotHtm: {
+    label: 'Instead, Exclude .htm extension',
+    help: 'Will not show .htm extension in url path',
+    type: Boolean,
+    default: false
+  },
   optScanForHtaccess: {
     label: 'Look for wsc.htaccess files',
     help: 'Check for more info',

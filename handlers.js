@@ -689,14 +689,6 @@
 
 
                                             } else if (data.type == 'send directory contents') {
-                                                if (! data.headerType) {
-                                                    this.htaccessError.bind(this)('missing Header Type')
-                                                    return
-                                                }
-                                                if (! data.headerValue) {
-                                                    this.htaccessError.bind(this)('missing Header Value')
-                                                    return
-                                                }
                                                 function finished(results) {
                                                     var fullrequestpath = this.request.origpath
                                                     var finapath = fullrequestpath

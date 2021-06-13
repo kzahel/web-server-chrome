@@ -354,6 +354,13 @@
             this.entry = entry
 
             function onEntryMain() {
+				
+				if (entry.isFile && this.request.origpath.endsWith('/')) {
+					this.setHeader('location', this.request.path)
+                    this.writeHeaders(301)
+                    this.finish()
+                    return
+				}
                 
                 if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
                     var newloc = this.request.origpath + '/'

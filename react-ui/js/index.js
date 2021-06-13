@@ -137,7 +137,10 @@ const functions = {
     console.log("useHttps", val);
     app.webapp.updateOption('optUseHttps', val);
     if (app.webapp.started) {
-      app.webapp.stop();
+	  // we must call the start function as a callback
+      app.webapp.stop('https option changed', function() {
+		  app.webapp.start()
+	  });
     }
   }
 };
@@ -298,10 +301,13 @@ class App extends React.Component {
       optIPV6: null,
       optStatic: null,
       optUpload: null,
+    };
+	const optUploadOptions = {
+	  optAllowReplaceFile: ['optUpload']
+	};
+    const optnodothtmlMain = {
       optDelete: null,
       optVerbose: null,
-    };
-    const optnodothtmlMain = {
       optExcludeDotHtml: null
     };
     const optnodothtmlInfo = {
@@ -416,6 +422,12 @@ class App extends React.Component {
         {!disablezero && <Alert severity="info">For more info on how to use wsc.htaccess files, go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/htaccess/README.md" target="_blank">here</a></Alert>}
 	  </div>)];
     })();
+
+	const UploadOption = (() => {
+		let disableoneasd = (!this.webapp || !this.webapp.opts.optUpload);
+		const uploadasd = renderOpts(optUploadOptions)
+		return [(<div>{!disableoneasd && uploadasd}</div>)];
+	})();
 
     const Custom403Options = (() => {
       let disableone = (!this.webapp || !this.webapp.opts.optCustom403);
@@ -547,7 +559,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{nodothtmlMain}{nodothtmlOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
+          {state.showAdvanced && <div>{advOptions}{UploadOption}{nodothtmlMain}{nodothtmlOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
         </CardContent>
       </Card>
 

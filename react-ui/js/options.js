@@ -272,6 +272,12 @@ const options = {
     type: Boolean,
     default: false
   },
+  optAllowReplaceFile: {
+    label: 'Allow Replace file',
+    help: 'Will allow the user to overwrite a file',
+    type: Boolean,
+    default: false
+  },
   optDelete: {
     label: 'Allow Deleting Files',
     help: 'Enables the delete request',

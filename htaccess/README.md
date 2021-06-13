@@ -182,10 +182,10 @@ To use option for all files, the value of request path will be 'all files' It sh
         "type": "versioning",
         "default": 4,
 		"variable": "v",
-        "version_data": {"1": "FULL path of file (From root of selected folder)",
-                         "2": "FULL path of file (From root of selected folder)",
-                         "3": "FULL path of file (From root of selected folder)",
-                         "4": "FULL path of file (From root of selected folder)"
+        "version_data": {"1": "Path to file",
+                         "2": "Path to file",
+                         "3": "Path to file",
+                         "4": "Path to file"
                         }
     }
 ]
@@ -197,8 +197,15 @@ To use option for all files, the value of request path will be 'all files' It sh
     "1": "/data/path/to/file/index.html"
 }
 ```
+or, if the you were in the `/data/asd/` directory
+
+```
+{
+    "1": "../path/to/file/index.html"
+}
+```
 <p>You can add as many versions as you would like.</p>
-<p>Please be sure to correctly input the FULL path of the file (From root of selected folder)</p>
+<p>I have recently made it to where you can use relative paths!</p>
 <p>Please note - this feature is compatible with auth (you must use the request path, not the path of the file) and additional headers but you CANNOT use ANY other htaccess features!</p>
 
 The variable is what the user needs to request. If we use v, the user would request something like `localhost:8887/example.mp4?v=1`

@@ -1,5 +1,4 @@
 console.log('background.js')
-this.useDefaultMime = true
 var ALARMID = "check_wsc_periodic"
 var WSCID = "ofhbbkphhbklhfoeikjpcbhemlocgigb"
 var HADEVENT = false
@@ -285,7 +284,7 @@ function hidden_click_configure() {
 function create_hidden() {
     if (OS != 'Chrome') { return }
 
-    if (app.opts && app.opts.optBackground && app.opts.optAllInterfaces && this.webapp.started) {
+    if (app.opts.optBackground) {
         console.log('creating hidden window')
         var W = 300
         var H = 120

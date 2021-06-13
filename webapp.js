@@ -455,12 +455,8 @@
         },*/
         ensureFirewallOpen: function() {
             // on chromeOS, if there are no foreground windows,
-            if (this.opts.optAllInterfaces && chrome.app.window.getAll().length == 0) {
-                if (chrome.app.window.getAll().length == 0) {
-                    if (window.create_hidden) {
-                        create_hidden() // only on chrome OS
-                    }
-                }
+            if (this.opts.optAllInterfaces && chrome.app.window.getAll().length == 0 && window.create_hidden && this.webapp.started) {
+                create_hidden() // only on chrome OS
             }
         },
         bindAcceptCallbacks: function() {
@@ -496,75 +492,6 @@
             connection.addRequestCallback(this.onRequest.bind(this,stream,connection))
             connection.tryRead()
         },
-        render400HTML: function(request) {
-            var handler = new WSC.BaseHandler(request)
-            handler.app = this
-            handler.request = request
-            if (request.method == "HEAD") {
-                handler.responseLength = 0
-                handler.writeHeaders(400)
-                handler.finish()
-                return
-            }
-            if (this.opts.optCustom400) {
-                this.fs.getByPath(this.opts.optCustom400location, (file) => {
-                if (! file.error) {
-                    file.file( function(filee) {
-                    var reader = new FileReader();
-                    reader.onload = function(e){
-                        this.useDefaultMime = false
-                        var data = e.target.result
-                        handler.setHeader('content-type','text/html; charset=utf-8')
-                        handler.write(data, 400)
-                        handler.finish()
-                        this.useDefaultMime = true
-                    }.bind(this)
-                reader.readAsText(filee)
-                }.bind(this))
-                } else {
-                    handler.write('Path of 400 html was not found - 400 path is set to: '+this.opts.optCustom400location, 500)
-                    handler.finish()
-                }})
-            } else {
-                handler.write('<h1>400 - Bad Request</h1>', 400)
-                handler.finish()
-            }
-        },
-		render401HTML: function(request) {
-            var handler = new WSC.BaseHandler(request)
-		    handler.app = this
-            handler.request = request
-            if (this.opts.optCustom401) {
-                this.fs.getByPath(this.opts.optCustom401location, (file) => {
-                if (! file.error) {
-                    file.file( function(filee) {
-                        var reader = new FileReader();
-                        reader.onload = function(e){
-                            this.useDefaultMime = false
-                            var data = e.target.result
-                            handler.setHeader('content-type','text/html; charset=utf-8')
-                            handler.setHeader("WWW-Authenticate", "Basic")
-                            handler.write(data, 401)
-                            handler.finish()
-                            this.useDefaultMime = true
-                            return
-                        }.bind(this)
-                        reader.readAsText(filee)
-                    }.bind(this))
-                } else {
-                    handler.write('Path of 401 html was not found - 401 path is set to: '+this.opts.optCustom401location, 500)
-                    handler.finish()
-                }})
-            } else {
-                this.useDefaultMime = false
-                handler.setHeader('content-type','text/html; charset=utf-8')
-                handler.setHeader("WWW-Authenticate", "Basic")
-                handler.write("<h1>401 - Unauthorized</h1>", 401)
-                handler.finish()
-                this.useDefaultMime = true
-                return
-            }
-		},
         onRequest: function(stream, connection, request) {
             console.log('Request',request.method, request.uri)
 
@@ -574,8 +501,11 @@
                 if ((request.method == 'GET' && ! this.opts.optGETHtaccess) ||
                     (request.method == 'PUT' && ! this.opts.optPUTPOSTHtaccess) ||
                     (request.method == 'POST' && ! this.opts.optPUTPOSTHtaccess) ||
-                    (request.method == 'DELETE' && ! this.opts.optPUTPOSTHtaccess)) {
-                    this.render400HTML.bind(this)(request)
+                    (request.method == 'DELETE' && ! this.opts.optDELETEHtaccess)) {
+					var handler = new WSC.BaseHandler(request)
+					handler.app = this
+					handler.request = request
+					handler.error('<h1>400 - Bad Request</h1>', 400)
                     return
                 }
             }
@@ -595,7 +525,10 @@
                 }
 
                 if (! validAuth) {
-                    this.render401HTML.bind(this)(request)
+					var handler = new WSC.BaseHandler(request)
+					handler.app = this
+					handler.request = request
+					handler.error("<h1>401 - Unauthorized</h1>", 401)
                     return
                 }
             }
@@ -674,6 +607,57 @@
                 this.finish()
             }
         },
+        error: function(defaultMsg, httpCode) {
+			if (this.request.method == "HEAD") {
+                this.responseLength = 0
+                this.writeHeaders(httpCode)
+                this.finish()
+				return
+            } else {
+				// We set the request.path to a .html file to override the mimetype of the requested file
+				this.request.path = 'error.html'
+				if (this.app.opts['optCustom'+httpCode]) {
+					this.fs.getByPath(this.app.opts['optCustom'+httpCode+'location'], (file) => {
+						if (! file.error) {
+							file.file( function(file) {
+								var reader = new FileReader()
+								reader.onload = function(e) {
+									var data = e.target.result
+									if (httpCode == 404) {
+										if (this.app.opts.optCustom404usevar) {
+											if (this.app.opts.optCustom404usevarvar.replace(' ', '') != '') {
+												var data = '<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.uri+'";</script>\n' + data
+											} else {
+												this.write('javascript location variable is blank', 500)
+												this.finish()
+												return
+											}
+										}
+									}
+									if (httpCode == 401) {
+										this.setHeader("WWW-Authenticate", "Basic")
+									}
+									this.write(data, httpCode)
+									this.finish()
+								}.bind(this)
+								reader.readAsText(file)
+							}.bind(this))
+						} else {
+							if ([400,401,403,404].includes(httpCode)) {
+								this.write('Path of Custom '+httpCode+' html was not found. Custom '+httpCode+' is set to '+this.app.opts['optCustom'+httpCode+'location'], 500)
+								this.finish()
+							} else {
+								this.write(defaultMsg, httpCode)
+								this.finish()
+							}
+						}
+					})
+				} else {
+					this.write(defaultMsg, httpCode)
+					this.finish()
+				}
+			}
+		},
         setCORS: function() {
             this.setHeader('access-control-allow-origin','*')
             this.setHeader('access-control-allow-methods','GET, POST, PUT, DELETE')
@@ -717,7 +701,7 @@
             }
 
             var p = this.request.path.split('.')
-            if (p.length > 1 && ! this.isDirectoryListing && this.useDefaultMime) {
+            if (p.length > 1 && ! this.isDirectoryListing) {
                 var ext = p[p.length-1].toLowerCase()
                 var type = WSC.MIMETYPES[ext]
                 if (type) {

@@ -648,6 +648,9 @@
 								this.finish()
 							} else {
 								this.write(defaultMsg, httpCode)
+								if (httpCode == 401) {
+									this.setHeader("WWW-Authenticate", "Basic")
+								}
 								this.finish()
 							}
 						}

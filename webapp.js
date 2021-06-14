@@ -647,15 +647,18 @@
 								this.write('Path of Custom '+httpCode+' html was not found. Custom '+httpCode+' is set to '+this.app.opts['optCustom'+httpCode+'location'], 500)
 								this.finish()
 							} else {
-								this.write(defaultMsg, httpCode)
 								if (httpCode == 401) {
 									this.setHeader("WWW-Authenticate", "Basic")
 								}
+								this.write(defaultMsg, httpCode)
 								this.finish()
 							}
 						}
 					})
 				} else {
+					if (httpCode == 401) {
+						this.setHeader("WWW-Authenticate", "Basic")
+					}
 					this.write(defaultMsg, httpCode)
 					this.finish()
 				}

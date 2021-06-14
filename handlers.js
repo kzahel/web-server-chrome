@@ -355,7 +355,7 @@
 
             function onEntryMain() {
 				
-				if (entry.isFile && this.request.origpath.endsWith('/')) {
+				if (this.entry && this.entry.isFile && this.request.origpath.endsWith('/')) {
 					this.setHeader('location', this.request.path)
                     this.writeHeaders(301)
                     this.finish()

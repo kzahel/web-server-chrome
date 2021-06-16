@@ -66,7 +66,7 @@
                 return
             }
 
-            if (['GET','HEAD','PUT','DELETE','OPTIONS'].includes(method)) {
+            if (['GET','HEAD','PUT','POST','DELETE','OPTIONS'].includes(method)) {
                 this.onRequest(this.curRequest)
             } else {
                 console.error('how to handle',this.curRequest)

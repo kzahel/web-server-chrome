@@ -323,7 +323,6 @@
             this.onReady()
         },
         onReady: function() {
-            this.ensureFirewallOpen()
             //console.log('onListen',result)
             this.starting = false
             this.started = true
@@ -332,6 +331,7 @@
             this.bindAcceptCallbacks()
             this.init_urls()
             this.start_success({urls:this.urls}) // initialize URLs ?
+            this.ensureFirewallOpen()
         },
         init_urls: function() {
             this.urls = [].concat(this.extra_urls)
@@ -583,7 +583,7 @@
                 var handler = new WSC.BaseHandler(request)
                 handler.app = this
                 handler.request = request
-                handler.write("Unhandled request. Did you select a folder to serve?", 404)
+                handler.write("Unhandled request. Did you select a folder to serve?", 500)
                 handler.finish()
             }
         }
@@ -618,7 +618,7 @@
 				this.request.path = 'error.html'
 				if (this.app.opts['optCustom'+httpCode]) {
 					this.fs.getByPath(this.app.opts['optCustom'+httpCode+'location'], (file) => {
-						if (! file.error) {
+						if (! file.error && file.isFile) {
 							file.file( function(file) {
 								var reader = new FileReader()
 								reader.onload = function(e) {
@@ -821,4 +821,3 @@ Changes with nginx 0.7.9                                         12 Aug 2008
     WSC.WebApplication = WebApplication
 
 })();
-

@@ -206,7 +206,7 @@ or, if the you were in the `/data/asd/` directory
 ```
 <p>You can add as many versions as you would like.</p>
 <p>I have recently made it to where you can use relative paths!</p>
-<p>Please note - this feature is compatible with auth (you must use the request path, not the path of the file) and additional headers but you CANNOT use ANY other htaccess features!</p>
+<p>Versioning pretty much just makes the server think that you requested another file. So you can do a directory or whatever! The file will be checked with the htaccess of that current directory</p>
 
 The variable is what the user needs to request. If we use v, the user would request something like `localhost:8887/example.mp4?v=1`
 <p>Note that you do not need an extension for the requested file.</p>
@@ -249,12 +249,14 @@ The end result will be
     {
         "request_path": "name of file you want to modify",
         "type": "send directory contents"
+	"dir_to_send": "../somepath/"
     }
 ]
 ```
 <p>More howto (send directory contents)</p>
 
 This feature CANNOT use the `all files` value for the `request_path` field. You must specify each file separately
+<p>if dir_to_send is not specified, then the current directory will be sent</p>
 <p>Getting info from sent contents</p>
 <p>This is what is sent</p>
 

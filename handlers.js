@@ -261,8 +261,12 @@
                 this.write("error: need to select a directory to serve",500)
                 return
             }
+            this.request.isVersioning == false
             //var path = decodeURI(this.request.path)
 
+            if (this.app.opts.optCacheControl) {
+                this.setHeader('Cache-Control',this.app.opts.optCacheControlValue)
+            }
             if (this.app.opts.optExcludeDotHtml && ! this.request.origpath.endsWith("/")) {
 				var htmhtml = this.app.opts.optExcludeDotHtm ? 'htm' : 'html';
                 var extension = this.request.path.split('.').pop();
@@ -400,12 +404,12 @@
                                 }
                             }
                         }
-                        if (this.request.arguments && this.request.arguments.json == '1' ||
+                        if (this.app.opts.optDir404 && this.app.opts.optRenderIndex) {
+							this.error("404 - File not found", 404)
+                        } else if (this.request.arguments && this.request.arguments.json == '1' ||
                             (this.request.headers['accept'] && this.request.headers['accept'].toLowerCase() == 'application/json')
                            ) {
                             this.renderDirectoryListingJSON(results)
-                        } else if (this.app.opts.optDir404 && this.app.opts.optRenderIndex) {
-							this.error("404 - File not found", 404)
                         } else if (this.request.arguments && this.request.arguments.static == '1' ||
                             this.request.arguments.static == 'true' ||
                             this.app.opts.optStatic
@@ -415,38 +419,34 @@
                             this.renderDirectoryListingTemplate(results)
                         }
                     }
-
                     this.getDirContents(entry, alldone.bind(this))
                 }
             }
 
-        function excludedothtmlcheck() {
-            if (this.app.opts.optExcludeDotHtml && this.request.path != '') {
-                if (this.app.opts.optExcludeDotHtm) {
-                    var htmHtml = '.htm'
-                } else {
-                    var htmHtml = '.html'
-                }
-                this.fs.getByPath(this.request.path+htmHtml, (file) => {
-                if (! file.error) {
-                    if (this.request.origpath.endsWith("/")) {
-                        onEntryMain.bind(this)()
-                        return
-                    }
-                    this.renderFileContents(file)
-                    //console.log('file found')
-                    this.setHeader('content-type','text/html; charset=utf-8')
-                    return
-                } else {
-                    onEntryMain.bind(this)()
-                    }
-                })} else {
-                onEntryMain.bind(this)()
-            }
-        }
-            if (this.app.opts.optCacheControl) {
-                this.setHeader('Cache-Control',this.app.opts.optCacheControlValue)
-            }
+			function excludedothtmlcheck() {
+				if (this.app.opts.optExcludeDotHtml && this.request.path != '') {
+					if (this.app.opts.optExcludeDotHtm) {
+						var htmHtml = '.htm'
+					} else {
+						var htmHtml = '.html'
+					}
+					this.fs.getByPath(this.request.path+htmHtml, (file) => {
+					if (! file.error) {
+						if (this.request.origpath.endsWith("/")) {
+							onEntryMain.bind(this)()
+							return
+						}
+						this.renderFileContents(file)
+						//console.log('file found')
+						this.setHeader('content-type','text/html; charset=utf-8')
+						return
+					} else {
+						onEntryMain.bind(this)()
+						}
+					})} else {
+					onEntryMain.bind(this)()
+				}
+			}
         
             if (this.app.opts.optScanForHtaccess) {
                 var fullrequestpath = this.request.origpath
@@ -456,351 +456,393 @@
                     var finalpath = '/'
                 }
                 var htaccesspath = finalpath+'wsc.htaccess'
-                //console.log(htaccesspath)
                 this.fs.getByPath(htaccesspath, (file) => {
-                if (! file.error) {
-                    file.file( function(filee) {
-                        var reader = new FileReader();
-                        reader.onload = function(e){
-                            var dataa = e.target.result
-                            if(true) {
-                                try {
-                                    var origdata = JSON.parse(dataa)
-                                } catch(e) {
-                                    this.write('<p>wsc.htaccess file found, but it is not a valid json array. Please read the htaccess readme <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/htaccess/README.md">here</a></p>', 500)
-                                    this.finish()
-                                    console.error('htaccess json array error')
-                                    return
-                                }
-                            }
-                            
-                            function htaccessMain(filerequested) {
-                                var filefound = false
-                                var auth = false
-                                var authdata
-                                var j=0
-                                var data
-                                var htaccessHeaders = [ ]
-                                var additionalHeaders = false
-                                if (origdata.length == 0 || ! origdata.length) {
-                                    excludedothtmlcheck.bind(this)()
-                                    return
-                                }
-                                for (var i=0; i<origdata.length; i++) {
-                                    if (! origdata[i].type) {
-                                        this.htaccessError.bind(this)('missing type')
+                    if (! file.error && file.isFile) {
+                        file.file( function(filee) {
+                            var reader = new FileReader();
+                            reader.onload = function(e){
+                                var dataa = e.target.result
+                                if(true) {
+                                    try {
+                                        var origdata = JSON.parse(dataa)
+                                    } catch(e) {
+                                        this.write('<p>wsc.htaccess file found, but it is not a valid json array. Please read the htaccess readme <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/htaccess/README.md">here</a></p>\n\n\n'+e, 500)
+                                        this.finish()
+                                        console.error('htaccess json array error')
                                         return
                                     }
-                                    if (! origdata[i].request_path && origdata[i].type != 'directory listing') {
-                                        this.htaccessError.bind(this)('missing request path')
+                                }
+
+                                function htaccessMain(filerequested) {
+                                    var filefound = false
+                                    var auth = false
+                                    var authdata = false
+                                    var j=0
+                                    var data = false
+                                    var htaccessHeaders = [ ]
+                                    var additionalHeaders = false
+                                    if (origdata.length == 0 || ! origdata.length) {
+                                        excludedothtmlcheck.bind(this)()
                                         return
                                     }
-                                    origdata[i].original_request_path = origdata[i].request_path
-                                    origdata[i].filerequested = filerequested
-                                    origdata[i].request_path = WSC.utilityHandler.htaccessFileRequested(origdata[i].request_path)
-                                    if (origdata[i].type == 401 &&
-                                        ! auth &&
-                                        (origdata[i].request_path == filerequested || origdata[i].request_path == 'all files')) {
-                                        var auth = true
-                                        var authdata = origdata[i]
-                                    }
-                                    if (origdata[i].type == 'directory listing' &&
-                                        this.request.uri.split('/').pop() == '' &&
-                                        ! filefound) {
-                                        var data = origdata[i]
-                                        var filefound = true
-                                    }
-                                    if (origdata[i].type == 'send directory contents' && origdata[i].request_path == filerequested) {
-                                        var extension = origdata[i].original_request_path.split('.').pop()
-                                        if (extension == 'html' || extension == 'htm') {
+                                    for (var i=0; i<origdata.length; i++) {
+                                        if (! origdata[i].type) {
+                                            this.htaccessError.bind(this)('missing type')
+                                            return
+                                        }
+                                        if (! origdata[i].request_path && origdata[i].type != 'directory listing') {
+                                            this.htaccessError.bind(this)('missing request path')
+                                            return
+                                        }
+                                        origdata[i].original_request_path = origdata[i].request_path
+                                        origdata[i].filerequested = filerequested
+                                        origdata[i].request_path = WSC.utilityHandler.htaccessFileRequested(origdata[i].request_path)
+                                        if (origdata[i].type == 401 &&
+                                            ! auth &&
+                                            (origdata[i].request_path == filerequested || origdata[i].request_path == 'all files') && ! this.request.isVersioning) {
+                                            var auth = true
+                                            var authdata = origdata[i]
+                                        }
+                                        if (origdata[i].type == 'directory listing' &&
+                                            this.request.uri.split('/').pop() == '' &&
+                                            ! filefound) {
                                             var data = origdata[i]
                                             var filefound = true
                                         }
-                                    }
-                                    if ((origdata[i].request_path == filerequested || origdata[i].request_path == 'all files') &&
-                                        ! filefound &&
-                                        origdata[i].type != 'allow delete' &&
-                                        origdata[i].type != 'allow put' &&
-                                        origdata[i].type != 'deny delete' &&
-                                        origdata[i].type != 'deny put' &&
-                                        origdata[i].type != 401 &&
-                                        origdata[i].type != 'directory listing' &&
-                                        origdata[i].type != 'additional header' &&
-                                        origdata[i].type != 'send directory contents') {
-                                            var data = origdata[i]
-                                            //console.log(data)
-                                            var filefound = true
-                                    }
-                                    //console.log(origdata[i].request_path == filerequested)
-                                    if ((origdata[i].request_path == filerequested || origdata[i].request_path == 'all files') &&
-                                        origdata[i].type == 'additional header') {
-                                        //console.log('additional header')
-                                        var additionalHeaders = true
-                                        htaccessHeaders[j] = origdata[i]
-                                        j++
-                                    }
-                                }
-                                //console.log(data)
-                                //console.log(authdata)
-                                //console.log(filefound)
-                                function htaccessCheck2() {
-                                    if (filefound) {
-                                        if (data.type == 301 || data.type == 302 || data.type == 307) {
-                                            if (! data.redirto) {
-                                                this.htaccessError.bind(this)('missing redirect location')
-                                                return
+                                        if (origdata[i].type == 'send directory contents' && origdata[i].request_path == filerequested) {
+                                            var extension = origdata[i].original_request_path.split('.').pop()
+                                            if (extension == 'html' || extension == 'htm') {
+                                                var data = origdata[i]
+                                                var filefound = true
                                             }
-                                            this.setHeader('location', data.redirto)
-                                            this.responseLength = 0
-                                            this.writeHeaders(data.type)
-                                            this.finish()
-                                        } else if (data.type == 403) {
-                                            var method = this.request.headers['sec-fetch-dest']
-                                            //console.log(method)
-                                            if (method == "document") {
-                                                this.error('<h1>403 - Forbidden</h1>', 403)
-                                            } else {
-                                                excludedothtmlcheck.bind(this)()
-                                            }
-                                        } else if (data.type == 'directory listing') {
-                                            function finished(results) {
-                                                if (this.request.arguments && this.request.arguments.static == '1' ||
-                                                    this.request.arguments.static == 'true' ||
-                                                    this.app.opts.optStatic ) {
-                                                    this.renderDirectoryListing(results)
-                                                    return
-                                                } else {
-                                                    this.renderDirectoryListingTemplate(results)
+                                        }
+                                        if ((origdata[i].request_path == filerequested || origdata[i].request_path == 'all files') &&
+                                            ! filefound &&
+                                            origdata[i].type != 'allow delete' &&
+                                            origdata[i].type != 'allow put' &&
+                                            origdata[i].type != 'deny delete' &&
+                                            origdata[i].type != 'deny put' &&
+                                            origdata[i].type != 401 &&
+                                            origdata[i].type != 'directory listing' &&
+                                            origdata[i].type != 'additional header' &&
+                                            origdata[i].type != 'send directory contents') {
+                                                var data = origdata[i]
+                                                //console.log(data)
+                                                var filefound = true
+                                        }
+                                        //console.log(origdata[i].request_path == filerequested)
+                                        if ((origdata[i].request_path == filerequested || origdata[i].request_path == 'all files') &&
+                                            origdata[i].type == 'additional header') {
+                                            //console.log('additional header')
+                                            var additionalHeaders = true
+                                            htaccessHeaders[j] = origdata[i]
+                                            j++
+                                        }
+                                    }
+                                    //console.log(data)
+                                    //console.log(authdata)
+                                    //console.log(filefound)
+                                    function htaccessCheck2() {
+                                        if (filefound) {
+                                            if (data.type == 301 || data.type == 302 || data.type == 307) {
+                                                if (! data.redirto) {
+                                                    this.htaccessError.bind(this)('missing redirect location')
                                                     return
                                                 }
-                                            }
-											
-                                            this.getDirContents(entry, finished.bind(this))
-											
-                                            } else if (data.type == 'send directory contents') {
+                                                this.setHeader('location', data.redirto)
+                                                this.responseLength = 0
+                                                this.writeHeaders(data.type)
+                                                this.finish()
+                                            } else if (data.type == 403) {
+                                                var method = this.request.headers['sec-fetch-dest']
+                                                //console.log(method)
+                                                if (method == "document") {
+                                                    this.error('<h1>403 - Forbidden</h1>', 403)
+                                                } else {
+                                                    excludedothtmlcheck.bind(this)()
+                                                }
+                                            } else if (data.type == 'directory listing') {
                                                 function finished(results) {
+                                                    if (this.request.arguments.json == '1' ||
+                                                        this.request.headers['accept'].toLowerCase() == 'application/json') {
+                                                        this.renderDirectoryListingJSON(results)
+                                                    } else if (this.request.arguments.static == '1' ||
+                                                               this.request.arguments.static == 'true' ||
+                                                               this.app.opts.optStatic) {
+                                                        this.renderDirectoryListing(results)
+                                                    } else {
+                                                        this.renderDirectoryListingTemplate(results)
+                                                    }
+                                                }
+
+                                                this.getDirContents(entry, finished.bind(this))
+
+                                                } else if (data.type == 'send directory contents') {
+                                                    if (! data.dir_to_send || data.dir_to_send.replace(' ', '') == '') {
+                                                        data.dir_to_send = './'
+                                                    }
+                                                    function finished(results) {
+                                                        var fullrequestpath = this.request.origpath
+                                                        var finpath = fullrequestpath.split('/').pop();
+                                                        var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length) + data.original_request_path
+                                                        //console.log(filepath)
+                                                        this.fs.getByPath(finalpath, (file) => {
+                                                            if (! file.error && file.isFile) {
+                                                                file.file( function(file) {
+                                                                    var reader = new FileReader();
+                                                                    reader.onload = function(e){
+                                                                        function finish() {
+                                                                            var data = html.join('\n')
+                                                                            this.setHeader('content-type','text/html; charset=utf-8')
+                                                                            this.write(data, 200)
+                                                                            this.finish()
+                                                                        }
+                                                                        function sendFile() {
+                                                                            results[i].getMetadata(function(filee) {
+                                                                                var rawname = results[i].name
+                                                                                var name = encodeURIComponent(results[i].name)
+                                                                                var isdirectory = results[i].isDirectory
+                                                                                var filesize = filee.size
+                                                                                var modified = WSC.utilityHandler.lastModified(filee.modificationTime)
+                                                                                var filesizestr = WSC.utilityHandler.humanFileSize(filee.size)
+                                                                                var modifiedstr = WSC.utilityHandler.lastModifiedStr(filee.modificationTime)
+                                                                                if (rawname != 'wsc.htaccess') {
+                                                                                    html.push('<script>addRow("'+rawname+'", "'+name+'", '+isdirectory+', '+filesize+', "'+filesizestr+'", '+modified+', "'+modifiedstr+'")</script>')
+                                                                                }
+                                                                                if (i != results.length - 1) {
+                                                                                    i++
+                                                                                    sendFile.bind(this, results)()
+                                                                                } else {
+                                                                                    finish.bind(this, results)()
+                                                                                }
+                                                                            }.bind(this), function(error) {
+                                                                                console.error('error reading metadata '+error)
+                                                                                if (i != results.length - 1) {
+                                                                                    i++
+                                                                                    sendFileList.bind(this, results)()
+                                                                                } else {
+                                                                                    DirRenderFinish.bind(this, results)()
+                                                                                }
+                                                                            }.bind(this))
+                                                                        }
+                                                                        var html = [e.target.result]
+                                                                        var i = 0
+                                                                        sendFile.bind(this, results)()
+                                                                    }.bind(this)
+                                                                    reader.readAsText(file)
+                                                                }.bind(this))
+                                                            } else {
+                                                                this.write('An unexpected error occured. Please check your wsc.htaccess file for any configuration errors.\nPlease remember, the send directory listing feature CANNOT use "all files", you must specify each file separately.\nPlease check your settings. If everything seems to be in place, please report an issue on github.\n\nhttps://github.com/kzahel/web-server-chrome\n\nPlease copy and paste the following information.\n\n\nfilepath: '+filepath+'\nrequestURI: '+this.request.uri+'\nrequested file (according to htaccess): '+data.original_request_path+'\nrequested file (according to requestURI): '+data.filerequested, 500)
+                                                                this.finish()
+                                                            }
+                                                        })
+                                                    }
+                                                    var path2Send = data.dir_to_send
                                                     var fullrequestpath = this.request.origpath
                                                     var finpath = fullrequestpath.split('/').pop();
-                                                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length) + data.original_request_path
-                                                    //console.log(filepath)
-                                                    this.fs.getByPath(finalpath, (file) => {
-                                                        if (! file.error) {
-                                                            file.file( function(file) {
-                                                                var reader = new FileReader();
-                                                                reader.onload = function(e){
-                                                                    function finish() {
-                                                                        var data = html.join('\n')
-                                                                        this.setHeader('content-type','text/html; charset=utf-8')
-                                                                        this.write(data, 200)
-                                                                        this.finish()
-                                                                    }
-                                                                    function sendFile() {
-                                                                        results[i].getMetadata(function(filee) {
-                                                                            var rawname = results[i].name
-                                                                            var name = encodeURIComponent(results[i].name)
-                                                                            var isdirectory = results[i].isDirectory
-                                                                            var filesize = filee.size
-                                                                            var modified = WSC.utilityHandler.lastModified(filee.modificationTime)
-                                                                            var filesizestr = WSC.utilityHandler.humanFileSize(filee.size)
-                                                                            var modifiedstr = WSC.utilityHandler.lastModifiedStr(filee.modificationTime)
-                                                                            if (rawname != 'wsc.htaccess') {
-                                                                                html.push('<script>addRow("'+rawname+'", "'+name+'", '+isdirectory+', '+filesize+', "'+filesizestr+'", '+modified+', "'+modifiedstr+'")</script>')
-                                                                            }
-                                                                            if (i != results.length - 1) {
-                                                                                i++
-                                                                                sendFile.bind(this, results)()
-                                                                            } else {
-                                                                                finish.bind(this, results)()
-                                                                            }
-                                                                        }.bind(this), function(error) {
-                                                                            console.error('error reading metadata '+error)
-                                                                            if (i != results.length - 1) {
-                                                                                i++
-                                                                                sendFileList.bind(this, results)()
-                                                                            } else {
-                                                                                DirRenderFinish.bind(this, results)()
-                                                                            }
-                                                                        }.bind(this))
-                                                                    }
-                                                                    var html = [e.target.result]
-                                                                    var i = 0
-                                                                    sendFile.bind(this, results)()
-                                                                }.bind(this)
-                                                                reader.readAsText(file)
-                                                            }.bind(this))
-                                                        } else {
-                                                            this.write('An unexpected error occured. Please check your wsc.htaccess file for any configuration errors.\nPlease remember, the send directory listing feature CANNOT use "all files", you must specify each file separately.\nPlease check your settings. If everything seems to be in place, please report an issue on github.\n\nhttps://github.com/kzahel/web-server-chrome\n\nPlease copy and paste the following information.\n\n\nfilepath: '+filepath+'\nrequestURI: '+this.request.uri+'\nrequested file (according to htaccess): '+data.original_request_path+'\nrequested file (according to requestURI): '+data.filerequested)
-                                                            this.finish()
+                                                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
+                                                    if (this.request.path == '') {
+                                                        var finalpath = '/'
+                                                    }
+                                                    var split1 = finalpath.split('/')
+                                                    var split2 = path2Send.split('/')
+                                                    
+                                                    if (! path2Send.startsWith('/')) {
+                                                        for (var w=0; w<split2.length; w++) {
+                                                            if (split2[w] == '' || split2[w] == '.') {
+                                                                // . means current directory. Leave this here for spacing
+                                                            } else if (split2[w] == '..') {
+                                                                if (split1.length > 0) {
+                                                                    var split1 = split1.splice(-1,1)
+                                                                }
+                                                            } else {
+                                                                split1.push(split2[w])
+                                                            }
                                                         }
-                                                    })
-                                                }
-                                                var fullrequestpath = this.request.origpath
-                                                var finpath = fullrequestpath.split('/').pop();
-                                                var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
-                                                //console.log(finalpath)
-                                                //console.log(data)
-                                                this.fs.getByPath(finalpath, function(entryy) {
-                                                    this.getDirContents(entryy, finished.bind(this))
-                                                }.bind(this))
-                                            } else if (data.type == 'versioning') {
-												//console.log('versioning')
-                                                if (! data.version_data || data.version_data.length == 0) {
-                                                    this.htaccessError.bind(this)('missing version data')
-                                                    return
-                                                }
-                                                if (! data.variable) {
-                                                    this.htaccessError.bind(this)('missing variable')
-                                                    return
-                                                }
-                                                if (! data.default) {
-                                                    this.htaccessError.bind(this)('missing default file selection')
-                                                    return
-                                                }
-												var versionData = data.version_data
-												var vdata4 = this.request.arguments[data.variable]
-												if ( ! versionData[vdata4]) {
-													vdata4 = data.default
-												}
-                                                var vdataa = versionData[vdata4]
-												var fullrequestpath = this.request.origpath
-												var finpath = fullrequestpath.split('/').pop();
-												var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
-												if (this.request.path == '') {
-													var finalpath = '/'
-												}
-												var split1 = finalpath.split('/')
-												var split2 = vdataa.split('/')
-												if (! vdataa.startsWith('/')) {
-													for (var w=0; w<split2.length; w++) {
-														if (split2[w] == '' || split2[w] == '.') {
-															// . means current directory. Leave this here for spacing
-														} else if (split2[w] == '..') {
-															if (split1.length > 0) {
-																var split1 = split1.splice(-1,1)
-															}
-														} else {
-															split1.push(split2[w])
-														}
-													}
-													var vdataa = split1.join('/')
-													if (! vdataa.startsWith('/')) {
-														var vdataa = '/' + vdataa
-													}
-													//console.log(vdataa)
-												}
-                                                //console.log(vdataa)
-                                                this.fs.getByPath(vdataa, function(file) {
-                                                    if (! file.error) {
-														var entry = file
-														this.entry = entry
-														this.request.path = vdataa
-                                                        this.renderFileContents(entry)
-                                                        return
-                                                    } else {
-                                                        this.write('path in htaccess file for version '+vdata4+' is missing or the file does not exist. Please check to make sure you have properly inputed the value', 500)
-                                                        this.finish()
+                                                        var path2Send = split1.join('/')
+                                                        if (! path2Send.startsWith('/')) {
+                                                            var path2Send = '/' + path2Send
+                                                        }
+                                                    }
+                                                    
+                                                    //console.log(finalpath)
+                                                    //console.log(data)
+                                                    this.fs.getByPath(path2Send, function(entryy) {
+                                                        if (! entry.error) {
+                                                            this.getDirContents(entryy, finished.bind(this))
+                                                        } else {
+                                                            this.htaccessError.bind(this)('invalid path to send dir contents')
+                                                        }
+                                                    }.bind(this))
+                                                } else if (data.type == 'versioning') {
+                                                    //console.log('versioning')
+                                                    if (! data.version_data || data.version_data.length == 0) {
+                                                        this.htaccessError.bind(this)('missing version data')
                                                         return
                                                     }
-                                                }.bind(this))
+                                                    if (! data.variable) {
+                                                        this.htaccessError.bind(this)('missing variable')
+                                                        return
+                                                    }
+                                                    if (! data.default) {
+                                                        this.htaccessError.bind(this)('missing default file selection')
+                                                        return
+                                                    }
+                                                    var versionData = data.version_data
+                                                    var vdata4 = this.request.arguments[data.variable]
+                                                    if ( ! versionData[vdata4]) {
+                                                        vdata4 = data.default
+                                                    }
+                                                    var vdataa = versionData[vdata4]
+                                                    var fullrequestpath = this.request.origpath
+                                                    var finpath = fullrequestpath.split('/').pop();
+                                                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
+                                                    if (this.request.path == '') {
+                                                        var finalpath = '/'
+                                                    }
+                                                    var split1 = finalpath.split('/')
+                                                    var split2 = vdataa.split('/')
+                                                    if (! vdataa.startsWith('/')) {
+                                                        for (var w=0; w<split2.length; w++) {
+                                                            if (split2[w] == '' || split2[w] == '.') {
+                                                                // . means current directory. Leave this here for spacing
+                                                            } else if (split2[w] == '..') {
+                                                                if (split1.length > 0) {
+                                                                    var split1 = split1.splice(-1,1)
+                                                                }
+                                                            } else {
+                                                                split1.push(split2[w])
+                                                            }
+                                                        }
+                                                        var vdataa = split1.join('/')
+                                                        if (! vdataa.startsWith('/')) {
+                                                            var vdataa = '/' + vdataa
+                                                        }
+                                                        //console.log(vdataa)
+                                                    }
+                                                    //console.log(vdataa)
+                                                    this.fs.getByPath(vdataa, function(file) {
+                                                        if (file && ! file.error) {
+                                                            this.request.path = vdataa
+                                                            if (file.isFile) {
+                                                                this.request.origpath = vdataa
+                                                                this.request.uri = vdataa
+                                                            } else {
+                                                                if (vdataa.endsWith("/")) {
+                                                                    this.request.origpath = vdataa
+                                                                    this.request.uri = vdataa
+                                                                } else {
+                                                                    this.request.origpath = vdataa+'/'
+                                                                    this.request.uri = vdataa+'/'
+                                                                }
+                                                            }
+                                                            this.request.isVersioning = true
+                                                            this.onEntry(file)
+                                                        } else {
+                                                            this.write('path in htaccess file for version '+vdata4+' is missing or the file does not exist. Please check to make sure you have properly inputed the value', 500)
+                                                        }
+                                                    }.bind(this))
+                                                } else {
+                                                    excludedothtmlcheck.bind(this)()
+                                                }
                                             } else {
                                                 excludedothtmlcheck.bind(this)()
                                             }
-                                        } else {
-                                            excludedothtmlcheck.bind(this)()
                                         }
-                                    }
-                                    //console.log(htaccessHeaders)
-                                    if (additionalHeaders) {
-                                        for (var i=0; i<htaccessHeaders.length; i++) {
-                                            this.setHeader(htaccessHeaders[i].headerType, htaccessHeaders[i].headerValue)
+                                        //console.log(htaccessHeaders)
+                                        if (additionalHeaders) {
+                                            for (var i=0; i<htaccessHeaders.length; i++) {
+                                                this.setHeader(htaccessHeaders[i].headerType, htaccessHeaders[i].headerValue)
+                                            }
                                         }
-                                    }
-                                    if (auth && authdata.type == 401) {
-                                         if (! authdata.username) {
-                                             this.htaccessError.bind(this)('missing Auth Username')
-                                             return
-                                         }
-                                         if (! authdata.password) {
-                                             this.htaccessError.bind(this)('missing Auth Password')
-                                             return
-                                         }
-                                            var validAuth = false
-                                            var auth = this.request.headers['authorization']
-                                            if (auth) {
-                                                if (auth.slice(0,6).toLowerCase() == 'basic ') {
-                                                    var userpass = atob(auth.slice(6,auth.length)).split(':')
-                                                    if (userpass[0] == authdata.username && userpass[1] == authdata.password) {
-                                                        validAuth = true
+                                        if (auth && authdata.type == 401) {
+                                             if (! authdata.username) {
+                                                 this.htaccessError.bind(this)('missing Auth Username')
+                                                 return
+                                             }
+                                             if (! authdata.password) {
+                                                 this.htaccessError.bind(this)('missing Auth Password')
+                                                 return
+                                             }
+                                                var validAuth = false
+                                                var auth = this.request.headers['authorization']
+                                                if (auth) {
+                                                    if (auth.slice(0,6).toLowerCase() == 'basic ') {
+                                                        var userpass = atob(auth.slice(6,auth.length)).split(':')
+                                                        if (userpass[0] == authdata.username && userpass[1] == authdata.password) {
+                                                            validAuth = true
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            if (! validAuth) {
-                                                this.error("<h1>401 - Unauthorized</h1>", 401)
-                                            }
-                                            if (validAuth) {
+                                                if (! validAuth) {
+                                                    this.error("<h1>401 - Unauthorized</h1>", 401)
+                                                }
+                                                if (validAuth) {
+                                                    htaccessCheck2.bind(this)()
+                                                }
+                                            } else {
                                                 htaccessCheck2.bind(this)()
                                             }
+                                }
+                                var filerequest = this.request.origpath
+
+                                if (this.app.opts.optExcludeDotHtml) {
+                                    if (this.app.opts.optExcludeDotHtm) {
+                                        var htmHtml = '.htm'
+                                    } else {
+                                        var htmHtml = '.html'
+                                    }
+									var htmHtml = this.app.opts.optExcludeDotHtm ? '.htm' : 'html'
+                                    this.fs.getByPath(this.request.path+htmHtml, (file) => {
+                                        if (! file.error) {
+                                            if (this.request.origpath.endsWith("/")) {
+                                                htaccessMain.bind(this)('')
+                                                return
+                                            }
+                                            var filerequested = this.request.path+htmHtml
+                                            var filerequested = filerequested.split('/').pop();
+                                            var filerequested = WSC.utilityHandler.htaccessFileRequested(filerequested)
+                                            htaccessMain.bind(this)(filerequested)
+                                            return
                                         } else {
-                                            htaccessCheck2.bind(this)()
-                                        }
-                            }
-                            var filerequest = this.request.origpath
-                            
-                            if (this.app.opts.optExcludeDotHtml) {
-                                if (this.app.opts.optExcludeDotHtm) {
-                                    var htmHtml = '.htm'
+                                            if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
+                                                var newloc = this.request.origpath + '/'
+                                                this.setHeader('location', newloc)
+                                                this.responseLength = 0
+                                                this.writeHeaders(301)
+                                                this.finish()
+                                                return
+                                            }
+                                            var filerequested = filerequest.split('/').pop();
+                                            //console.log(filerequested)
+                                            var filerequested = WSC.utilityHandler.htaccessFileRequested(filerequested)
+                                                htaccessMain.bind(this)(filerequested)
+                                                return
+                                            }
+                                    })
                                 } else {
-                                    var htmHtml = '.html'
-                                }
-                                this.fs.getByPath(this.request.path+htmHtml, (file) => {
-									if (! file.error) {
-										if (this.request.origpath.endsWith("/")) {
-											htaccessMain.bind(this)('')
-											return
-										}
-										var filerequested = this.request.path+htmHtml
-										var filerequested = filerequested.split('/').pop();
-										var filerequested = WSC.utilityHandler.htaccessFileRequested(filerequested)
-										htaccessMain.bind(this)(filerequested)
-										return
-									} else {
-										if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
-											var newloc = this.request.origpath + '/'
-											this.setHeader('location', newloc)
-											this.responseLength = 0
-											this.writeHeaders(301)
-											this.finish()
-											return
-										}
-										var filerequested = filerequest.split('/').pop();
-										//console.log(filerequested)
-										var filerequested = WSC.utilityHandler.htaccessFileRequested(filerequested)
-											htaccessMain.bind(this)(filerequested)
-											return
-                                    	}
-                                })
-							} else {
-                                if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
-                                    var newloc = this.request.origpath + '/'
-                                    this.setHeader('location', newloc)
-                                    this.responseLength = 0
-                                    this.writeHeaders(301)
-                                    this.finish()
+                                    if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
+                                        var newloc = this.request.origpath + '/'
+                                        this.setHeader('location', newloc)
+                                        this.responseLength = 0
+                                        this.writeHeaders(301)
+                                        this.finish()
+                                        return
+                                    }
+                                    var filerequested = filerequest.split('/').pop();
+                                    //console.log(filerequested)
+                                    var filerequested = WSC.utilityHandler.htaccessFileRequested(filerequested)
+                                    htaccessMain.bind(this)(filerequested)
                                     return
-                                }
-                                var filerequested = filerequest.split('/').pop();
-                                //console.log(filerequested)
-                                var filerequested = WSC.utilityHandler.htaccessFileRequested(filerequested)
-                                htaccessMain.bind(this)(filerequested)
-                                return
-                                }
-                            
-                        }.bind(this)
-                        reader.readAsText(filee)
-                    }.bind(this))
-                } else {
-                    excludedothtmlcheck.bind(this)()
-                }})
+                                    }
+
+                            }.bind(this)
+                            reader.readAsText(filee)
+                        }.bind(this))
+                    } else {
+                        excludedothtmlcheck.bind(this)()
+                    }
+                })
             } else {
                 excludedothtmlcheck.bind(this)()
             }
@@ -896,6 +938,7 @@
             }
             function DirRenderFinish() {
 				this.write(html.join('\n'))
+                this.setHeader('content-type','text/html; charset=utf-8')
                 this.finish()
             }
             function sendFileList() {

@@ -926,11 +926,18 @@
         },
         renderDirectoryListingJSON: function(results) {
             this.setHeader('content-type','application/json; charset=utf-8')
-            this.write(JSON.stringify(results.map(function(f) { return { name:f.name,
-                                                                         fullPath:f.fullPath,
-                                                                         isFile:f.isFile,
-                                                                         isDirectory:f.isDirectory }
-                                                              }), null, 2))
+			var origdata = results.map(function(f) { return { name:f.name,
+                                                          fullPath:f.fullPath,
+                                                          isFile:f.isFile,
+                                                          isDirectory:f.isDirectory }
+                                                        })
+			var data = [ ]
+			for (var i=0; i<origdata.length; i++) {
+				if (origdata[i].name != 'wsc.htaccess') {
+					data.push(origdata[i])
+				}
+			}
+            this.write(JSON.stringify(data, null, 2))
         },
         renderDirectoryListingTemplate: function(results) {
             if (! WSC.template_data) {

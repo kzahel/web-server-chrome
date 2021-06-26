@@ -253,7 +253,6 @@
             folder.getFile(filename, {create:true}, onfile, onfile)
         },
         get: function() {
-			console.log(this.request)
             //this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
 
             this.setHeader('accept-ranges','bytes')

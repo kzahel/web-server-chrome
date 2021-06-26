@@ -253,6 +253,7 @@
             folder.getFile(filename, {create:true}, onfile, onfile)
         },
         get: function() {
+			console.log(this.request)
             //this.request.connection.stream.onWriteBufferEmpty = this.onWriteBufferEmpty.bind(this)
 
             this.setHeader('accept-ranges','bytes')
@@ -504,7 +505,7 @@
                                             var authdata = origdata[i]
                                         }
                                         if (origdata[i].type == 'directory listing' &&
-                                            this.request.uri.split('/').pop() == '' &&
+                                            this.request.origpath.split('/').pop() == '' &&
                                             ! filefound) {
                                             var data = origdata[i]
                                             var filefound = true

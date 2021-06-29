@@ -419,7 +419,7 @@ class App extends React.Component {
       let disablezero = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
       const htaccesstextbox = renderOpts(optHtaccessOptions)
       return [(<div style={{paddingLeft: 20}}>{!disablezero && htaccesstextbox}
-        {!disablezero && <Alert severity="info">For more info on how to use wsc.htaccess files, go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/htaccess/README.md" target="_blank">here</a></Alert>}
+        {!disablezero && <Alert severity="info">For more info on how to use wsc.htaccess files, go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/howTo/HTACCESS.md" target="_blank">here</a></Alert>}
 	  </div>)];
     })();
 
@@ -495,6 +495,14 @@ class App extends React.Component {
 				}}>Generate crypto</Button>}
 	  </div>)];
     })();
+	
+	const POSTFeatureInfo = (() => {
+		return [(<div>
+					{<Alert severity="info">Server Side POST requests are now supported. Go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/howTo/post.md" target="_blank">here</a> to learn how to use this feature</Alert>}
+				</div>)];
+		
+		
+	})();
 
     const {state} = this;
     return (<div>
@@ -559,7 +567,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{UploadOption}{nodothtmlMain}{nodothtmlOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}</div> }
+          {state.showAdvanced && <div>{advOptions}{UploadOption}{nodothtmlMain}{nodothtmlOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}{POSTFeatureInfo}</div> }
         </CardContent>
       </Card>
 

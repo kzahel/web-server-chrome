@@ -615,7 +615,7 @@
 				return
             } else {
 				// We set the request.path to a .html file to override the mimetype of the requested file
-				this.request.path = 'error.html'
+				this.setHeader('content-type','text/html; charset=utf-8')
 				if (this.app.opts['optCustom'+httpCode]) {
 					this.fs.getByPath(this.app.opts['optCustom'+httpCode+'location'], (file) => {
 						if (! file.error && file.isFile) {
@@ -680,7 +680,7 @@
             return this.request.headers[k] || defaultvalue
         },
         setHeader: function(k,v) {
-            this.responseHeaders[k] = v
+			this.responseHeaders[k] = v
         },
         set_status: function(code) {
             console.assert(! this.headersWritten)
@@ -707,7 +707,8 @@
             }
 
             var p = this.request.path.split('.')
-            if (p.length > 1 && ! this.isDirectoryListing) {
+			
+            if (p.length > 1 && ! this.isDirectoryListing && ! this.responseHeaders['content-type']) {
                 var ext = p[p.length-1].toLowerCase()
                 var type = WSC.MIMETYPES[ext]
                 if (type) {
@@ -778,6 +779,9 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             }
         },
         finish: function() {
+			if (document.getElementById('tempPOSThandler')) {
+				document.getElementById('tempPOSThandler').remove()
+			}
             if (! this.headersWritten) {
                 this.responseLength = 0
                 this.writeHeaders()

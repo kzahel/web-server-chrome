@@ -118,11 +118,10 @@
 									this.finish()
 									return
 								}
-								var filerequest = this.request.origpath
-								var filerequested = filerequest.split('/').pop();
+								var filerequested = this.request.origpath.split('/').pop();
 								var filefound = false
 								if (origdata.length == 0 || ! origdata.length) {
-									excludedothtmlcheck.bind(this)()
+									callback()
 									return
 								}
 								for (var i=0; i<origdata.length; i++) {
@@ -190,8 +189,111 @@
             this.deletePutHtaccess('allow delete', 'deny delete', deleteCheck.bind(this), deleteMain.bind(this))
         },
 		post: function() {
-			//not sure what we can do about this
-			this.put()
+            var htaccessPath = WSC.utils.stripOffFile(this.request.origpath)
+			this.fs.getByPath(htaccessPath + 'wsc.htaccess', function(file) {
+				if (file && ! file.error) {
+					file.file( function(file) {
+						var reader = new FileReader()
+						reader.onload = function(e){
+							try {
+								var origdata = JSON.parse(e.target.result)
+							} catch(e) {
+								this.write('Htaccess JSON parse error\n\nError: ' + e, 500)
+								this.finish()
+								return
+							}
+							if (origdata.length == 0 || ! origdata.length) {
+								this.write('htaccess has no length value', 500)
+								this.finish()
+								return
+							}
+							var filerequested = this.request.origpath.split('/').pop()
+							var filefound = false
+							for (var i=0; i<origdata.length; i++) {
+								if (! origdata[i].type) {
+									this.htaccessError.bind(this)('missing type')
+									return
+								}
+								if (! origdata[i].request_path && origdata[i].type != 'directory listing') {
+									this.htaccessError.bind(this)('missing request path')
+									return
+								}
+								if (origdata[i].request_path == filerequested && origdata[i].type == 'POSTkey' && ! filefound) {
+									var data = origdata[i]
+									var filefound = true
+									break
+								}
+							}
+							// Still need to validate POST key
+							if (filefound) {
+								if (! data.key) {
+									this.htaccessError.bind(this)('missing post key')
+									return
+								}
+								this.fs.getByPath(this.request.path, function(file) {
+									if (file && ! file.error) {
+										file.file(function(file) {
+											var reader = new FileReader()
+											reader.onload = function(e) {
+												var contents = e.target.result.split('\r\n')
+												var validFile = false
+												for (var i=0; i<contents.length; i++) {
+													if (contents[i].startsWith('\t')) {
+														contents[i] = contents[i].substring(1, contents[i].length)
+													}
+													// check multiple times ?
+													if (contents[i].startsWith('\t')) {
+														contents[i] = contents[i].substring(1, contents[i].length)
+													}
+													if (contents[i].startsWith('postKey')) {
+														var postkey = contents[i].split('=').pop().replace(' ', '').replace('"', '\'').replace('\'', '').replace('\'', '')
+														if (postkey == data.key) {
+															var validFile = true
+															break
+														}
+													}
+												}
+												if (validFile) {
+													window.req = this.request
+													window.res = this
+													res.end = function() {
+														// We need to cleanup - Which is why we don't want the user to directly call res.finish()
+														if (document.getElementById('tempPOSThandler')) {
+															document.getElementById('tempPOSThandler').remove()
+														}
+														delete this.postRequest
+														delete window.res
+														delete window.req
+														if (window.postKey) {
+															delete window.postKey
+														}
+														this.finish()
+													}
+													var blob = new Blob([file], {type : 'text/javascript'})
+													this.postRequest = document.createElement("script")
+													this.postRequest.src = URL.createObjectURL(blob)
+													this.postRequest.id = 'tempPOSThandler'
+													document.body.appendChild(this.postRequest)
+												} else {
+													this.write('Keys do not match', 403)
+												}
+											}.bind(this)
+											reader.readAsText(file)
+										}.bind(this))
+									} else {
+										this.write('file not found', 404)
+									}
+								}.bind(this))
+							} else {
+							this.put()
+							}
+						}.bind(this)
+						reader.readAsText(file)
+					}.bind(this))
+				} else {
+					this.put()
+				}
+			}.bind(this))
 		},
         put: function() {
             function putMain() {
@@ -496,7 +598,7 @@
                                         }
                                         origdata[i].original_request_path = origdata[i].request_path
                                         origdata[i].filerequested = filerequested
-                                        origdata[i].request_path = WSC.utilityHandler.htaccessFileRequested(origdata[i].request_path)
+                                        origdata[i].request_path = WSC.utils.htaccessFileRequested(origdata[i].request_path)
                                         if (origdata[i].type == 401 &&
                                             ! auth &&
                                             (origdata[i].request_path == filerequested || origdata[i].request_path == 'all files') && ! this.request.isVersioning) {
@@ -504,7 +606,7 @@
                                             var authdata = origdata[i]
                                         }
                                         if (origdata[i].type == 'directory listing' &&
-                                            this.request.origpath.split('/').pop() == '' &&
+                                            this.request.uri.split('/').pop() == '' &&
                                             ! filefound) {
                                             var data = origdata[i]
                                             var filefound = true
@@ -530,6 +632,11 @@
                                                 //console.log(data)
                                                 var filefound = true
                                         }
+										if (origdata[i].request_path == filerequested && origdata[i].type == 'POSTkey') {
+											var filefound = false
+											this.error('<h1>403 - Forbidden</h1>')
+											break
+										}
                                         //console.log(origdata[i].request_path == filerequested)
                                         if ((origdata[i].request_path == filerequested || origdata[i].request_path == 'all files') &&
                                             origdata[i].type == 'additional header') {
@@ -603,9 +710,9 @@
                                                                                 var name = encodeURIComponent(results[i].name)
                                                                                 var isdirectory = results[i].isDirectory
                                                                                 var filesize = filee.size
-                                                                                var modified = WSC.utilityHandler.lastModified(filee.modificationTime)
-                                                                                var filesizestr = WSC.utilityHandler.humanFileSize(filee.size)
-                                                                                var modifiedstr = WSC.utilityHandler.lastModifiedStr(filee.modificationTime)
+                                                                                var modified = WSC.utils.lastModified(filee.modificationTime)
+                                                                                var filesizestr = WSC.utils.humanFileSize(filee.size)
+                                                                                var modifiedstr = WSC.utils.lastModifiedStr(filee.modificationTime)
                                                                                 if (rawname != 'wsc.htaccess') {
                                                                                     html.push('<script>addRow("'+rawname+'", "'+name+'", '+isdirectory+', '+filesize+', "'+filesizestr+'", '+modified+', "'+modifiedstr+'")</script>')
                                                                                 }
@@ -801,7 +908,7 @@
                                             }
                                             var filerequested = this.request.path+htmHtml
                                             var filerequested = filerequested.split('/').pop();
-                                            var filerequested = WSC.utilityHandler.htaccessFileRequested(filerequested)
+                                            var filerequested = WSC.utils.htaccessFileRequested(filerequested)
                                             htaccessMain.bind(this)(filerequested)
                                             return
                                         } else {
@@ -815,7 +922,7 @@
                                             }
                                             var filerequested = filerequest.split('/').pop();
                                             //console.log(filerequested)
-                                            var filerequested = WSC.utilityHandler.htaccessFileRequested(filerequested)
+                                            var filerequested = WSC.utils.htaccessFileRequested(filerequested)
                                                 htaccessMain.bind(this)(filerequested)
                                                 return
                                             }
@@ -831,7 +938,7 @@
                                     }
                                     var filerequested = filerequest.split('/').pop();
                                     //console.log(filerequested)
-                                    var filerequested = WSC.utilityHandler.htaccessFileRequested(filerequested)
+                                    var filerequested = WSC.utils.htaccessFileRequested(filerequested)
                                     htaccessMain.bind(this)(filerequested)
                                     return
                                     }
@@ -926,26 +1033,19 @@
         },
         renderDirectoryListingJSON: function(results) {
             this.setHeader('content-type','application/json; charset=utf-8')
-			var origdata = results.map(function(f) { return { name:f.name,
-                                                          fullPath:f.fullPath,
-                                                          isFile:f.isFile,
-                                                          isDirectory:f.isDirectory }
-                                                        })
-			var data = [ ]
-			for (var i=0; i<origdata.length; i++) {
-				if (origdata[i].name != 'wsc.htaccess') {
-					data.push(origdata[i])
-				}
-			}
-            this.write(JSON.stringify(data, null, 2))
+            this.write(JSON.stringify(results.map(function(f) { return { name:f.name,
+                                                                         fullPath:f.fullPath,
+                                                                         isFile:f.isFile,
+                                                                         isDirectory:f.isDirectory }
+                                                              }), null, 2))
         },
         renderDirectoryListingTemplate: function(results) {
             if (! WSC.template_data) {
                 return this.renderDirectoryListing(results)
             }
             function DirRenderFinish() {
-				this.write(html.join('\n'))
                 this.setHeader('content-type','text/html; charset=utf-8')
+				this.write(html.join('\n'))
                 this.finish()
             }
             function sendFileList() {
@@ -955,13 +1055,13 @@
                     var name = encodeURIComponent(results[w].name)
                     var isdirectory = results[w].isDirectory
                     //var modified = '4/27/21, 10:38:40 AM'
-                    var modified = WSC.utilityHandler.lastModified(file.modificationTime)
+                    var modified = WSC.utils.lastModified(file.modificationTime)
                     var filesize = file.size
-                    var filesizestr = WSC.utilityHandler.humanFileSize(file.size)
-                    var modifiedstr = WSC.utilityHandler.lastModifiedStr(file.modificationTime)
+                    var filesizestr = WSC.utils.humanFileSize(file.size)
+                    var modifiedstr = WSC.utils.lastModifiedStr(file.modificationTime)
                     // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
                     if (rawname != 'wsc.htaccess') {
-                    html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+						html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
                     }
                     if (w != results.length - 1) {
                         w++
@@ -986,7 +1086,7 @@
             }
             var w = 0
 			if (results.length == 0) {
-				DirRenderFinish()
+				DirRenderFinish.bind(this)()
 				return
 			}
             sendFileList.bind(this, results)()
@@ -1051,7 +1151,34 @@
             this.write('Htaccess Configuration error. Please check to make sure that you are not missing some values.\n\nError Message: '+errormsg, 500)
             this.finish()
             return
-        }
+        },
+		// everything from here to the end of the prototype are tools for server side post handling
+		getFile: function(path, callback) {
+			// did not expect this to still work :/
+			if (! path.startsWith('/')) {
+				path = WSC.utils.relativePath(path, WSC.utils.stripOffFile(this.request.origpath))
+			}
+			this.fs.getByPath(path, function(file) {
+				if (file.isDirectory) {
+					// automatically get dir contents?
+					this.getDirContents(file, function(results) {
+						results.isDirectory = true
+						results.isFile = false
+						callback(results)
+					})
+				} else if (file && ! file.error) {
+					file.file(function(file) {
+						callback(file)
+					})
+				} else {
+					callback(file)
+				}
+				
+			}.bind(this))
+		},
+		contentType: function(type) {
+			this.setHeader('content-type', type)
+		}
     }, WSC.BaseHandler.prototype)
 
     //if (chrome.runtime.id == WSC.store_id || true) {

@@ -606,7 +606,7 @@
                                             var authdata = origdata[i]
                                         }
                                         if (origdata[i].type == 'directory listing' &&
-                                            this.request.uri.split('/').pop() == '' &&
+                                            this.request.origpath.split('/').pop() == '' &&
                                             ! filefound) {
                                             var data = origdata[i]
                                             var filefound = true

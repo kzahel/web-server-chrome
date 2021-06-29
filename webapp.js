@@ -82,6 +82,10 @@
                 break
             }
         },
+		updateLogging: function() {
+			window.logging = false
+			WSC.saveLogs()
+		},
         get_info: function() {
             return {
                 interfaces: this.interfaces,
@@ -282,6 +286,7 @@
             this.stopped = false
             this.starting = true
             this.change()
+			WSC.saveLogs()
 
             // need to setup some things
             if (this.interfaces.length == 0 && this.opts.optAllInterfaces) {
@@ -499,6 +504,7 @@
             var filename = request.path.split('/').pop()
             if (filename == 'wsc.htaccess') {
                 if ((request.method == 'GET' && ! this.opts.optGETHtaccess) ||
+					(request.method == 'HEAD' && ! this.opts.optGETHtaccess) ||
                     (request.method == 'PUT' && ! this.opts.optPUTPOSTHtaccess) ||
                     (request.method == 'POST' && ! this.opts.optPUTPOSTHtaccess) ||
                     (request.method == 'DELETE' && ! this.opts.optDELETEHtaccess)) {
@@ -779,9 +785,6 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             }
         },
         finish: function() {
-			if (document.getElementById('tempPOSThandler')) {
-				document.getElementById('tempPOSThandler').remove()
-			}
             if (! this.headersWritten) {
                 this.responseLength = 0
                 this.writeHeaders()

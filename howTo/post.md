@@ -84,7 +84,16 @@ Example:
 `res.contentType(type)`: function
 This function will set the content type to respond with, you could also use the `res.setHeader()` function
 
-TODO: function to write file
+`res.writeFile(path, data, allowReplaceFile, callback)`
+This function will save a file
+path: the path of the file
+data: string/arrayBuffer of the file. DO NOT SEND OTHER TYPES OF DATA - THIS COULD BREAK THE APP (Just refresh it)
+allowReplaceFile: if file exists and you want to replace the file, set this to true
+callback: function will be excecuted to tell you if there was an error or it will callback the file
+
+`res.httpCode(httpCode)`: function
+Call this to respond with no message. Dont forget to finish with `res.end()`
+
 
 req Commands
 

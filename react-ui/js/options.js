@@ -359,6 +359,24 @@ const options = {
   	label: 'Certificate string',
   	help: "String containg certificate, used in pair with private key string.\nEdit them in pairs",
   	type: String 
+  },
+  optSaveLogs: {
+	label: 'Save Logs To File',
+	help: 'All logs will be saved to a file',
+    type: Boolean,
+    default: false
+  },
+  optSaveLogsInterval: {
+	label: 'Save Logs Every _ minutes',
+	help: "Save Logs Every _ minutes. The higher, the less likely an error will happen",
+	type: Number,
+	default: 10
+  },
+  optSaveLogsFilename: {
+	label: 'Path to save log file',
+	help: "Where to save log file",
+	type: String,
+	default: '/wsc.log'
   }
 }
 

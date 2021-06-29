@@ -123,6 +123,18 @@ const functions = {
     console.assert(typeof val === 'string')
     app.webapp.updateOption('optAuthPassword', val);
   },
+  optSaveLogsFilename: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optSaveLogsFilename', val);
+  },
+  optSaveLogs: (app, k, val) => {
+	app.webapp.updateLogging()
+    app.webapp.updateOption('optSaveLogs', val);
+  },
+  optSaveLogsInterval: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optSaveLogsInterval', val);
+  },
   optPrivateKey: (app, k, val) => {
     //console.log('privateKey')
     console.assert(typeof val === 'string')
@@ -305,9 +317,16 @@ class App extends React.Component {
 	const optUploadOptions = {
 	  optAllowReplaceFile: ['optUpload']
 	};
-    const optnodothtmlMain = {
+	const optLogMain = {
       optDelete: null,
       optVerbose: null,
+      optSaveLogs: null
+	};
+	const optLogOptions = {
+      optSaveLogsFilename: ['optSaveLogs'],
+      optSaveLogsInterval: ['optSaveLogs']
+	};
+    const optnodothtmlMain = {
       optExcludeDotHtml: null
     };
     const optnodothtmlInfo = {
@@ -414,6 +433,7 @@ class App extends React.Component {
     const authMain = renderOpts(optAuthMain)
     const cacheMain = renderOpts(optCacheMain)
     const nodothtmlMain = renderOpts(optnodothtmlMain)
+	const logMain = renderOpts(optLogMain)
 	
     const HtaccessInfo = (() => {
       let disablezero = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
@@ -422,6 +442,12 @@ class App extends React.Component {
         {!disablezero && <Alert severity="info">For more info on how to use wsc.htaccess files, go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/howTo/HTACCESS.md" target="_blank">here</a></Alert>}
 	  </div>)];
     })();
+
+	const logInfo = (() => {
+		let disablelogasd = (!this.webapp || !this.webapp.opts.optSaveLogs);
+		const logsadge = renderOpts(optLogOptions)
+		return [(<div>{!disablelogasd && logsadge}</div>)];
+	})();
 
 	const UploadOption = (() => {
 		let disableoneasd = (!this.webapp || !this.webapp.opts.optUpload);
@@ -567,7 +593,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{UploadOption}{nodothtmlMain}{nodothtmlOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}{POSTFeatureInfo}</div> }
+          {state.showAdvanced && <div>{advOptions}{UploadOption}{logMain}{logInfo}{nodothtmlMain}{nodothtmlOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}{POSTFeatureInfo}</div> }
         </CardContent>
       </Card>
 

@@ -256,10 +256,11 @@
 												if (validFile) {
 													window.req = this.request
 													window.res = this
+													this.postRequestID = Math.round(Math.random()*100)
 													res.end = function() {
 														// We need to cleanup - Which is why we don't want the user to directly call res.finish()
-														if (document.getElementById('tempPOSThandler')) {
-															document.getElementById('tempPOSThandler').remove()
+														if (document.getElementById('tempPOSThandler' + this.postRequestID)) {
+															document.getElementById('tempPOSThandler' + this.postRequestID).remove()
 														}
 														delete this.postRequest
 														delete window.res
@@ -272,7 +273,7 @@
 													var blob = new Blob([file], {type : 'text/javascript'})
 													this.postRequest = document.createElement("script")
 													this.postRequest.src = URL.createObjectURL(blob)
-													this.postRequest.id = 'tempPOSThandler'
+													this.postRequest.id = 'tempPOSThandler' + this.postRequestID
 													document.body.appendChild(this.postRequest)
 												} else {
 													this.write('Keys do not match', 403)
@@ -1154,9 +1155,11 @@
         },
 		// everything from here to the end of the prototype are tools for server side post handling
 		getFile: function(path, callback) {
-			// did not expect this to still work :/
 			if (! path.startsWith('/')) {
-				path = WSC.utils.relativePath(path, WSC.utils.stripOffFile(this.request.origpath))
+				var path = WSC.utils.relativePath(path, WSC.utils.stripOffFile(this.request.origpath))
+			}
+			if (! callback) {
+				return
 			}
 			this.fs.getByPath(path, function(file) {
 				if (file.isDirectory) {
@@ -1175,6 +1178,86 @@
 				}
 				
 			}.bind(this))
+		},
+		writeFile: function(path, data, allowReplaceFile, callback) {
+			if (typeof data == "string") {
+				var data = new TextEncoder('utf-8').encode(data).buffer
+			}
+			if (! path.startsWith('/')) {
+				var path = WSC.utils.relativePath(path, WSC.utils.stripOffFile(this.request.origpath))
+			}
+			if (! callback) {
+				var callback = function(file) { }
+			}
+			var parts = path.split('/')
+			var folderPath = parts.slice(0,parts.length-1).join('/')
+			var filename = parts[parts.length-1]
+			this.fs.getByPath(path, function(file) {
+				if (file && file.error) {
+					app.fs.getByPath(folderPath, function(folder) {
+						folder.getFile(filename, {create:true}, function(entry) {
+							if (entry && entry.isFile) {
+								entry.createWriter(function(writer) {
+									writer.onwrite = writer.onerror = function() {
+										app.fs.getByPath(path, function(file) {
+											if (file && ! file.error) {
+												file.file(function(file) {
+													callback(file)
+												})
+											} else {
+												callback({error: 'Unknown Error'})
+											}
+										})
+									}
+									writer.write(new Blob([data]))
+								})
+							} else {
+								callback({error: 'Unknown Error'})
+							}
+						})
+					})
+				} else if (! file.isDirectory && allowReplaceFile) {
+					app.fs.getByPath(path, function(entry) {
+						entry.remove(function() {
+							app.fs.getByPath(folderPath, function(folder) {
+								folder.getFile(filename, {create:true}, function(entry) {
+									if (entry && entry.isFile) {
+										entry.createWriter(function(writer) {
+											writer.onwrite = writer.onerror = function() {
+												app.fs.getByPath(path, function(file) {
+													if (file && ! file.error) {
+														file.file(function(file) {
+															callback(file)
+														})
+													} else {
+														callback({error: 'Unknown Error'})
+													}
+												})
+											}
+											writer.write(new Blob([data]))
+										})
+									} else {
+										callback({error: 'Unknown Error'})
+									}
+								})
+							})
+						})
+					})
+				} else if (file.isDirectory) {
+					callback({error: 'entry is an existing directory. Deleting Directories not supported'})
+				} else {
+					callback({error: 'File already exists'})
+				}
+				
+				
+			})
+		},
+		httpCode: function(code) {
+			if (! code) {
+				code = 200
+			}
+            this.responseLength = 0
+            this.writeHeaders(code)
 		},
 		contentType: function(type) {
 			this.setHeader('content-type', type)

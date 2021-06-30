@@ -3,7 +3,7 @@
 
   <head>
 	<!-- for dev -->
-    <!--link rel="import" href="elements/elements.html">
+    <!--link rel="import" href="elements/elements.html"-->
 
 	<!-- for prod -->
     <link rel="import" href="build.html">
@@ -155,6 +155,9 @@
 				<div>
                   <paper-checkbox checked="{{optStatic}}" >Plain (static) files view</paper-checkbox>
                   <paper-tooltip offset="0">The files directory listing will not use any javascript</paper-tooltip>
+				</div>
+				<div>
+                  <paper-checkbox checked="{{optCached}}" >Use cached files for directory listing</paper-checkbox>
 				</div>
 				<div>
                   <paper-checkbox checked="{{optUpload}}" >Allow File upload (drag and drop)</paper-checkbox>

@@ -179,6 +179,11 @@ function create_polymer_elements() {
 				observer: 'optStaticChange',
                 value: appOptions.get('optStatic')
             },
+            optCached: {
+                type: Boolean,
+				observer: 'optCachedChange',
+                value: appOptions.options['optCached']
+            },
             optUpload: {
                 type: Boolean,
 				observer: 'optUploadChange',
@@ -255,6 +260,10 @@ function create_polymer_elements() {
         },
 		optStaticChange: function(val) {
 			var k = 'optStatic'
+			this.updateAndSave(k,val)
+		},
+		optCachedChange: function(val) {
+			var k = 'optCached'
 			this.updateAndSave(k,val)
 		},
 		optUploadChange: function(val) {

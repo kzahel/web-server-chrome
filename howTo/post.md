@@ -98,13 +98,16 @@ Call this to respond with no message. Dont forget to finish with `res.end()`
 <h2>Chunked encoding</h2>
 
 `res.writeChunk`: function
+This feature will send the data in chunks, instead of all at once.
+To enable, you must set the transfer-encoding header to chunked
+Like this: `res.setHeader('transfer-encoding','chunked')`
 
 Example:
 
 ```
 res.setHeader('transfer-encoding','chunked')
 res.contentType('text/html; charset=utf-8')
-res.writeHeaders(200) // 
+res.writeHeaders(200)
 res.writeChunk('This is Chunk number 1')
 res.writeChunk('\n\nAnd this is chunk number 2')
 res.writeChunk('\n\nAnd this is the last chunk')

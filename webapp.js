@@ -792,10 +792,10 @@ Changes with nginx 0.7.9                                         12 Aug 2008
                 this.responseLength = 0
                 this.writeHeaders()
             }
-			if (this.responseHeaders['transfer-encoding'] == 'chunked') {
+            if (this.responseHeaders['transfer-encoding'] == 'chunked') {
                 // chunked encoding needs this to work
-			    this.request.connection.write(WSC.str2ab('0\r\n\r\n'))
-			}
+                this.request.connection.write(WSC.str2ab('0\r\n\r\n'))
+            }
             if (this.beforefinish) { this.beforefinish() }
             this.request.connection.curRequest = null
             if (this.request.isKeepAlive() && ! this.request.connection.stream.remoteclosed) {

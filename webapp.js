@@ -82,10 +82,10 @@
                 break
             }
         },
-		updateLogging: function() {
-			window.logging = false
-			WSC.saveLogs()
-		},
+        updateLogging: function() {
+            window.logging = false
+            WSC.saveLogs()
+        },
         get_info: function() {
             return {
                 interfaces: this.interfaces,
@@ -192,8 +192,8 @@
             if (true || this.opts.optPreventSleep) {
                 if (WSC.VERBOSE)
                     console.log('trying release keep awake')
-				if (chrome.power)
-					chrome.power.releaseKeepAwake()
+                if (chrome.power)
+                    chrome.power.releaseKeepAwake()
             }
             // TODO: remove hidden.html ensureFirewallOpen
             // also - support multiple instances.
@@ -286,7 +286,7 @@
             this.stopped = false
             this.starting = true
             this.change()
-			WSC.saveLogs()
+            WSC.saveLogs()
 
             // need to setup some things
             if (this.interfaces.length == 0 && this.opts.optAllInterfaces) {
@@ -318,13 +318,13 @@
         onPortmapResult: function(result) {
             var gateway = this.upnp.validGateway
             console.log('portmap result',result,gateway)
-			if (result && ! result.error) {
-				if (gateway.device && gateway.device.externalIP) {
-					var extIP = gateway.device.externalIP
-					let prot = this.opts.optUseHttps ? 'https' : 'http';
-					this.extra_urls = [{url:prot+'://'+extIP+':' + this.port}]
-				}
-			}
+            if (result && ! result.error) {
+                if (gateway.device && gateway.device.externalIP) {
+                    var extIP = gateway.device.externalIP
+                    let prot = this.opts.optUseHttps ? 'https' : 'http';
+                    this.extra_urls = [{url:prot+'://'+extIP+':' + this.port}]
+                }
+            }
             this.onReady()
         },
         onReady: function() {
@@ -340,7 +340,7 @@
         },
         init_urls: function() {
             this.urls = [].concat(this.extra_urls)
-			let prot = this.opts.optUseHttps ? 'https' : 'http';
+            let prot = this.opts.optUseHttps ? 'https' : 'http';
             this.urls.push({url:prot+'://127.0.0.1:' + this.port})
             for (var i=0; i<this.interfaces.length; i++) {
                 var iface = this.interfaces[i]
@@ -367,14 +367,14 @@
                         this.sockInfo = m
                         this.port = m.localPort
                         callback({port:m.localPort})
-						return
+                        return
                     }
-					this.doTryListenOnPort(state, callback)
+                    this.doTryListenOnPort(state, callback)
                 }
             }.bind(this))
         },
         doTryListenOnPort: function(state, callback) {
-			var opts = this.opts.optBackground ? {name:"WSCListenSocket", persistent:true} : {}
+            var opts = this.opts.optBackground ? {name:"WSCListenSocket", persistent:true} : {}
             chrome.sockets.tcpServer.create(opts, this.onServerSocket.bind(this,state,callback))
         },
         onServerSocket: function(state,callback,sockInfo) {
@@ -504,14 +504,14 @@
             var filename = request.path.split('/').pop()
             if (filename == 'wsc.htaccess') {
                 if ((request.method == 'GET' && ! this.opts.optGETHtaccess) ||
-					(request.method == 'HEAD' && ! this.opts.optGETHtaccess) ||
+                    (request.method == 'HEAD' && ! this.opts.optGETHtaccess) ||
                     (request.method == 'PUT' && ! this.opts.optPUTPOSTHtaccess) ||
                     (request.method == 'POST' && ! this.opts.optPUTPOSTHtaccess) ||
                     (request.method == 'DELETE' && ! this.opts.optDELETEHtaccess)) {
-					var handler = new WSC.BaseHandler(request)
-					handler.app = this
-					handler.request = request
-					handler.error('<h1>400 - Bad Request</h1>', 400)
+                    var handler = new WSC.BaseHandler(request)
+                    handler.app = this
+                    handler.request = request
+                    handler.error('<h1>400 - Bad Request</h1>', 400)
                     return
                 }
             }
@@ -531,10 +531,10 @@
                 }
 
                 if (! validAuth) {
-					var handler = new WSC.BaseHandler(request)
-					handler.app = this
-					handler.request = request
-					handler.error("<h1>401 - Unauthorized</h1>", 401)
+                    var handler = new WSC.BaseHandler(request)
+                    handler.app = this
+                    handler.request = request
+                    handler.error("<h1>401 - Unauthorized</h1>", 401)
                     return
                 }
             }
@@ -614,62 +614,62 @@
             }
         },
         error: function(defaultMsg, httpCode) {
-			if (this.request.method == "HEAD") {
+            if (this.request.method == "HEAD") {
                 this.responseLength = 0
                 this.writeHeaders(httpCode)
                 this.finish()
-				return
+                return
             } else {
-				// We set the request.path to a .html file to override the mimetype of the requested file
-				this.setHeader('content-type','text/html; charset=utf-8')
-				if (this.app.opts['optCustom'+httpCode]) {
-					this.fs.getByPath(this.app.opts['optCustom'+httpCode+'location'], (file) => {
-						if (! file.error && file.isFile) {
-							file.file( function(file) {
-								var reader = new FileReader()
-								reader.onload = function(e) {
-									var data = e.target.result
-									if (httpCode == 404) {
-										if (this.app.opts.optCustom404usevar) {
-											if (this.app.opts.optCustom404usevarvar.replace(' ', '') != '') {
-												var data = '<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.uri+'";</script>\n' + data
-											} else {
-												this.write('javascript location variable is blank', 500)
-												this.finish()
-												return
-											}
-										}
-									}
-									if (httpCode == 401) {
-										this.setHeader("WWW-Authenticate", "Basic")
-									}
-									this.write(data, httpCode)
-									this.finish()
-								}.bind(this)
-								reader.readAsText(file)
-							}.bind(this))
-						} else {
-							if ([400,401,403,404].includes(httpCode)) {
-								this.write('Path of Custom '+httpCode+' html was not found. Custom '+httpCode+' is set to '+this.app.opts['optCustom'+httpCode+'location'], 500)
-								this.finish()
-							} else {
-								if (httpCode == 401) {
-									this.setHeader("WWW-Authenticate", "Basic")
-								}
-								this.write(defaultMsg, httpCode)
-								this.finish()
-							}
-						}
-					})
-				} else {
-					if (httpCode == 401) {
-						this.setHeader("WWW-Authenticate", "Basic")
-					}
-					this.write(defaultMsg, httpCode)
-					this.finish()
-				}
-			}
-		},
+                // We set the request.path to a .html file to override the mimetype of the requested file
+                this.setHeader('content-type','text/html; charset=utf-8')
+                if (this.app.opts['optCustom'+httpCode]) {
+                    this.fs.getByPath(this.app.opts['optCustom'+httpCode+'location'], (file) => {
+                        if (! file.error && file.isFile) {
+                            file.file( function(file) {
+                                var reader = new FileReader()
+                                reader.onload = function(e) {
+                                    var data = e.target.result
+                                    if (httpCode == 404) {
+                                        if (this.app.opts.optCustom404usevar) {
+                                            if (this.app.opts.optCustom404usevarvar.replace(' ', '') != '') {
+                                                var data = '<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.uri+'";</script>\n' + data
+                                            } else {
+                                                this.write('javascript location variable is blank', 500)
+                                                this.finish()
+                                                return
+                                            }
+                                        }
+                                    }
+                                    if (httpCode == 401) {
+                                        this.setHeader("WWW-Authenticate", "Basic")
+                                    }
+                                    this.write(data, httpCode)
+                                    this.finish()
+                                }.bind(this)
+                                reader.readAsText(file)
+                            }.bind(this))
+                        } else {
+                            if ([400,401,403,404].includes(httpCode)) {
+                                this.write('Path of Custom '+httpCode+' html was not found. Custom '+httpCode+' is set to '+this.app.opts['optCustom'+httpCode+'location'], 500)
+                                this.finish()
+                            } else {
+                                if (httpCode == 401) {
+                                    this.setHeader("WWW-Authenticate", "Basic")
+                                }
+                                this.write(defaultMsg, httpCode)
+                                this.finish()
+                            }
+                        }
+                    })
+                } else {
+                    if (httpCode == 401) {
+                        this.setHeader("WWW-Authenticate", "Basic")
+                    }
+                    this.write(defaultMsg, httpCode)
+                    this.finish()
+                }
+            }
+        },
         setCORS: function() {
             this.setHeader('access-control-allow-origin','*')
             this.setHeader('access-control-allow-methods','GET, POST, PUT, DELETE')
@@ -686,7 +686,7 @@
             return this.request.headers[k] || defaultvalue
         },
         setHeader: function(k,v) {
-			this.responseHeaders[k] = v
+            this.responseHeaders[k] = v
         },
         set_status: function(code) {
             console.assert(! this.headersWritten)
@@ -713,7 +713,7 @@
             }
 
             var p = this.request.path.split('.')
-			
+            
             if (p.length > 1 && ! this.isDirectoryListing && ! this.responseHeaders['content-type']) {
                 var ext = p[p.length-1].toLowerCase()
                 var type = WSC.MIMETYPES[ext]

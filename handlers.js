@@ -105,63 +105,63 @@
                 var htaccesspath = finalpath+'wsc.htaccess'
                 //console.log(htaccesspath)
                 this.fs.getByPath(htaccesspath, (file) => {
-					if (! file.error) {
-						file.file( function(filee) {
-							var reader = new FileReader();
-							reader.onload = function(e){
-								var dataa = e.target.result
-								try {
-									var origdata = JSON.parse(dataa)
-								} catch(e) {
-									this.responseLength = 0
-									this.writeHeaders(500)
-									this.finish()
-									return
-								}
-								var filerequested = this.request.origpath.split('/').pop();
-								var filefound = false
-								if (origdata.length == 0 || ! origdata.length) {
-									callback()
-									return
-								}
-								for (var i=0; i<origdata.length; i++) {
-									if (! origdata[i].type) {
-										this.htaccessError.bind(this)('missing type')
-										return
-									}
-									if (! origdata[i].request_path && origdata[i].type != 'directory listing') {
-										this.htaccessError.bind(this)('missing request path')
-										return
-									}
-									if ((origdata[i].type == allow && origdata[i].request_path == filerequested) ||
-										(origdata[i].type == allow && origdata[i].request_path == 'all files') ||
-										(origdata[i].type == deny && origdata[i].request_path == filerequested) ||
-										(origdata[i].type == deny && origdata[i].request_path == 'all files')) {
-										var data = origdata[i]
-										var filefound = true
-										break
-									}
-								}
-								//console.log(filefound)
-								if (filefound) {
-									if (data.type == allow) {
-										callbackSkip()
-									} else if (data.type == deny) {
-										this.responseLength = 0
-										this.writeHeaders(400)
-										this.finish()
-										return
-									}
-								} else {
-									callback()
-								}
-							}.bind(this)
-							reader.readAsText(filee)
-						}.bind(this))
-					} else {
-						callback()
-					}
-				})
+                    if (! file.error) {
+                        file.file( function(filee) {
+                            var reader = new FileReader();
+                            reader.onload = function(e){
+                                var dataa = e.target.result
+                                try {
+                                    var origdata = JSON.parse(dataa)
+                                } catch(e) {
+                                    this.responseLength = 0
+                                    this.writeHeaders(500)
+                                    this.finish()
+                                    return
+                                }
+                                var filerequested = this.request.origpath.split('/').pop();
+                                var filefound = false
+                                if (origdata.length == 0 || ! origdata.length) {
+                                    callback()
+                                    return
+                                }
+                                for (var i=0; i<origdata.length; i++) {
+                                    if (! origdata[i].type) {
+                                        this.htaccessError.bind(this)('missing type')
+                                        return
+                                    }
+                                    if (! origdata[i].request_path && origdata[i].type != 'directory listing') {
+                                        this.htaccessError.bind(this)('missing request path')
+                                        return
+                                    }
+                                    if ((origdata[i].type == allow && origdata[i].request_path == filerequested) ||
+                                        (origdata[i].type == allow && origdata[i].request_path == 'all files') ||
+                                        (origdata[i].type == deny && origdata[i].request_path == filerequested) ||
+                                        (origdata[i].type == deny && origdata[i].request_path == 'all files')) {
+                                        var data = origdata[i]
+                                        var filefound = true
+                                        break
+                                    }
+                                }
+                                //console.log(filefound)
+                                if (filefound) {
+                                    if (data.type == allow) {
+                                        callbackSkip()
+                                    } else if (data.type == deny) {
+                                        this.responseLength = 0
+                                        this.writeHeaders(400)
+                                        this.finish()
+                                        return
+                                    }
+                                } else {
+                                    callback()
+                                }
+                            }.bind(this)
+                            reader.readAsText(filee)
+                        }.bind(this))
+                    } else {
+                        callback()
+                    }
+                })
             } else {
                 callback()
             }
@@ -188,114 +188,114 @@
             }
             this.deletePutHtaccess('allow delete', 'deny delete', deleteCheck.bind(this), deleteMain.bind(this))
         },
-		post: function() {
+        post: function() {
             var htaccessPath = WSC.utils.stripOffFile(this.request.origpath)
-			this.fs.getByPath(htaccessPath + 'wsc.htaccess', function(file) {
-				if (file && ! file.error) {
-					file.file( function(file) {
-						var reader = new FileReader()
-						reader.onload = function(e){
-							try {
-								var origdata = JSON.parse(e.target.result)
-							} catch(e) {
-								this.write('Htaccess JSON parse error\n\nError: ' + e, 500)
-								this.finish()
-								return
-							}
-							if (origdata.length == 0 || ! origdata.length) {
-								this.write('htaccess has no length value', 500)
-								this.finish()
-								return
-							}
-							var filerequested = this.request.origpath.split('/').pop()
-							var filefound = false
-							for (var i=0; i<origdata.length; i++) {
-								if (! origdata[i].type) {
-									this.htaccessError.bind(this)('missing type')
-									return
-								}
-								if (! origdata[i].request_path && origdata[i].type != 'directory listing') {
-									this.htaccessError.bind(this)('missing request path')
-									return
-								}
-								if (origdata[i].request_path == filerequested && origdata[i].type == 'POSTkey' && ! filefound) {
-									var data = origdata[i]
-									var filefound = true
-									break
-								}
-							}
-							// Still need to validate POST key
-							if (filefound) {
-								if (! data.key) {
-									this.htaccessError.bind(this)('missing post key')
-									return
-								}
-								this.fs.getByPath(this.request.path, function(file) {
-									if (file && ! file.error) {
-										file.file(function(file) {
-											var reader = new FileReader()
-											reader.onload = function(e) {
-												var contents = e.target.result.split('\r\n')
-												var validFile = false
-												for (var i=0; i<contents.length; i++) {
-													if (contents[i].startsWith('\t')) {
-														contents[i] = contents[i].substring(1, contents[i].length)
-													}
-													// check multiple times ?
-													if (contents[i].startsWith('\t')) {
-														contents[i] = contents[i].substring(1, contents[i].length)
-													}
-													if (contents[i].startsWith('postKey')) {
-														var postkey = contents[i].split('=').pop().replace(' ', '').replace('"', '\'').replace('\'', '').replace('\'', '')
-														if (postkey == data.key) {
-															var validFile = true
-															break
-														}
-													}
-												}
-												if (validFile) {
-													window.req = this.request
-													window.res = this
-													this.postRequestID = Math.round(Math.random()*100)
-													res.end = function() {
-														// We need to cleanup - Which is why we don't want the user to directly call res.finish()
-														if (document.getElementById('tempPOSThandler' + this.postRequestID)) {
-															document.getElementById('tempPOSThandler' + this.postRequestID).remove()
-														}
-														delete this.postRequest
-														delete window.res
-														delete window.req
-														if (window.postKey) {
-															delete window.postKey
-														}
-														this.finish()
-													}
-													var blob = new Blob([file], {type : 'text/javascript'})
-													this.postRequest = document.createElement("script")
-													this.postRequest.src = URL.createObjectURL(blob)
-													this.postRequest.id = 'tempPOSThandler' + this.postRequestID
-													document.body.appendChild(this.postRequest)
-												} else {
-													this.write('Keys do not match', 403)
-												}
-											}.bind(this)
-											reader.readAsText(file)
-										}.bind(this))
-									} else {
-										this.write('file not found', 404)
-									}
-								}.bind(this))
-							} else {
-							this.put()
-							}
-						}.bind(this)
-						reader.readAsText(file)
-					}.bind(this))
-				} else {
-					this.put()
-				}
-			}.bind(this))
-		},
+            this.fs.getByPath(htaccessPath + 'wsc.htaccess', function(file) {
+                if (file && ! file.error) {
+                    file.file( function(file) {
+                        var reader = new FileReader()
+                        reader.onload = function(e){
+                            try {
+                                var origdata = JSON.parse(e.target.result)
+                            } catch(e) {
+                                this.write('Htaccess JSON parse error\n\nError: ' + e, 500)
+                                this.finish()
+                                return
+                            }
+                            if (origdata.length == 0 || ! origdata.length) {
+                                this.write('htaccess has no length value', 500)
+                                this.finish()
+                                return
+                            }
+                            var filerequested = this.request.origpath.split('/').pop()
+                            var filefound = false
+                            for (var i=0; i<origdata.length; i++) {
+                                if (! origdata[i].type) {
+                                    this.htaccessError.bind(this)('missing type')
+                                    return
+                                }
+                                if (! origdata[i].request_path && origdata[i].type != 'directory listing') {
+                                    this.htaccessError.bind(this)('missing request path')
+                                    return
+                                }
+                                if (origdata[i].request_path == filerequested && origdata[i].type == 'POSTkey' && ! filefound) {
+                                    var data = origdata[i]
+                                    var filefound = true
+                                    break
+                                }
+                            }
+                            // Still need to validate POST key
+                            if (filefound) {
+                                if (! data.key) {
+                                    this.htaccessError.bind(this)('missing post key')
+                                    return
+                                }
+                                this.fs.getByPath(this.request.path, function(file) {
+                                    if (file && ! file.error) {
+                                        file.file(function(file) {
+                                            var reader = new FileReader()
+                                            reader.onload = function(e) {
+                                                var contents = e.target.result.split('\r\n')
+                                                var validFile = false
+                                                for (var i=0; i<contents.length; i++) {
+                                                    if (contents[i].startsWith('\t')) {
+                                                        contents[i] = contents[i].substring(1, contents[i].length)
+                                                    }
+                                                    // check multiple times ?
+                                                    if (contents[i].startsWith('\t')) {
+                                                        contents[i] = contents[i].substring(1, contents[i].length)
+                                                    }
+                                                    if (contents[i].startsWith('postKey')) {
+                                                        var postkey = contents[i].split('=').pop().replace(' ', '').replace('"', '\'').replace('\'', '').replace('\'', '')
+                                                        if (postkey == data.key) {
+                                                            var validFile = true
+                                                            break
+                                                        }
+                                                    }
+                                                }
+                                                if (validFile) {
+                                                    window.req = this.request
+                                                    window.res = this
+                                                    this.postRequestID = Math.round(Math.random()*100)
+                                                    res.end = function() {
+                                                        // We need to cleanup - Which is why we don't want the user to directly call res.finish()
+                                                        if (document.getElementById('tempPOSThandler' + this.postRequestID)) {
+                                                            document.getElementById('tempPOSThandler' + this.postRequestID).remove()
+                                                        }
+                                                        delete this.postRequest
+                                                        delete window.res
+                                                        delete window.req
+                                                        if (window.postKey) {
+                                                            delete window.postKey
+                                                        }
+                                                        this.finish()
+                                                    }
+                                                    var blob = new Blob([file], {type : 'text/javascript'})
+                                                    this.postRequest = document.createElement("script")
+                                                    this.postRequest.src = URL.createObjectURL(blob)
+                                                    this.postRequest.id = 'tempPOSThandler' + this.postRequestID
+                                                    document.body.appendChild(this.postRequest)
+                                                } else {
+                                                    this.write('Keys do not match', 403)
+                                                }
+                                            }.bind(this)
+                                            reader.readAsText(file)
+                                        }.bind(this))
+                                    } else {
+                                        this.write('file not found', 404)
+                                    }
+                                }.bind(this))
+                            } else {
+                            this.put()
+                            }
+                        }.bind(this)
+                        reader.readAsText(file)
+                    }.bind(this))
+                } else {
+                    this.put()
+                }
+            }.bind(this))
+        },
         put: function() {
             function putMain() {
                 this.fs.getByPath(this.request.path, this.onPutEntry.bind(this), true)
@@ -329,11 +329,11 @@
                     }.bind(this)
                     entry.remove( onremove, onremove )
                 } else {
-					this.responseLength = 0
-					this.writeHeaders(400)
-					this.finish()
-					return
-				}
+                    this.responseLength = 0
+                    this.writeHeaders(400)
+                    this.finish()
+                    return
+                }
             }
         },
         onPutFolder: function(filename, folder) {
@@ -371,16 +371,16 @@
                 this.setHeader('Cache-Control',this.app.opts.optCacheControlValue)
             }
             if (this.app.opts.optExcludeDotHtml && ! this.request.origpath.endsWith("/")) {
-				var htmhtml = this.app.opts.optExcludeDotHtm ? 'htm' : 'html';
+                var htmhtml = this.app.opts.optExcludeDotHtm ? 'htm' : 'html';
                 var extension = this.request.path.split('.').pop();
                 var more = this.request.uri.split('.'+htmhtml).pop()
                 if (extension == htmhtml) {
                     var path = this.request.path
-					if (htmhtml == 'html') {
-						var newpath = path.substring(0, path.length - 5);
-					} else {
-						var newpath = path.substring(0, path.length - 4);
-					}
+                    if (htmhtml == 'html') {
+                        var newpath = path.substring(0, path.length - 5);
+                    } else {
+                        var newpath = path.substring(0, path.length - 4);
+                    }
                     if (more != this.request.uri) {
                         var newpath = newpath+more
                     }
@@ -461,13 +461,13 @@
             this.entry = entry
 
             function onEntryMain() {
-				
-				if (this.entry && this.entry.isFile && this.request.origpath.endsWith('/')) {
-					this.setHeader('location', this.request.path)
+                
+                if (this.entry && this.entry.isFile && this.request.origpath.endsWith('/')) {
+                    this.setHeader('location', this.request.path)
                     this.writeHeaders(301)
                     this.finish()
                     return
-				}
+                }
                 
                 if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
                     var newloc = this.request.origpath + '/'
@@ -484,9 +484,9 @@
                     return
                 }
                 if (! entry) {
-					this.error('no entry',404)
+                    this.error('no entry',404)
                 } else if (entry.error) {
-					this.error('entry not found: ' + (this.rewrite_to || this.request.path), 404)
+                    this.error('entry not found: ' + (this.rewrite_to || this.request.path), 404)
                 } else if (entry.isFile) {
                     this.renderFileContents(entry)
                 } else {
@@ -508,7 +508,7 @@
                             }
                         }
                         if (this.app.opts.optDir404 && this.app.opts.optRenderIndex) {
-							this.error("404 - File not found", 404)
+                            this.error("404 - File not found", 404)
                         } else if (this.request.arguments && this.request.arguments.json == '1' ||
                             (this.request.headers['accept'] && this.request.headers['accept'].toLowerCase() == 'application/json')
                            ) {
@@ -526,30 +526,30 @@
                 }
             }
 
-			function excludedothtmlcheck() {
-				if (this.app.opts.optExcludeDotHtml && this.request.path != '') {
-					if (this.app.opts.optExcludeDotHtm) {
-						var htmHtml = '.htm'
-					} else {
-						var htmHtml = '.html'
-					}
-					this.fs.getByPath(this.request.path+htmHtml, (file) => {
-					if (! file.error) {
-						if (this.request.origpath.endsWith("/")) {
-							onEntryMain.bind(this)()
-							return
-						}
-						this.renderFileContents(file)
-						//console.log('file found')
-						this.setHeader('content-type','text/html; charset=utf-8')
-						return
-					} else {
-						onEntryMain.bind(this)()
-						}
-					})} else {
-					onEntryMain.bind(this)()
-				}
-			}
+            function excludedothtmlcheck() {
+                if (this.app.opts.optExcludeDotHtml && this.request.path != '') {
+                    if (this.app.opts.optExcludeDotHtm) {
+                        var htmHtml = '.htm'
+                    } else {
+                        var htmHtml = '.html'
+                    }
+                    this.fs.getByPath(this.request.path+htmHtml, (file) => {
+                    if (! file.error) {
+                        if (this.request.origpath.endsWith("/")) {
+                            onEntryMain.bind(this)()
+                            return
+                        }
+                        this.renderFileContents(file)
+                        //console.log('file found')
+                        this.setHeader('content-type','text/html; charset=utf-8')
+                        return
+                    } else {
+                        onEntryMain.bind(this)()
+                        }
+                    })} else {
+                    onEntryMain.bind(this)()
+                }
+            }
         
             if (this.app.opts.optScanForHtaccess) {
                 var fullrequestpath = this.request.origpath
@@ -633,11 +633,11 @@
                                                 //console.log(data)
                                                 var filefound = true
                                         }
-										if (origdata[i].request_path == filerequested && origdata[i].type == 'POSTkey') {
-											var filefound = false
-											this.error('<h1>403 - Forbidden</h1>')
-											break
-										}
+                                        if (origdata[i].request_path == filerequested && origdata[i].type == 'POSTkey') {
+                                            var filefound = false
+                                            this.error('<h1>403 - Forbidden</h1>')
+                                            break
+                                        }
                                         //console.log(origdata[i].request_path == filerequested)
                                         if ((origdata[i].request_path == filerequested || origdata[i].request_path == 'all files') &&
                                             origdata[i].type == 'additional header') {
@@ -900,7 +900,7 @@
                                     } else {
                                         var htmHtml = '.html'
                                     }
-									var htmHtml = this.app.opts.optExcludeDotHtm ? '.htm' : 'html'
+                                    var htmHtml = this.app.opts.optExcludeDotHtm ? '.htm' : 'html'
                                     this.fs.getByPath(this.request.path+htmHtml, (file) => {
                                         if (! file.error) {
                                             if (this.request.origpath.endsWith("/")) {
@@ -958,7 +958,7 @@
         renderFileContents: function(entry, file) {
             getEntryFile(entry, function(file) {
                 if (file instanceof DOMException) {
-					this.error("File not found", 404)
+                    this.error("File not found", 404)
                 }
                 this.file = file
                 if (this.request.method == "HEAD") {
@@ -1046,7 +1046,7 @@
             }
             function DirRenderFinish() {
                 this.setHeader('content-type','text/html; charset=utf-8')
-				this.write(html.join('\n'))
+                this.write(html.join('\n'))
                 this.finish()
             }
             function sendFileList() {
@@ -1062,7 +1062,7 @@
                     var modifiedstr = WSC.utils.lastModifiedStr(file.modificationTime)
                     // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
                     if (rawname != 'wsc.htaccess') {
-						html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+                        html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
                     }
                     if (w != results.length - 1) {
                         w++
@@ -1080,16 +1080,16 @@
                     }
                 }.bind(this))
             }
-			var html = [WSC.template_data]
+            var html = [WSC.template_data]
             html.push('<script>start("'+this.request.origpath+'")</script>')
             if (this.request.origpath != '/') {
                 html.push('<script>onHasParentDirectory();</script>')
             }
             var w = 0
-			if (results.length == 0) {
-				DirRenderFinish.bind(this)()
-				return
-			}
+            if (results.length == 0) {
+                DirRenderFinish.bind(this)()
+                return
+            }
             sendFileList.bind(this, results)()
         },
         renderDirectoryListing: function(results) {
@@ -1128,8 +1128,8 @@
             }
 
         },
-		getDirContents: function(entry, callback) {
-   			var reader = entry.createReader()
+        getDirContents: function(entry, callback) {
+               var reader = entry.createReader()
             var allresults = []
             function onreaderr(evt) {
                 WSC.entryCache.unset(this.entry.filesystem.name + this.entry.fullPath)
@@ -1147,121 +1147,121 @@
             }
             reader.readEntries( onreadsuccess.bind(this),
                                 onreaderr.bind(this))
-		},
+        },
         htaccessError: function(errormsg) {
             this.write('Htaccess Configuration error. Please check to make sure that you are not missing some values.\n\nError Message: '+errormsg, 500)
             this.finish()
             return
         },
-		// everything from here to the end of the prototype are tools for server side post handling
-		getFile: function(path, callback) {
-			if (! path.startsWith('/')) {
-				var path = WSC.utils.relativePath(path, WSC.utils.stripOffFile(this.request.origpath))
-			}
-			if (! callback) {
-				return
-			}
-			this.fs.getByPath(path, function(file) {
-				if (file.isDirectory) {
-					// automatically get dir contents?
-					this.getDirContents(file, function(results) {
-						results.isDirectory = true
-						results.isFile = false
-						callback(results)
-					})
-				} else if (file && ! file.error) {
-					file.file(function(file) {
-						callback(file)
-					})
-				} else {
-					callback(file)
-				}
-				
-			}.bind(this))
-		},
-		writeFile: function(path, data, allowReplaceFile, callback) {
-			if (typeof data == "string") {
-				var data = new TextEncoder('utf-8').encode(data).buffer
-			}
-			if (! path.startsWith('/')) {
-				var path = WSC.utils.relativePath(path, WSC.utils.stripOffFile(this.request.origpath))
-			}
-			if (! callback) {
-				var callback = function(file) { }
-			}
-			var parts = path.split('/')
-			var folderPath = parts.slice(0,parts.length-1).join('/')
-			var filename = parts[parts.length-1]
-			this.fs.getByPath(path, function(file) {
-				if (file && file.error) {
-					app.fs.getByPath(folderPath, function(folder) {
-						folder.getFile(filename, {create:true}, function(entry) {
-							if (entry && entry.isFile) {
-								entry.createWriter(function(writer) {
-									writer.onwrite = writer.onerror = function() {
-										app.fs.getByPath(path, function(file) {
-											if (file && ! file.error) {
-												file.file(function(file) {
-													callback(file)
-												})
-											} else {
-												callback({error: 'Unknown Error'})
-											}
-										})
-									}
-									writer.write(new Blob([data]))
-								})
-							} else {
-								callback({error: 'Unknown Error'})
-							}
-						})
-					})
-				} else if (! file.isDirectory && allowReplaceFile) {
-					app.fs.getByPath(path, function(entry) {
-						entry.remove(function() {
-							app.fs.getByPath(folderPath, function(folder) {
-								folder.getFile(filename, {create:true}, function(entry) {
-									if (entry && entry.isFile) {
-										entry.createWriter(function(writer) {
-											writer.onwrite = writer.onerror = function() {
-												app.fs.getByPath(path, function(file) {
-													if (file && ! file.error) {
-														file.file(function(file) {
-															callback(file)
-														})
-													} else {
-														callback({error: 'Unknown Error'})
-													}
-												})
-											}
-											writer.write(new Blob([data]))
-										})
-									} else {
-										callback({error: 'Unknown Error'})
-									}
-								})
-							})
-						})
-					})
-				} else if (file.isDirectory) {
-					callback({error: 'entry is an existing directory. Deleting Directories not supported'})
-				} else {
-					callback({error: 'File already exists'})
-				}
-				
-				
-			})
-		},
-		httpCode: function(code) {
-			if (! code) {
-				code = 200
-			}
+        // everything from here to the end of the prototype are tools for server side post handling
+        getFile: function(path, callback) {
+            if (! path.startsWith('/')) {
+                var path = WSC.utils.relativePath(path, WSC.utils.stripOffFile(this.request.origpath))
+            }
+            if (! callback) {
+                return
+            }
+            this.fs.getByPath(path, function(file) {
+                if (file.isDirectory) {
+                    // automatically get dir contents?
+                    this.getDirContents(file, function(results) {
+                        results.isDirectory = true
+                        results.isFile = false
+                        callback(results)
+                    })
+                } else if (file && ! file.error) {
+                    file.file(function(file) {
+                        callback(file)
+                    })
+                } else {
+                    callback(file)
+                }
+                
+            }.bind(this))
+        },
+        writeFile: function(path, data, allowReplaceFile, callback) {
+            if (typeof data == "string") {
+                var data = new TextEncoder('utf-8').encode(data).buffer
+            }
+            if (! path.startsWith('/')) {
+                var path = WSC.utils.relativePath(path, WSC.utils.stripOffFile(this.request.origpath))
+            }
+            if (! callback) {
+                var callback = function(file) { }
+            }
+            var parts = path.split('/')
+            var folderPath = parts.slice(0,parts.length-1).join('/')
+            var filename = parts[parts.length-1]
+            this.fs.getByPath(path, function(file) {
+                if (file && file.error) {
+                    app.fs.getByPath(folderPath, function(folder) {
+                        folder.getFile(filename, {create:true}, function(entry) {
+                            if (entry && entry.isFile) {
+                                entry.createWriter(function(writer) {
+                                    writer.onwrite = writer.onerror = function() {
+                                        app.fs.getByPath(path, function(file) {
+                                            if (file && ! file.error) {
+                                                file.file(function(file) {
+                                                    callback(file)
+                                                })
+                                            } else {
+                                                callback({error: 'Unknown Error'})
+                                            }
+                                        })
+                                    }
+                                    writer.write(new Blob([data]))
+                                })
+                            } else {
+                                callback({error: 'Unknown Error'})
+                            }
+                        })
+                    }, true)
+                } else if (! file.isDirectory && allowReplaceFile) {
+                    app.fs.getByPath(path, function(entry) {
+                        entry.remove(function() {
+                            app.fs.getByPath(folderPath, function(folder) {
+                                folder.getFile(filename, {create:true}, function(entry) {
+                                    if (entry && entry.isFile) {
+                                        entry.createWriter(function(writer) {
+                                            writer.onwrite = writer.onerror = function() {
+                                                app.fs.getByPath(path, function(file) {
+                                                    if (file && ! file.error) {
+                                                        file.file(function(file) {
+                                                            callback(file)
+                                                        })
+                                                    } else {
+                                                        callback({error: 'Unknown Error'})
+                                                    }
+                                                })
+                                            }
+                                            writer.write(new Blob([data]))
+                                        })
+                                    } else {
+                                        callback({error: 'Unknown Error'})
+                                    }
+                                })
+                            }, true)
+                        })
+                    })
+                } else if (file.isDirectory) {
+                    callback({error: 'entry is an existing directory. Deleting Directories not supported'})
+                } else {
+                    callback({error: 'File already exists'})
+                }
+                
+                
+            }, true)
+        },
+        httpCode: function(code) {
+            if (! code) {
+                code = 200
+            }
             this.responseLength = 0
             this.writeHeaders(code)
-		},
-		contentType: function(type) {
-			this.setHeader('content-type', type)
-		}
+        },
+        contentType: function(type) {
+            this.setHeader('content-type', type)
+        }
     }, WSC.BaseHandler.prototype)
 
     //if (chrome.runtime.id == WSC.store_id || true) {

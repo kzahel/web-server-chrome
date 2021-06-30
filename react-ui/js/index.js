@@ -56,7 +56,7 @@ const functions = {
   optBackground: function(app, k, val) {
     const {webapp, bg} = app;
     console.log('background setting changed',val)
-		webapp.updateOption('optBackground',val)
+        webapp.updateOption('optBackground',val)
     // appOptions.set('optBackground', val)
     bg.backgroundSettingChange({'optBackground':val})
   },
@@ -68,24 +68,24 @@ const functions = {
   },
   optAutoStart: function(app, k, val) {
     const {bg, webapp} = app;
-		if (val) {
-			chrome.permissions.request({permissions:['background']}, function(result) {
-				console.log('request perm bg',result)
-				if (result) {
-					success()
-				}
-			})
-		} else {
-			chrome.permissions.remove({permissions:['background']}, function(result) {
-				console.log('drop perm bg',result)
-				success()
-			})
-		}
-		function success() {
-			console.log('persist setting start in background',val)
-			webapp.opts.optBackground = val
-			bg.backgroundSettingChange({'optBackground':val})
-		}
+        if (val) {
+            chrome.permissions.request({permissions:['background']}, function(result) {
+                console.log('request perm bg',result)
+                if (result) {
+                    success()
+                }
+            })
+        } else {
+            chrome.permissions.remove({permissions:['background']}, function(result) {
+                console.log('drop perm bg',result)
+                success()
+            })
+        }
+        function success() {
+            console.log('persist setting start in background',val)
+            webapp.opts.optBackground = val
+            bg.backgroundSettingChange({'optBackground':val})
+        }
   },
   optCacheControlValue: (app, k, val) => {
     console.assert(typeof val === 'string')
@@ -128,7 +128,7 @@ const functions = {
     app.webapp.updateOption('optSaveLogsFilename', val);
   },
   optSaveLogs: (app, k, val) => {
-	app.webapp.updateLogging()
+    app.webapp.updateLogging()
     app.webapp.updateOption('optSaveLogs', val);
   },
   optSaveLogsInterval: (app, k, val) => {
@@ -149,10 +149,10 @@ const functions = {
     console.log("useHttps", val);
     app.webapp.updateOption('optUseHttps', val);
     if (app.webapp.started) {
-	  // we must call the start function as a callback
+      // we must call the start function as a callback
       app.webapp.stop('https option changed', function() {
-		  app.webapp.start()
-	  });
+          app.webapp.start()
+      });
     }
   }
 };
@@ -250,9 +250,9 @@ class App extends React.Component {
     })
   }
   gen_crypto() {
-  	let reasonStr = this.webapp.opts.optPrivateKey ? "private key" :
-  	                   this.webapp.opts.optCertificate ? "certificate" : "";
-  	if (reasonStr) {
+      let reasonStr = this.webapp.opts.optPrivateKey ? "private key" :
+                         this.webapp.opts.optCertificate ? "certificate" : "";
+      if (reasonStr) {
       console.warn("Would overwrite existing " + reasonStr + ", erase it first\nMake sure to save a copy first");
       return;
     }
@@ -286,14 +286,14 @@ class App extends React.Component {
     else this.webapp.stop()
   }
   onChange(k, v) {
-		console.log('update and save',k,v)
-		this.webapp.updateOption(k,v) // also set on webapp.opts ?
+        console.log('update and save',k,v)
+        this.webapp.updateOption(k,v) // also set on webapp.opts ?
     // certain options require special manual handling (e.g. port has to set this.webapp.opts.port)
     if (functions[k]) {
       console.log('special handling for', k);
       functions[k](this, k, v)
     }
-		this.appOptions.set(k,v)
+        this.appOptions.set(k,v)
     this.setState({[k]:v})
   }
   render() {
@@ -314,18 +314,18 @@ class App extends React.Component {
       optStatic: null,
       optUpload: null,
     };
-	const optUploadOptions = {
-	  optAllowReplaceFile: ['optUpload']
-	};
-	const optLogMain = {
+    const optUploadOptions = {
+      optAllowReplaceFile: ['optUpload']
+    };
+    const optLogMain = {
       optDelete: null,
       optVerbose: null,
       optSaveLogs: null
-	};
-	const optLogOptions = {
+    };
+    const optLogOptions = {
       optSaveLogsFilename: ['optSaveLogs'],
       optSaveLogsInterval: ['optSaveLogs']
-	};
+    };
     const optnodothtmlMain = {
       optExcludeDotHtml: null
     };
@@ -360,19 +360,19 @@ class App extends React.Component {
     const optCustom401Info = {
       optCustom401location: ['optCustom401']
     };
-	const optAuthMain = {
-	  optUsebasicauth: null
-	};
-	const optAuthOptions = {
-	  optAuthUsername: ['optUsebasicauth'],
-	  optAuthPassword: ['optUsebasicauth']
-	};
-	const optCacheMain = {
-	  optCacheControl: null
-	};
-	const optCacheOptions = {
-	  optCacheControlValue: ['optCacheControl']
-	};
+    const optAuthMain = {
+      optUsebasicauth: null
+    };
+    const optAuthOptions = {
+      optAuthUsername: ['optUsebasicauth'],
+      optAuthPassword: ['optUsebasicauth']
+    };
+    const optCacheMain = {
+      optCacheControl: null
+    };
+    const optCacheOptions = {
+      optCacheControlValue: ['optCacheControl']
+    };
     const optHtaccess = {
       optScanForHtaccess: null
     };
@@ -433,27 +433,27 @@ class App extends React.Component {
     const authMain = renderOpts(optAuthMain)
     const cacheMain = renderOpts(optCacheMain)
     const nodothtmlMain = renderOpts(optnodothtmlMain)
-	const logMain = renderOpts(optLogMain)
-	
+    const logMain = renderOpts(optLogMain)
+    
     const HtaccessInfo = (() => {
       let disablezero = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
       const htaccesstextbox = renderOpts(optHtaccessOptions)
       return [(<div style={{paddingLeft: 20}}>{!disablezero && htaccesstextbox}
         {!disablezero && <Alert severity="info">For more info on how to use wsc.htaccess files, go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/howTo/HTACCESS.md" target="_blank">here</a></Alert>}
-	  </div>)];
+      </div>)];
     })();
 
-	const logInfo = (() => {
-		let disablelogasd = (!this.webapp || !this.webapp.opts.optSaveLogs);
-		const logsadge = renderOpts(optLogOptions)
-		return [(<div>{!disablelogasd && logsadge}</div>)];
-	})();
+    const logInfo = (() => {
+        let disablelogasd = (!this.webapp || !this.webapp.opts.optSaveLogs);
+        const logsadge = renderOpts(optLogOptions)
+        return [(<div>{!disablelogasd && logsadge}</div>)];
+    })();
 
-	const UploadOption = (() => {
-		let disableoneasd = (!this.webapp || !this.webapp.opts.optUpload);
-		const uploadasd = renderOpts(optUploadOptions)
-		return [(<div>{!disableoneasd && uploadasd}</div>)];
-	})();
+    const UploadOption = (() => {
+        let disableoneasd = (!this.webapp || !this.webapp.opts.optUpload);
+        const uploadasd = renderOpts(optUploadOptions)
+        return [(<div>{!disableoneasd && uploadasd}</div>)];
+    })();
 
     const Custom403Options = (() => {
       let disableone = (!this.webapp || !this.webapp.opts.optCustom403);
@@ -516,19 +516,19 @@ class App extends React.Component {
       return [(<div style={{paddingLeft: 20}}>{!disable && textBoxes}
         {hasCrypto && !disable && <Alert severity="info">To regenerate, remove key and cert. Be sure to take a copy first, for possible later use!</Alert>}
         {!disable && <Button variant="contained" key="crytobtn" disabled={hasCrypto  ? true : false} onClick={e => {
-				  e.preventDefault();
-				  this.gen_crypto();
-				}}>Generate crypto</Button>}
-	  </div>)];
+                  e.preventDefault();
+                  this.gen_crypto();
+                }}>Generate crypto</Button>}
+      </div>)];
     })();
-	
-	const POSTFeatureInfo = (() => {
-		return [(<div>
-					{<Alert severity="info">Server Side POST requests are now supported. Go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/howTo/post.md" target="_blank">here</a> to learn how to use this feature</Alert>}
-				</div>)];
-		
-		
-	})();
+    
+    const POSTFeatureInfo = (() => {
+        return [(<div>
+                    {<Alert severity="info">Server Side POST requests are now supported. Go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/howTo/post.md" target="_blank">here</a> to learn how to use this feature</Alert>}
+                </div>)];
+        
+        
+    })();
 
     const {state} = this;
     return (<div>

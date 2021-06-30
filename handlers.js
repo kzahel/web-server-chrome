@@ -239,7 +239,7 @@
                                                 var validFile = false
                                                 for (var i=0; i<contents.length; i++) {
                                                     if (contents[i].replaceAll) { // replaceAll requires chrome 85 or newer - But is more efficent
-                                                        contents[i] = contents[i].replaceAll('\t', '').replaceAll('\n', '')
+                                                        contents[i] = contents[i].replaceAll('\t', '').replaceAll('\n', '').replaceAll('\r', '')
                                                         if (contents[i].startsWith('postKey')) {
                                                             var postkey = contents[i].split('=').pop().replaceAll(' ', '').replaceAll('"', '\'').replaceAll('\'', '')
                                                             if (postkey == data.key) {
@@ -248,7 +248,7 @@
                                                             }
                                                         }
                                                     } else {
-                                                        contents[i] = contents[i].replace('\t', ' ').replace('\t', ' ').replace('\t', ' ')
+                                                        contents[i] = contents[i].replace('\t', ' ').replace('\t', ' ').replace('\t', ' ').replace('\r', '').replace('\r', '').replace('\r', '').replace('\n', '').replace('\n', '').replace('\n', '')
                                                         if (contents[i].startsWith('postKey')) {
                                                             var postkey = contents[i].split('=').pop().replace(' ', '').replace(' ', '').replace(' ', '').replace('"', '\'').replace('"', '\'').replace('"', '\'').replace('\'', '').replace('\'', '').replace('\'', '')
                                                             if (postkey == data.key) {

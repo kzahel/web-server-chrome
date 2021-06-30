@@ -125,6 +125,7 @@ const functions = {
   },
   optSaveLogsFilename: (app, k, val) => {
     console.assert(typeof val === 'string')
+    app.webapp.updateLogging()
     app.webapp.updateOption('optSaveLogsFilename', val);
   },
   optSaveLogs: (app, k, val) => {
@@ -133,6 +134,7 @@ const functions = {
   },
   optSaveLogsInterval: (app, k, val) => {
     console.assert(typeof val === 'string')
+    app.webapp.updateLogging()
     app.webapp.updateOption('optSaveLogsInterval', val);
   },
   optPrivateKey: (app, k, val) => {

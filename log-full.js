@@ -106,11 +106,7 @@
                                                 folder.getFile(filename, {create:true}, function(entry) {
                                                     if (entry && entry.isFile) {
                                                         entry.createWriter(function(writer) {
-                                                            writer.onwrite = writer.onerror = function() {
-                                                                if (WSC.DEBUG) {
-                                                                    console.log('saved logs to ' + saveTo)
-                                                                }
-                                                            }
+                                                            writer.onwrite = writer.onerror = function() { }
                                                             writer.write(new Blob([data]))
                                                         })
                                                     }
@@ -146,11 +142,7 @@
                                 folder.getFile(filename, {create:true}, function(entry) {
                                     if (entry && entry.isFile) {
                                         entry.createWriter(function(writer) {
-                                            writer.onwrite = writer.onerror = function() {
-                                                if (WSC.DEBUG) {
-                                                    console.log('saved logs to ' + saveTo)
-                                                }
-                                            }
+                                            writer.onwrite = writer.onerror = function() { }
                                             writer.write(new Blob([data]))
                                         })
                                     }
@@ -159,10 +151,6 @@
                             
                         }
                     }, true)
-                } else {
-                    if (WSC.DEBUG) {
-                        console.log('no logs to save!')
-                    }
                 }
             }
         }

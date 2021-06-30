@@ -754,6 +754,9 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             this.request.connection.write(headerstr, callback)
         },
         writeChunk: function(data) {
+            if (typeof data == "string") {
+                data = new TextEncoder('utf-8').encode(data).buffer
+            }
             console.assert( data.byteLength !== undefined )
             var chunkheader = data.byteLength.toString(16) + '\r\n'
             //console.log('write chunk',[chunkheader])
@@ -789,6 +792,10 @@ Changes with nginx 0.7.9                                         12 Aug 2008
                 this.responseLength = 0
                 this.writeHeaders()
             }
+			if (this.responseHeaders['transfer-encoding'] == 'chunked') {
+                // chunked encoding needs this to work
+			    this.request.connection.write(WSC.str2ab('0\r\n\r\n'))
+			}
             if (this.beforefinish) { this.beforefinish() }
             this.request.connection.curRequest = null
             if (this.request.isKeepAlive() && ! this.request.connection.stream.remoteclosed) {

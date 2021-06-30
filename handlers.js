@@ -235,21 +235,26 @@
                                         file.file(function(file) {
                                             var reader = new FileReader()
                                             reader.onload = function(e) {
-                                                var contents = e.target.result.split('\r\n')
+                                                var contents = e.target.result.split('\n')
                                                 var validFile = false
                                                 for (var i=0; i<contents.length; i++) {
-                                                    if (contents[i].startsWith('\t')) {
-                                                        contents[i] = contents[i].substring(1, contents[i].length)
-                                                    }
-                                                    // check multiple times ?
-                                                    if (contents[i].startsWith('\t')) {
-                                                        contents[i] = contents[i].substring(1, contents[i].length)
-                                                    }
-                                                    if (contents[i].startsWith('postKey')) {
-                                                        var postkey = contents[i].split('=').pop().replace(' ', '').replace('"', '\'').replace('\'', '').replace('\'', '')
-                                                        if (postkey == data.key) {
-                                                            var validFile = true
-                                                            break
+                                                    if (contents[i].replaceAll) { // replaceAll requires chrome 85 or newer - But is more efficent
+                                                        contents[i] = contents[i].replaceAll('\t', '').replaceAll('\n', '')
+                                                        if (contents[i].startsWith('postKey')) {
+                                                            var postkey = contents[i].split('=').pop().replaceAll(' ', '').replaceAll('"', '\'').replaceAll('\'', '')
+                                                            if (postkey == data.key) {
+                                                                var validFile = true
+                                                                break
+                                                            }
+                                                        }
+                                                    } else {
+                                                        contents[i] = contents[i].replace('\t', ' ').replace('\t', ' ').replace('\t', ' ')
+                                                        if (contents[i].startsWith('postKey')) {
+                                                            var postkey = contents[i].split('=').pop().replace(' ', '').replace(' ', '').replace(' ', '').replace('"', '\'').replace('"', '\'').replace('"', '\'').replace('\'', '').replace('\'', '').replace('\'', '')
+                                                            if (postkey == data.key) {
+                                                                var validFile = true
+                                                                break
+                                                            }
                                                         }
                                                     }
                                                 }

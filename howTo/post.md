@@ -7,10 +7,11 @@
 <br>
 <p>As a security feature, you must have the request path and a key programed in a wsc.htaccess file and in the js file.</p>
 <p>You do not need to have htaccess enabled, this does not enable htaccess. It is just easier to keep everything in 1 place</p>
+<p>It is recommended to have the log to file function on, so it is easier to see if something goes wrong</p>
 <br><br>
 <h2>Writing the htaccess file</h2>
 <p>The file needs to be in the same path as the requested file</p>
-<p>The file name should be wsc.htaccess (case sensitive)
+<p>The file name should be wsc.htaccess (case sensitive)</p>
 <p>Example:</p>
 
 ```
@@ -18,7 +19,7 @@
     {
         "type": "POSTkey",
         "request_path": "index.js",
-		"key": "wa4e76yhefy54t4a"
+        "key": "wa4e76yhefy54t4a"
     }
 ]
 ```
@@ -43,13 +44,13 @@ Indenting this line may cause for the server to not find this line and in result
 
 Example:
 ```
-res.contentType('text/plain')
-res.write('test')
-res.end()
+res.contentType('text/plain') // ALWAYS set the headers first
+res.write('test') // THEN send the data
+res.end() // THEN end the request
 ```
 res contains all the functions to respond, while req contains all the request information
 
-res Commands
+<h1>res Commands</h1>
 
 `res.end()`: function
 This function MUST be called at the end of the file. If called before finished processing, the server will cut off your script
@@ -94,8 +95,23 @@ callback: function will be excecuted to tell you if there was an error or it wil
 `res.httpCode(httpCode)`: function
 Call this to respond with no message. Dont forget to finish with `res.end()`
 
+<h2>Chunked encoding</h2>
 
-req Commands
+`res.writeChunk`: function
+
+Example:
+
+```
+res.setHeader('transfer-encoding','chunked')
+res.contentType('text/html; charset=utf-8')
+res.writeHeaders(200) // 
+res.writeChunk('This is Chunk number 1')
+res.writeChunk('\n\nAnd this is chunk number 2')
+res.writeChunk('\n\nAnd this is the last chunk')
+res.end() // VERY IMPORTANT (as always)
+```
+
+<h1>req Commands</h1>
 
 `req.body`: ArrayBuffer
 This is an array buffer of the request body, if there is no request body, the value will be null.

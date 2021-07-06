@@ -133,6 +133,11 @@
                                         this.htaccessError.bind(this)('missing request path')
                                         return
                                     }
+                                    if ((origdata[i].request_path == filerequested && origdata[i].type == 'POSTkey') ||
+                                        (origdata[i].request_path == filerequested && origdata[i].type == 'serverSideJavaScript')) {
+                                        this.error('bad request', 403)
+                                        return
+                                    }
                                     if ((origdata[i].type == allow && origdata[i].request_path == filerequested) ||
                                         (origdata[i].type == allow && origdata[i].request_path == 'all files') ||
                                         (origdata[i].type == deny && origdata[i].request_path == filerequested) ||
@@ -238,30 +243,20 @@
                                                 var contents = e.target.result.split('\n')
                                                 var validFile = false
                                                 for (var i=0; i<contents.length; i++) {
-                                                    if (contents[i].replaceAll) { // replaceAll requires chrome 85 or newer - But is more efficent
-                                                        contents[i] = contents[i].replaceAll('\t', '').replaceAll('\n', '').replaceAll('\r', '')
-                                                        if (contents[i].startsWith('postKey')) {
-                                                            var postkey = contents[i].split('=').pop().replaceAll(' ', '').replaceAll('"', '\'').replaceAll('\'', '')
-                                                            if (postkey == data.key) {
-                                                                var validFile = true
-                                                                break
-                                                            }
-                                                        }
-                                                    } else {
-                                                        contents[i] = contents[i].replace('\t', ' ').replace('\t', ' ').replace('\t', ' ').replace('\r', '').replace('\r', '').replace('\r', '').replace('\n', '').replace('\n', '').replace('\n', '')
-                                                        if (contents[i].startsWith('postKey')) {
-                                                            var postkey = contents[i].split('=').pop().replace(' ', '').replace(' ', '').replace(' ', '').replace('"', '\'').replace('"', '\'').replace('"', '\'').replace('\'', '').replace('\'', '').replace('\'', '')
-                                                            if (postkey == data.key) {
-                                                                var validFile = true
-                                                                break
-                                                            }
+                                                    contents[i] = contents[i].replaceAll('\t', '').replaceAll('\n', '').replaceAll('\r', '')
+                                                    if (contents[i].startsWith('postKey')) {
+                                                        var postkey = contents[i].split('=').pop().replaceAll(' ', '').replaceAll('"', '').replaceAll('\'', '')
+                                                        if (postkey == data.key) {
+                                                            var validFile = true
+                                                            break
                                                         }
                                                     }
                                                 }
                                                 if (validFile) {
                                                     window.req = this.request
                                                     window.res = this
-                                                    this.postRequestID = Math.round(Math.random()*100)
+                                                    window.httpRequest = WSC.ChromeSocketXMLHttpRequest
+                                                    this.postRequestID = Math.random().toString()
                                                     res.end = function() {
                                                         // We need to cleanup - Which is why we don't want the user to directly call res.finish()
                                                         if (document.getElementById('tempPOSThandler' + this.postRequestID)) {
@@ -270,6 +265,7 @@
                                                         delete this.postRequest
                                                         delete window.res
                                                         delete window.req
+                                                        delete window.httpRequest
                                                         if (window.postKey) {
                                                             delete window.postKey
                                                         }
@@ -291,13 +287,13 @@
                                     }
                                 }.bind(this))
                             } else {
-                            this.put()
+                                this.write('file not found', 404)
                             }
                         }.bind(this)
                         reader.readAsText(file)
                     }.bind(this))
                 } else {
-                    this.put()
+                    this.write('file not found', 404)
                 }
             }.bind(this))
         },
@@ -633,7 +629,8 @@
                                             origdata[i].type != 401 &&
                                             origdata[i].type != 'directory listing' &&
                                             origdata[i].type != 'additional header' &&
-                                            origdata[i].type != 'send directory contents') {
+                                            origdata[i].type != 'send directory contents' &&
+                                            origdata[i].type != 'POSTkey') {
                                                 var data = origdata[i]
                                                 //console.log(data)
                                                 var filefound = true
@@ -690,222 +687,273 @@
 
                                                 this.getDirContents(entry, finished.bind(this))
 
-                                                } else if (data.type == 'send directory contents') {
-                                                    if (! data.dir_to_send || data.dir_to_send.replace(' ', '') == '') {
-                                                        data.dir_to_send = './'
-                                                    }
-                                                    function finished(results) {
-                                                        var fullrequestpath = this.request.origpath
-                                                        var finpath = fullrequestpath.split('/').pop();
-                                                        var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length) + data.original_request_path
-                                                        //console.log(filepath)
-                                                        this.fs.getByPath(finalpath, (file) => {
-                                                            if (! file.error && file.isFile) {
-                                                                file.file( function(file) {
-                                                                    var reader = new FileReader();
-                                                                    reader.onload = function(e){
-                                                                        function finish() {
-                                                                            var data = html.join('\n')
-                                                                            this.setHeader('content-type','text/html; charset=utf-8')
-                                                                            this.write(data, 200)
-                                                                            this.finish()
-                                                                        }
-                                                                        function sendFile() {
-                                                                            results[i].getMetadata(function(filee) {
-                                                                                var rawname = results[i].name
-                                                                                var name = encodeURIComponent(results[i].name)
-                                                                                var isdirectory = results[i].isDirectory
-                                                                                var filesize = filee.size
-                                                                                var modified = WSC.utils.lastModified(filee.modificationTime)
-                                                                                var filesizestr = WSC.utils.humanFileSize(filee.size)
-                                                                                var modifiedstr = WSC.utils.lastModifiedStr(filee.modificationTime)
-                                                                                if (rawname != 'wsc.htaccess') {
-                                                                                    html.push('<script>addRow("'+rawname+'", "'+name+'", '+isdirectory+', '+filesize+', "'+filesizestr+'", '+modified+', "'+modifiedstr+'")</script>')
-                                                                                }
-                                                                                if (i != results.length - 1) {
-                                                                                    i++
-                                                                                    sendFile.bind(this, results)()
-                                                                                } else {
-                                                                                    finish.bind(this, results)()
-                                                                                }
-                                                                            }.bind(this), function(error) {
-                                                                                console.error('error reading metadata '+error)
-                                                                                if (i != results.length - 1) {
-                                                                                    i++
-                                                                                    sendFileList.bind(this, results)()
-                                                                                } else {
-                                                                                    DirRenderFinish.bind(this, results)()
-                                                                                }
-                                                                            }.bind(this))
-                                                                        }
-                                                                        var html = [e.target.result]
-                                                                        var i = 0
-                                                                        sendFile.bind(this, results)()
-                                                                    }.bind(this)
-                                                                    reader.readAsText(file)
-                                                                }.bind(this))
-                                                            } else {
-                                                                this.write('An unexpected error occured. Please check your wsc.htaccess file for any configuration errors.\nPlease remember, the send directory listing feature CANNOT use "all files", you must specify each file separately.\nPlease check your settings. If everything seems to be in place, please report an issue on github.\n\nhttps://github.com/kzahel/web-server-chrome\n\nPlease copy and paste the following information.\n\n\nfilepath: '+filepath+'\nrequestURI: '+this.request.uri+'\nrequested file (according to htaccess): '+data.original_request_path+'\nrequested file (according to requestURI): '+data.filerequested, 500)
-                                                                this.finish()
-                                                            }
-                                                        })
-                                                    }
-                                                    var path2Send = data.dir_to_send
+                                            } else if (data.type == 'send directory contents') {
+                                                if (! data.dir_to_send || data.dir_to_send.replace(' ', '') == '') {
+                                                    data.dir_to_send = './'
+                                                }
+                                                function finished(results) {
                                                     var fullrequestpath = this.request.origpath
                                                     var finpath = fullrequestpath.split('/').pop();
-                                                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
-                                                    if (this.request.path == '') {
-                                                        var finalpath = '/'
-                                                    }
-                                                    var split1 = finalpath.split('/')
-                                                    var split2 = path2Send.split('/')
-                                                    
-                                                    if (! path2Send.startsWith('/')) {
-                                                        for (var w=0; w<split2.length; w++) {
-                                                            if (split2[w] == '' || split2[w] == '.') {
-                                                                // . means current directory. Leave this here for spacing
-                                                            } else if (split2[w] == '..') {
-                                                                if (split1.length > 0) {
-                                                                    var split1 = split1.splice(-1,1)
-                                                                }
-                                                            } else {
-                                                                split1.push(split2[w])
-                                                            }
-                                                        }
-                                                        var path2Send = split1.join('/')
-                                                        if (! path2Send.startsWith('/')) {
-                                                            var path2Send = '/' + path2Send
-                                                        }
-                                                    }
-                                                    
-                                                    //console.log(finalpath)
-                                                    //console.log(data)
-                                                    this.fs.getByPath(path2Send, function(entryy) {
-                                                        if (! entry.error) {
-                                                            this.getDirContents(entryy, finished.bind(this))
+                                                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length) + data.original_request_path
+                                                    //console.log(filepath)
+                                                    this.fs.getByPath(finalpath, (file) => {
+                                                        if (! file.error && file.isFile) {
+                                                            file.file( function(file) {
+                                                                var reader = new FileReader();
+                                                                reader.onload = function(e){
+                                                                    function finish() {
+                                                                        var data = html.join('\n')
+                                                                        this.setHeader('content-type','text/html; charset=utf-8')
+                                                                        this.write(data, 200)
+                                                                        this.finish()
+                                                                    }
+                                                                    function sendFile() {
+                                                                        results[i].getMetadata(function(filee) {
+                                                                            var rawname = results[i].name
+                                                                            var name = encodeURIComponent(results[i].name)
+                                                                            var isdirectory = results[i].isDirectory
+                                                                            var filesize = filee.size
+                                                                            var modified = WSC.utils.lastModified(filee.modificationTime)
+                                                                            var filesizestr = WSC.utils.humanFileSize(filee.size)
+                                                                            var modifiedstr = WSC.utils.lastModifiedStr(filee.modificationTime)
+                                                                            if (rawname != 'wsc.htaccess') {
+                                                                                html.push('<script>addRow("'+rawname+'", "'+name+'", '+isdirectory+', '+filesize+', "'+filesizestr+'", '+modified+', "'+modifiedstr+'")</script>')
+                                                                            }
+                                                                            if (i != results.length - 1) {
+                                                                                i++
+                                                                                sendFile.bind(this, results)()
+                                                                            } else {
+                                                                                finish.bind(this, results)()
+                                                                            }
+                                                                        }.bind(this), function(error) {
+                                                                            console.error('error reading metadata '+error)
+                                                                            if (i != results.length - 1) {
+                                                                                i++
+                                                                                sendFileList.bind(this, results)()
+                                                                            } else {
+                                                                                DirRenderFinish.bind(this, results)()
+                                                                            }
+                                                                        }.bind(this))
+                                                                    }
+                                                                    var html = [e.target.result]
+                                                                    var i = 0
+                                                                    sendFile.bind(this, results)()
+                                                                }.bind(this)
+                                                                reader.readAsText(file)
+                                                            }.bind(this))
                                                         } else {
-                                                            this.htaccessError.bind(this)('invalid path to send dir contents')
+                                                            this.write('An unexpected error occured. Please check your wsc.htaccess file for any configuration errors.\nPlease remember, the send directory listing feature CANNOT use "all files", you must specify each file separately.\nPlease check your settings. If everything seems to be in place, please report an issue on github.\n\nhttps://github.com/kzahel/web-server-chrome\n\nPlease copy and paste the following information.\n\n\nfilepath: '+filepath+'\nrequestURI: '+this.request.uri+'\nrequested file (according to htaccess): '+data.original_request_path+'\nrequested file (according to requestURI): '+data.filerequested, 500)
+                                                            this.finish()
                                                         }
-                                                    }.bind(this))
-                                                } else if (data.type == 'versioning') {
-                                                    //console.log('versioning')
-                                                    if (! data.version_data || data.version_data.length == 0) {
-                                                        this.htaccessError.bind(this)('missing version data')
-                                                        return
-                                                    }
-                                                    if (! data.variable) {
-                                                        this.htaccessError.bind(this)('missing variable')
-                                                        return
-                                                    }
-                                                    if (! data.default) {
-                                                        this.htaccessError.bind(this)('missing default file selection')
-                                                        return
-                                                    }
-                                                    var versionData = data.version_data
-                                                    var vdata4 = this.request.arguments[data.variable]
-                                                    if ( ! versionData[vdata4]) {
-                                                        vdata4 = data.default
-                                                    }
-                                                    var vdataa = versionData[vdata4]
-                                                    var fullrequestpath = this.request.origpath
-                                                    var finpath = fullrequestpath.split('/').pop();
-                                                    var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
-                                                    if (this.request.path == '') {
-                                                        var finalpath = '/'
-                                                    }
-                                                    var split1 = finalpath.split('/')
-                                                    var split2 = vdataa.split('/')
-                                                    if (! vdataa.startsWith('/')) {
-                                                        for (var w=0; w<split2.length; w++) {
-                                                            if (split2[w] == '' || split2[w] == '.') {
-                                                                // . means current directory. Leave this here for spacing
-                                                            } else if (split2[w] == '..') {
-                                                                if (split1.length > 0) {
-                                                                    var split1 = split1.splice(-1,1)
-                                                                }
-                                                            } else {
-                                                                split1.push(split2[w])
+                                                    })
+                                                }
+                                                var path2Send = data.dir_to_send
+                                                var fullrequestpath = this.request.origpath
+                                                var finpath = fullrequestpath.split('/').pop();
+                                                var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
+                                                if (this.request.path == '') {
+                                                    var finalpath = '/'
+                                                }
+                                                var split1 = finalpath.split('/')
+                                                var split2 = path2Send.split('/')
+                                                
+                                                if (! path2Send.startsWith('/')) {
+                                                    for (var w=0; w<split2.length; w++) {
+                                                        if (split2[w] == '' || split2[w] == '.') {
+                                                            // . means current directory. Leave this here for spacing
+                                                        } else if (split2[w] == '..') {
+                                                            if (split1.length > 0) {
+                                                                var split1 = split1.splice(-1,1)
                                                             }
+                                                        } else {
+                                                            split1.push(split2[w])
                                                         }
-                                                        var vdataa = split1.join('/')
-                                                        if (! vdataa.startsWith('/')) {
-                                                            var vdataa = '/' + vdataa
+                                                    }
+                                                    var path2Send = split1.join('/')
+                                                    if (! path2Send.startsWith('/')) {
+                                                        var path2Send = '/' + path2Send
+                                                    }
+                                                }
+                                                
+                                                //console.log(finalpath)
+                                                //console.log(data)
+                                                this.fs.getByPath(path2Send, function(entryy) {
+                                                    if (! entry.error) {
+                                                        this.getDirContents(entryy, finished.bind(this))
+                                                    } else {
+                                                        this.htaccessError.bind(this)('invalid path to send dir contents')
+                                                    }
+                                                }.bind(this))
+                                            } else if (data.type == 'versioning') {
+                                                //console.log('versioning')
+                                                if (! data.version_data || data.version_data.length == 0) {
+                                                    this.htaccessError.bind(this)('missing version data')
+                                                    return
+                                                }
+                                                if (! data.variable) {
+                                                    this.htaccessError.bind(this)('missing variable')
+                                                    return
+                                                }
+                                                if (! data.default) {
+                                                    this.htaccessError.bind(this)('missing default file selection')
+                                                    return
+                                                }
+                                                var versionData = data.version_data
+                                                var vdata4 = this.request.arguments[data.variable]
+                                                if ( ! versionData[vdata4]) {
+                                                    vdata4 = data.default
+                                                }
+                                                var vdataa = versionData[vdata4]
+                                                var fullrequestpath = this.request.origpath
+                                                var finpath = fullrequestpath.split('/').pop();
+                                                var finalpath = fullrequestpath.substring(0, fullrequestpath.length - finpath.length);
+                                                if (this.request.path == '') {
+                                                    var finalpath = '/'
+                                                }
+                                                var split1 = finalpath.split('/')
+                                                var split2 = vdataa.split('/')
+                                                if (! vdataa.startsWith('/')) {
+                                                    for (var w=0; w<split2.length; w++) {
+                                                        if (split2[w] == '' || split2[w] == '.') {
+                                                            // . means current directory. Leave this here for spacing
+                                                        } else if (split2[w] == '..') {
+                                                            if (split1.length > 0) {
+                                                                var split1 = split1.splice(-1,1)
+                                                            }
+                                                        } else {
+                                                            split1.push(split2[w])
                                                         }
-                                                        //console.log(vdataa)
+                                                    }
+                                                    var vdataa = split1.join('/')
+                                                    if (! vdataa.startsWith('/')) {
+                                                        var vdataa = '/' + vdataa
                                                     }
                                                     //console.log(vdataa)
-                                                    this.fs.getByPath(vdataa, function(file) {
-                                                        if (file && ! file.error) {
-                                                            this.request.path = vdataa
-                                                            if (file.isFile) {
+                                                }
+                                                //console.log(vdataa)
+                                                this.fs.getByPath(vdataa, function(file) {
+                                                    if (file && ! file.error) {
+                                                        this.request.path = vdataa
+                                                        if (file.isFile) {
+                                                            this.request.origpath = vdataa
+                                                            this.request.uri = vdataa
+                                                        } else {
+                                                            if (vdataa.endsWith("/")) {
                                                                 this.request.origpath = vdataa
                                                                 this.request.uri = vdataa
                                                             } else {
-                                                                if (vdataa.endsWith("/")) {
-                                                                    this.request.origpath = vdataa
-                                                                    this.request.uri = vdataa
-                                                                } else {
-                                                                    this.request.origpath = vdataa+'/'
-                                                                    this.request.uri = vdataa+'/'
-                                                                }
+                                                                this.request.origpath = vdataa+'/'
+                                                                this.request.uri = vdataa+'/'
                                                             }
-                                                            this.request.isVersioning = true
-                                                            this.onEntry(file)
-                                                        } else {
-                                                            this.write('path in htaccess file for version '+vdata4+' is missing or the file does not exist. Please check to make sure you have properly inputed the value', 500)
                                                         }
-                                                    }.bind(this))
-                                                } else {
-                                                    excludedothtmlcheck.bind(this)()
+                                                        this.request.isVersioning = true
+                                                        this.onEntry(file)
+                                                    } else {
+                                                        this.write('path in htaccess file for version '+vdata4+' is missing or the file does not exist. Please check to make sure you have properly inputed the value', 500)
+                                                    }
+                                                }.bind(this))
+                                            } else if (data.type == 'serverSideJavaScript') {
+                                                if (! data.key) {
+                                                    this.htaccessError.bind(this)('missing key')
+                                                    return
                                                 }
+                                                this.fs.getByPath(this.request.path, function(file) {
+                                                    if (file && ! file.error) {
+                                                        file.file(function(file) {
+                                                            var reader = new FileReader()
+                                                            reader.onload = function(e) {
+                                                                var contents = e.target.result.split('\n')
+                                                                var validFile = false
+                                                                for (var i=0; i<contents.length; i++) {
+                                                                    contents[i] = contents[i].replaceAll('\t', '').replaceAll('\n', '').replaceAll('\r', '')
+                                                                    if (contents[i].startsWith('SSJSKey')) {
+                                                                        var SSJSKey = contents[i].split('=').pop().replaceAll(' ', '').replaceAll('"', '').replaceAll('\'', '')
+                                                                        if (SSJSKey == data.key) {
+                                                                            var validFile = true
+                                                                            break
+                                                                        }
+                                                                    }
+                                                                }
+                                                                if (validFile) {
+                                                                    window.req = this.request
+                                                                    window.res = this
+                                                                    window.httpRequest = WSC.ChromeSocketXMLHttpRequest
+                                                                    this.getRequestID = Math.random().toString()
+                                                                    res.end = function() {
+                                                                        // We need to cleanup - Which is why we don't want the user to directly call res.finish()
+                                                                        if (document.getElementById('tempGEThandler' + this.getRequestID)) {
+                                                                            document.getElementById('tempGEThandler' + this.getRequestID).remove()
+                                                                        }
+                                                                        delete this.getRequest
+                                                                        delete window.res
+                                                                        delete window.req
+                                                                        delete window.httpRequest
+                                                                        if (window.SSJSKey) {
+                                                                            delete window.SSJSKey
+                                                                        }
+                                                                        this.finish()
+                                                                    }
+                                                                    var blob = new Blob([file], {type : 'text/javascript'})
+                                                                    this.getRequest = document.createElement("script")
+                                                                    this.getRequest.src = URL.createObjectURL(blob)
+                                                                    this.getRequest.id = 'tempGEThandler' + this.getRequestID
+                                                                    document.body.appendChild(this.getRequest)
+                                                                } else {
+                                                                    this.write('Keys do not match', 403)
+                                                                }
+                                                            }.bind(this)
+                                                            reader.readAsText(file)
+                                                        }.bind(this))
+                                                    } else {
+                                                        this.write('file not found', 404)
+                                                    }
+                                                }.bind(this))
                                             } else {
                                                 excludedothtmlcheck.bind(this)()
                                             }
+                                        } else {
+                                            excludedothtmlcheck.bind(this)()
                                         }
-                                        //console.log(htaccessHeaders)
-                                        if (additionalHeaders) {
-                                            for (var i=0; i<htaccessHeaders.length; i++) {
-                                                this.setHeader(htaccessHeaders[i].headerType, htaccessHeaders[i].headerValue)
-                                            }
+                                    }
+                                    //console.log(htaccessHeaders)
+                                    if (additionalHeaders) {
+                                        for (var i=0; i<htaccessHeaders.length; i++) {
+                                            this.setHeader(htaccessHeaders[i].headerType, htaccessHeaders[i].headerValue)
                                         }
-                                        if (auth && authdata.type == 401) {
-                                             if (! authdata.username) {
-                                                 this.htaccessError.bind(this)('missing Auth Username')
-                                                 return
-                                             }
-                                             if (! authdata.password) {
-                                                 this.htaccessError.bind(this)('missing Auth Password')
-                                                 return
-                                             }
-                                                var validAuth = false
-                                                var auth = this.request.headers['authorization']
-                                                if (auth) {
-                                                    if (auth.slice(0,6).toLowerCase() == 'basic ') {
-                                                        var userpass = atob(auth.slice(6,auth.length)).split(':')
-                                                        if (userpass[0] == authdata.username && userpass[1] == authdata.password) {
-                                                            validAuth = true
-                                                        }
+                                    }
+                                    if (auth && authdata.type == 401) {
+                                         if (! authdata.username) {
+                                             this.htaccessError.bind(this)('missing Auth Username')
+                                             return
+                                         }
+                                         if (! authdata.password) {
+                                             this.htaccessError.bind(this)('missing Auth Password')
+                                             return
+                                         }
+                                            var validAuth = false
+                                            var auth = this.request.headers['authorization']
+                                            if (auth) {
+                                                if (auth.slice(0,6).toLowerCase() == 'basic ') {
+                                                    var userpass = atob(auth.slice(6,auth.length)).split(':')
+                                                    if (userpass[0] == authdata.username && userpass[1] == authdata.password) {
+                                                        validAuth = true
                                                     }
                                                 }
-                                                if (! validAuth) {
-                                                    this.error("<h1>401 - Unauthorized</h1>", 401)
-                                                }
-                                                if (validAuth) {
-                                                    htaccessCheck2.bind(this)()
-                                                }
-                                            } else {
+                                            }
+                                            if (! validAuth) {
+                                                this.error("<h1>401 - Unauthorized</h1>", 401)
+                                            }
+                                            if (validAuth) {
                                                 htaccessCheck2.bind(this)()
                                             }
+                                    } else {
+                                        htaccessCheck2.bind(this)()
+                                    }
                                 }
                                 var filerequest = this.request.origpath
 
                                 if (this.app.opts.optExcludeDotHtml) {
-                                    if (this.app.opts.optExcludeDotHtm) {
-                                        var htmHtml = '.htm'
-                                    } else {
-                                        var htmHtml = '.html'
-                                    }
-                                    var htmHtml = this.app.opts.optExcludeDotHtm ? '.htm' : 'html'
+                                    var htmHtml = this.app.opts.optExcludeDotHtm ? '.htm' : '.html'
                                     this.fs.getByPath(this.request.path+htmHtml, (file) => {
                                         if (! file.error) {
                                             if (this.request.origpath.endsWith("/")) {
@@ -931,7 +979,7 @@
                                             var filerequested = WSC.utils.htaccessFileRequested(filerequested)
                                                 htaccessMain.bind(this)(filerequested)
                                                 return
-                                            }
+                                        }
                                     })
                                 } else {
                                     if (this.entry && this.entry.isDirectory && ! this.request.origpath.endsWith('/')) {
@@ -947,8 +995,7 @@
                                     var filerequested = WSC.utils.htaccessFileRequested(filerequested)
                                     htaccessMain.bind(this)(filerequested)
                                     return
-                                    }
-
+                                }
                             }.bind(this)
                             reader.readAsText(filee)
                         }.bind(this))

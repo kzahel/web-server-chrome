@@ -6,8 +6,10 @@
 <p>Perform a post request towards a js file, This js file will be checked for a key (Security) and with the correct key, the document will temporarily append the script and will execute the requested script</h2>
 <br>
 <p>As a security feature, you must have the request path and a key programed in a wsc.htaccess file and in the js file.</p>
+<p>The file name does not need to end with .js  The extension can be anything you want as the extension does not matter and will not be checked</p>
 <p>You do not need to have htaccess enabled, this does not enable htaccess. It is just easier to keep everything in 1 place</p>
 <p>It is recommended to have the log to file function on, so it is easier to see if something goes wrong</p>
+<p>WHILE IT IS NOT REQUIRED - IT IS VERY HIGHLY RECOMENDED TO TURN ON THE HTACCESS FEATURE - AS IT WILL BLOCK USERS FROM PERFORMING A GET REQUEST TOWARDS THE FILE</p>
 <br><br>
 <h2>Writing the htaccess file</h2>
 <p>The file needs to be in the same path as the requested file</p>
@@ -137,3 +139,18 @@ This contains the requested file (Will end with / if is directory)
 
 `req.path`: string
 This contains the requested file. (Will NOT end with / if is directory)
+
+
+<h1>Another Useful Tool</h1>
+
+`httpRequest`: constructor
+This will open a http request as if you opened a new tab and went to the website
+Please note: https it not supported
+
+`var request = new httpRequest`
+To set a header: `request.setRequestHeader(headerType, headerValue)`
+To open the request: `request.open("GET", url)`
+Set the onload function: `request.onload = function(e) { }`
+Send the request: `request.send()`
+
+To send data, you can use: `request.send(data)`

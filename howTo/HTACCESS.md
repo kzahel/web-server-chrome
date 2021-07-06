@@ -21,6 +21,7 @@
 <p>send directory contents - Will send the current directory at the end of the file. See the How To for a more advanced description</p>
 <p>additional header - Will set an additional header</p>
 <p>Versioning - relative file hosting</p>
+<p>serverSideJavaScript - Just what it sounds like</p>
 <p>If you want more features - Make an issue!</p>
 <br>
 <h1>Extra Features</h1>
@@ -181,7 +182,7 @@ To use option for all files, the value of request path will be 'all files' It sh
         "request_path": "name of file you want to modify",
         "type": "versioning",
         "default": 4,
-		"variable": "v",
+        "variable": "v",
         "version_data": {"1": "Path to file",
                          "2": "Path to file",
                          "3": "Path to file",
@@ -249,7 +250,7 @@ The end result will be
     {
         "request_path": "name of file you want to modify",
         "type": "send directory contents"
-	"dir_to_send": "../somepath/"
+        "dir_to_send": "../somepath/"
     }
 ]
 ```
@@ -275,6 +276,24 @@ This feature CANNOT use the `all files` value for the `request_path` field. You 
 `sizestr`: File size (As a string) Example: `248.1 KiB`
 `date`: Date not in a string format. Example: `142132146`
 `datestr`: Date as a string. Example: `3/11/21, 3:21:46 AM`
+<br>
+<h2>serverSideJavaScript</h2>
+<p>Allows you to process and respond as you wish</p>
+<p>Example:</p>
+
+```
+[
+    {
+        "request_path": "name of file you want to modify",
+        "type": "serverSideJavaScript"
+        "key": "ATonOfRaNdOmNumbersAndLetters"
+    }
+]
+```
+<p>Please refer to the <a href='post.md'>Post Handler</a> To learn how to respond.</p>
+
+The only difference is - DO NOT declare the type as postKey in the htaccess file and instead of using `postKey = 'wa4e76yhefy54t4a'` use `SSJSKey = 'wa4e76yhefy54t4a'`
+
 <br>
 <h1>How to use more than 1 ruleset per file</h1>
 <p>Pay VERY close attention to the syntax. One thing wrong will cause an error!!</p>

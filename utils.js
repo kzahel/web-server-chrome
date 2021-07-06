@@ -1,4 +1,19 @@
 (function() {
+    // We can add more if we need
+    if (String.prototype.replaceAll === undefined) {
+        String.prototype.replaceAll = function(a, b) {
+            return this.split(a).join(b)
+        }
+    }
+    if (String.prototype.startsWith === undefined) {
+        String.prototype.startsWith = function(a) {
+            if (this.substring(0, a.length) == a) {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
     WSC.utils = {
         humanFileSize: function(bytes, si=false, dp=1) {
                 //from https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string/10420404

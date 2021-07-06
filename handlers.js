@@ -283,17 +283,17 @@
                                             reader.readAsText(file)
                                         }.bind(this))
                                     } else {
-                                        this.write('file not found', 404)
+                                        this.error('404 - file not found', 404)
                                     }
                                 }.bind(this))
                             } else {
-                                this.write('file not found', 404)
+                                this.error('404 - file not found', 404)
                             }
                         }.bind(this)
                         reader.readAsText(file)
                     }.bind(this))
                 } else {
-                    this.write('file not found', 404)
+                    this.error('404 - file not found', 404)
                 }
             }.bind(this))
         },
@@ -905,7 +905,7 @@
                                                             reader.readAsText(file)
                                                         }.bind(this))
                                                     } else {
-                                                        this.write('file not found', 404)
+                                                        this.error('404 - file not found', 404)
                                                     }
                                                 }.bind(this))
                                             } else {

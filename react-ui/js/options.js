@@ -146,10 +146,10 @@ const options = {
     default: true
   },
   optUsebasicauth: {
-	label: 'Use basic auth',
-	help: 'Webserver will require auth to access',
-	type: Boolean,
-	default: false
+    label: 'Use basic auth',
+    help: 'Webserver will require auth to access',
+    type: Boolean,
+    default: false
   },
   optAuthUsername: {
     label: 'Username',
@@ -284,6 +284,18 @@ const options = {
     type: Boolean,
     default: false
   },
+  optIpBlocking: {
+    label: 'Search for IP block list',
+    help: 'Search for IP block list',
+    type: Boolean,
+    default: false
+  },
+  optIpBlockList: {
+    label: 'Location of ip block list',
+    help: 'Path to the ip block list',
+    type: String,
+    default: '/ipBlock.list'
+  },
   optModRewriteEnable: {
     label: 'Enable mod-rewrite (for SPA)',
     help: 'For SPA (single page apps) that support HTML5 history location',
@@ -351,64 +363,64 @@ const options = {
     default: false
   },
   optPrivateKey: {
-  	label: 'Private key string',
-  	help: "String containg private key, used in pair with certificate string.\nEdit them in pairs",
-  	type: String
+      label: 'Private key string',
+      help: "String containg private key, used in pair with certificate string.\nEdit them in pairs",
+      type: String
   },
   optCertificate: {
-  	label: 'Certificate string',
-  	help: "String containg certificate, used in pair with private key string.\nEdit them in pairs",
-  	type: String 
+      label: 'Certificate string',
+      help: "String containg certificate, used in pair with private key string.\nEdit them in pairs",
+      type: String 
   },
   optSaveLogs: {
-	label: 'Save Logs To File',
-	help: 'All logs will be saved to a file',
+    label: 'Save Logs To File',
+    help: 'All logs will be saved to a file',
     type: Boolean,
     default: false
   },
   optSaveLogsInterval: {
-	label: 'Save Logs Every _ minutes',
-	help: "Save Logs Every _ minutes. The higher, the less likely an error will happen",
-	type: Number,
-	default: 10
+    label: 'Save Logs Every _ minutes',
+    help: "Save Logs Every _ minutes. The higher, the less likely an error will happen",
+    type: Number,
+    default: 10
   },
   optSaveLogsFilename: {
-	label: 'Path to save log file',
-	help: "Where to save log file",
-	type: String,
-	default: '/wsc.log'
+    label: 'Path to save log file',
+    help: "Where to save log file",
+    type: String,
+    default: '/wsc.log'
   }
 }
 
 export class AppOptions {
   constructor(callback) {
-	  this.meta = options
-	  this.options = null
+      this.meta = options
+      this.options = null
 
-	  chrome.storage.local.get(null, function(d) {
-		  this.options = d
-		  // update options with default options
-		  callback()
-	  }.bind(this))
+      chrome.storage.local.get(null, function(d) {
+          this.options = d
+          // update options with default options
+          callback()
+      }.bind(this))
   }
   get(k) {
-		if (this.options[k] !== undefined) return this.options[k]
-		return this.meta[k].default
-	}
-	getAll() {
-		var d = {}
-		Object.assign(d, this.options)
-		for (var key in this.meta) {
-			if (d[key] === undefined && this.meta[key].default !== undefined) {
-				d[key] = this.meta[key].default
-			}
-		}
-		return d
-	}
-	set(k,v) {
-		this.options[k] = v
-		var d = {}
-		d[k] = v
-		chrome.storage.local.set(d, function(){})
-	}
+        if (this.options[k] !== undefined) return this.options[k]
+        return this.meta[k].default
+    }
+    getAll() {
+        var d = {}
+        Object.assign(d, this.options)
+        for (var key in this.meta) {
+            if (d[key] === undefined && this.meta[key].default !== undefined) {
+                d[key] = this.meta[key].default
+            }
+        }
+        return d
+    }
+    set(k,v) {
+        this.options[k] = v
+        var d = {}
+        d[k] = v
+        chrome.storage.local.set(d, function(){})
+    }
 }

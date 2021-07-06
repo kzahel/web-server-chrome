@@ -17,12 +17,12 @@ const {
 
 const {Alert} = MaterialUILab;
 
-const {createMuiTheme, colors, withStyles} = MaterialUI;
+const {createTheme, colors, withStyles} = MaterialUI;
 const styles = {
   card: {margin: '10px'},
   appicon: {marginRight: '10px'}
 };
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: '#3f51b5',
@@ -132,10 +132,26 @@ const functions = {
     app.webapp.updateLogging()
     app.webapp.updateOption('optSaveLogs', val);
   },
+  optDoPortMapping: (app, k, val) => {
+    app.webapp.updateOption('optDoPortMapping', val);
+    app.webapp.stop('Port mapping option changed', function() {
+        app.webapp.start()
+    });
+  },
+  optAllInterfaces: (app, k, val) => {
+    app.webapp.updateOption('optAllInterfaces', val);
+    app.webapp.stop('All interfaces option changed', function() {
+        app.webapp.start()
+    });
+  },
   optSaveLogsInterval: (app, k, val) => {
     console.assert(typeof val === 'string')
     app.webapp.updateLogging()
     app.webapp.updateOption('optSaveLogsInterval', val);
+  },
+  optIpBlockList: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optIpBlockList', val);
   },
   optPrivateKey: (app, k, val) => {
     //console.log('privateKey')
@@ -319,6 +335,12 @@ class App extends React.Component {
     const optUploadOptions = {
       optAllowReplaceFile: ['optUpload']
     };
+    const optIp = {
+      optIpBlocking: null
+    };
+    const optIpOptions = {
+      optIpBlockList: null
+    }
     const optLogMain = {
       optDelete: null,
       optVerbose: null,
@@ -449,6 +471,15 @@ class App extends React.Component {
         let disablelogasd = (!this.webapp || !this.webapp.opts.optSaveLogs);
         const logsadge = renderOpts(optLogOptions)
         return [(<div>{!disablelogasd && logsadge}</div>)];
+    })();
+
+    const Ip = (() => {
+        const ipBoolean = renderOpts(optIp)
+        const ipTextBox = renderOpts(optIpOptions)
+        let disableip = (!this.webapp || !this.webapp.opts.optIpBlocking);
+        return [(<div><div>{ipBoolean}</div>
+        <div style={{paddingLeft: 20}}>{!disableip && ipTextBox}{!disableip && <Alert severity="info">For more info on how to use IP blocking, go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/howTo/ipBlocking.md" target="_blank">here</a></Alert>}
+      </div></div>)];
     })();
 
     const UploadOption = (() => {
@@ -595,7 +626,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{UploadOption}{logMain}{logInfo}{nodothtmlMain}{nodothtmlOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}{POSTFeatureInfo}</div> }
+          {state.showAdvanced && <div>{advOptions}{Ip}{UploadOption}{logMain}{logInfo}{nodothtmlMain}{nodothtmlOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}{POSTFeatureInfo}</div> }
         </CardContent>
       </Card>
 

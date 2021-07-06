@@ -82,6 +82,32 @@
                 break
             }
         },
+        updateIpBlockList: function() {
+            if (! this.opts.optIpBlocking) {
+                return
+            }
+            if (! this.fs) {
+                return
+            }
+            this.fs.getByPath(this.opts.optIpBlockList, function(file) {
+                if (file && file.isFile && ! file.error) {
+                    file.file(function(file) {
+                        var reader = new FileReader()
+                        reader.onload = function(e) {
+                            var data = e.target.result
+                            try {
+                                window.ipBlockList = JSON.parse(data)
+                            } catch(e) {
+                                console.error('Failed to parse Ip block list')
+                            }
+                        }.bind(this)
+                        reader.readAsText(file)
+                    }.bind(this))
+                } else {
+                    console.error('Location of Ip block list was not found')
+                }
+            }.bind(this))
+        },
         updateLogging: function() {
             window.logging = false
             WSC.saveLogs()
@@ -282,6 +308,7 @@
                 console.error("already starting or started")
                 return
             }
+            this.updateIpBlockList()
             this.start_callback = callback
             this.stopped = false
             this.starting = true
@@ -475,6 +502,10 @@
             // set unpaused, etc
         },
         onAccept: function(acceptInfo) {
+            if (! window.ipBlockList) {
+                window.ipBlockList = [ ]
+            }
+            this.updateIpBlockList()
             //console.log('onAccept',acceptInfo,this.sockInfo)
             if (acceptInfo.socketId != this.sockInfo.socketId) { return }
             if (acceptInfo.socketId) {
@@ -498,7 +529,17 @@
             connection.tryRead()
         },
         onRequest: function(stream, connection, request) {
-            console.log('Request',request.method, request.uri)
+            console.log(request.ip + ':', 'Request',request.method, request.uri)
+            
+            if (this.opts.optIpBlocking) {
+                if (window.ipBlockList.includes(request.ip)) {
+                    var handler = new WSC.BaseHandler(request)
+                    handler.app = this
+                    handler.request = request
+                    handler.error('<h1>403 - Forbidden</h1>', 403)
+                    return
+                }
+            }
 
             //console.log(request)
             var filename = request.path.split('/').pop()
@@ -515,7 +556,6 @@
                     return
                 }
             }
-
 
             if (this.opts.optUsebasicauth) {
                 var validAuth = false

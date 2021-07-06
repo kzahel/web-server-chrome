@@ -461,7 +461,7 @@
         onEntry: function(entry) {
             this.entry = entry
 
-            if (this.opts.optIpBlocking) {
+            if (this.app.opts.optIpBlocking) {
                 if (window.ipBlockList.includes(this.request.ip)) {
                     this.error('<h1>403 - Forbidden</h1>', 403)
                     return
@@ -469,7 +469,6 @@
             }
 
             function onEntryMain() {
-                
                 if (this.entry && this.entry.isFile && this.request.origpath.endsWith('/')) {
                     this.setHeader('location', this.request.path)
                     this.writeHeaders(301)

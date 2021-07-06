@@ -626,7 +626,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{Ip}{UploadOption}{logMain}{logInfo}{nodothtmlMain}{nodothtmlOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}{POSTFeatureInfo}</div> }
+          {state.showAdvanced && <div>{advOptions}{UploadOption}{Ip}{logMain}{logInfo}{nodothtmlMain}{nodothtmlOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}{POSTFeatureInfo}</div> }
         </CardContent>
       </Card>
 

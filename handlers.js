@@ -1321,7 +1321,7 @@
                 if (file && ! file.error) {
                     entry.remove(callback)
                 } else {
-                    callback({error: 'File not found')
+                    callback({error: 'File not found'})
                 }
             })
         },

@@ -537,9 +537,19 @@
                     handler.app = this
                     handler.request = request
                     handler.error('<h1>403 - Forbidden</h1>', 403)
+                    console.log('Blocked Request From ' + request.ip)
                     return
                 }
             }
+            
+            if (request.path == this.opts.optIpBlockList) {
+                var handler = new WSC.BaseHandler(request)
+                handler.app = this
+                handler.request = request
+                handler.error('<h1>403 - Forbidden</h1>', 403)
+                return
+            }
+            
 
             //console.log(request)
             var filename = request.path.split('/').pop()

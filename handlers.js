@@ -1310,6 +1310,21 @@
                 
             }, true)
         },
+        deleteFile: function(path, callback) {
+            if (! path.startsWith('/')) {
+                var path = WSC.utils.relativePath(path, WSC.utils.stripOffFile(this.request.origpath))
+            }
+            if (! callback) {
+                var callback = function(file) { }
+            }
+            this.fs.getByPath(path, function(file) {
+                if (file && ! file.error) {
+                    entry.remove(callback)
+                } else {
+                    callback({error: 'File not found')
+                }
+            })
+        },
         httpCode: function(code) {
             if (! code) {
                 code = 200

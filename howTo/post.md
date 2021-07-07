@@ -87,12 +87,18 @@ Example:
 `res.contentType(type)`: function
 This function will set the content type to respond with, you could also use the `res.setHeader()` function
 
-`res.writeFile(path, data, allowReplaceFile, callback)`
+`res.writeFile(path, data, allowReplaceFile, callback)`: function
 This function will save a file
 path: the path of the file
+If the path contains a non existent folder, the folder will be created
 data: string/arrayBuffer of the file. DO NOT SEND OTHER TYPES OF DATA - THIS COULD BREAK THE APP (Just refresh it)
 allowReplaceFile: if file exists and you want to replace the file, set this to true
 callback: function will be excecuted to tell you if there was an error or it will callback the file
+
+`res.deleteFile(path, callback)`: function
+This function will delete
+path: the path of the file
+callback: function will be excecuted to tell you if there was an error or success
 
 `res.httpCode(httpCode)`: function
 Call this to respond with no message. Dont forget to finish with `res.end()`

@@ -271,13 +271,14 @@
                                                         }
                                                         this.finish()
                                                     }
+                                                    // Mount the file using a blob. Chrome's content security policy will not allow eval()
                                                     var blob = new Blob([file], {type : 'text/javascript'})
                                                     this.postRequest = document.createElement("script")
                                                     this.postRequest.src = URL.createObjectURL(blob)
                                                     this.postRequest.id = 'tempPOSThandler' + this.postRequestID
                                                     document.body.appendChild(this.postRequest)
                                                 } else {
-                                                    this.write('Keys do not match', 403)
+                                                    this.write('The keys do not match or were not found', 403)
                                                 }
                                             }.bind(this)
                                             reader.readAsText(file)
@@ -905,7 +906,7 @@
                                                                     this.getRequest.id = 'tempGEThandler' + this.getRequestID
                                                                     document.body.appendChild(this.getRequest)
                                                                 } else {
-                                                                    this.write('Keys do not match', 403)
+                                                                    this.write('The keys do not match or were not found', 403)
                                                                 }
                                                             }.bind(this)
                                                             reader.readAsText(file)

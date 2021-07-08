@@ -72,6 +72,9 @@
                     this.onRequest(this.curRequest)
                 } else {
                     console.error('how to handle',this.curRequest)
+                    // leaving the connection open will slow the server
+                    this.curRequest.connection.write('HTTP/1.1 501 Not Implemented\r\ncontent-length: 0\r\n\r\n')
+                    this.curRequest.connection.stream.close()
                 }
             }.bind(this))
         },

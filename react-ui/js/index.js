@@ -132,18 +132,6 @@ const functions = {
     app.webapp.updateLogging()
     app.webapp.updateOption('optSaveLogs', val);
   },
-  optDoPortMapping: (app, k, val) => {
-    app.webapp.updateOption('optDoPortMapping', val);
-    app.webapp.stop('Port mapping option changed', function() {
-        app.webapp.start()
-    });
-  },
-  optAllInterfaces: (app, k, val) => {
-    app.webapp.updateOption('optAllInterfaces', val);
-    app.webapp.stop('All interfaces option changed', function() {
-        app.webapp.start()
-    });
-  },
   optSaveLogsInterval: (app, k, val) => {
     console.assert(typeof val === 'string')
     app.webapp.updateLogging()

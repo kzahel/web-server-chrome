@@ -1,4 +1,4 @@
-
+.
 <h1>How to use Server Side POST</h1>
 <br>
 <h2>How it works</h2>
@@ -160,3 +160,6 @@ Set the onload function: `request.onload = function(e) { }`
 Send the request: `request.send()`
 
 To send data, you can use: `request.send(data)`
+
+`window.tempData`: json
+This window variable is a place that you can store data if you need. It will be cleared after the end of the response.

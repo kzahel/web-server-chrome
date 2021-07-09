@@ -120,6 +120,7 @@
                                 }
                                 var filerequested = this.request.origpath.split('/').pop();
                                 var filefound = false
+                                var auth = false
                                 if (origdata.length == 0 || ! origdata.length) {
                                     callback()
                                     return
@@ -138,16 +139,45 @@
                                         this.error('bad request', 403)
                                         return
                                     }
+                                    if (origdata[i].type == 401 &&
+                                        ! auth &&
+                                        (origdata[i].request_path == filerequested || origdata[i].request_path == 'all files')) {
+                                        var authdata = origdata[i]
+                                        var auth = true
+                                    }
                                     if ((origdata[i].type == allow && origdata[i].request_path == filerequested) ||
                                         (origdata[i].type == allow && origdata[i].request_path == 'all files') ||
                                         (origdata[i].type == deny && origdata[i].request_path == filerequested) ||
-                                        (origdata[i].type == deny && origdata[i].request_path == 'all files')) {
+                                        (origdata[i].type == deny && origdata[i].request_path == 'all files') && ! filefound) {
                                         var data = origdata[i]
                                         var filefound = true
-                                        break
                                     }
                                 }
                                 //console.log(filefound)
+                                if (auth) {
+                                    if (! authdata.username) {
+                                        this.htaccessError.bind(this)('missing Auth Username')
+                                        return
+                                    }
+                                    if (! authdata.password) {
+                                        this.htaccessError.bind(this)('missing Auth Password')
+                                        return
+                                    }
+                                    var validAuth = false
+                                    var auth = this.request.headers['authorization']
+                                    if (auth) {
+                                        if (auth.slice(0,6).toLowerCase() == 'basic ') {
+                                            var userpass = atob(auth.slice(6,auth.length)).split(':')
+                                            if (userpass[0] == authdata.username && userpass[1] == authdata.password) {
+                                                validAuth = true
+                                            }
+                                        }
+                                    }
+                                    if (! validAuth) {
+                                        this.error("<h1>401 - Unauthorized</h1>", 401)
+                                        return
+                                    }
+                                }
                                 if (filefound) {
                                     if (data.type == allow) {
                                         callbackSkip()
@@ -214,6 +244,7 @@
                             }
                             var filerequested = this.request.origpath.split('/').pop()
                             var filefound = false
+                            var auth = false
                             for (var i=0; i<origdata.length; i++) {
                                 if (! origdata[i].type) {
                                     this.htaccessError.bind(this)('missing type')
@@ -223,13 +254,42 @@
                                     this.htaccessError.bind(this)('missing request path')
                                     return
                                 }
+                                if (origdata[i].type == 401 &&
+                                    ! auth &&
+                                    (origdata[i].request_path == filerequested || origdata[i].request_path == 'all files')) {
+                                    var authdata = origdata[i]
+                                    var auth = true
+                                }
                                 if (origdata[i].request_path == filerequested && origdata[i].type == 'POSTkey' && ! filefound) {
                                     var data = origdata[i]
                                     var filefound = true
-                                    break
                                 }
                             }
                             // Still need to validate POST key
+                            if (auth) {
+                                if (! authdata.username) {
+                                    this.htaccessError.bind(this)('missing Auth Username')
+                                    return
+                                }
+                                if (! authdata.password) {
+                                    this.htaccessError.bind(this)('missing Auth Password')
+                                    return
+                                }
+                                var validAuth = false
+                                var auth = this.request.headers['authorization']
+                                if (auth) {
+                                    if (auth.slice(0,6).toLowerCase() == 'basic ') {
+                                        var userpass = atob(auth.slice(6,auth.length)).split(':')
+                                        if (userpass[0] == authdata.username && userpass[1] == authdata.password) {
+                                            validAuth = true
+                                        }
+                                    }
+                                }
+                                if (! validAuth) {
+                                    this.error("<h1>401 - Unauthorized</h1>", 401)
+                                    return
+                                }
+                            }
                             if (filefound) {
                                 if (! data.key) {
                                     this.htaccessError.bind(this)('missing post key')
@@ -255,6 +315,7 @@
                                                 if (validFile) {
                                                     window.req = this.request
                                                     window.res = this
+                                                    window.tempData = { }
                                                     window.httpRequest = WSC.ChromeSocketXMLHttpRequest
                                                     this.postRequestID = Math.random().toString()
                                                     res.end = function() {
@@ -268,6 +329,9 @@
                                                         delete window.httpRequest
                                                         if (window.postKey) {
                                                             delete window.postKey
+                                                        }
+                                                        if (window.tempData) {
+                                                            delete window.tempData
                                                         }
                                                         this.finish()
                                                     }
@@ -884,6 +948,7 @@
                                                                 if (validFile) {
                                                                     window.req = this.request
                                                                     window.res = this
+                                                                    window.tempData = { }
                                                                     window.httpRequest = WSC.ChromeSocketXMLHttpRequest
                                                                     this.getRequestID = Math.random().toString()
                                                                     res.end = function() {
@@ -897,6 +962,9 @@
                                                                         delete window.httpRequest
                                                                         if (window.SSJSKey) {
                                                                             delete window.SSJSKey
+                                                                        }
+                                                                        if (window.tempData) {
+                                                                            delete window.tempData
                                                                         }
                                                                         this.finish()
                                                                     }
@@ -1105,7 +1173,7 @@
             }
             function DirRenderFinish() {
                 this.setHeader('content-type','text/html; charset=utf-8')
-                this.write(html.join('\n'))
+                this.write(new TextEncoder('utf-8').encode(html.join('\n')).buffer)
                 this.finish()
             }
             function sendFileList() {
@@ -1172,7 +1240,7 @@
             }
             html.push('</ul></html>')
             this.setHeader('content-type','text/html; charset=utf-8')
-            this.write(html.join('\n'))
+            this.write(new TextEncoder('utf-8').encode(html.join('\n')).buffer)
         },
         onReadEntry: function(evt) {
             if (evt.type == 'error') {

@@ -656,6 +656,7 @@
                                     var data = false
                                     var htaccessHeaders = [ ]
                                     var additionalHeaders = false
+                                    var hasPost = false
                                     if (origdata.length == 0 || ! origdata.length) {
                                         excludedothtmlcheck.bind(this)()
                                         return
@@ -707,9 +708,7 @@
                                                 var filefound = true
                                         }
                                         if (origdata[i].request_path == filerequested && origdata[i].type == 'POSTkey') {
-                                            var filefound = false
-                                            this.error('<h1>403 - Forbidden</h1>')
-                                            break
+                                            var hasPost = true
                                         }
                                         //console.log(origdata[i].request_path == filerequested)
                                         if ((origdata[i].request_path == filerequested || origdata[i].request_path == 'all files') &&
@@ -723,6 +722,10 @@
                                     //console.log(data)
                                     //console.log(authdata)
                                     //console.log(filefound)
+                                    if (hasPost && data.type != 'serverSideJavaScript') {
+                                        this.error('bad request', 403)
+                                        return
+                                    }
                                     function htaccessCheck2() {
                                         if (filefound) {
                                             if (data.type == 301 || data.type == 302 || data.type == 307) {
@@ -1394,7 +1397,7 @@
                 }
             })
         },
-        httpCode: function(code) {
+        writeCode: function(code) {
             if (! code) {
                 code = 200
             }

@@ -100,7 +100,7 @@ This function will delete
 path: the path of the file
 callback: function will be excecuted to tell you if there was an error or success
 
-`res.httpCode(httpCode)`: function
+`res.writeCode(httpCode)`: function
 Call this to respond with no message. Dont forget to finish with `res.end()`
 
 <h2>Chunked encoding</h2>
@@ -154,10 +154,15 @@ This will open a http request as if you opened a new tab and went to the website
 Please note: https it not supported
 
 `var request = new httpRequest`
+
 To set a header: `request.setRequestHeader(headerType, headerValue)`
+
 To open the request: `request.open("GET", url)`
+
 Set the onload function: `request.onload = function(e) { }`
+
 Send the request: `request.send()`
+
 
 To send data, you can use: `request.send(data)`
 

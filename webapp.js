@@ -808,6 +808,9 @@ Changes with nginx 0.7.9                                         12 Aug 2008
                 data = new TextEncoder('utf-8').encode(data).buffer
             }
             console.assert( data.byteLength !== undefined )
+            if (! this.headersWritten) {
+                this.writeHeaders()
+            }
             var chunkheader = data.byteLength.toString(16) + '\r\n'
             //console.log('write chunk',[chunkheader])
             this.request.connection.write( WSC.str2ab(chunkheader) )

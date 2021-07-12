@@ -962,8 +962,8 @@
                                                                         delete window.res
                                                                         delete window.req
                                                                         delete window.httpRequest
-                                                                        if (window.postKey) {
-                                                                            delete window.postKey
+                                                                        if (window.SSJSKey) {
+                                                                            delete window.SSJSKey
                                                                         }
                                                                         this.finish()
                                                                     }

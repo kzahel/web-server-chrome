@@ -41,6 +41,8 @@ The start of the line (`postKey = `) MUST STAY THE SAME (case sensitive). The se
 THIS LINE MUST BE ITS OWN LINE!! You CANNOT combine multiple lines of code with `;`
 Indenting this line may cause for the server to not find this line and in result, the code will not be executed
 
+the res and req variables ARE NOT WINDOW VARIABLES. DO NOT USE THEM AS SUCH
+
 <br>
 <h2>Writing the code inside the file</h2>
 
@@ -51,6 +53,21 @@ res.write('test') // THEN send the data
 res.end() // THEN end the request
 ```
 res contains all the functions to respond, while req contains all the request information
+
+*NOTE* - You can use BOTH server side javascript and Server Side POST in the same file! Just declare 2 seperate keys in the htaccess and in the file!
+
+IMPORTANT INFORMATION - When writing the file, DO NOT surround the file in a function as you would normally do
+Do not do:
+```
+(function() {
+awefioeeai.somecode()
+
+})();
+```
+If you need to use browserify on your file, just remove the `(function() {` at the beggining and the `})();` at the end.
+
+DO NOT WORRY. This is to prevent problems with the res and req variables. Your script will be excecuted inside a function, so all return statements will work correctly
+
 
 <h1>res Commands</h1>
 
@@ -167,4 +184,4 @@ Send the request: `request.send()`
 To send data, you can use: `request.send(data)`
 
 `window.tempData`: json
-This window variable is a place that you can store data if you need. It will be cleared after the end of the response.
+This window variable is a place that you can store data if you need. It will NOT be cleared after the end of the response.

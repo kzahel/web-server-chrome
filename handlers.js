@@ -313,12 +313,12 @@
                                                     }
                                                 }
                                                 if (validFile) {
-                                                    window.req = this.request
-                                                    window.res = this
+                                                    this.postRequestID = Math.random().toString().split('.').pop()
+                                                    window['req' + this.postRequestID] = this.request
+                                                    window['res' + this.postRequestID] = this
                                                     window.tempData = { }
                                                     window.httpRequest = WSC.ChromeSocketXMLHttpRequest
-                                                    this.postRequestID = Math.random().toString()
-                                                    res.end = function() {
+                                                    window['res' + this.postRequestID].end = function() {
                                                         // We need to cleanup - Which is why we don't want the user to directly call res.finish()
                                                         if (document.getElementById('tempPOSThandler' + this.postRequestID)) {
                                                             document.getElementById('tempPOSThandler' + this.postRequestID).remove()
@@ -330,13 +330,12 @@
                                                         if (window.postKey) {
                                                             delete window.postKey
                                                         }
-                                                        if (window.tempData) {
-                                                            delete window.tempData
-                                                        }
                                                         this.finish()
                                                     }
                                                     // Mount the file using a blob. Chrome's content security policy will not allow eval()
-                                                    var blob = new Blob([file], {type : 'text/javascript'})
+                                                    var contents = '(function() {\nvar handler = function(req, res, httpRequest) {\n' + e.target.result + '\n};\nhandler(window.req' + this.postRequestID + ', window.res' + this.postRequestID + ', window.httpRequest)\n})();'
+                                                    var contents = new TextEncoder('utf-8').encode(contents)
+                                                    var blob = new Blob([contents], {type : 'text/javascript'})
                                                     this.postRequest = document.createElement("script")
                                                     this.postRequest.src = URL.createObjectURL(blob)
                                                     this.postRequest.id = 'tempPOSThandler' + this.postRequestID
@@ -932,7 +931,7 @@
                                                     return
                                                 }
                                                 this.fs.getByPath(this.request.path, function(file) {
-                                                    if (file && ! file.error) {
+                                                    if (file && ! file.error && file.isFile) {
                                                         file.file(function(file) {
                                                             var reader = new FileReader()
                                                             reader.onload = function(e) {
@@ -949,12 +948,12 @@
                                                                     }
                                                                 }
                                                                 if (validFile) {
-                                                                    window.req = this.request
-                                                                    window.res = this
+                                                                    this.getRequestID = Math.random().toString().split('.').pop()
+                                                                    window['req' + this.getRequestID] = this.request
+                                                                    window['res' + this.getRequestID] = this
                                                                     window.tempData = { }
                                                                     window.httpRequest = WSC.ChromeSocketXMLHttpRequest
-                                                                    this.getRequestID = Math.random().toString()
-                                                                    res.end = function() {
+                                                                    window['res' + this.getRequestID].end = function() {
                                                                         // We need to cleanup - Which is why we don't want the user to directly call res.finish()
                                                                         if (document.getElementById('tempGEThandler' + this.getRequestID)) {
                                                                             document.getElementById('tempGEThandler' + this.getRequestID).remove()
@@ -963,15 +962,15 @@
                                                                         delete window.res
                                                                         delete window.req
                                                                         delete window.httpRequest
-                                                                        if (window.SSJSKey) {
-                                                                            delete window.SSJSKey
-                                                                        }
-                                                                        if (window.tempData) {
-                                                                            delete window.tempData
+                                                                        if (window.postKey) {
+                                                                            delete window.postKey
                                                                         }
                                                                         this.finish()
                                                                     }
-                                                                    var blob = new Blob([file], {type : 'text/javascript'})
+                                                                    // Mount the file using a blob. Chrome's content security policy will not allow eval()
+                                                                    var contents = '(function() {\nvar handler = function(req, res, httpRequest) {\n' + e.target.result + '\n};\nhandler(window.req' + this.getRequestID + ', window.res' + this.getRequestID + ', window.httpRequest)\n})();'
+                                                                    var contents = new TextEncoder('utf-8').encode(contents)
+                                                                    var blob = new Blob([contents], {type : 'text/javascript'})
                                                                     this.getRequest = document.createElement("script")
                                                                     this.getRequest.src = URL.createObjectURL(blob)
                                                                     this.getRequest.id = 'tempGEThandler' + this.getRequestID
@@ -983,7 +982,7 @@
                                                             reader.readAsText(file)
                                                         }.bind(this))
                                                     } else {
-                                                        this.error('404 - file not found', 404)
+                                                        excludedothtmlcheck.bind(this)()
                                                     }
                                                 }.bind(this))
                                             } else {

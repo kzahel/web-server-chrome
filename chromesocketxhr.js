@@ -196,6 +196,7 @@
 
             if (response.headers['transfer-encoding'] &&
                 response.headers['transfer-encoding'] == 'chunked') {
+                console.log('a')
                 this.chunks = new WSC.Buffer
                 //console.log('looking for an \\r\\n')
                 this.stream.readUntil("\r\n", this.getNewChunk.bind(this))
@@ -210,6 +211,7 @@
             }
         },
         onChunkDone: function(data) {
+            var data = data.slice(0, data.byteLength - 2) // For some reason, the \r\n gets put into the arraybuffer
             this.chunks.add(data)
             this.stream.readUntil("\r\n", this.getNewChunk.bind(this))
         },
@@ -222,7 +224,7 @@
             }
             //console.log('looking for new chunk of len',len)
             if (len == 0) {
-                //console.log('got all chunks',this.chunks)
+                console.log('got all chunks',this.chunks)
                 var body = this.chunks.flatten()
                 this.onBody(body)
             } else {

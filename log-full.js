@@ -50,6 +50,12 @@
             return
         }
         function saveLogs() {
+            if (! app) {
+                return
+            }
+            if (! app.fs) {
+                return
+            }
             if (app.opts.optSaveLogs) {
                 if (console.logs.length > 0) {
                     var a = console.logs

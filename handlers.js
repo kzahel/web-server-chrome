@@ -295,7 +295,7 @@
                                     this.htaccessError.bind(this)('missing post key')
                                     return
                                 }
-                                this.fs.getByPath(this.request.path, function(file) {
+                                this.fs.getByPath(WSC.utils.stripOffFile(this.request.origpath) + data.original_request_path, function(file) {
                                     if (file && ! file.error) {
                                         file.file(function(file) {
                                             var reader = new FileReader()
@@ -316,24 +316,25 @@
                                                     this.postRequestID = Math.random().toString().split('.').pop()
                                                     window['req' + this.postRequestID] = this.request
                                                     window['res' + this.postRequestID] = this
-                                                    window.tempData = { }
-                                                    window.httpRequest = WSC.ChromeSocketXMLHttpRequest
+                                                    if (! window.tempData) {
+                                                        window.tempData = { }
+                                                    }
                                                     window['res' + this.postRequestID].end = function() {
                                                         // We need to cleanup - Which is why we don't want the user to directly call res.finish()
                                                         if (document.getElementById('tempPOSThandler' + this.postRequestID)) {
                                                             document.getElementById('tempPOSThandler' + this.postRequestID).remove()
                                                         }
+                                                        delete window['req' + this.postRequestID]
+                                                        delete window['res' + this.postRequestID]
                                                         delete this.postRequest
-                                                        delete window.res
-                                                        delete window.req
-                                                        delete window.httpRequest
+                                                        delete this.postRequestID
                                                         if (window.postKey) {
                                                             delete window.postKey
                                                         }
                                                         this.finish()
                                                     }
                                                     // Mount the file using a blob. Chrome's content security policy will not allow eval()
-                                                    var contents = '(function() {\nvar handler = function(req, res, httpRequest) {\n' + e.target.result + '\n};\nhandler(window.req' + this.postRequestID + ', window.res' + this.postRequestID + ', window.httpRequest)\n})();'
+                                                    var contents = '(function() {\nvar handler = function(req, res, httpRequest) {\n' + e.target.result + '\n};\nhandler(window.req' + this.postRequestID + ', window.res' + this.postRequestID + ', WSC.ChromeSocketXMLHttpRequest)\n})();'
                                                     var contents = new TextEncoder('utf-8').encode(contents)
                                                     var blob = new Blob([contents], {type : 'text/javascript'})
                                                     this.postRequest = document.createElement("script")
@@ -691,6 +692,12 @@
                                                 var filefound = true
                                             }
                                         }
+                                        if (origdata[i].type == 'serverSideJavaScript' && ! filefound) {
+                                            if (this.request.origpath.split('/').pop() == origdata[i].original_request_path || (origdata[i].original_request_path.split('.').pop() == 'html' && origdata[i].original_request_path.split('/').pop().split('.')[0] == this.request.origpath.split('/').pop())) {
+                                                var data = origdata[i]
+                                                var filefound = true
+                                            }
+                                        }
                                         if ((origdata[i].request_path == filerequested || origdata[i].request_path == 'all files') &&
                                             ! filefound &&
                                             origdata[i].type != 'allow delete' &&
@@ -701,12 +708,13 @@
                                             origdata[i].type != 'directory listing' &&
                                             origdata[i].type != 'additional header' &&
                                             origdata[i].type != 'send directory contents' &&
-                                            origdata[i].type != 'POSTkey') {
+                                            origdata[i].type != 'POSTkey' &&
+                                            origdata[i].type != 'serverSideJavaScript') {
                                                 var data = origdata[i]
                                                 //console.log(data)
                                                 var filefound = true
                                         }
-                                        if (origdata[i].request_path == filerequested && origdata[i].type == 'POSTkey') {
+                                        if (this.request.origpath.split('/').pop() == origdata[i].original_request_path && origdata[i].type == 'POSTkey') {
                                             var hasPost = true
                                         }
                                         //console.log(origdata[i].request_path == filerequested)
@@ -930,7 +938,7 @@
                                                     this.htaccessError.bind(this)('missing key')
                                                     return
                                                 }
-                                                this.fs.getByPath(this.request.path, function(file) {
+                                                this.fs.getByPath(WSC.utils.stripOffFile(this.request.origpath) + data.original_request_path, function(file) {
                                                     if (file && ! file.error && file.isFile) {
                                                         file.file(function(file) {
                                                             var reader = new FileReader()
@@ -951,24 +959,25 @@
                                                                     this.getRequestID = Math.random().toString().split('.').pop()
                                                                     window['req' + this.getRequestID] = this.request
                                                                     window['res' + this.getRequestID] = this
-                                                                    window.tempData = { }
-                                                                    window.httpRequest = WSC.ChromeSocketXMLHttpRequest
+                                                                    if (! window.tempData) {
+                                                                        window.tempData = { }
+                                                                    }
                                                                     window['res' + this.getRequestID].end = function() {
                                                                         // We need to cleanup - Which is why we don't want the user to directly call res.finish()
                                                                         if (document.getElementById('tempGEThandler' + this.getRequestID)) {
                                                                             document.getElementById('tempGEThandler' + this.getRequestID).remove()
                                                                         }
+                                                                        delete window['req' + this.getRequestID]
+                                                                        delete window['res' + this.getRequestID]
                                                                         delete this.getRequest
-                                                                        delete window.res
-                                                                        delete window.req
-                                                                        delete window.httpRequest
+                                                                        delete this.getRequestID
                                                                         if (window.SSJSKey) {
                                                                             delete window.SSJSKey
                                                                         }
                                                                         this.finish()
                                                                     }
                                                                     // Mount the file using a blob. Chrome's content security policy will not allow eval()
-                                                                    var contents = '(function() {\nvar handler = function(req, res, httpRequest) {\n' + e.target.result + '\n};\nhandler(window.req' + this.getRequestID + ', window.res' + this.getRequestID + ', window.httpRequest)\n})();'
+                                                                    var contents = '(function() {\nvar handler = function(req, res, httpRequest) {\n' + e.target.result + '\n};\nhandler(window.req' + this.getRequestID + ', window.res' + this.getRequestID + ', WSC.ChromeSocketXMLHttpRequest)\n})();'
                                                                     var contents = new TextEncoder('utf-8').encode(contents)
                                                                     var blob = new Blob([contents], {type : 'text/javascript'})
                                                                     this.getRequest = document.createElement("script")
@@ -981,8 +990,10 @@
                                                             }.bind(this)
                                                             reader.readAsText(file)
                                                         }.bind(this))
+                                                    } else if (file.isDirectory) {
+                                                        this.error('SSJS cannot be performed on a directory', 500)
                                                     } else {
-                                                        excludedothtmlcheck.bind(this)()
+                                                        this.error('<h1>404 - File not found</h1>', 404)
                                                     }
                                                 }.bind(this))
                                             } else {

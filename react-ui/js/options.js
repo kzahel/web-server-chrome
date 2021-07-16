@@ -296,6 +296,12 @@ const options = {
     type: String,
     default: '/ipBlock.list'
   },
+  optIpBlockUndefined: {
+    label: 'Block requests with an undefined ip',
+    help: 'When the request has no ip address, terminate the connection',
+    type: Boolean,
+    default: false
+  },
   optModRewriteEnable: {
     label: 'Enable mod-rewrite (for SPA)',
     help: 'For SPA (single page apps) that support HTML5 history location',

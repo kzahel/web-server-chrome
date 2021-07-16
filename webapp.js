@@ -541,7 +541,14 @@
                     return
                 }
             }
-            
+            if (this.opts.optIpBlockUndefined && request.ip == 'undefined') {
+                var handler = new WSC.BaseHandler(request)
+                handler.app = this
+                handler.request = request
+                handler.error('<h1>403 - Forbidden</h1>', 403)
+                console.log('Blocked Request with an undefined ip address')
+                return
+            }
             if (request.path == this.opts.optIpBlockList) {
                 var handler = new WSC.BaseHandler(request)
                 handler.app = this

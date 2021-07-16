@@ -254,15 +254,29 @@
                                     this.htaccessError.bind(this)('missing request path')
                                     return
                                 }
+                                origdata[i].original_request_path = origdata[i].request_path
+                                origdata[i].filerequested = filerequested
+                                origdata[i].request_path = WSC.utils.htaccessFileRequested(origdata[i].request_path)
                                 if (origdata[i].type == 401 &&
                                     ! auth &&
                                     (origdata[i].request_path == filerequested || origdata[i].request_path == 'all files')) {
                                     var authdata = origdata[i]
                                     var auth = true
                                 }
-                                if (origdata[i].request_path == filerequested && origdata[i].type == 'POSTkey' && ! filefound) {
-                                    var data = origdata[i]
-                                    var filefound = true
+                                if (origdata[i].type == 'POSTkey' && ! filefound) {
+                                    if (this.request.origpath.split('/').pop() == origdata[i].original_request_path || 
+                                            (origdata[i].original_request_path.split('.').pop() == 'html' && 
+                                            origdata[i].original_request_path.split('/').pop().split('.')[0] == this.request.origpath.split('/').pop() &&
+                                            this.app.opts.optExcludeDotHtml) ||
+                                            (origdata[i].original_request_path.split('/').pop() == 'index.html' && 
+                                            this.request.origpath.endsWith('/') &&
+                                            this.app.opts.optRenderIndex) ||
+                                            (origdata[i].original_request_path.split('.').pop() == 'htm' && 
+                                            origdata[i].original_request_path.split('/').pop().split('.')[0] == this.request.origpath.split('/').pop()) && 
+                                            this.app.opts.optExcludeDotHtml && this.app.opts.optExcludeDotHtm) {
+                                        var data = origdata[i]
+                                        var filefound = true
+                                    }
                                 }
                             }
                             // Still need to validate POST key
@@ -693,7 +707,16 @@
                                             }
                                         }
                                         if (origdata[i].type == 'serverSideJavaScript' && ! filefound) {
-                                            if (this.request.origpath.split('/').pop() == origdata[i].original_request_path || (origdata[i].original_request_path.split('.').pop() == 'html' && origdata[i].original_request_path.split('/').pop().split('.')[0] == this.request.origpath.split('/').pop())) {
+                                            if (this.request.origpath.split('/').pop() == origdata[i].original_request_path || 
+                                                    (origdata[i].original_request_path.split('.').pop() == 'html' && 
+                                                    origdata[i].original_request_path.split('/').pop().split('.')[0] == this.request.origpath.split('/').pop() &&
+                                                    this.app.opts.optExcludeDotHtml) ||
+                                                    (origdata[i].original_request_path.split('/').pop() == 'index.html' && 
+                                                    this.request.origpath.endsWith('/') &&
+                                                    this.app.opts.optRenderIndex) ||
+                                                    (origdata[i].original_request_path.split('.').pop() == 'htm' && 
+                                                    origdata[i].original_request_path.split('/').pop().split('.')[0] == this.request.origpath.split('/').pop() && 
+                                                    this.app.opts.optExcludeDotHtml && this.app.opts.optExcludeDotHtm)) {
                                                 var data = origdata[i]
                                                 var filefound = true
                                             }
@@ -797,13 +820,13 @@
                                                                             var modified = WSC.utils.lastModified(filee.modificationTime)
                                                                             var filesizestr = WSC.utils.humanFileSize(filee.size)
                                                                             var modifiedstr = WSC.utils.lastModifiedStr(filee.modificationTime)
-																			if (! results[w].name.startsWith('.')) {
-																				if (rawname != 'wsc.htaccess' || this.app.opts.optDirListingHtaccess) {
-																					html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
-																				}
-																			} else if (this.app.opts.optDotFilesDirListing) {
-																				html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
-																			}
+                                                                            if (! results[w].name.startsWith('.')) {
+                                                                                if (rawname != 'wsc.htaccess' || this.app.opts.optDirListingHtaccess) {
+                                                                                    html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+                                                                                }
+                                                                            } else if (this.app.opts.optDotFilesDirListing) {
+                                                                                html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+                                                                            }
                                                                             if (i != results.length - 1) {
                                                                                 i++
                                                                                 sendFile.bind(this, results)()
@@ -1205,13 +1228,13 @@
                     var filesizestr = WSC.utils.humanFileSize(file.size)
                     var modifiedstr = WSC.utils.lastModifiedStr(file.modificationTime)
                     // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
-					if (! results[w].name.startsWith('.')) {
-						if (rawname != 'wsc.htaccess' || this.app.opts.optDirListingHtaccess) {
-							html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
-						}
-					} else if (this.app.opts.optDotFilesDirListing) {
-						html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
-					}
+                    if (! results[w].name.startsWith('.')) {
+                        if (rawname != 'wsc.htaccess' || this.app.opts.optDirListingHtaccess) {
+                            html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+                        }
+                    } else if (this.app.opts.optDotFilesDirListing) {
+                        html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+                    }
                     if (w != results.length - 1) {
                         w++
                         sendFileList.bind(this, results)()
@@ -1254,13 +1277,13 @@
                 if (results[i].isDirectory) {
                     html.push('<li class="directory"><a href="' + name + '/?static=1">' + name + '</a></li>')
                 } else {
-					if (! results[i].name.startsWith('.')) {
-						if (name != 'wsc.htaccess' || this.app.opts.optDirListingHtaccess) {
-							html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
-						}
-					} else if (this.app.opts.optDotFilesDirListing) {
-						html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
-					}
+                    if (! results[i].name.startsWith('.')) {
+                        if (name != 'wsc.htaccess' || this.app.opts.optDirListingHtaccess) {
+                            html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
+                        }
+                    } else if (this.app.opts.optDotFilesDirListing) {
+                        html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
+                    }
                 }
             }
             html.push('</ul></html>')

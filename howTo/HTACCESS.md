@@ -12,7 +12,8 @@
 <p>302 - Found. Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser</p>
 <p>307 - Temporary Redirect. Tells the server that when chosen file is requested to move to a different directory or file. Not cached by the browser.</p>
 <p>401 - Unauthorized. The page will require login. For some reason, I cannot find how to clear the cache of the authorization header, which means that once you type it in, the browser will not ask for a login, unless you have multiple password protected pages with different passwords, The authentication header will change whenever you enter a different password.</p>
-<p>403 - Forbidden. This will deny direct access to image/video/audio files. This option only works if https is enabled or if the user is on a localhost address.</p>
+<p>403 - blocks any request to the file</p>
+<p>denyDirectAccess - This will deny direct access to image/video/audio files. This option only works if https is enabled or if the user is on a localhost address.</p>
 <p>Render Directory Listing - Ignores the value of 404 instead of directory listing and renders the directory listing</p>
 <p>Deny deleting for a specific file or directory - Ignores value of delete option and will deny delete to requested file</p>
 <p>Allow deleting for certian file - Ignores value of delete option and will allow deleting requested file</p>
@@ -102,14 +103,14 @@ To use option for all files, the value of request path will be 'all files' It sh
 ]
 ```
 <br>
-<h2>403 Example</h2>
+<h2>denyDirectAccess Example</h2>
 <p>This will deny direct access to image/video/audio files. This option only works if https is enabled or if the user is on a localhost address.</p>
 
 ```
 [
     {
         "request_path": "name of file you want to modify",
-        "type": 403
+        "type": "denyDirectAccess"
     }
 ]
 ```
@@ -169,6 +170,18 @@ To use option for all files, the value of request path will be 'all files' It sh
     {
         "request_path": "name of file you want to modify",
         "type": "allow delete"
+    }
+]
+```
+<br>
+<h2>403 - Block File</h2>
+<p>Just blocks the file</p>
+
+```
+[
+    {
+        "request_path": "name of file you want to modify",
+        "type": 403
     }
 ]
 ```
@@ -249,7 +262,7 @@ The end result will be
 [
     {
         "request_path": "name of file you want to modify",
-        "type": "send directory contents"
+        "type": "send directory contents",
         "dir_to_send": "../somepath/"
     }
 ]
@@ -285,7 +298,7 @@ This feature CANNOT use the `all files` value for the `request_path` field. You 
 [
     {
         "request_path": "name of file you want to modify",
-        "type": "serverSideJavaScript"
+        "type": "serverSideJavaScript",
         "key": "ATonOfRaNdOmNumbersAndLetters"
     }
 ]

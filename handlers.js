@@ -134,6 +134,10 @@
                                         this.htaccessError.bind(this)('missing request path')
                                         return
                                     }
+                                    if (origdata[i].type == 403 && origdata[i].request_path == filerequested) {
+                                        this.error('<h1>403 - Forbidden</h1>', 403)
+                                        return
+                                    }
                                     if ((origdata[i].request_path == filerequested && origdata[i].type == 'POSTkey') ||
                                         (origdata[i].request_path == filerequested && origdata[i].type == 'serverSideJavaScript')) {
                                         this.error('bad request', 403)
@@ -262,6 +266,10 @@
                                     (origdata[i].request_path == filerequested || origdata[i].request_path == 'all files')) {
                                     var authdata = origdata[i]
                                     var auth = true
+                                }
+                                if (origdata[i].type == 403 && origdata[i].request_path == filerequested) {
+                                    this.error('<h1>403 - Forbidden</h1>', 403)
+                                    return
                                 }
                                 if (origdata[i].type == 'POSTkey' && ! filefound) {
                                     if (this.request.origpath.split('/').pop() == origdata[i].original_request_path || 
@@ -767,7 +775,7 @@
                                                 this.responseLength = 0
                                                 this.writeHeaders(data.type)
                                                 this.finish()
-                                            } else if (data.type == 403) {
+                                            } else if (data.type == 'denyDirectAccess') {
                                                 var method = this.request.headers['sec-fetch-dest']
                                                 //console.log(method)
                                                 if (method == "document") {
@@ -775,6 +783,8 @@
                                                 } else {
                                                     excludedothtmlcheck.bind(this)()
                                                 }
+                                            } else if (data.type == 403) {
+                                                this.error('<h1>403 - Forbidden</h1>', 403)
                                             } else if (data.type == 'directory listing') {
                                                 function finished(results) {
                                                     if (this.request.arguments.json == '1' ||
@@ -788,9 +798,7 @@
                                                         this.renderDirectoryListingTemplate(results)
                                                     }
                                                 }
-
                                                 this.getDirContents(entry, finished.bind(this))
-
                                             } else if (data.type == 'send directory contents') {
                                                 if (! data.dir_to_send || data.dir_to_send.replace(' ', '') == '') {
                                                     data.dir_to_send = './'
@@ -1344,14 +1352,9 @@
                         results.isFile = false
                         callback(results)
                     })
-                } else if (file && ! file.error) {
-                    file.file(function(file) {
-                        callback(file)
-                    })
                 } else {
                     callback(file)
                 }
-                
             }.bind(this))
         },
         writeFile: function(path, data, allowReplaceFile, callback) {

@@ -1,4 +1,4 @@
-.
+
 <h1>How to use Server Side POST</h1>
 <br>
 <h2>How it works</h2>
@@ -85,20 +85,25 @@ Instead of `Cookie: name=value`, you would put `res.setHeader('Cookie', 'name=va
 
 `res.getFile(path, callback)`: function
 This function will read a file. Relative urls are supported.
-If the requested path is a directory, the callback function will be called with a listing of all the files in a directory. If you would like to use a file from there you must use the file.file() function.
+If the requested path is a directory, the callback function will be called with a listing of all the files in a directory.
+To call the file use the `file.file()` function
 Example: 
 ```
 `res.getFile('../test.txt', function(file) {
-	if (file.isFile) {
-		//if the file is a file, you can read and do whatever. You will need to use a FileReader to read the file.
-	}
-	if (file.isDirectory) {
-		// This will return an array of all of the files in the directory. To use a file (as you do with file.isFile) you must use file.file() as shown below
-		file[5].file(function(file) {
-			console.log(file)
-		})
-	}
-}
+    if (file.error) {
+        console.log('error')
+    } else if (file.isFile) {
+        file.file(function(file) { // you must use the file.file() function to call the file.
+            
+            //if the file is a file, you can read and do whatever. You will need to use a FileReader to read the file.
+        })
+    } else if (file.isDirectory) {
+        // This will return an array of all of the files in the directory. To use a file you must use file.file() as shown below
+        file[2].file(function(file) {
+            console.log(file)
+        })
+    }
+})
 ```
 
 `res.contentType(type)`: function
@@ -119,6 +124,21 @@ callback: function will be excecuted to tell you if there was an error or succes
 
 `res.writeCode(httpCode)`: function
 Call this to respond with no message. Dont forget to finish with `res.end()`
+
+`res.renderFileContents`: function
+Once you have called the file with `res.getFile()` (DO NOT use the `file.file()` function) use `res.renderFileContents()` to render the file
+Example:
+```
+`res.getFile('../somefile.html', function(file) {
+    if (file.error) {
+        console.log('error')
+    } else if (file.isFile) {
+        res.renderFileContents(file)
+    } else if (file.isDirectory) {
+        res.renderFileContents(file[2])
+    }
+})
+```
 
 <h2>Chunked encoding</h2>
 

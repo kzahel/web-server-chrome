@@ -356,6 +356,18 @@ const options = {
     type: Boolean,
     default: false
   },
+  optDirListingHtaccess: {
+    label: 'Show in directory listing',
+    help: 'Htaccess files will show in directory listing',
+    type: Boolean,
+    default: false
+  },
+  optDotFilesDirListing: {
+    label: 'Show dot files in directory listing',
+    help: 'Show/hide files starting with dot',
+    type: Boolean,
+    default: false
+  },
   optUseHttps: {
     label: 'Use https://',
     help: 'Serve pages through https://',

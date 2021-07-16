@@ -797,9 +797,13 @@
                                                                             var modified = WSC.utils.lastModified(filee.modificationTime)
                                                                             var filesizestr = WSC.utils.humanFileSize(filee.size)
                                                                             var modifiedstr = WSC.utils.lastModifiedStr(filee.modificationTime)
-                                                                            if (rawname != 'wsc.htaccess') {
-                                                                                html.push('<script>addRow("'+rawname+'", "'+name+'", '+isdirectory+', '+filesize+', "'+filesizestr+'", '+modified+', "'+modifiedstr+'")</script>')
-                                                                            }
+																			if (! results[w].name.startsWith('.')) {
+																				if (rawname != 'wsc.htaccess' || this.app.opts.optDirListingHtaccess) {
+																					html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+																				}
+																			} else if (this.app.opts.optDotFilesDirListing) {
+																				html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+																			}
                                                                             if (i != results.length - 1) {
                                                                                 i++
                                                                                 sendFile.bind(this, results)()
@@ -1201,9 +1205,13 @@
                     var filesizestr = WSC.utils.humanFileSize(file.size)
                     var modifiedstr = WSC.utils.lastModifiedStr(file.modificationTime)
                     // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
-                    if (rawname != 'wsc.htaccess') {
-                        html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
-                    }
+					if (! results[w].name.startsWith('.')) {
+						if (rawname != 'wsc.htaccess' || this.app.opts.optDirListingHtaccess) {
+							html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+						}
+					} else if (this.app.opts.optDotFilesDirListing) {
+						html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+					}
                     if (w != results.length - 1) {
                         w++
                         sendFileList.bind(this, results)()
@@ -1246,9 +1254,13 @@
                 if (results[i].isDirectory) {
                     html.push('<li class="directory"><a href="' + name + '/?static=1">' + name + '</a></li>')
                 } else {
-                    if (name != 'wsc.htaccess') {
-                        html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
-                    }
+					if (! results[i].name.startsWith('.')) {
+						if (name != 'wsc.htaccess' || this.app.opts.optDirListingHtaccess) {
+							html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
+						}
+					} else if (this.app.opts.optDotFilesDirListing) {
+						html.push('<li><a href="' + name + '?static=1">' + name + '</a></li>')
+					}
                 }
             }
             html.push('</ul></html>')

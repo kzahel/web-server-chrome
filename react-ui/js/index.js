@@ -318,7 +318,8 @@ class App extends React.Component {
       optCORS: null,
       optIPV6: null,
       optStatic: null,
-      optUpload: null,
+	  optDotFilesDirListing: null,
+      optUpload: null
     };
     const optUploadOptions = {
       optAllowReplaceFile: ['optUpload']
@@ -391,7 +392,8 @@ class App extends React.Component {
     const optHtaccessOptions = {
       optGETHtaccess: ['optScanForHtaccess'],
       optPUTPOSTHtaccess: ['optScanForHtaccess'],
-      optDELETEHtaccess: ['optScanForHtaccess']
+      optDELETEHtaccess: ['optScanForHtaccess'],
+	  optDirListingHtaccess: ['optScanForHtaccess']
     };
     const optRewrite = {
       optModRewriteEnable: null

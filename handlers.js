@@ -452,7 +452,7 @@
                 this.write("error: need to select a directory to serve",500)
                 return
             }
-            this.request.isVersioning == false
+            this.request.isVersioning = false
             //var path = decodeURI(this.request.path)
 
             if (this.app.opts.optCacheControl) {

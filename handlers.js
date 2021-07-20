@@ -729,6 +729,10 @@
                                                 var filefound = true
                                             }
                                         }
+										if ((origdata[i].request_path == filerequested || origdata[i].request_path == 'all files') && origdata[i].type == 'versioning' && ! filefound && && ! this.request.isVersioning) {
+											var data = origdata[i]
+											var filefound = true
+										}
                                         if ((origdata[i].request_path == filerequested || origdata[i].request_path == 'all files') &&
                                             ! filefound &&
                                             origdata[i].type != 'allow delete' &&
@@ -740,7 +744,8 @@
                                             origdata[i].type != 'additional header' &&
                                             origdata[i].type != 'send directory contents' &&
                                             origdata[i].type != 'POSTkey' &&
-                                            origdata[i].type != 'serverSideJavaScript') {
+                                            origdata[i].type != 'serverSideJavaScript' &&
+											origdata[i].type != 'versioning') {
                                                 var data = origdata[i]
                                                 //console.log(data)
                                                 var filefound = true

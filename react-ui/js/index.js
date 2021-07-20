@@ -111,10 +111,6 @@ const functions = {
     console.assert(typeof val === 'string')
     app.webapp.updateOption('optCustom404usevarvar', val);
   },
-  optUsebasicauth: (app, k, val) => {
-    console.assert(typeof val === 'string')
-    app.webapp.updateOption('optUsebasicauth', val);
-  },
   optAuthUsername: (app, k, val) => {
     console.assert(typeof val === 'string')
     app.webapp.updateOption('optAuthUsername', val);

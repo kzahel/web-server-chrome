@@ -575,6 +575,12 @@ class App extends React.Component {
 
       <Card className={this.classes.card}>
         <CardContent>
+          <p>Chrome Apps are going away. As a result, this app has been translated to a standalone app. <a target="_blank" href="https://github.com/terreng/web-server/releases/">Download here!</a></p>
+        </CardContent>
+      </Card>
+
+      <Card className={this.classes.card}>
+        <CardContent>
 
           <FormGroup>
             <Tooltip title={'Click to start or stop the web server'}>

@@ -356,7 +356,7 @@
                                                         this.finish()
                                                     }
                                                     // Mount the file using a blob. Chrome's content security policy will not allow eval()
-                                                    var contents = '(function() {\nvar handler = function(req, res, httpRequest) {\n' + e.target.result + '\n};\nhandler(window.req' + this.postRequestID + ', window.res' + this.postRequestID + ', WSC.ChromeSocketXMLHttpRequest)\n})();'
+                                                    var contents = '(function() {\nvar handler = function(req, res, httpRequest, appInfo) {\n' + e.target.result + '\n};\nhandler(window.req' + this.postRequestID + ', window.res' + this.postRequestID + ', WSC.ChromeSocketXMLHttpRequest, {"server": "Web Server for Chrome"})\n})();'
                                                     var contents = new TextEncoder('utf-8').encode(contents)
                                                     var blob = new Blob([contents], {type : 'text/javascript'})
                                                     this.postRequest = document.createElement("script")
@@ -1017,7 +1017,7 @@
                                                                         this.finish()
                                                                     }
                                                                     // Mount the file using a blob. Chrome's content security policy will not allow eval()
-                                                                    var contents = '(function() {\nvar handler = function(req, res, httpRequest) {\n' + e.target.result + '\n};\nhandler(window.req' + this.getRequestID + ', window.res' + this.getRequestID + ', WSC.ChromeSocketXMLHttpRequest)\n})();'
+                                                                    var contents = '(function() {\nvar handler = function(req, res, httpRequest, appInfo) {\n' + e.target.result + '\n};\nhandler(window.req' + this.getRequestID + ', window.res' + this.getRequestID + ', WSC.ChromeSocketXMLHttpRequest, {"server": "Web Server for Chrome"})\n})();'
                                                                     var contents = new TextEncoder('utf-8').encode(contents)
                                                                     var blob = new Blob([contents], {type : 'text/javascript'})
                                                                     this.getRequest = document.createElement("script")

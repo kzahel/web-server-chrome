@@ -207,7 +207,7 @@ To send data, you can use: `request.send(data)`
 This window variable is a place that you can store data if you need. It will NOT be cleared after the end of the response.
 
 
-<p>Want to create a script compatible between Web Server for Chrome and <a href="https://github.com/terreng/web-server">this server</a>?</p>
+<p>Want to create a script compatible between Web Server for Chrome and <a href="https://github.com/terreng/simple-web-server">this server</a>?</p>
 
 The `appInfo` variable will tell you which server you are using
 

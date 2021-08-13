@@ -12,13 +12,15 @@ const {
   Toolbar,
   Typography,
   Button,
-  ThemeProvider,
+  ThemeProvider
 } = MaterialUI
+
+const {Alert} = MaterialUILab;
 
 const {createMuiTheme, colors, withStyles} = MaterialUI;
 const styles = {
   card: {margin: '10px'},
-  appicon: {marginRight: '10px'},
+  appicon: {marginRight: '10px'}
 };
 const theme = createMuiTheme({
   palette: {
@@ -84,7 +86,25 @@ const functions = {
 			webapp.opts.optBackground = val
 			bg.backgroundSettingChange({'optBackground':val})
 		}
-	}
+  },
+  optPrivateKey: (app, k, val) => {
+    //console.log('privateKey')
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optPrivateKey', val);
+  },
+  optCertificate: (app, k, val) => {
+    //console.log('certificate');
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCertificate', val);
+  },
+  optUseHttps: (app, k, val) => {
+    console.log("useHttps", val);
+    app.webapp.updateOption('optUseHttps', val);
+    if (app.webapp.started) {
+      app.webapp.stop();
+      app.webapp.start();
+    }
+  }
 };
 
 
@@ -118,7 +138,7 @@ class App extends React.Component {
     starting: false,
     lasterr: null,
     folder: null,
-    message: '',
+    message: ''
   }
   constructor(props) {
     super(props)
@@ -133,7 +153,12 @@ class App extends React.Component {
   }
   settings_ready() {
     const allOpts = this.appOptions.getAll()
-    console.log('fetched local settings', this.appOptions, allOpts)
+    let dCpy = {};
+    Object.assign(dCpy, allOpts);
+    delete dCpy.optPrivateKey;// dont fill logs with crypto info
+    delete dCpy.optCertificate;
+
+    console.log('fetched local settings', this.appOptions, dCpy)
     this.webapp = this.bg.get_webapp(allOpts) // retainStr in here
     this.bg.WSC.VERBOSE = this.bg.WSC.DEBUG = this.appOptions.get('optVerbose')
     this.webapp.on_status_change = this.on_webapp_change.bind(this)
@@ -173,6 +198,22 @@ class App extends React.Component {
       port: this.webapp.port,
       interfaces: this.webapp.urls.slice()
     })
+  }
+  gen_crypto() {
+  	let reasonStr = this.webapp.opts.optPrivateKey ? "private key" :
+  	                   this.webapp.opts.optCertificate ? "certificate" : "";
+  	if (reasonStr) {
+      console.warn("Would overwrite existing " + reasonStr + ", erase it first\nMake sure to save a copy first");
+      return;
+    }
+    let cn = "WebServerForChrome" + (new Date()).toISOString();
+    let data = this.webapp.createCrypto(cn);
+    this.appOptions.set('optPrivateKey', data[cn].privateKey);
+    this.appOptions.set('optCertificate', data[cn].cert);
+    this.webapp.updateOption('optPrivateKey', data[cn].privateKey);
+    this.webapp.updateOption('optCertificate', data[cn].cert);
+    this.setState({optPrivateKey: data[cn].privateKey, optCertificate: data[cn].cert});
+    setTimeout(this.render, 50); // prevent race condition when ReactElement get set before opts have value
   }
   ui_ready() {
     if (this.webapp) {
@@ -225,9 +266,14 @@ class App extends React.Component {
       optModRewriteEnable: null,
       optModRewriteRegexp: ['optModRewriteEnable'],
       optModRewriteNegate: ['optModRewriteEnable'],
-      optModRewriteTo: ['optModRewriteEnable']
-    }
-    console.assert(this)
+      optModRewriteTo: ['optModRewriteEnable'],
+      optUseHttps: null
+    };
+    const optHttpsInfo = {
+      optPrivateKey: null,
+      optCertificate: null
+    };
+    console.assert(this);
 
     const renderOpts = (opts) => {
       const _this = this;
@@ -253,6 +299,20 @@ class App extends React.Component {
       this.setState({showAdvanced: !this.state.showAdvanced})
     }}
     >{this.state.showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}</a></div>)
+
+    const httpsOptions = (() => {
+      let disable = (!this.webapp || !this.webapp.opts.optUseHttps);
+      let hasCrypto = this.webapp && (this.webapp.opts.optPrivateKey || this.webapp.opts.optCertificate);
+      const textBoxes = renderOpts(optHttpsInfo)
+      return [(<div style={{paddingLeft: 20}}>{!disable && textBoxes}
+        {hasCrypto && !disable && <Alert severity="info">To regenerate, remove key and cert. Be sure to take a copy first, for possible later use!</Alert>}
+        {!disable && <Button variant="contained" key="crytobtn" disabled={hasCrypto  ? true : false} onClick={e => {
+				  e.preventDefault();
+				  this.gen_crypto();
+				}}>Generate crypto</Button>}
+	  </div>)];
+    })();
+
     const {state} = this;
     return (<div>
       <ThemeProvider theme={theme}>
@@ -316,7 +376,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}</div>}
+          {state.showAdvanced && <div>{advOptions}{httpsOptions}</div> }
         </CardContent>
       </Card>
 

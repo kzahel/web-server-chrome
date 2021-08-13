@@ -1,0 +1,1 @@
+run `yarn make` or `npm run make` to build the dependency bundle for the main app

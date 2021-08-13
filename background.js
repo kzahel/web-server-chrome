@@ -33,7 +33,11 @@ function onchoosefolder(entry) {
 
 function settings_ready(d) {
     localOptions = d
-	console.log('settings:',d)
+    let dCpy = {};
+    Object.assign(dCpy, d);
+    delete dCpy.optPrivateKey;// dont fill logs with crypto info
+    delete dCpy.optCertificate;
+	console.log('settings:',dCpy) 
 	setTimeout( maybeStartup, 2000 ) // give background accept handler some time to trigger
     //chrome.alarms.getAll( onAllAlarms )
 }

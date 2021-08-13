@@ -88,6 +88,7 @@ handlers is an array of 2 element arrays where the first item is a regular expre
 
 ```
 cd web-server-chrome
+mkdir assets
 cd makedeps
 npm install
 npm run make # this builds the app dependencies such as react and material-ui into a bundle

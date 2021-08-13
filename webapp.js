@@ -1,5 +1,4 @@
 (function(){
-    var sockets = chrome.sockets
 
     function WebApplication(opts) {
         // need to support creating multiple WebApplication...
@@ -94,6 +93,7 @@
                 lasterr: this.lasterr
             }
         },
+        createCrypto: WSC.createCrypto,
         updatedSleepSetting: function() {
             if (! this.started) {
                 chrome.power.releaseKeepAwake()
@@ -326,20 +326,22 @@
             //console.log('onListen',result)
             this.starting = false
             this.started = true
-            console.log('Listening on','http://'+ this.get_host() + ':' + this.port+'/')
+            let prot = this.opts.optUseHttps ? 'https' : 'http';
+            console.log('Listening on',prot+'://'+ this.get_host() + ':' + this.port+'/')
             this.bindAcceptCallbacks()
             this.init_urls()
             this.start_success({urls:this.urls}) // initialize URLs ?
         },
         init_urls: function() {
             this.urls = [].concat(this.extra_urls)
-            this.urls.push({url:'http://127.0.0.1:' + this.port})
+			let prot = this.opts.optUseHttps ? 'https' : 'http';
+            this.urls.push({url:prot+'://127.0.0.1:' + this.port})
             for (var i=0; i<this.interfaces.length; i++) {
                 var iface = this.interfaces[i]
                 if (iface.prefixLength === 64) {
-                    this.urls.push({url:'http://['+iface.address+']:' + this.port})
+                    this.urls.push({url:prot+'://['+iface.address+']:' + this.port})
                 } else {
-                    this.urls.push({url:'http://'+iface.address+':' + this.port})
+                    this.urls.push({url:prot+'://'+iface.address+':' + this.port})
                 }
             }
             return this.urls
@@ -348,7 +350,7 @@
             return this.port + i*3 + Math.pow(i,2)*2
         },
         tryListenOnPort: function(state, callback) {
-            sockets.tcpServer.getSockets( function(sockets) {
+            chrome.sockets.tcpServer.getSockets( function(sockets) {
                 if (sockets.length == 0) {
                     this.doTryListenOnPort(state, callback)
                 } else {
@@ -367,15 +369,15 @@
         },
         doTryListenOnPort: function(state, callback) {
 			var opts = this.opts.optBackground ? {name:"WSCListenSocket", persistent:true} : {}
-            sockets.tcpServer.create(opts, this.onServerSocket.bind(this,state,callback))
+            chrome.sockets.tcpServer.create(opts, this.onServerSocket.bind(this,state,callback))
         },
         onServerSocket: function(state,callback,sockInfo) {
             var host = this.get_host()
             this.sockInfo = sockInfo
             var tryPort = this.computePortRetry(state.port_attempts)
-            state.port_attempts++
-            //console.log('attempting to listen on port',host,tryPort)
-            sockets.tcpServer.listen(this.sockInfo.socketId,
+            state.port_attempts++;
+            console.log('attempting to listen on port',host,tryPort)
+            chrome.sockets.tcpServer.listen(this.sockInfo.socketId,
                                      host,
                                      tryPort,
                                      function(result) {
@@ -461,8 +463,8 @@
             }
         },
         bindAcceptCallbacks: function() {
-            sockets.tcpServer.onAcceptError.addListener(this.onAcceptError.bind(this))
-            sockets.tcpServer.onAccept.addListener(this.onAccept.bind(this))
+            chrome.sockets.tcpServer.onAcceptError.addListener(this.onAcceptError.bind(this))
+            chrome.sockets.tcpServer.onAccept.addListener(this.onAccept.bind(this))
         },
         onAcceptError: function(acceptInfo) {
             if (acceptInfo.socketId != this.sockInfo.socketId) { return }
@@ -474,7 +476,13 @@
             //console.log('onAccept',acceptInfo,this.sockInfo)
             if (acceptInfo.socketId != this.sockInfo.socketId) { return }
             if (acceptInfo.socketId) {
-                var stream = new WSC.IOStream(acceptInfo.clientSocketId)
+                let stream;
+                if (this.opts.optUseHttps) {
+                    //this._initializeTls();
+                    //this._tls.handshake(null); // No handshake in server mode
+                    stream = new WSC.IOStreamTls(acceptInfo.clientSocketId, this.opts.optPrivateKey, this.opts.optCertificate);
+                } else
+                    stream = new WSC.IOStream(acceptInfo.clientSocketId)
                 this.adopt_stream(acceptInfo, stream)
             }
         },
@@ -569,7 +577,8 @@
                 handler.finish()
             }
         }
-    }
+  };
+
 
     function BaseHandler() {
         this.headersWritten = false

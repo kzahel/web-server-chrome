@@ -56,18 +56,6 @@ res contains all the functions to respond, while req contains all the request in
 
 *NOTE* - You can use BOTH server side javascript and Server Side POST in the same file! Just declare 2 seperate keys in the htaccess and in the file!
 
-IMPORTANT INFORMATION - When writing the file, DO NOT surround the file in a function as you would normally do
-Do not do:
-```
-(function() {
-awefioeeai.somecode()
-
-})();
-```
-If you need to use browserify on your file, just remove the `(function() {` at the beggining and the `})();` at the end.
-
-DO NOT WORRY. This is to prevent problems with the res and req variables. Your script will be excecuted inside a function, so all return statements will work correctly
-
 
 <h1>res Commands</h1>
 

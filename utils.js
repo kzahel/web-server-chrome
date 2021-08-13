@@ -101,7 +101,7 @@
                     // . means current directory. Leave this here for spacing
                 } else if (split2[w] == '..') {
                     if (split1.length > 0) {
-                        var split1 = split1.splice(-1,1)
+                        var split1 = WSC.utils.stripOffFile(split1.join('/')).split('/')
                     }
                 } else {
                     split1.push(split2[w])

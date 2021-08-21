@@ -101,11 +101,18 @@
                         var kv = items[i].replace(/\+/g, ' ').split('=')
                         bodyparams[ decodeURIComponent(kv[0]) ] = decodeURIComponent(kv[1])
                     }
-                    req.bodyparams = bodyparams
+                    this.curRequest.bodyparams = bodyparams
                 }
             }
             this.curRequest.body = body
-            this.onRequest(this.curRequest)
+            if (['GET','HEAD','PUT','POST','DELETE','OPTIONS'].includes(method)) {
+                this.onRequest(this.curRequest)
+            } else {
+                console.error('how to handle',this.curRequest)
+                // leaving the connection open will slow the server
+                this.curRequest.connection.write('HTTP/1.1 501 Not Implemented\r\ncontent-length: 0\r\n\r\n')
+                this.curRequest.connection.stream.close()
+            }
         },
         onRequest: function(request) {
             this.onRequestCallback(request)

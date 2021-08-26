@@ -131,7 +131,7 @@ function triggerKeepAwake() {
     // HACK: make an XHR to cause onSuspendCanceled event
     console.log('triggerKeepAwake')
     var xhr = new XMLHttpRequest
-    let prot = this.opts.optUseHttps ? 'https' : 'http';
+    let prot = app.opts.optUseHttps ? 'https' : 'http';
     xhr.open("GET",prot+"://127.0.0.1:" + (localOptions.port || 8887) + '/dummyUrlPing')
     function onload(evt) {
         console.log('triggerKeepAwake XHR loaded',evt)

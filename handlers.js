@@ -322,17 +322,10 @@
                                         file.file(function(file) {
                                             var reader = new FileReader()
                                             reader.onload = function(e) {
-                                                var contents = e.target.result.split('\n')
                                                 var validFile = false
-                                                for (var i=0; i<contents.length; i++) {
-                                                    contents[i] = contents[i].replaceAll('\t', '').replaceAll('\n', '').replaceAll('\r', '')
-                                                    if (contents[i].startsWith('postKey')) {
-                                                        var postkey = contents[i].split('=').pop().replaceAll(' ', '').replaceAll('"', '').replaceAll('\'', '')
-                                                        if (postkey == data.key) {
-                                                            var validFile = true
-                                                            break
-                                                        }
-                                                    }
+                                                var key = e.target.result.split('postKey')
+                                                if (key.length > 1 && key[1].replaceAll(' ', '').replaceAll('"', '\'').substring(2).split("'")[0] === data.key.replaceAll(' ', '')) {
+                                                    validFile = true
                                                 }
                                                 if (validFile) {
                                                     this.postRequestID = Math.random().toString().split('.').pop()
@@ -983,17 +976,10 @@
                                                         file.file(function(file) {
                                                             var reader = new FileReader()
                                                             reader.onload = function(e) {
-                                                                var contents = e.target.result.split('\n')
                                                                 var validFile = false
-                                                                for (var i=0; i<contents.length; i++) {
-                                                                    contents[i] = contents[i].replaceAll('\t', '').replaceAll('\n', '').replaceAll('\r', '')
-                                                                    if (contents[i].startsWith('SSJSKey')) {
-                                                                        var SSJSKey = contents[i].split('=').pop().replaceAll(' ', '').replaceAll('"', '').replaceAll('\'', '')
-                                                                        if (SSJSKey == data.key) {
-                                                                            var validFile = true
-                                                                            break
-                                                                        }
-                                                                    }
+                                                                var key = e.target.result.split('SSJSKey')
+                                                                if (key.length > 1 && key[1].replaceAll(' ', '').replaceAll('"', '\'').substring(2).split("'")[0] === data.key.replaceAll(' ', '')) {
+                                                                    validFile = true
                                                                 }
                                                                 if (validFile) {
                                                                     this.getRequestID = Math.random().toString().split('.').pop()
@@ -1220,61 +1206,36 @@
                                                                          isDirectory:f.isDirectory }
                                                               }), null, 2))
         },
-        renderDirectoryListingTemplate: function(results) {
+        renderDirectoryListingTemplate: async function(results) {
             if (! WSC.template_data) {
                 return this.renderDirectoryListing(results)
-            }
-            function DirRenderFinish() {
-                this.setHeader('content-type','text/html; charset=utf-8')
-                this.write(new TextEncoder('utf-8').encode(html.join('\n')).buffer)
-                this.finish()
-            }
-            function sendFileList() {
-                results[w].getMetadata(function(file) {
-                    //console.log(file)
-                    var rawname = results[w].name
-                    var name = encodeURIComponent(results[w].name)
-                    var isdirectory = results[w].isDirectory
-                    //var modified = '4/27/21, 10:38:40 AM'
-                    var modified = WSC.utils.lastModified(file.modificationTime)
-                    var filesize = file.size
-                    var filesizestr = WSC.utils.humanFileSize(file.size)
-                    var modifiedstr = WSC.utils.lastModifiedStr(file.modificationTime)
-                    // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
-                    if (! results[w].name.startsWith('.')) {
-                        if (rawname != 'wsc.htaccess' || this.app.opts.optDirListingHtaccess) {
-                            html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
-                        }
-                    } else if (this.app.opts.optDotFilesDirListing) {
-                        html.push('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
-                    }
-                    if (w != results.length - 1) {
-                        w++
-                        sendFileList.bind(this, results)()
-                    } else {
-                        DirRenderFinish.bind(this, results)()
-                    }
-                }.bind(this), function(error) {
-                    console.error('error reading metadata '+error)
-                    if (w != results.length - 1) {
-                        w++
-                        sendFileList.bind(this, results)()
-                    } else {
-                        DirRenderFinish.bind(this, results)()
-                    }
-                }.bind(this))
             }
             var html = [WSC.template_data]
             html.push('<script>start("'+this.request.origpath+'")</script>')
             if (this.request.origpath != '/') {
                 html.push('<script>onHasParentDirectory();</script>')
             }
-            var w = 0
-            if (results.length == 0) {
-                DirRenderFinish.bind(this)()
-                return
+            for (var i=0; i<results.length; i++) {
+                html.push(await new Promise(function(resolve, reject) {
+                    results[i].getMetadata(function(file) {
+                        var rawname = results[w].name
+                        var name = encodeURIComponent(results[w].name)
+                        var isdirectory = results[w].isDirectory
+                        //var modified = '4/27/21, 10:38:40 AM'
+                        var modified = WSC.utils.lastModified(file.modificationTime)
+                        var filesize = file.size
+                        var filesizestr = WSC.utils.humanFileSize(file.size)
+                        var modifiedstr = WSC.utils.lastModifiedStr(file.modificationTime)
+                        // raw, urlencoded, isdirectory, size, size as string, date modified, date modified as string
+                        if ((! results[w].name.startsWith('.') || this.app.opts.optDotFilesDirListing) && (rawname !== 'wsc.htaccess' || this.app.opts.optDirListingHtaccess)) {
+                            resolve('<script>addRow("'+rawname+'","'+name+'",'+isdirectory+',"'+filesize+'","'+filesizestr+'","'+modified+'","'+modifiedstr+'");</script>')
+                        }
+                    })
+                }))
             }
-            sendFileList.bind(this, results)()
+            this.setHeader('content-type','text/html; charset=utf-8')
+            this.write(new TextEncoder('utf-8').encode(html.join('\n')).buffer)
+            this.finish()
         },
         renderDirectoryListing: function(results) {
             var html = ['<html>']

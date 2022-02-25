@@ -210,6 +210,7 @@
             }
         },
         onChunkDone: function(data) {
+            var data = data.slice(0, data.byteLength - 2) // For some reason, the \r\n gets put into the arraybuffer
             this.chunks.add(data)
             this.stream.readUntil("\r\n", this.getNewChunk.bind(this))
         },

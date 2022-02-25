@@ -131,7 +131,8 @@ function triggerKeepAwake() {
     // HACK: make an XHR to cause onSuspendCanceled event
     console.log('triggerKeepAwake')
     var xhr = new XMLHttpRequest
-    xhr.open("GET","http://127.0.0.1:" + (localOptions.port || 8887) + '/dummyUrlPing')
+    let prot = app.opts.optUseHttps ? 'https' : 'http';
+    xhr.open("GET",prot+"://127.0.0.1:" + (localOptions.port || 8887) + '/dummyUrlPing')
     function onload(evt) {
         console.log('triggerKeepAwake XHR loaded',evt)
     }
@@ -283,7 +284,7 @@ function hidden_click_configure() {
 function create_hidden() {
     if (OS != 'Chrome') { return }
 
-    if (app.opts && app.opts.optBackground && app.opts.optAllInterfaces) {
+    if (app.opts.optBackground) {
         console.log('creating hidden window')
         var W = 300
         var H = 120

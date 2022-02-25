@@ -82,6 +82,36 @@
                 break
             }
         },
+        updateIpBlockList: function() {
+            if (! this.opts.optIpBlocking) {
+                return
+            }
+            if (! this.fs) {
+                return
+            }
+            this.fs.getByPath(this.opts.optIpBlockList, function(file) {
+                if (file && file.isFile && ! file.error) {
+                    file.file(function(file) {
+                        var reader = new FileReader()
+                        reader.onload = function(e) {
+                            var data = e.target.result
+                            try {
+                                window.ipBlockList = JSON.parse(data)
+                            } catch(e) {
+                                console.error('Failed to parse Ip block list')
+                            }
+                        }.bind(this)
+                        reader.readAsText(file)
+                    }.bind(this))
+                } else {
+                    console.error('Location of Ip block list was not found')
+                }
+            }.bind(this))
+        },
+        updateLogging: function() {
+            window.logging = false
+            WSC.saveLogs()
+        },
         get_info: function() {
             return {
                 interfaces: this.interfaces,
@@ -188,8 +218,8 @@
             if (true || this.opts.optPreventSleep) {
                 if (WSC.VERBOSE)
                     console.log('trying release keep awake')
-				if (chrome.power)
-					chrome.power.releaseKeepAwake()
+                if (chrome.power)
+                    chrome.power.releaseKeepAwake()
             }
             // TODO: remove hidden.html ensureFirewallOpen
             // also - support multiple instances.
@@ -278,10 +308,12 @@
                 console.error("already starting or started")
                 return
             }
+            this.updateIpBlockList()
             this.start_callback = callback
             this.stopped = false
             this.starting = true
             this.change()
+            WSC.saveLogs()
 
             // need to setup some things
             if (this.interfaces.length == 0 && this.opts.optAllInterfaces) {
@@ -313,16 +345,16 @@
         onPortmapResult: function(result) {
             var gateway = this.upnp.validGateway
             console.log('portmap result',result,gateway)
-			if (result && ! result.error) {
-				if (gateway.device && gateway.device.externalIP) {
-					var extIP = gateway.device.externalIP
-					this.extra_urls = [{url:'http://'+extIP+':' + this.port}]
-				}
-			}
+            if (result && ! result.error) {
+                if (gateway.device && gateway.device.externalIP) {
+                    var extIP = gateway.device.externalIP
+                    let prot = this.opts.optUseHttps ? 'https' : 'http';
+                    this.extra_urls = [{url:prot+'://'+extIP+':' + this.port}]
+                }
+            }
             this.onReady()
         },
         onReady: function() {
-            this.ensureFirewallOpen()
             //console.log('onListen',result)
             this.starting = false
             this.started = true
@@ -331,10 +363,11 @@
             this.bindAcceptCallbacks()
             this.init_urls()
             this.start_success({urls:this.urls}) // initialize URLs ?
+            this.ensureFirewallOpen()
         },
         init_urls: function() {
             this.urls = [].concat(this.extra_urls)
-			let prot = this.opts.optUseHttps ? 'https' : 'http';
+            let prot = this.opts.optUseHttps ? 'https' : 'http';
             this.urls.push({url:prot+'://127.0.0.1:' + this.port})
             for (var i=0; i<this.interfaces.length; i++) {
                 var iface = this.interfaces[i]
@@ -361,14 +394,14 @@
                         this.sockInfo = m
                         this.port = m.localPort
                         callback({port:m.localPort})
-						return
+                        return
                     }
-					this.doTryListenOnPort(state, callback)
+                    this.doTryListenOnPort(state, callback)
                 }
             }.bind(this))
         },
         doTryListenOnPort: function(state, callback) {
-			var opts = this.opts.optBackground ? {name:"WSCListenSocket", persistent:true} : {}
+            var opts = this.opts.optBackground ? {name:"WSCListenSocket", persistent:true} : {}
             chrome.sockets.tcpServer.create(opts, this.onServerSocket.bind(this,state,callback))
         },
         onServerSocket: function(state,callback,sockInfo) {
@@ -454,12 +487,8 @@
         },*/
         ensureFirewallOpen: function() {
             // on chromeOS, if there are no foreground windows,
-            if (this.opts.optAllInterfaces && chrome.app.window.getAll().length == 0) {
-                if (chrome.app.window.getAll().length == 0) {
-                    if (window.create_hidden) {
-                        create_hidden() // only on chrome OS
-                    }
-                }
+            if (this.opts.optAllInterfaces && chrome.app.window.getAll().length == 0 && window.create_hidden && this.webapp.started) {
+                create_hidden() // only on chrome OS
             }
         },
         bindAcceptCallbacks: function() {
@@ -473,6 +502,10 @@
             // set unpaused, etc
         },
         onAccept: function(acceptInfo) {
+            if (! window.ipBlockList) {
+                window.ipBlockList = [ ]
+            }
+            this.updateIpBlockList()
             //console.log('onAccept',acceptInfo,this.sockInfo)
             if (acceptInfo.socketId != this.sockInfo.socketId) { return }
             if (acceptInfo.socketId) {
@@ -496,16 +529,59 @@
             connection.tryRead()
         },
         onRequest: function(stream, connection, request) {
-            console.log('Request',request.method, request.uri)
+            console.log(request.ip + ':', 'Request',request.method, request.uri)
+            
+            if (this.opts.optIpBlocking) {
+                if (window.ipBlockList.includes(request.ip)) {
+                    var handler = new WSC.BaseHandler(request)
+                    handler.app = this
+                    handler.request = request
+                    handler.error('<h1>403 - Forbidden</h1>', 403)
+                    console.log('Blocked Request From ' + request.ip)
+                    return
+                }
+            }
+            if (this.opts.optIpBlockUndefined && request.ip == 'undefined') {
+                var handler = new WSC.BaseHandler(request)
+                handler.app = this
+                handler.request = request
+                handler.error('<h1>403 - Forbidden</h1>', 403)
+                console.log('Blocked Request with an undefined ip address')
+                return
+            }
+            if (request.path == this.opts.optIpBlockList) {
+                var handler = new WSC.BaseHandler(request)
+                handler.app = this
+                handler.request = request
+                handler.error('<h1>403 - Forbidden</h1>', 403)
+                return
+            }
+            
 
-            if (this.opts.auth) {
+            //console.log(request)
+            var filename = request.path.split('/').pop()
+            if (filename == 'wsc.htaccess') {
+                if ((request.method == 'GET' && ! this.opts.optGETHtaccess) ||
+                    (request.method == 'HEAD' && ! this.opts.optGETHtaccess) ||
+                    (request.method == 'PUT' && ! this.opts.optPUTPOSTHtaccess) ||
+                    (request.method == 'POST' && ! this.opts.optPUTPOSTHtaccess) ||
+                    (request.method == 'DELETE' && ! this.opts.optDELETEHtaccess)) {
+                    var handler = new WSC.BaseHandler(request)
+                    handler.app = this
+                    handler.request = request
+                    handler.error('<h1>400 - Bad Request</h1>', 400)
+                    return
+                }
+            }
+
+            if (this.opts.optUsebasicauth) {
                 var validAuth = false
                 var auth = request.headers['authorization']
                 if (auth) {
                     if (auth.slice(0,6).toLowerCase() == 'basic ') {
                         var userpass = atob(auth.slice(6,auth.length)).split(':')
-                        if (userpass[0] == this.opts.auth.username &&
-                            userpass[1] == this.opts.auth.password) {
+                        if (userpass[0] == this.opts.optAuthUsername &&
+                            userpass[1] == this.opts.optAuthPassword) {
                             validAuth = true
                         }
                     }
@@ -513,12 +589,9 @@
 
                 if (! validAuth) {
                     var handler = new WSC.BaseHandler(request)
-                    
                     handler.app = this
                     handler.request = request
-                    handler.setHeader("WWW-Authenticate", "Basic")
-                    handler.write("", 401)
-                    handler.finish()
+                    handler.error("<h1>401 - Unauthorized</h1>", 401)
                     return
                 }
             }
@@ -573,7 +646,7 @@
                 var handler = new WSC.BaseHandler(request)
                 handler.app = this
                 handler.request = request
-                handler.write("Unhandled request. Did you select a folder to serve?", 404)
+                handler.write("Unhandled request. Did you select a folder to serve?", 500)
                 handler.finish()
             }
         }
@@ -597,9 +670,66 @@
                 this.finish()
             }
         },
+        error: function(defaultMsg, httpCode) {
+            if (this.request.method == "HEAD") {
+                this.responseLength = 0
+                this.writeHeaders(httpCode)
+                this.finish()
+                return
+            } else {
+                // We set the request.path to a .html file to override the mimetype of the requested file
+                this.setHeader('content-type','text/html; charset=utf-8')
+                if (this.app.opts['optCustom'+httpCode]) {
+                    this.fs.getByPath(this.app.opts['optCustom'+httpCode+'location'], (file) => {
+                        if (! file.error && file.isFile) {
+                            file.file( function(file) {
+                                var reader = new FileReader()
+                                reader.onload = function(e) {
+                                    var data = e.target.result
+                                    if (httpCode == 404) {
+                                        if (this.app.opts.optCustom404usevar) {
+                                            if (this.app.opts.optCustom404usevarvar.replace(' ', '') != '') {
+                                                var data = '<script>var '+this.app.opts.optCustom404usevarvar+' = "'+this.request.uri+'";</script>\n' + data
+                                            } else {
+                                                this.write('javascript location variable is blank', 500)
+                                                this.finish()
+                                                return
+                                            }
+                                        }
+                                    }
+                                    if (httpCode == 401) {
+                                        this.setHeader("WWW-Authenticate", "Basic")
+                                    }
+                                    this.write(data, httpCode)
+                                    this.finish()
+                                }.bind(this)
+                                reader.readAsText(file)
+                            }.bind(this))
+                        } else {
+                            if ([400,401,403,404].includes(httpCode)) {
+                                this.write('Path of Custom '+httpCode+' html was not found. Custom '+httpCode+' is set to '+this.app.opts['optCustom'+httpCode+'location'], 500)
+                                this.finish()
+                            } else {
+                                if (httpCode == 401) {
+                                    this.setHeader("WWW-Authenticate", "Basic")
+                                }
+                                this.write(defaultMsg, httpCode)
+                                this.finish()
+                            }
+                        }
+                    })
+                } else {
+                    if (httpCode == 401) {
+                        this.setHeader("WWW-Authenticate", "Basic")
+                    }
+                    this.write(defaultMsg, httpCode)
+                    this.finish()
+                }
+            }
+        },
         setCORS: function() {
             this.setHeader('access-control-allow-origin','*')
-            this.setHeader('access-control-allow-methods','GET, POST, PUT')
+            this.setHeader('access-control-allow-methods','GET, POST, PUT, DELETE')
             this.setHeader('access-control-max-age','120')
         },
         get_argument: function(key,def) {
@@ -640,7 +770,8 @@
             }
 
             var p = this.request.path.split('.')
-            if (p.length > 1 && ! this.isDirectoryListing) {
+            
+            if (p.length > 1 && ! this.isDirectoryListing && ! this.responseHeaders['content-type']) {
                 var ext = p[p.length-1].toLowerCase()
                 var type = WSC.MIMETYPES[ext]
                 if (type) {
@@ -680,7 +811,13 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             this.request.connection.write(headerstr, callback)
         },
         writeChunk: function(data) {
+            if (typeof data == "string") {
+                data = new TextEncoder('utf-8').encode(data).buffer
+            }
             console.assert( data.byteLength !== undefined )
+            if (! this.headersWritten) {
+                this.writeHeaders()
+            }
             var chunkheader = data.byteLength.toString(16) + '\r\n'
             //console.log('write chunk',[chunkheader])
             this.request.connection.write( WSC.str2ab(chunkheader) )
@@ -714,6 +851,10 @@ Changes with nginx 0.7.9                                         12 Aug 2008
             if (! this.headersWritten) {
                 this.responseLength = 0
                 this.writeHeaders()
+            }
+            if (this.responseHeaders['transfer-encoding'] == 'chunked') {
+                // chunked encoding needs this to work
+                this.request.connection.write(WSC.str2ab('0\r\n\r\n'))
             }
             if (this.beforefinish) { this.beforefinish() }
             this.request.connection.curRequest = null
@@ -754,4 +895,3 @@ Changes with nginx 0.7.9                                         12 Aug 2008
     WSC.WebApplication = WebApplication
 
 })();
-

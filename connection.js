@@ -52,25 +52,31 @@
             if (_DEBUG) {
                 this.log(this.curRequest.uri)
             }
-            if (headers['content-length']) {
-                var clen = parseInt(headers['content-length'])
-                // TODO -- handle 100 continue..
-                if (clen > 0) {
-                    console.log('request had content length',clen)
-                    this.stream.readBytes(clen, this.onRequestBody.bind(this))
-                } else {
-                    console.log('request had an empty body')
-                    this.curRequest.body = new Uint8Array(0)
-                    this.onRequestBody(this.curRequest.body)
+            chrome.sockets.tcp.getInfo(this.stream.sockId, function(e) {
+                this.curRequest.ip = e.peerAddress
+                if (headers['content-length']) {
+                    var clen = parseInt(headers['content-length'])
+                    // TODO -- handle 100 continue..
+                    if (clen > 0) {
+                        console.log('request had content length',clen)
+                        this.stream.readBytes(clen, this.onRequestBody.bind(this))
+                    } else {
+                        console.log('request had an empty body')
+                        this.curRequest.body = new Uint8Array(0)
+                        this.onRequestBody(this.curRequest.body)
+                    }
+                    return
                 }
-                return
-            }
 
-            if (['GET','HEAD','PUT','OPTIONS'].includes(method)) {
-                this.onRequest(this.curRequest)
-            } else {
-                console.error('how to handle',this.curRequest)
-            }
+                if (['GET','HEAD','PUT','POST','DELETE','OPTIONS'].includes(method)) {
+                    this.onRequest(this.curRequest)
+                } else {
+                    console.error('how to handle',this.curRequest)
+                    // leaving the connection open will slow the server
+                    this.curRequest.connection.write('HTTP/1.1 501 Not Implemented\r\ncontent-length: 0\r\n\r\n')
+                    this.curRequest.connection.stream.close()
+                }
+            }.bind(this))
         },
         onRequestBody: function(body) {
             var req = this.curRequest
@@ -95,11 +101,18 @@
                         var kv = items[i].replace(/\+/g, ' ').split('=')
                         bodyparams[ decodeURIComponent(kv[0]) ] = decodeURIComponent(kv[1])
                     }
-                    req.bodyparams = bodyparams
+                    this.curRequest.bodyparams = bodyparams
                 }
             }
             this.curRequest.body = body
-            this.onRequest(this.curRequest)
+            if (['GET','HEAD','PUT','POST','DELETE','OPTIONS'].includes(method)) {
+                this.onRequest(this.curRequest)
+            } else {
+                console.error('how to handle',this.curRequest)
+                // leaving the connection open will slow the server
+                this.curRequest.connection.write('HTTP/1.1 501 Not Implemented\r\ncontent-length: 0\r\n\r\n')
+                this.curRequest.connection.stream.close()
+            }
         },
         onRequest: function(request) {
             this.onRequestCallback(request)

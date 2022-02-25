@@ -17,12 +17,12 @@ const {
 
 const {Alert} = MaterialUILab;
 
-const {createMuiTheme, colors, withStyles} = MaterialUI;
+const {createTheme, colors, withStyles} = MaterialUI;
 const styles = {
   card: {margin: '10px'},
   appicon: {marginRight: '10px'}
 };
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: '#3f51b5',
@@ -56,7 +56,7 @@ const functions = {
   optBackground: function(app, k, val) {
     const {webapp, bg} = app;
     console.log('background setting changed',val)
-		webapp.updateOption('optBackground',val)
+        webapp.updateOption('optBackground',val)
     // appOptions.set('optBackground', val)
     bg.backgroundSettingChange({'optBackground':val})
   },
@@ -68,24 +68,74 @@ const functions = {
   },
   optAutoStart: function(app, k, val) {
     const {bg, webapp} = app;
-		if (val) {
-			chrome.permissions.request({permissions:['background']}, function(result) {
-				console.log('request perm bg',result)
-				if (result) {
-					success()
-				}
-			})
-		} else {
-			chrome.permissions.remove({permissions:['background']}, function(result) {
-				console.log('drop perm bg',result)
-				success()
-			})
-		}
-		function success() {
-			console.log('persist setting start in background',val)
-			webapp.opts.optBackground = val
-			bg.backgroundSettingChange({'optBackground':val})
-		}
+        if (val) {
+            chrome.permissions.request({permissions:['background']}, function(result) {
+                console.log('request perm bg',result)
+                if (result) {
+                    success()
+                }
+            })
+        } else {
+            chrome.permissions.remove({permissions:['background']}, function(result) {
+                console.log('drop perm bg',result)
+                success()
+            })
+        }
+        function success() {
+            console.log('persist setting start in background',val)
+            webapp.opts.optBackground = val
+            bg.backgroundSettingChange({'optBackground':val})
+        }
+  },
+  optCacheControlValue: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCacheControlValue', val);
+  },
+  optCustom400location: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCustom400location', val);
+  },
+  optCustom404location: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCustom404location', val);
+  },
+  optCustom403location: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCustom403location', val);
+  },
+  optCustom401location: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCustom401location', val);
+  },
+  optCustom404usevarvar: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optCustom404usevarvar', val);
+  },
+  optAuthUsername: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optAuthUsername', val);
+  },
+  optAuthPassword: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optAuthPassword', val);
+  },
+  optSaveLogsFilename: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateLogging()
+    app.webapp.updateOption('optSaveLogsFilename', val);
+  },
+  optSaveLogs: (app, k, val) => {
+    app.webapp.updateLogging()
+    app.webapp.updateOption('optSaveLogs', val);
+  },
+  optSaveLogsInterval: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateLogging()
+    app.webapp.updateOption('optSaveLogsInterval', val);
+  },
+  optIpBlockList: (app, k, val) => {
+    console.assert(typeof val === 'string')
+    app.webapp.updateOption('optIpBlockList', val);
   },
   optPrivateKey: (app, k, val) => {
     //console.log('privateKey')
@@ -101,8 +151,10 @@ const functions = {
     console.log("useHttps", val);
     app.webapp.updateOption('optUseHttps', val);
     if (app.webapp.started) {
-      app.webapp.stop();
-      app.webapp.start();
+      // we must call the start function as a callback
+      app.webapp.stop('https option changed', function() {
+          app.webapp.start()
+      });
     }
   }
 };
@@ -200,9 +252,9 @@ class App extends React.Component {
     })
   }
   gen_crypto() {
-  	let reasonStr = this.webapp.opts.optPrivateKey ? "private key" :
-  	                   this.webapp.opts.optCertificate ? "certificate" : "";
-  	if (reasonStr) {
+      let reasonStr = this.webapp.opts.optPrivateKey ? "private key" :
+                         this.webapp.opts.optCertificate ? "certificate" : "";
+      if (reasonStr) {
       console.warn("Would overwrite existing " + reasonStr + ", erase it first\nMake sure to save a copy first");
       return;
     }
@@ -236,14 +288,14 @@ class App extends React.Component {
     else this.webapp.stop()
   }
   onChange(k, v) {
-		console.log('update and save',k,v)
-		this.webapp.updateOption(k,v) // also set on webapp.opts ?
+        console.log('update and save',k,v)
+        this.webapp.updateOption(k,v) // also set on webapp.opts ?
     // certain options require special manual handling (e.g. port has to set this.webapp.opts.port)
     if (functions[k]) {
       console.log('special handling for', k);
       functions[k](this, k, v)
     }
-		this.appOptions.set(k,v)
+        this.appOptions.set(k,v)
     this.setState({[k]:v})
   }
   render() {
@@ -255,18 +307,100 @@ class App extends React.Component {
       optDoPortMapping: ['optAllInterfaces'],
       optPreventSleep: null,
       optRenderIndex: null,
-      port: null,
+      optDir404: ['optRenderIndex'],
+      port: null
     };
     const optAdvanced = {
       optCORS: null,
       optIPV6: null,
       optStatic: null,
-      optUpload: null,
+      optDotFilesDirListing: null,
+      optUpload: null
+    };
+    const optUploadOptions = {
+      optAllowReplaceFile: ['optUpload']
+    };
+    const optIp = {
+      optIpBlocking: null
+    };
+    const optIpOptions = {
+      optIpBlockList: null,
+      optIpBlockUndefined: null
+    }
+    const optLogMain = {
+      optDelete: null,
       optVerbose: null,
-      optModRewriteEnable: null,
+      optSaveLogs: null
+    };
+    const optLogOptions = {
+      optSaveLogsFilename: ['optSaveLogs'],
+      optSaveLogsInterval: ['optSaveLogs']
+    };
+    const optnodothtmlMain = {
+      optExcludeDotHtml: null
+    };
+    const optnodothtmlInfo = {
+      optExcludeDotHtm: ['optExcludeDotHtml']
+    };
+    const optCustom404Main = {
+      optCustom404: null
+    };
+    const optCustom404Info = {
+      optCustom404location: ['optCustom404'],
+      optCustom404usevar: ['optCustom404']
+    };
+    const optCustom404InfoPt2 = {
+      optCustom404usevarvar: ['optCustom404','optCustom404usevar']
+    };
+    const optCustom403Main = {
+      optCustom403: null
+    };
+    const optCustom403Info = {
+      optCustom403location: ['optCustom403']
+    };
+    const optCustom400Main = {
+      optCustom400: null
+    };
+    const optCustom400Info = {
+      optCustom400location: ['optCustom400']
+    };
+    const optCustom401Main = {
+      optCustom401: null
+    };
+    const optCustom401Info = {
+      optCustom401location: ['optCustom401']
+    };
+    const optAuthMain = {
+      optUsebasicauth: null
+    };
+    const optAuthOptions = {
+      optAuthUsername: ['optUsebasicauth'],
+      optAuthPassword: ['optUsebasicauth']
+    };
+    const optCacheMain = {
+      optCacheControl: null
+    };
+    const optCacheOptions = {
+      optCacheControlValue: ['optCacheControl']
+    };
+    const optHtaccess = {
+      optScanForHtaccess: null
+    };
+    const optHtaccessOptions = {
+      optGETHtaccess: ['optScanForHtaccess'],
+      optPUTPOSTHtaccess: ['optScanForHtaccess'],
+      optDELETEHtaccess: ['optScanForHtaccess'],
+      optDirListingHtaccess: ['optScanForHtaccess']
+    };
+    const optRewrite = {
+      optModRewriteEnable: null
+    };
+    const optRewriteInfo = {
       optModRewriteRegexp: ['optModRewriteEnable'],
       optModRewriteNegate: ['optModRewriteEnable'],
-      optModRewriteTo: ['optModRewriteEnable'],
+      optModRewriteTo: ['optModRewriteEnable']
+    };
+    const optHttps = {
       optUseHttps: null
     };
     const optHttpsInfo = {
@@ -300,6 +434,101 @@ class App extends React.Component {
     }}
     >{this.state.showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}</a></div>)
 
+    const Custom404Main = renderOpts(optCustom404Main)
+    const HtaccessMain = renderOpts(optHtaccess)
+    const rewriteMain = renderOpts(optRewrite)
+    const httpsMain = renderOpts(optHttps)
+    const Custom401Main = renderOpts(optCustom401Main)
+    const Custom403Main = renderOpts(optCustom403Main)
+    const Custom400Main = renderOpts(optCustom400Main)
+    const authMain = renderOpts(optAuthMain)
+    const cacheMain = renderOpts(optCacheMain)
+    const nodothtmlMain = renderOpts(optnodothtmlMain)
+    const logMain = renderOpts(optLogMain)
+    
+    const HtaccessInfo = (() => {
+      let disablezero = (!this.webapp || !this.webapp.opts.optScanForHtaccess);
+      const htaccesstextbox = renderOpts(optHtaccessOptions)
+      return [(<div style={{paddingLeft: 20}}>{!disablezero && htaccesstextbox}
+        {!disablezero && <Alert severity="info">For more info on how to use wsc.htaccess files, go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/howTo/HTACCESS.md" target="_blank">here</a></Alert>}
+      </div>)];
+    })();
+
+    const logInfo = (() => {
+        let disablelogasd = (!this.webapp || !this.webapp.opts.optSaveLogs);
+        const logsadge = renderOpts(optLogOptions)
+        return [(<div>{!disablelogasd && logsadge}</div>)];
+    })();
+
+    const Ip = (() => {
+        const ipBoolean = renderOpts(optIp)
+        const ipTextBox = renderOpts(optIpOptions)
+        let disableip = (!this.webapp || !this.webapp.opts.optIpBlocking);
+        return [(<div><div>{ipBoolean}</div>
+        <div style={{paddingLeft: 20}}>{!disableip && ipTextBox}{!disableip && <Alert severity="info">For more info on how to use IP blocking, go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/howTo/ipBlocking.md" target="_blank">here</a></Alert>}
+      </div></div>)];
+    })();
+
+    const UploadOption = (() => {
+        let disableoneasd = (!this.webapp || !this.webapp.opts.optUpload);
+        const uploadasd = renderOpts(optUploadOptions)
+        return [(<div>{!disableoneasd && uploadasd}</div>)];
+    })();
+
+    const Custom403Options = (() => {
+      let disableone = (!this.webapp || !this.webapp.opts.optCustom403);
+      const textboxesone = renderOpts(optCustom403Info)
+      return [(<div>{!disableone && textboxesone}</div>)];
+    })();
+
+    const Custom400Options = (() => {
+      let disablenine = (!this.webapp || !this.webapp.opts.optCustom400);
+      const textboxesnine = renderOpts(optCustom400Info)
+      return [(<div>{!disablenine && textboxesnine}</div>)];
+    })();
+
+    const Custom401Options = (() => {
+      let disabletwo = (!this.webapp || !this.webapp.opts.optCustom401);
+      const textboxestwo = renderOpts(optCustom401Info)
+      return [(<div>{!disabletwo && textboxestwo}</div>)];
+    })();
+
+    const Custom404Options = (() => {
+      let disablethree = (!this.webapp || !this.webapp.opts.optCustom404);
+      const textboxesthree = renderOpts(optCustom404Info)
+      return [(<div>{!disablethree && textboxesthree}</div>)];
+    })();
+
+    const Custom404OptionsPt2 = (() => {
+      let disablefour = (!this.webapp || !this.webapp.opts.optCustom404 || !this.webapp.opts.optCustom404usevar);
+      const textboxesfour = renderOpts(optCustom404InfoPt2)
+      return [(<div>{!disablefour && textboxesfour}</div>)];
+    })();
+
+    const rewriteOptions = (() => {
+      let disablefive = (!this.webapp || !this.webapp.opts.optModRewriteEnable);
+      const textboxefive = renderOpts(optRewriteInfo)
+      return [(<div>{!disablefive && textboxefive}</div>)];
+    })();
+
+    const authOptions = (() => {
+      let disableeleven = (!this.webapp || !this.webapp.opts.optUsebasicauth);
+      const textboxeeleven = renderOpts(optAuthOptions)
+      return [(<div>{!disableeleven && textboxeeleven}</div>)];
+    })();
+
+    const cacheOptions = (() => {
+      let disabletwelve = (!this.webapp || !this.webapp.opts.optCacheControl);
+      const textboxetwelve = renderOpts(optCacheOptions)
+      return [(<div>{!disabletwelve && textboxetwelve}</div>)];
+    })();
+
+    const nodothtmlOptions = (() => {
+      let disabletenn = (!this.webapp || !this.webapp.opts.optExcludeDotHtml);
+      const textboxetenn = renderOpts(optnodothtmlInfo)
+      return [(<div>{!disabletenn && textboxetenn}</div>)];
+    })();
+
     const httpsOptions = (() => {
       let disable = (!this.webapp || !this.webapp.opts.optUseHttps);
       let hasCrypto = this.webapp && (this.webapp.opts.optPrivateKey || this.webapp.opts.optCertificate);
@@ -307,10 +536,18 @@ class App extends React.Component {
       return [(<div style={{paddingLeft: 20}}>{!disable && textBoxes}
         {hasCrypto && !disable && <Alert severity="info">To regenerate, remove key and cert. Be sure to take a copy first, for possible later use!</Alert>}
         {!disable && <Button variant="contained" key="crytobtn" disabled={hasCrypto  ? true : false} onClick={e => {
-				  e.preventDefault();
-				  this.gen_crypto();
-				}}>Generate crypto</Button>}
-	  </div>)];
+                  e.preventDefault();
+                  this.gen_crypto();
+                }}>Generate crypto</Button>}
+      </div>)];
+    })();
+    
+    const POSTFeatureInfo = (() => {
+        return [(<div>
+                    {<Alert severity="info">Server Side POST requests are now supported. Go <a href="https://github.com/ethanaobrien/web-server-chrome/blob/master/howTo/post.md" target="_blank">here</a> to learn how to use this feature</Alert>}
+                </div>)];
+        
+        
     })();
 
     const {state} = this;
@@ -333,6 +570,12 @@ class App extends React.Component {
                       href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb/reviews"
             >leave a review</a> to help others find this software.
           </p>
+        </CardContent>
+      </Card>
+
+      <Card className={this.classes.card}>
+        <CardContent>
+          <p>Chrome Apps are going away. As a result, this app has been translated to a standalone app. <a target="_blank" href="https://github.com/terreng/simple-web-server/releases/">Download here!</a></p>
         </CardContent>
       </Card>
 
@@ -376,7 +619,7 @@ class App extends React.Component {
           {options}
 
           {advancedButton}
-          {state.showAdvanced && <div>{advOptions}{httpsOptions}</div> }
+          {state.showAdvanced && <div>{advOptions}{UploadOption}{Ip}{logMain}{logInfo}{nodothtmlMain}{nodothtmlOptions}{Custom400Main}{Custom400Options}{Custom401Main}{Custom401Options}{Custom403Main}{Custom403Options}{Custom404Main}{Custom404Options}{Custom404OptionsPt2}{authMain}{authOptions}{HtaccessMain}{HtaccessInfo}{cacheMain}{cacheOptions}{rewriteMain}{rewriteOptions}{httpsMain}{httpsOptions}{POSTFeatureInfo}</div> }
         </CardContent>
       </Card>
 

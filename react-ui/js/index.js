@@ -101,8 +101,10 @@ const functions = {
     console.log("useHttps", val);
     app.webapp.updateOption('optUseHttps', val);
     if (app.webapp.started) {
-      app.webapp.stop();
-      app.webapp.start();
+      // we must call the start function as a callback
+      app.webapp.stop('https option changed', function() {
+        app.webapp.start()
+      });
     }
   }
 };
@@ -312,7 +314,6 @@ class App extends React.Component {
 				}}>Generate crypto</Button>}
 	  </div>)];
     })();
-
     const {state} = this;
     return (<div>
       <ThemeProvider theme={theme}>
@@ -335,6 +336,12 @@ class App extends React.Component {
           </p>
         </CardContent>
       </Card>
+      
+      {(navigator.userAgent.match('OS X')||navigator.userAgent.match("Windows"))?(<Card className={this.classes.card}>
+         <CardContent>
+           <p>Chrome apps are going away! Web Server for Chrome is now a standalone program: <a href="https://simplewebserver.org/wsc.html" target="_blank">https://simplewebserver.org</a></p>
+         </CardContent>
+       </Card>):('')}
 
       <Card className={this.classes.card}>
         <CardContent>

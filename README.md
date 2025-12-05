@@ -1,3 +1,26 @@
+> ⚠️ **Status: Being Rebuilt**
+> 
+> Google is discontinuing Chrome Apps. Web Server for Chrome is being rebuilt as a Chrome Extension with a native helper app.
+>
+> **[Sign up to be notified when it's ready](https://docs.google.com/forms/d/e/1Zu7k97YgZRCPILLKONZ6YACj9kGQSwpLIXDBG-nU6_Y/viewform)**
+
+---
+
+An HTTP web server for Chrome, used by 200,000+ people for local web development and file sharing.
+
+## What's Changing
+
+The original Chrome App used `chrome.sockets` APIs that are being removed. The new version will be:
+
+- **Chrome Extension** - The UI and HTTP logic
+- **Native Helper App** - Handles TCP sockets and filesystem access
+  - ChromeOS: Android companion app (Play Store)
+  - Windows/Mac/Linux: Native binary
+
+Same functionality, new architecture.
+
+## Legacy Documentation
+
 <a target="_blank" href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">![Try it now in CWS](https://raw.github.com/GoogleChrome/chrome-app-samples/master/tryitnowbutton.png "Click here to install this sample from the Chrome Web Store")</a>
 
 ## Web Server for Chrome

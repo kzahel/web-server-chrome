@@ -2,7 +2,7 @@
 > 
 > Google is discontinuing Chrome Apps. Web Server for Chrome is being rebuilt as a Chrome Extension with a native helper app.
 >
-> **[Sign up to be notified when it's ready](https://docs.google.com/forms/d/e/1Zu7k97YgZRCPILLKONZ6YACj9kGQSwpLIXDBG-nU6_Y/viewform)**
+> **[Sign up to be notified when it's ready](https://forms.gle/88Q5rbZ81sKqXZTt8)**
 
 ---
 

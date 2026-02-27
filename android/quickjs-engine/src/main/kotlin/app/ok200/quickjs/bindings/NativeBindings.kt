@@ -187,6 +187,13 @@ class NativeBindings(
                     }
                 };
 
+                globalThis.__ok200_tcp_dispatch_accept = function(serverId, socketId, remoteAddr, remotePort) {
+                    const callback = globalThis.__ok200_tcp_callbacks.onAccept;
+                    if (callback) {
+                        callback(parseInt(serverId), parseInt(socketId), remoteAddr, parseInt(remotePort));
+                    }
+                };
+
                 globalThis.__ok200_tcp_dispatch_close = function(socketId, hadError) {
                     const callback = globalThis.__ok200_tcp_callbacks.onClose;
                     if (callback) {
@@ -208,12 +215,6 @@ class NativeBindings(
                     }
                 };
 
-                globalThis.__ok200_tcp_dispatch_accept = function(serverId, socketId, remoteAddr, remotePort) {
-                    const callback = globalThis.__ok200_tcp_callbacks.onAccept;
-                    if (callback) {
-                        callback(parseInt(serverId), parseInt(socketId), remoteAddr, parseInt(remotePort));
-                    }
-                };
             })();
         """.trimIndent(), "tcp-dispatcher.js")
     }

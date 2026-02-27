@@ -638,15 +638,21 @@ Java_app_ok200_quickjs_QuickJsContext_nativeCallGlobalFunction(
         return NULL;  // Function not found
     }
 
-    // Build args array
-    int argc = args ? (*env)->GetArrayLength(env, args) : 0;
+    // Build args array — total count must include the binary arg position
+    int stringArgc = args ? (*env)->GetArrayLength(env, args) : 0;
+    int argc = stringArgc;
+    if (binaryArgIndex >= 0 && binaryArg && binaryArgIndex >= argc) {
+        argc = binaryArgIndex + 1;
+    }
     JSValue *jsArgs = argc > 0 ? malloc(sizeof(JSValue) * argc) : NULL;
 
+    int stringIdx = 0;
     for (int i = 0; i < argc; i++) {
         if (i == binaryArgIndex && binaryArg) {
             jsArgs[i] = byte_array_to_array_buffer(ctx, env, binaryArg);
-        } else {
-            jstring jstr = (jstring)(*env)->GetObjectArrayElement(env, args, i);
+        } else if (stringIdx < stringArgc) {
+            jstring jstr = (jstring)(*env)->GetObjectArrayElement(env, args, stringIdx);
+            stringIdx++;
             if (jstr) {
                 const char *str = (*env)->GetStringUTFChars(env, jstr, NULL);
                 jsArgs[i] = JS_NewString(ctx, str);
@@ -655,6 +661,8 @@ Java_app_ok200_quickjs_QuickJsContext_nativeCallGlobalFunction(
             } else {
                 jsArgs[i] = JS_UNDEFINED;
             }
+        } else {
+            jsArgs[i] = JS_UNDEFINED;
         }
     }
 

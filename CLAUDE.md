@@ -138,6 +138,7 @@ All components follow the same release pattern:
 | **CLI** | `v{ver}` | npm package | CI auto-publishes to npm |
 | **Desktop** | `desktop-v{ver}` | Signed installers (Mac/Win/Linux) | Auto-updates via updater JSON |
 | **Extension** | `extension-v{ver}` | ZIP | Manual upload to Chrome Web Store |
+| **Android** | `android-v{ver}` | Signed APK + AAB | Manual upload to Google Play Console |
 
 ### CLI Releases
 
@@ -172,3 +173,15 @@ All components follow the same release pattern:
 - CI creates GitHub Release with ZIP attachment
 - **Manual step:** Download ZIP from GitHub Release and upload to Chrome Web Store
 - Changelog: `extension/CHANGELOG.md`
+
+### Android Releases
+
+```bash
+./scripts/release-android.sh <version>
+```
+
+- Updates `android/app/build.gradle.kts` (versionName + auto-increments versionCode)
+- Creates tag: `android-v{version}`
+- CI builds signed APK and AAB, creates GitHub Release with both attached
+- **Manual step:** Download AAB from GitHub Release and upload to Google Play Console
+- Changelog: `android/CHANGELOG.md`

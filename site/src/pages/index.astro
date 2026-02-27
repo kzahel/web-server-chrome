@@ -1,0 +1,533 @@
+---
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Web Server for Chrome — Local web server for every platform"
+  description="The next generation of Web Server for Chrome, rebuilt from scratch by the original author. Desktop, Android, CLI, and Chrome Extension."
+>
+  <Header activePage="home" />
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-badge">From the creator of Web Server for Chrome (200k+ users)</div>
+        <h1>Serve files locally.<br>From any device.</h1>
+        <p>Web Server for Chrome is back — rebuilt from scratch as a native app for desktop, Android, and the command line. Same simple workflow. Modern architecture.</p>
+        <div class="cta-buttons">
+          <a href="#cli" class="btn btn-primary">Get the CLI</a>
+          <a href="https://github.com/kzahel/web-server-chrome" class="btn btn-secondary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            View on GitHub
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="platforms" class="platforms">
+      <div class="container">
+        <h2>Every platform. One engine.</h2>
+        <p class="section-subtitle">A platform-agnostic TypeScript HTTP engine with native I/O adapters per platform. Write the server logic once, run it everywhere.</p>
+        <div class="platform-grid">
+          <div class="platform-card">
+            <div class="platform-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <h3>Desktop</h3>
+            <p>Tauri app for Mac, Windows, and Linux. ~10MB install — not 100MB+ Electron.</p>
+            <span class="platform-status status-dev">In Development</span>
+          </div>
+          <div class="platform-card">
+            <div class="platform-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" y1="8" x2="12" y2="8"/><line x1="3.95" y1="6.06" x2="8.54" y2="14"/><line x1="10.88" y1="21.94" x2="15.46" y2="14"/></svg>
+            </div>
+            <h3>Chrome Extension</h3>
+            <p>The familiar UI from the original app, rebuilt as a modern extension.</p>
+            <span class="platform-status status-dev">In Development</span>
+          </div>
+          <div class="platform-card">
+            <div class="platform-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            </div>
+            <h3>Android / ChromeOS</h3>
+            <p>Native app with QuickJS engine and Kotlin/Compose UI.</p>
+            <span class="platform-status status-dev">In Development</span>
+          </div>
+          <div class="platform-card">
+            <div class="platform-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            </div>
+            <h3>CLI</h3>
+            <p>Drop-in replacement for <code>python -m http.server</code>. Works today.</p>
+            <span class="platform-status status-ready">Available Now</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="features">
+      <div class="container">
+        <h2>Features</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>Static file serving</h3>
+            <p>Serve any directory with automatic MIME type detection and index.html resolution.</p>
+          </div>
+          <div class="feature-card">
+            <h3>Directory listing</h3>
+            <p>Browse files with sizes and dates when no index.html exists.</p>
+          </div>
+          <div class="feature-card">
+            <h3>SPA mode</h3>
+            <p>Route all paths to index.html for single-page app development.</p>
+          </div>
+          <div class="feature-card">
+            <h3>CORS headers</h3>
+            <p>Enable cross-origin requests with a single flag.</p>
+          </div>
+          <div class="feature-card">
+            <h3>File uploads</h3>
+            <p>Accept PUT/POST file uploads for quick sharing.</p>
+          </div>
+          <div class="feature-card">
+            <h3>ETag caching</h3>
+            <p>Automatic ETag generation and 304 Not Modified responses.</p>
+          </div>
+        </div>
+
+        <h3 class="coming-soon-heading">Coming Soon</h3>
+        <div class="feature-grid">
+          <div class="feature-card coming-soon">
+            <h3>HTTPS</h3>
+            <p>Self-signed certificate generation for local HTTPS development.</p>
+          </div>
+          <div class="feature-card coming-soon">
+            <h3>HTTP Basic Auth</h3>
+            <p>Password-protect your server with a single flag.</p>
+          </div>
+          <div class="feature-card coming-soon">
+            <h3>Range requests</h3>
+            <p>Serve media files with seeking and streaming support.</p>
+          </div>
+          <div class="feature-card coming-soon">
+            <h3>QR code</h3>
+            <p>Scan a QR code to access your server from a phone on the same LAN.</p>
+          </div>
+          <div class="feature-card coming-soon">
+            <h3>Live reload</h3>
+            <p>Automatically refresh the browser when files change.</p>
+          </div>
+          <div class="feature-card coming-soon">
+            <h3>Reverse proxy</h3>
+            <p>Proxy API requests to a backend server during development.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cli" class="cli">
+      <div class="container">
+        <h2>CLI</h2>
+        <div class="code-block">
+          <code>npx ok200</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># serve current directory on :8080</span><br>
+          <code>npx ok200 ./dist</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># serve a specific directory</span><br>
+          <code>npx ok200 --port 3000</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># custom port</span><br>
+          <code>npx ok200 --host 0.0.0.0</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># expose on LAN</span><br>
+          <code>npx ok200 ./dist --spa --cors</code>&nbsp;&nbsp;&nbsp;<span class="code-comment"># SPA mode with CORS</span><br>
+          <code>npx ok200 ./dist --upload</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># enable file uploads</span>
+        </div>
+        <div class="cli-options">
+          <table>
+            <thead>
+              <tr>
+                <th>Flag</th>
+                <th>Description</th>
+                <th>Default</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>--port, -p</code></td><td>Port to listen on</td><td>8080</td></tr>
+              <tr><td><code>--host, -H</code></td><td>Host to bind</td><td>127.0.0.1</td></tr>
+              <tr><td><code>--cors</code></td><td>Enable CORS headers</td><td>off</td></tr>
+              <tr><td><code>--spa</code></td><td>Serve index.html for missing paths</td><td>off</td></tr>
+              <tr><td><code>--upload</code></td><td>Enable file uploads via PUT/POST</td><td>off</td></tr>
+              <tr><td><code>--no-listing</code></td><td>Disable directory listing</td><td>off</td></tr>
+              <tr><td><code>--quiet, -q</code></td><td>Suppress request logging</td><td>off</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="vs-competition">
+      <div class="container">
+        <h2>Why not Simple Web Server?</h2>
+        <p class="section-subtitle">Simple Web Server is an Electron app built by third parties. We're the original author, building it right.</p>
+        <div class="comparison">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Web Server for Chrome</th>
+                <th>Simple Web Server</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Original author</td><td class="yes">Yes</td><td class="no">No</td></tr>
+              <tr><td>Install size</td><td class="yes">~10MB (Tauri)</td><td class="no">100MB+ (Electron)</td></tr>
+              <tr><td>Android / ChromeOS</td><td class="yes">Yes</td><td class="no">No</td></tr>
+              <tr><td>CLI tool</td><td class="yes">Yes</td><td class="no">No</td></tr>
+              <tr><td>Open source</td><td class="yes">MIT</td><td class="yes">MIT</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="migration" class="migration">
+      <div class="container">
+        <h2>Migrating from the Chrome App?</h2>
+        <div class="migration-content">
+          <p>The original Web Server for Chrome was a Chrome App used by 200,000+ people. Google discontinued Chrome Apps, but we're rebuilding everything as native apps with the same features and workflow.</p>
+          <ul>
+            <li>The Chrome Web Store listing will be updated to point to the new extension once it's ready.</li>
+            <li>All features from the original app will be supported.</li>
+            <li>Your settings and workflow will feel familiar.</li>
+          </ul>
+          <p>The original Chrome App source code is preserved in the <a href="https://github.com/kzahel/web-server-chrome/tree/legacy">legacy branch</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .hero {
+    padding: 80px 0 60px;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+
+  .hero p {
+    font-size: 18px;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 32px;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* Platforms */
+  .platforms {
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .platforms h2 {
+    font-size: 28px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .section-subtitle {
+    color: var(--text-secondary);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 40px;
+    font-size: 15px;
+  }
+
+  .platform-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .platform-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .platform-icon {
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .platform-card h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .platform-card p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+
+  .platform-card code {
+    font-size: 12px;
+    background: var(--bg-tertiary);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .platform-status {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .status-ready {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+  }
+
+  .status-dev {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--accent);
+  }
+
+  /* Features */
+  .features {
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .features h2 {
+    font-size: 28px;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .feature-card h3 {
+    font-size: 15px;
+    margin-bottom: 8px;
+    color: var(--accent);
+  }
+
+  .feature-card p {
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+
+  .feature-card.coming-soon {
+    opacity: 0.7;
+    border-style: dashed;
+  }
+
+  .coming-soon-heading {
+    text-align: center;
+    margin: 40px 0 20px;
+    color: var(--text-secondary);
+    font-size: 18px;
+  }
+
+  /* CLI */
+  .cli {
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .cli h2 {
+    font-size: 28px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .code-comment {
+    color: var(--text-secondary);
+    opacity: 0.6;
+  }
+
+  .cli-options {
+    margin-top: 24px;
+  }
+
+  .cli-options table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .cli-options th,
+  .cli-options td {
+    padding: 10px 12px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+
+  .cli-options th {
+    background: var(--bg-tertiary);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .cli-options td {
+    color: var(--text-secondary);
+  }
+
+  .cli-options code {
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  /* Competition */
+  .vs-competition {
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .vs-competition h2 {
+    font-size: 28px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .comparison table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 24px;
+  }
+
+  .comparison th,
+  .comparison td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+
+  .comparison th {
+    background: var(--bg-tertiary);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .comparison td {
+    color: var(--text-secondary);
+  }
+
+  .comparison td.yes {
+    color: #22c55e;
+  }
+
+  .comparison td.no {
+    color: var(--text-secondary);
+    opacity: 0.5;
+  }
+
+  /* Migration */
+  .migration {
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .migration h2 {
+    font-size: 28px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .migration-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+  }
+
+  .migration-content p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin-bottom: 16px;
+  }
+
+  .migration-content ul {
+    color: var(--text-secondary);
+    font-size: 15px;
+    padding-left: 24px;
+    margin-bottom: 16px;
+  }
+
+  .migration-content li {
+    margin-bottom: 8px;
+  }
+
+  .migration-content a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .migration-content a:hover {
+    text-decoration: underline;
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .hero {
+      padding: 48px 0 40px;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cta-buttons .btn {
+      width: 100%;
+      max-width: 280px;
+      justify-content: center;
+    }
+
+    .platform-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

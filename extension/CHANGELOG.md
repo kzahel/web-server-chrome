@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.2]
+
+### Changed
+- Renamed extension to "Web Server for Chrome"
+- Updated description to "Serve any folder on your local machine over HTTP."
+
+### Added
+- Legacy Chrome App migration via cross-extension messaging
+- Respond to ping from legacy app and ok200.app for seamless upgrade detection
+
 ## [0.1.1]
 
 ### Added

@@ -1,6 +1,6 @@
 {
   "name": "ok200",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "Serve static files from the command line",
   "type": "module",
   "bin": {

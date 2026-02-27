@@ -7,9 +7,12 @@ edition.workspace = true
 ok200-common = { path = "../common" }
 serde = { workspace = true }
 serde_json = { workspace = true }
+ureq = "2"
 
 [dev-dependencies]
 serde_json = { workspace = true }
+serial_test = "3"
+tempfile = "3"
 
 [lints]
 workspace = true

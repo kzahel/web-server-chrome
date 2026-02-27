@@ -1,6 +1,9 @@
 # Changelog
 
-## [0.1.2]
+## [0.1.3]
+
+### Added
+- Native host telemetry: pings update server every 24 hours with X-CFU-Id for unique install tracking
 
 ### Fixed
 - Wire in real Chrome Web Store extension ID for native messaging host registration

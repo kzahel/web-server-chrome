@@ -1,3 +1,5 @@
+mod telemetry;
+
 use std::io::{self, Read, Write};
 
 fn read_message_from(reader: &mut impl Read) -> io::Result<Option<serde_json::Value>> {
@@ -44,6 +46,7 @@ fn handle_message(msg: &serde_json::Value) -> serde_json::Value {
 
     match action {
         "handshake" => {
+            telemetry::maybe_check_for_update();
             serde_json::json!({
                 "action": "handshake",
                 "version": env!("CARGO_PKG_VERSION"),

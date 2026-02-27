@@ -35,8 +35,7 @@ pub fn register_native_messaging_hosts(app: &tauri::AppHandle) -> Result<usize, 
         "path": host_path.to_string_lossy(),
         "type": "stdio",
         "allowed_origins": [
-            "chrome-extension://lpkjdhnmgkhaabhimpdinmdgejoaejic/",
-            "chrome-extension://PLACEHOLDER_DEV_ID/"
+            "chrome-extension://lpkjdhnmgkhaabhimpdinmdgejoaejic/"
         ]
     });
     let manifest_bytes = serde_json::to_vec_pretty(&manifest).map_err(|e| e.to_string())?;

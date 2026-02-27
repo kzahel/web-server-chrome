@@ -17,7 +17,7 @@
 !macro CUSTOM_POSTINSTALL
   ; Register native messaging host with Chromium browsers via registry
   ; Manifest file path
-  nsExec::ExecToLog 'cmd /c echo {"name":"app.ok200.native","description":"200 OK Web Server Native Messaging Host","path":"$INSTDIR\\ok200-host.exe","type":"stdio","allowed_origins":["chrome-extension://lpkjdhnmgkhaabhimpdinmdgejoaejic/","chrome-extension://PLACEHOLDER_DEV_ID/"]} > "$LOCALAPPDATA\app.ok200.desktop\app.ok200.native.json"'
+  nsExec::ExecToLog 'cmd /c echo {"name":"app.ok200.native","description":"200 OK Web Server Native Messaging Host","path":"$INSTDIR\\ok200-host.exe","type":"stdio","allowed_origins":["chrome-extension://lpkjdhnmgkhaabhimpdinmdgejoaejic/"]} > "$LOCALAPPDATA\app.ok200.desktop\app.ok200.native.json"'
 
   ; Create registry keys for each browser
   WriteRegStr HKCU "Software\Google\Chrome\NativeMessagingHosts\app.ok200.native" "" "$LOCALAPPDATA\app.ok200.desktop\app.ok200.native.json"

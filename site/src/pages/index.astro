@@ -13,8 +13,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <main>
     <section class="hero">
       <div class="container">
-        <div class="hero-badge">From the creator of Web Server for Chrome (200k+ users)</div>
+        <img src="/logo-256.png" alt="200 OK!" class="hero-logo">
         <h1>Serve files locally.<br>From any device.</h1>
+        <div class="hero-badge">From the creator of Web Server for Chrome (200k+ users)</div>
         <p>Web Server for Chrome is back — rebuilt from scratch as a native app for desktop, Android, and the command line. Same simple workflow. Modern architecture.</p>
         <div class="cta-buttons">
           <a href="#cli" class="btn btn-primary">Get the CLI</a>
@@ -223,6 +224,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     margin-bottom: 24px;
   }
 
+  .hero-logo {
+    width: 128px;
+    height: 128px;
+    margin-bottom: 24px;
+  }
+
   .hero h1 {
     font-size: clamp(32px, 5vw, 48px);
     font-weight: 700;
@@ -317,7 +324,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   }
 
   .status-dev {
-    background: rgba(59, 130, 246, 0.15);
+    background: rgba(248, 210, 3, 0.15);
     color: var(--accent);
   }
 

@@ -4,8 +4,8 @@
   --bg-tertiary: #252525;
   --text-primary: #ffffff;
   --text-secondary: #a0a0a0;
-  --accent: #3b82f6;
-  --accent-hover: #60a5fa;
+  --accent: #f8d203;
+  --accent-hover: #fde047;
   --border: #333333;
   color-scheme: dark;
 }
@@ -16,8 +16,8 @@ html[data-theme="light"] {
   --bg-tertiary: #e8e8e8;
   --text-primary: #1a1a1a;
   --text-secondary: #555555;
-  --accent: #2563eb;
-  --accent-hover: #3b82f6;
+  --accent: #d4a800;
+  --accent-hover: #f8d203;
   --border: #c0c0c0;
   color-scheme: light;
 }
@@ -68,8 +68,10 @@ header {
   gap: 8px;
 }
 
-.logo-ok {
-  color: var(--accent);
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
 }
 
 nav {
@@ -124,13 +126,13 @@ nav a.active {
 
 .btn-primary {
   background: var(--accent);
-  color: white;
+  color: #1a1a1a;
 }
 
 .btn-primary:hover {
   background: var(--accent-hover);
   text-decoration: none;
-  color: white;
+  color: #1a1a1a;
 }
 
 .btn-secondary {

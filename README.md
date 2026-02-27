@@ -1,6 +1,10 @@
-# Web Server for Chrome
+<p align="center">
+  <img src="images/200ok-256.png" alt="200 OK!" width="128">
+</p>
 
-**The next generation of [Web Server for Chrome](https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb), rebuilt from scratch by the original author.**
+<h1 align="center">Web Server for Chrome</h1>
+
+<p align="center"><strong>The next generation of <a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">Web Server for Chrome</a>, rebuilt from scratch by the original author.</strong></p>
 
 The original Chrome App was used by 200,000+ people for local web development and file sharing. Google discontinued Chrome Apps, so Web Server for Chrome is being rebuilt as:
 

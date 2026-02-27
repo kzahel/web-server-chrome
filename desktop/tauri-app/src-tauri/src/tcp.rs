@@ -256,9 +256,7 @@ pub async fn tcp_send(
     w.write_all(data)
         .await
         .map_err(|e| format!("write failed: {e}"))?;
-    w.flush()
-        .await
-        .map_err(|e| format!("flush failed: {e}"))?;
+    w.flush().await.map_err(|e| format!("flush failed: {e}"))?;
 
     Ok(Response::new(vec![]))
 }

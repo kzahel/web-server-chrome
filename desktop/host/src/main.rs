@@ -26,8 +26,8 @@ fn read_message() -> io::Result<Option<serde_json::Value>> {
 }
 
 fn write_message_to(writer: &mut impl Write, value: &serde_json::Value) -> io::Result<()> {
-    let json = serde_json::to_vec(value)
-        .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
+    let json =
+        serde_json::to_vec(value).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
     let len = (json.len() as u32).to_le_bytes();
     writer.write_all(&len)?;
     writer.write_all(&json)?;
@@ -55,19 +55,17 @@ fn handle_message(msg: &serde_json::Value) -> serde_json::Value {
                 "action": "pong"
             })
         }
-        "launch" => {
-            match launch_app() {
-                Ok(()) => serde_json::json!({
-                    "action": "launch",
-                    "ok": true
-                }),
-                Err(e) => serde_json::json!({
-                    "action": "launch",
-                    "ok": false,
-                    "error": e
-                }),
-            }
-        }
+        "launch" => match launch_app() {
+            Ok(()) => serde_json::json!({
+                "action": "launch",
+                "ok": true
+            }),
+            Err(e) => serde_json::json!({
+                "action": "launch",
+                "ok": false,
+                "error": e
+            }),
+        },
         _ => {
             serde_json::json!({
                 "error": format!("unknown action: {action}")
@@ -88,14 +86,13 @@ fn launch_app() -> Result<(), String> {
         if !status.success() {
             return Err(format!("open -b exited with {status}"));
         }
-        return Ok(());
+        Ok(())
     }
 
     #[cfg(target_os = "linux")]
     {
         // Try to find the Tauri binary relative to our own path
-        let host_path =
-            std::env::current_exe().map_err(|e| format!("cannot find own exe: {e}"))?;
+        let host_path = std::env::current_exe().map_err(|e| format!("cannot find own exe: {e}"))?;
         let dir = host_path
             .parent()
             .ok_or_else(|| "cannot find parent directory".to_string())?;
@@ -126,8 +123,7 @@ fn launch_app() -> Result<(), String> {
 
     #[cfg(target_os = "windows")]
     {
-        let host_path =
-            std::env::current_exe().map_err(|e| format!("cannot find own exe: {e}"))?;
+        let host_path = std::env::current_exe().map_err(|e| format!("cannot find own exe: {e}"))?;
         let dir = host_path
             .parent()
             .ok_or_else(|| "cannot find parent directory".to_string())?;

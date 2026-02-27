@@ -35,7 +35,7 @@ pub fn register_native_messaging_hosts(app: &tauri::AppHandle) -> Result<usize, 
         "path": host_path.to_string_lossy(),
         "type": "stdio",
         "allowed_origins": [
-            "chrome-extension://PLACEHOLDER_STABLE_ID/",
+            "chrome-extension://lpkjdhnmgkhaabhimpdinmdgejoaejic/",
             "chrome-extension://PLACEHOLDER_DEV_ID/"
         ]
     });

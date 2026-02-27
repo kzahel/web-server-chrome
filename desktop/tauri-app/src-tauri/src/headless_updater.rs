@@ -26,8 +26,8 @@ pub fn run(auto_update: bool, context: tauri::Context) {
         .setup(move |app| {
             #[cfg(desktop)]
             {
-                let mut builder = tauri_plugin_updater::Builder::new()
-                    .header("X-Check-Reason", "host")?;
+                let mut builder =
+                    tauri_plugin_updater::Builder::new().header("X-Check-Reason", "host")?;
                 if let Some(cfu_id) = ok200_common::get_or_create_cfu_id() {
                     builder = builder.header("X-CFU-Id", &cfu_id)?;
                 }
@@ -141,10 +141,7 @@ async fn check_and_maybe_install(
     // Write interim result before download (in case install kills the process on Windows)
     write_result(handle, &result);
 
-    eprintln!(
-        "headless-updater: downloading update {}...",
-        update.version
-    );
+    eprintln!("headless-updater: downloading update {}...", update.version);
     if let Err(e) = update
         .download_and_install(
             |chunk_len, content_len| {

@@ -36,7 +36,7 @@ MANIFEST=$(cat <<EOF
   "path": "$HOST_BIN",
   "type": "stdio",
   "allowed_origins": [
-    "chrome-extension://PLACEHOLDER_STABLE_ID/",
+    "chrome-extension://lpkjdhnmgkhaabhimpdinmdgejoaejic/",
     "chrome-extension://PLACEHOLDER_DEV_ID/"
   ]
 }

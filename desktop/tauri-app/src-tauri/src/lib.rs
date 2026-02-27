@@ -73,12 +73,8 @@ fn save_settings(app: &tauri::AppHandle, settings: &Settings) {
 // -- Sidecar resolution --
 
 /// Resolve the path to a sidecar binary, trying multiple candidate paths.
-pub(crate) fn resolve_sidecar(
-    app: &tauri::AppHandle,
-    name: &str,
-) -> Result<PathBuf, String> {
-    let target_triple = option_env!("TARGET_TRIPLE")
-        .unwrap_or(env!("TAURI_ENV_TARGET_TRIPLE"));
+pub(crate) fn resolve_sidecar(app: &tauri::AppHandle, name: &str) -> Result<PathBuf, String> {
+    let target_triple = option_env!("TARGET_TRIPLE").unwrap_or(env!("TAURI_ENV_TARGET_TRIPLE"));
 
     let resource_dir = app
         .path()
@@ -343,15 +339,13 @@ pub fn run() {
                         ..Default::default()
                     }))
                     .separator()
-                    .items(&[
-                        &MenuItem::with_id(
-                            app,
-                            "check-updates",
-                            "Check for Updates",
-                            true,
-                            None::<&str>,
-                        )?,
-                    ])
+                    .items(&[&MenuItem::with_id(
+                        app,
+                        "check-updates",
+                        "Check for Updates",
+                        true,
+                        None::<&str>,
+                    )?])
                     .separator()
                     .item(&app_settings_menu)
                     .separator()
@@ -369,8 +363,7 @@ pub fn run() {
             // System tray (separate item instances)
             let tray_settings_menu = build_settings_menu(app, &settings)?;
             let tray_menu = {
-                let show_i =
-                    MenuItem::with_id(app, "show", "Show App", true, None::<&str>)?;
+                let show_i = MenuItem::with_id(app, "show", "Show App", true, None::<&str>)?;
                 let update_i = MenuItem::with_id(
                     app,
                     "check-updates",
@@ -378,8 +371,7 @@ pub fn run() {
                     true,
                     None::<&str>,
                 )?;
-                let quit_i =
-                    MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
+                let quit_i = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
                 let sep1 = PredefinedMenuItem::separator(app)?;
                 let sep2 = PredefinedMenuItem::separator(app)?;
 
@@ -399,8 +391,7 @@ pub fn run() {
             // Collect CheckMenuItems for macOS sync
             #[cfg(target_os = "macos")]
             {
-                let mut sync_map: HashMap<String, Vec<CheckMenuItem<tauri::Wry>>> =
-                    HashMap::new();
+                let mut sync_map: HashMap<String, Vec<CheckMenuItem<tauri::Wry>>> = HashMap::new();
                 fn collect_checks(
                     items: Vec<MenuItemKind<tauri::Wry>>,
                     map: &mut HashMap<String, Vec<CheckMenuItem<tauri::Wry>>>,
@@ -408,9 +399,7 @@ pub fn run() {
                     for item in items {
                         match item {
                             MenuItemKind::Check(c) => {
-                                map.entry(c.id().as_ref().to_string())
-                                    .or_default()
-                                    .push(c);
+                                map.entry(c.id().as_ref().to_string()).or_default().push(c);
                             }
                             MenuItemKind::Submenu(sub) => {
                                 collect_checks(sub.items().unwrap_or_default(), map);

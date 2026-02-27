@@ -49,11 +49,7 @@ pub struct TreeEntry {
 // -- Commands --
 
 #[tauri::command]
-pub async fn fs_open(
-    path: String,
-    mode: String,
-    state: State<'_, FsState>,
-) -> Result<u32, String> {
+pub async fn fs_open(path: String, mode: String, state: State<'_, FsState>) -> Result<u32, String> {
     let file = match mode.as_str() {
         "r" => tokio::fs::OpenOptions::new()
             .read(true)
@@ -108,10 +104,7 @@ pub async fn fs_read(
 }
 
 #[tauri::command]
-pub async fn fs_write(
-    request: Request<'_>,
-    state: State<'_, FsState>,
-) -> Result<u32, String> {
+pub async fn fs_write(request: Request<'_>, state: State<'_, FsState>) -> Result<u32, String> {
     let handle_id: u32 = request
         .headers()
         .get("x-handle-id")
@@ -180,9 +173,9 @@ pub async fn fs_stat(path: String) -> Result<FileStat, String> {
 
 #[tauri::command]
 pub async fn fs_exists(path: String) -> Result<bool, String> {
-    Ok(fs::try_exists(&path)
+    fs::try_exists(&path)
         .await
-        .map_err(|e| format!("exists failed: {e}"))?)
+        .map_err(|e| format!("exists failed: {e}"))
 }
 
 #[tauri::command]
@@ -260,9 +253,8 @@ async fn list_tree_recursive(
         .map_err(|e| format!("list_tree failed: {e}"))?
     {
         let entry_path = entry.path();
-        let meta = match fs::metadata(&entry_path).await {
-            Ok(m) => m,
-            Err(_) => continue,
+        let Ok(meta) = fs::metadata(&entry_path).await else {
+            continue;
         };
 
         if meta.is_file() {

@@ -56,9 +56,7 @@ fn test_host_handshake_and_ping() {
     let response = read_native_message(&mut stdout);
     assert_eq!(response["action"], "handshake");
     assert_eq!(response["name"], "ok200-host");
-    assert!(response["version"]
-        .as_str()
-        .is_some_and(|v| !v.is_empty()));
+    assert!(response["version"].as_str().is_some_and(|v| !v.is_empty()));
 
     // 2. Ping (validates framing survives a second message)
     write_native_message(&mut stdin, &serde_json::json!({"action": "ping"}));

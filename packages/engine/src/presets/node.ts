@@ -1,11 +1,12 @@
 import { NodeFileSystem, NodeSocketFactory } from "../adapters/node/index.js";
 import type { ServerConfig } from "../config/server-config.js";
 import type { Logger } from "../logging/logger.js";
-import { WebServer } from "../server/web-server.js";
+import { type RequestInterceptor, WebServer } from "../server/web-server.js";
 
 export interface NodeServerOptions {
   config: ServerConfig;
   logger?: Logger;
+  requestInterceptor?: RequestInterceptor;
 }
 
 export function createNodeServer(options: NodeServerOptions): WebServer {
@@ -16,5 +17,6 @@ export function createNodeServer(options: NodeServerOptions): WebServer {
     fileSystem,
     config: options.config,
     logger: options.logger,
+    requestInterceptor: options.requestInterceptor,
   });
 }

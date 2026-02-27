@@ -40,6 +40,19 @@
           }
         }
       }
+    },
+    {
+      "includes": [
+        "packages/ui/src/index.css",
+        "desktop/tauri-app/src/index.css"
+      ],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noUnknownAtRules": "off"
+          }
+        }
+      }
     }
   ],
   "assist": {

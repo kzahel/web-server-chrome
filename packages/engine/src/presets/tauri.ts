@@ -6,7 +6,7 @@ import type {
 } from "../adapters/tauri/types.js";
 import type { ServerConfig } from "../config/server-config.js";
 import type { Logger } from "../logging/logger.js";
-import { WebServer } from "../server/web-server.js";
+import { type RequestInterceptor, WebServer } from "../server/web-server.js";
 
 export interface TauriServerOptions {
   config: ServerConfig;
@@ -15,6 +15,7 @@ export interface TauriServerOptions {
   invoke: TauriInvokeFn;
   /** The Channel constructor from @tauri-apps/api/core */
   Channel: TauriChannelCtor;
+  requestInterceptor?: RequestInterceptor;
 }
 
 export function createTauriServer(options: TauriServerOptions): WebServer {
@@ -25,5 +26,6 @@ export function createTauriServer(options: TauriServerOptions): WebServer {
     fileSystem,
     config: options.config,
     logger: options.logger,
+    requestInterceptor: options.requestInterceptor,
   });
 }

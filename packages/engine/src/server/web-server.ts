@@ -19,11 +19,21 @@ import { fromString } from "../utils/buffer.js";
 import { EventEmitter } from "../utils/event-emitter.js";
 import { StaticServer } from "./static-server.js";
 
+export interface InterceptorContext {
+  socket: ITcpSocket;
+  request: HttpRequest;
+  connectionHeader: "keep-alive" | "close";
+  readBody: () => Promise<Uint8Array | undefined>;
+}
+
+export type RequestInterceptor = (ctx: InterceptorContext) => Promise<boolean>;
+
 export interface WebServerOptions {
   socketFactory: ISocketFactory;
   fileSystem: IFileSystem;
   config: ServerConfig;
   logger?: Logger;
+  requestInterceptor?: RequestInterceptor;
 }
 
 export class WebServer extends EventEmitter {
@@ -34,6 +44,7 @@ export class WebServer extends EventEmitter {
   private tcpServer: ITcpServer | null = null;
   private staticServer: StaticServer;
   private activeConnections: Set<ITcpSocket> = new Set();
+  private requestInterceptor?: RequestInterceptor;
 
   constructor(options: WebServerOptions) {
     super();
@@ -41,6 +52,7 @@ export class WebServer extends EventEmitter {
     this.fileSystem = options.fileSystem;
     this.config = options.config;
     this.logger = options.logger ?? basicLogger();
+    this.requestInterceptor = options.requestInterceptor;
 
     this.staticServer = new StaticServer({
       root: this.config.root,
@@ -175,6 +187,33 @@ export class WebServer extends EventEmitter {
           requestBase.headers,
         );
         const connectionHeader = keepAlive ? "keep-alive" : "close";
+
+        if (this.requestInterceptor) {
+          let bodyRead = false;
+          let bodyData: Uint8Array | undefined;
+          const readBody = async (): Promise<Uint8Array | undefined> => {
+            if (bodyRead) return bodyData;
+            bodyRead = true;
+            if (requestHead.contentLength > 0) {
+              bodyData = await parser.readBody(requestHead.contentLength, {
+                timeoutMs: this.config.requestTimeoutMs,
+                maxBodySize: this.config.maxRequestBodySize,
+              });
+            }
+            return bodyData;
+          };
+
+          const handled = await this.requestInterceptor({
+            socket,
+            request: requestBase,
+            connectionHeader,
+            readBody,
+          });
+          if (handled) {
+            if (!keepAlive) break;
+            continue;
+          }
+        }
 
         const isUploadRequest =
           this.config.upload &&

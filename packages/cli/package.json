@@ -26,7 +26,7 @@
     "cli"
   ],
   "scripts": {
-    "build": "tsc && node bundle/build-cli.mjs",
+    "build": "pnpm --filter @ok200/ui build && tsc && node bundle/build-cli.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

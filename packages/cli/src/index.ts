@@ -1,13 +1,21 @@
+import * as crypto from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+// @ts-expect-error virtual module provided by esbuild plugin at build time
+import uiAssets from "virtual:ui-assets";
 import {
+  type ApiUiAssets,
   basicLogger,
+  createApiInterceptor,
   createNodeServer,
   defaultConfig,
   type Logger,
   NodeCertificateProvider,
+  NodeFileSystem,
   prefixedLogger,
+  type RequestInterceptor,
+  ServerRegistry,
   type TlsOptions,
 } from "@ok200/engine";
 
@@ -23,6 +31,7 @@ function parseArgs(args: string[]): {
   noListing: boolean;
   quiet: boolean;
   https: boolean;
+  noUi: boolean;
   certPath?: string;
   keyPath?: string;
 } {
@@ -35,6 +44,7 @@ function parseArgs(args: string[]): {
   let noListing = false;
   let quiet = false;
   let https = false;
+  let noUi = false;
   let certPath: string | undefined;
   let keyPath: string | undefined;
 
@@ -65,6 +75,8 @@ function parseArgs(args: string[]): {
       certPath = args[++i];
     } else if (arg === "--key") {
       keyPath = args[++i];
+    } else if (arg === "--no-ui") {
+      noUi = true;
     } else if (arg === "--version" || arg === "-v") {
       console.log(OK200_VERSION);
       process.exit(0);
@@ -91,6 +103,7 @@ function parseArgs(args: string[]): {
     noListing,
     quiet,
     https,
+    noUi,
     certPath,
     keyPath,
   };
@@ -113,6 +126,7 @@ Options:
   --https, -S          Enable HTTPS with auto-generated self-signed cert
   --cert <path>        Path to PEM certificate file (use with --key)
   --key <path>         Path to PEM private key file (use with --cert)
+  --no-ui              Disable management UI and API
   --version, -v        Show version
   --help, -h           Show this help
 `);
@@ -209,7 +223,44 @@ async function main(): Promise<void> {
     tls,
   };
 
-  const server = createNodeServer({ config, logger });
+  // Set up management API interceptor unless --no-ui
+  const authToken = args.noUi ? undefined : crypto.randomUUID();
+  let requestInterceptor: RequestInterceptor | undefined;
+
+  if (!args.noUi) {
+    const registry = new ServerRegistry();
+    registry.register("default", config);
+    registry.setStatus("default", "running", config.port);
+
+    const fileSystem = new NodeFileSystem();
+
+    requestInterceptor = createApiInterceptor({
+      registry,
+      authToken,
+      uiAssets: uiAssets as ApiUiAssets,
+      fileSystem,
+      onStartServer: async (id) => {
+        // Single-server mode: server is always "running" since the
+        // management API and file server share the same process
+        const info = registry.getServer(id);
+        if (!info) throw new Error(`Server not found: ${id}`);
+        return info;
+      },
+      onStopServer: async (id) => {
+        const info = registry.getServer(id);
+        if (!info) throw new Error(`Server not found: ${id}`);
+        return info;
+      },
+      onUpdateConfig: async (id, partial) => {
+        registry.updateConfig(id, partial);
+        const info = registry.getServer(id);
+        if (!info) throw new Error(`Server not found: ${id}`);
+        return info;
+      },
+    });
+  }
+
+  const server = createNodeServer({ config, logger, requestInterceptor });
 
   const port = await server.start();
 
@@ -219,6 +270,14 @@ async function main(): Promise<void> {
   console.log(`  Local:   ${url}`);
   if (config.host === "0.0.0.0") {
     console.log(`  Network: ${protocol}://0.0.0.0:${port}`);
+  }
+  if (!args.noUi) {
+    console.log(`  UI:      ${url}/_api/ui/`);
+    if (config.host === "0.0.0.0" && authToken) {
+      console.log(
+        `  Remote:  ${protocol}://0.0.0.0:${port}/_api/ui/?token=${authToken}`,
+      );
+    }
   }
   console.log();
 

@@ -1,3 +1,14 @@
+// API
+export {
+  type ApiHandlerOptions,
+  type ApiUiAssets,
+  createApiInterceptor,
+} from "./api/api-handler.js";
+export {
+  type ServerInfo,
+  ServerRegistry,
+  type ServerStatus,
+} from "./api/server-registry.js";
 // Certificate / TLS
 
 export { NodeCertificateProvider } from "./adapters/node/node-certificate-provider.js";
@@ -63,7 +74,11 @@ export type { TauriServerOptions } from "./presets/tauri.js";
 export { createTauriServer } from "./presets/tauri.js";
 export type { StaticServerOptions } from "./server/static-server.js";
 export { StaticServer } from "./server/static-server.js";
-export type { WebServerOptions } from "./server/web-server.js";
+export type {
+  InterceptorContext,
+  RequestInterceptor,
+  WebServerOptions,
+} from "./server/web-server.js";
 // Server
 export { WebServer } from "./server/web-server.js";
 export { InMemoryFileSystem } from "./testing/in-memory-filesystem.js";

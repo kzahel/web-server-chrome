@@ -91,6 +91,27 @@ emu logs        # Filtered logcat (use --js for QuickJS logs only)
 emu reset       # Clear app data
 ```
 
+## Android Debug RPC
+
+Debug builds include a ContentProvider-based RPC system for programmatic app control (automated testing, CI, etc.).
+
+**Preamble (same as emulator commands):**
+```bash
+source ~/.profile && source android/scripts/android-env.sh
+```
+
+**Usage:**
+```bash
+emu rpc ping                      # Health check
+emu rpc getState                  # Full server state + config
+emu rpc setPort 9090              # Set port
+emu rpc setRootPath /sdcard/www   # Set root directory (bypasses SAF)
+emu rpc startServer               # Init engine + start serving
+emu rpc stopServer                # Stop server + foreground service
+```
+
+See `.claude/commands/android-rpc.md` for full method documentation and test workflows.
+
 ## Android SDK Setup
 
 The Android SDK is at `~/.android-sdk`. Gradle needs the SDK location via `local.properties`:

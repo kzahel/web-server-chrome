@@ -47,6 +47,7 @@ alias emu-install="$_SCRIPTS_DIR/emu-install.sh"
 alias emu-logs="$_SCRIPTS_DIR/emu-logs.sh"
 alias emu-shell="adb_emu shell"
 alias emu-reset="adb_emu shell pm clear app.ok200.android"
+alias emu-rpc="$_SCRIPTS_DIR/emu-rpc.sh"
 
 # Device-specific aliases
 alias emu-phone="AVD_NAME=jstorrent-dev $_SCRIPTS_DIR/emu-start.sh"
@@ -68,6 +69,7 @@ emu() {
         phone)       AVD_NAME=jstorrent-dev emu-start ;;
         tablet)      AVD_NAME=jstorrent-tablet emu-start ;;
         reset)       emu-reset ;;
+        rpc)         shift; emu-rpc "$@" ;;
         *)
             echo "Usage: emu <command>"
             echo ""
@@ -82,6 +84,7 @@ emu() {
             echo "  restart     - Stop then start"
             echo "  phone       - Start phone emulator (Pixel 6)"
             echo "  tablet      - Start tablet emulator (Pixel Tablet)"
+            echo "  rpc <method> [arg] - Debug RPC call to app (debug builds only)"
             ;;
     esac
 }
@@ -166,7 +169,7 @@ fi
 
 echo "Android dev environment loaded"
 echo "  ANDROID_HOME=$ANDROID_HOME"
-echo "  emu: start|stop|install|logs|shell|status|reset|restart|phone|tablet"
+echo "  emu: start|stop|install|logs|shell|status|reset|restart|phone|tablet|rpc"
 echo "  dev: list|install|logs|shell|reset|connect|disconnect"
 if [[ -f "$_DEV_CONFIG_FILE" ]]; then
     _device_count=$(grep -v '^#' "$_DEV_CONFIG_FILE" | grep -v '^$' | wc -l | tr -d ' ')

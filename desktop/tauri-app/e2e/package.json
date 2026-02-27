@@ -6,7 +6,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "@wdio/cli": "^8.38.2",
+    "@wdio/cli": "^9.24.0",
     "@wdio/globals": "^8.38.2",
     "@wdio/local-runner": "^8.38.2",
     "@wdio/mocha-framework": "^8.38.2",

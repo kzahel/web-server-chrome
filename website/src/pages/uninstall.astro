@@ -1,0 +1,137 @@
+---
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const extensionId = "lpkjdhnmgkhaabhimpdinmdgejoaejic";
+const webStoreUrl = `https://chromewebstore.google.com/detail/${extensionId}`;
+---
+
+<BaseLayout
+  title="Web Server for Chrome — Uninstalled"
+  description="You've uninstalled Web Server for Chrome. Here's what's next."
+>
+  <Header activePage="" />
+
+  <main>
+    <section class="uninstall">
+      <div class="container">
+        <img src="/logo-256.png" alt="200 OK!" class="logo-img">
+
+        <div id="detecting" class="state">
+          <h1>Checking for the new extension...</h1>
+        </div>
+
+        <div id="has-extension" class="state" hidden>
+          <h1>You're all set!</h1>
+          <p>You already have the new <strong>Web Server for Chrome</strong> extension installed. The old Chrome App has been removed — no action needed.</p>
+          <div class="cta-buttons">
+            <a href="/" class="btn btn-primary">Learn more</a>
+          </div>
+        </div>
+
+        <div id="no-extension" class="state" hidden>
+          <h1>Thanks for using Web Server for Chrome</h1>
+          <p>The original Chrome App has been discontinued by Google, but we've rebuilt it as a modern Chrome Extension with the same features and workflow.</p>
+          <div class="cta-buttons">
+            <a href={webStoreUrl} class="btn btn-primary">Get the new extension</a>
+            <a href="/" class="btn btn-secondary">Learn more</a>
+          </div>
+        </div>
+
+        <div id="not-chrome" class="state" hidden>
+          <h1>Thanks for using Web Server for Chrome</h1>
+          <p>The original Chrome App has been discontinued by Google, but we've rebuilt it for every platform — including a Chrome Extension, desktop app, and CLI.</p>
+          <div class="cta-buttons">
+            <a href="/" class="btn btn-primary">See all platforms</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script define:vars={{ extensionId }}>
+  function show(id) {
+    document.querySelectorAll('.state').forEach(el => el.hidden = true);
+    document.getElementById(id).hidden = false;
+  }
+
+  if (typeof chrome === 'undefined' || !chrome.runtime?.sendMessage) {
+    show('not-chrome');
+  } else {
+    try {
+      chrome.runtime.sendMessage(extensionId, { type: 'ping' }, response => {
+        if (chrome.runtime.lastError || !response?.installed) {
+          show('no-extension');
+        } else {
+          show('has-extension');
+        }
+      });
+      // Timeout fallback — if no response in 2s, assume not installed
+      setTimeout(() => {
+        if (!document.getElementById('has-extension').hidden) return;
+        if (!document.getElementById('not-chrome').hidden) return;
+        show('no-extension');
+      }, 2000);
+    } catch {
+      show('no-extension');
+    }
+  }
+</script>
+
+<style>
+  .uninstall {
+    padding: 80px 0 60px;
+    text-align: center;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .logo-img {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 32px;
+  }
+
+  .uninstall h1 {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  .uninstall p {
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 600px) {
+    .uninstall {
+      padding: 48px 0 40px;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cta-buttons .btn {
+      width: 100%;
+      max-width: 280px;
+      justify-content: center;
+    }
+  }
+</style>

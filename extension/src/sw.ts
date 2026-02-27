@@ -112,8 +112,10 @@ const LEGACY_APP_ID = "ofhbbkphhbklhfoeikjpcbhemlocgigb";
 
 chrome.runtime.onMessageExternal.addListener(
   (message, sender, sendResponse) => {
-    if (sender.id !== LEGACY_APP_ID) return;
-    console.log("[SW] Message from legacy app:", message);
+    const isLegacyApp = sender.id === LEGACY_APP_ID;
+    const isOk200Site = sender.url?.startsWith("https://ok200.app/");
+
+    if (!isLegacyApp && !isOk200Site) return;
 
     if (message.type === "ping") {
       sendResponse({

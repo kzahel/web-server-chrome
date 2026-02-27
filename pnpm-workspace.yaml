@@ -3,3 +3,4 @@ packages:
   - 'desktop/tauri-app'
   - 'apps/*'
   - 'extension'
+  - 'website'

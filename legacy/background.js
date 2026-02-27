@@ -118,15 +118,13 @@ function showMigrateWindow() {
     })
 }
 
-chrome.runtime.onStartup.addListener( function(evt) {
+function onStartup(evt) {
 	HADEVENT = true
-    // should fire when profile loads up...
-
-    // (needs "background" permission)
     window.ONSTARTUP_FIRED = true
     console.log('onStartup',evt)
-    showMigrateWindow()
-})
+    showMigrationNags()
+}
+chrome.runtime.onStartup.addListener(onStartup)
 function createNotification(msg, prio) {
 //    if (prio === undefined) { prio = 0 }
     var opts = {type:"basic",
@@ -137,6 +135,11 @@ function createNotification(msg, prio) {
     chrome.notifications.create( "suspending", opts, function(){} )
 }
 
+function showMigrationNags() {
+    showDeprecationNotification()
+    showMigrateWindow()
+}
+
 // Deprecation notification for Chrome Apps sunset
 function showDeprecationNotification() {
     var opts = {
@@ -144,6 +147,7 @@ function showDeprecationNotification() {
         title: 'Web Server for Chrome has moved!',
         message: 'A new version is available as a Chrome Extension. Click here to upgrade.',
         iconUrl: '/images/200ok-256.png',
+        priority: 2,
         requireInteraction: true
     }
     chrome.notifications.create('deprecation', opts, function() {
@@ -241,7 +245,7 @@ function launch(launchData) {
             if (data.deprecationClickedThrough) return
             var dayMs = 24 * 60 * 60 * 1000
             if (data.deprecationLastNotified && (Date.now() - data.deprecationLastNotified) < dayMs) return
-            showDeprecationNotification()
+            showMigrationNags()
         })
     }
 
@@ -285,8 +289,8 @@ function teststart() {
 
 chrome.runtime.onInstalled.addListener(function() {
     HADEVENT = true
-    chrome.runtime.setUninstallURL('https://kyle.graehl.org/web-server.html?ref=uninstall')
-    showDeprecationNotification()
+    chrome.runtime.setUninstallURL('https://ok200.app/uninstall?ref=legacy-app')
+    showMigrationNags()
 })
 
 chrome.app.runtime.onLaunched.addListener(launch);

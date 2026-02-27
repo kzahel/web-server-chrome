@@ -3,7 +3,7 @@ name: Deploy Site
 on:
   push:
     branches: [main]
-    paths: [site/**]
+    paths: [website/**]
   workflow_dispatch:
 
 permissions:
@@ -24,11 +24,11 @@ jobs:
         with:
           node-version: 20
       - name: Install and build
-        working-directory: site
+        working-directory: website
         run: npm install && npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site/dist
+          path: website/dist
 
   deploy:
     needs: build

@@ -5,7 +5,7 @@ import { config } from "./config.js";
 import type { LatestJson } from "./github.js";
 import { aggregateNotes, fetchReleases, findPlatformUpdate } from "./github.js";
 import { NotesStore } from "./notes-store.js";
-import { compareVersions } from "./version.js";
+import { compareVersions, isValidVersion } from "./version.js";
 
 const notesStore = new NotesStore(config.notesCacheFile);
 
@@ -86,7 +86,8 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const segments = (req.url || "/").split("/").filter(Boolean);
+  const { pathname } = new URL(req.url || "/", "http://localhost");
+  const segments = pathname.split("/").filter(Boolean);
 
   // GET /health
   if (segments[0] === "health") {
@@ -97,6 +98,10 @@ const server = http.createServer(async (req, res) => {
   // GET /tauri/:target/:arch/:currentVersion
   if (segments[0] === "tauri" && segments.length === 4) {
     const [, target, arch, currentVersion] = segments;
+    if (!isValidVersion(currentVersion)) {
+      sendJson(res, 400, { error: "Invalid version format" });
+      return;
+    }
     try {
       await handleUpdateCheck(req, res, target, arch, currentVersion);
     } catch (err) {

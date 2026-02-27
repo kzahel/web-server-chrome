@@ -51,7 +51,7 @@
       "endpoints": [
         "https://updates.ok200.app/tauri/{{target}}/{{arch}}/{{current_version}}"
       ],
-      "pubkey": "GENERATE_NEW_KEYPAIR"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI5NjBEM0E4NTNCNEQ2OEEKUldTSzFyUlRxTk5nS1JlZUpDaXFrZFZhUkNGRk9TVEVJMXlWUksvblUxMGZvQXpZR1RaQUs1b2MK"
     }
   }
 }

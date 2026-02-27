@@ -6,7 +6,9 @@ import { defineConfig } from "vite";
 
 const DEV_HOST = "local.ok200.app";
 
-if (process.env.npm_lifecycle_event !== "build") {
+// Only check DNS when starting the dev server (not during build/watch)
+const isDevServer = process.argv[1]?.includes("vite") && !process.argv.includes("build");
+if (isDevServer) {
   dns.lookup(DEV_HOST, (err) => {
     if (err && err.code === "ENOTFOUND") {
       console.log(`

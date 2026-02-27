@@ -1,5 +1,5 @@
 import { config } from "./config.js";
-import { compareVersions } from "./version.js";
+import { compareVersions, isValidVersion } from "./version.js";
 
 export interface LatestJson {
   version: string;
@@ -93,7 +93,9 @@ export function aggregateNotes(
   currentVersion: string,
 ): string {
   const relevant = allNotes.filter(
-    (n) => compareVersions(n.version, currentVersion) > 0,
+    (n) =>
+      isValidVersion(n.version) &&
+      compareVersions(n.version, currentVersion) > 0,
   );
   if (relevant.length === 0) return "";
   if (relevant.length === 1) return relevant[0].notes;

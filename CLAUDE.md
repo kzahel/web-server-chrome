@@ -121,3 +121,54 @@ echo "sdk.dir=$HOME/.android-sdk" > android/local.properties
 ```
 
 Note: `local.properties` is gitignored — each machine needs its own.
+
+## Releases
+
+All components follow the same release pattern:
+1. Update the component's `CHANGELOG.md` with a `## [VERSION]` section (required - scripts will fail without it)
+2. Run the release script: `./scripts/release-{component}.sh <version>`
+3. CI automatically builds and publishes artifacts when the tag is pushed
+
+**Commit message format:** `Release {Component} v{VERSION}` (e.g., `Release CLI v0.1.0`)
+
+### Release Pipeline Summary
+
+| Component | Tag | CI builds | Publishing |
+|-----------|-----|-----------|------------|
+| **CLI** | `v{ver}` | npm package | CI auto-publishes to npm |
+| **Desktop** | `desktop-v{ver}` | Signed installers (Mac/Win/Linux) | Auto-updates via updater JSON |
+| **Extension** | `extension-v{ver}` | ZIP | Manual upload to Chrome Web Store |
+
+### CLI Releases
+
+```bash
+./scripts/release-cli.sh <version>
+```
+
+- Updates `packages/cli/package.json`
+- Creates tag: `v{version}`
+- CI publishes to npm as `ok200`
+- Changelog: `packages/cli/CHANGELOG.md`
+
+### Desktop Releases
+
+```bash
+./scripts/release-desktop.sh <version>
+```
+
+- Updates `desktop/tauri-app/src-tauri/tauri.conf.json`, `desktop/tauri-app/package.json`, and `desktop/Cargo.toml`
+- Creates tag: `desktop-v{version}`
+- CI builds signed/notarized installers for macOS, Windows, and Linux
+- Changelog: `desktop/tauri-app/CHANGELOG.md`
+
+### Extension Releases
+
+```bash
+./scripts/release-extension.sh <version>
+```
+
+- Updates `extension/public/manifest.json`
+- Creates tag: `extension-v{version}`
+- CI creates GitHub Release with ZIP attachment
+- **Manual step:** Download ZIP from GitHub Release and upload to Chrome Web Store
+- Changelog: `extension/CHANGELOG.md`

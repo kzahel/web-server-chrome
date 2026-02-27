@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.1.0]
+## [0.1.1]
 
 ### Added
 - Initial Tauri desktop app with native messaging host
@@ -9,3 +9,5 @@
 - Headless update mode for background updates
 - Native messaging host registration for Chrome, Chromium, Brave, Edge, Vivaldi, Arc
 - Windows NSIS installer with native messaging registry setup
+- macOS .pkg installer
+- E2E test suite

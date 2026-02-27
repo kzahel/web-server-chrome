@@ -152,7 +152,13 @@ export class NodeTcpSocket implements ITcpSocket {
         plainSocket.removeAllListeners("error");
 
         for (const cb of this.dataCallbacks) {
-          tlsSocket.on("data", (data) => cb(new Uint8Array(data)));
+          tlsSocket.on("data", (data) =>
+            cb(
+              new Uint8Array(
+                typeof data === "string" ? Buffer.from(data) : data,
+              ),
+            ),
+          );
         }
         for (const cb of this.closeCallbacks) {
           tlsSocket.on("close", cb);

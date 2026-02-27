@@ -34,9 +34,9 @@
     "@ok200/engine": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^20.10.0",
-    "esbuild": "^0.24.0",
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0"
+    "@types/node": "^25.3.2",
+    "esbuild": "^0.27.3",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }

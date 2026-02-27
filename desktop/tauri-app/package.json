@@ -12,18 +12,18 @@
   },
   "dependencies": {
     "@ok200/engine": "workspace:*",
-    "react": "^19",
-    "react-dom": "^19",
-    "@tauri-apps/api": "^2",
-    "@tauri-apps/plugin-updater": "^2",
-    "@tauri-apps/plugin-process": "^2"
+    "@tauri-apps/api": "^2.10.1",
+    "@tauri-apps/plugin-process": "^2.3.1",
+    "@tauri-apps/plugin-updater": "^2.10.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@vitejs/plugin-react": "^4",
-    "typescript": "^5.7",
-    "vite": "^6"
+    "@tauri-apps/cli": "^2.10.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
   }
 }

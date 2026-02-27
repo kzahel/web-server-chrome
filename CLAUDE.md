@@ -24,6 +24,16 @@ This project is part of a larger ecosystem. See `~/code/dotfiles/projects/README
 - **Transistor** (`~/code/transistor`) — The framework vision this app proves out
 - **JSTorrent** (`~/code/jstorrent`) — Shipped product that proved the adapter pattern works (same IFileSystem/IFileHandle approach, QuickJS+JNI on Android, Tauri on desktop)
 
+## Environment Setup
+
+Before running commands that require Java, Rust, or other development tools, source the shell profile:
+
+```bash
+source ~/.profile
+```
+
+This loads PATH entries for Java, Rust/Cargo, and other development tools.
+
 ## Stack
 
 - TypeScript, pnpm workspaces
@@ -35,4 +45,58 @@ This project is part of a larger ecosystem. See `~/code/dotfiles/projects/README
 
 - No `Co-Authored-By` lines referencing Claude/AI/Anthropic in commits
 - No "Generated with Claude Code" attribution
-- Run `pnpm lint` before committing
+
+## TypeScript Editing Workflow
+
+After editing TypeScript files, run checks in this order:
+
+1. `pnpm typecheck` - Verify type correctness
+2. `pnpm test` - Run unit tests
+3. `pnpm check` - Lint and fix formatting (do this last since fixing errors above may introduce formatting issues)
+
+## Rust Editing Workflow (desktop/)
+
+After editing Rust files in `desktop/`, run from the `desktop/` directory:
+
+1. `cargo fmt --all`
+2. `cargo clippy --workspace -- -D warnings`
+3. `cargo test --workspace`
+
+## Android/Kotlin Editing Workflow
+
+After editing Kotlin/Java files in `android/`:
+
+1. `./gradlew :app:compileDebugKotlin` - Compile Kotlin
+2. `./gradlew testDebugUnitTest` - Run unit tests
+3. `./gradlew lint` - Run Android lint
+
+## Android Emulator Management
+
+**Preamble (required before any emulator/adb commands):**
+```bash
+source ~/.profile && source android/scripts/android-env.sh
+```
+
+**Start the emulator (idempotent):**
+```bash
+emu start
+```
+
+**Other `emu` subcommands:**
+```bash
+emu status      # Show connected devices and port forwards
+emu stop        # Stop the emulator
+emu install     # Build and install the APK
+emu logs        # Filtered logcat (use --js for QuickJS logs only)
+emu reset       # Clear app data
+```
+
+## Android SDK Setup
+
+The Android SDK is at `~/.android-sdk`. Gradle needs the SDK location via `local.properties`:
+
+```bash
+echo "sdk.dir=$HOME/.android-sdk" > android/local.properties
+```
+
+Note: `local.properties` is gitignored — each machine needs its own.

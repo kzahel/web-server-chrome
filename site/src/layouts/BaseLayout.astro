@@ -7,7 +7,10 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
-const canonicalURL = new URL(Astro.url.pathname.replace(/\.html$/, ''), Astro.site);
+const canonicalURL = new URL(
+  Astro.url.pathname.replace(/\.html$/, ""),
+  Astro.site,
+);
 ---
 
 <!doctype html>

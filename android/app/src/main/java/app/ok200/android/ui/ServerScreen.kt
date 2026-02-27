@@ -158,16 +158,26 @@ fun ServerScreen(
                 ) {
                     Column {
                         Text(
-                            text = if (serverState.running) "Server Running" else "Server Stopped",
+                            text = if (serverState.running) "Server On" else "Server Off",
                             style = MaterialTheme.typography.titleMedium
                         )
-                        if (serverState.error != null) {
-                            Text(
-                                text = serverState.error!!,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.error
-                            )
-                        }
+                        Text(
+                            text = if (serverState.error != null) {
+                                serverState.error!!
+                            } else if (serverState.running) {
+                                "Toggle to stop"
+                            } else if (rootUri == null) {
+                                "Select a folder first"
+                            } else {
+                                "Toggle to start"
+                            },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (serverState.error != null) {
+                                MaterialTheme.colorScheme.error
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            }
+                        )
                     }
                     Switch(
                         checked = serverState.running,

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "200 OK - Web Server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Serve any folder over HTTP. Companion extension for the 200 OK desktop app — the successor to Web Server for Chrome.",
   "permissions": ["nativeMessaging", "storage"],
   "background": {

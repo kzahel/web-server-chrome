@@ -24,7 +24,13 @@ export class NativeTcpSocket implements ITcpSocket {
 
   send(data: Uint8Array): void {
     if (this.closed) return;
-    __ok200_tcp_send(String(this.socketId), data.buffer as ArrayBuffer);
+    // Extract the exact byte range — data.buffer may be larger than the view
+    // (e.g. when data is a subarray of a larger buffer)
+    const buffer =
+      data.byteOffset === 0 && data.byteLength === data.buffer.byteLength
+        ? data.buffer
+        : data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+    __ok200_tcp_send(String(this.socketId), buffer as ArrayBuffer);
   }
 
   async sendAndWait(data: Uint8Array): Promise<void> {

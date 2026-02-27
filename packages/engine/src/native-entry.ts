@@ -65,7 +65,7 @@ function reportState(running: boolean, port = 0, host = "", error?: string) {
 globalThis.__ok200_engine_start = (configJson: string) => {
   try {
     const parsed = JSON.parse(configJson) as { port?: number; host?: string };
-    const port = parsed.port || 8080;
+    const port = parsed.port ?? 8080;
     const host = parsed.host || "0.0.0.0";
 
     // Root path "/" means "serve from the root" — the native filesystem

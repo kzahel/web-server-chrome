@@ -19,6 +19,7 @@
     "128": "icons/ok-128.png"
   },
   "externally_connectable": {
+    "ids": ["ofhbbkphhbklhfoeikjpcbhemlocgigb"],
     "matches": ["https://ok200.app/*", "http://local.ok200.app/*"]
   }
 }

@@ -104,5 +104,25 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   return false;
 });
 
+// ============================================================================
+// External message handling (legacy Chrome App migration)
+// ============================================================================
+
+const LEGACY_APP_ID = "ofhbbkphhbklhfoeikjpcbhemlocgigb";
+
+chrome.runtime.onMessageExternal.addListener(
+  (message, sender, sendResponse) => {
+    if (sender.id !== LEGACY_APP_ID) return;
+    console.log("[SW] Message from legacy app:", message);
+
+    if (message.type === "ping") {
+      sendResponse({
+        installed: true,
+        version: chrome.runtime.getManifest().version,
+      });
+    }
+  },
+);
+
 // Auto-connect on startup
 connectToNativeHost();

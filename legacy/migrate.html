@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: #f8f9fa;
+      color: #333;
+    }
+    .container {
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    .icon {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .icon img {
+      width: 64px;
+      height: 64px;
+    }
+    h1 {
+      font-size: 18px;
+      text-align: center;
+      margin: 0 0 12px;
+    }
+    p {
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0 0 16px;
+      color: #555;
+    }
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    .status.checking {
+      background: #fff3cd;
+      color: #856404;
+    }
+    .status.installed {
+      background: #d4edda;
+      color: #155724;
+    }
+    .status.not-installed {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+    }
+    .btn-primary {
+      background: #1a73e8;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #1557b0;
+    }
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+    }
+    .btn-danger:hover {
+      background: #c82333;
+    }
+    .btn-secondary {
+      background: #e8eaed;
+      color: #333;
+    }
+    .btn-secondary:hover {
+      background: #dadce0;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">
+      <img src="images/200ok-128.png" alt="Web Server">
+    </div>
+    <h1>Web Server for Chrome has moved!</h1>
+    <p>
+      Chrome Apps are being discontinued. Web Server for Chrome is now
+      available as a Chrome Extension with the same features and more.
+    </p>
+
+    <div id="status" class="status checking">Checking for new extension...</div>
+
+    <div id="actions-not-installed">
+      <a class="btn btn-primary" id="install-btn" href="https://ok200.app/migrate?ref=legacy-app" target="_blank">
+        Get the new extension
+      </a>
+      <button class="btn btn-secondary" id="dismiss-btn">Remind me later</button>
+    </div>
+
+    <div id="actions-installed" class="hidden">
+      <p style="color: #155724; font-weight: 600;">
+        You're all set! You can remove this old app.
+      </p>
+      <button class="btn btn-danger" id="uninstall-btn">Remove old app</button>
+      <button class="btn btn-secondary" id="keep-btn">Keep for now</button>
+    </div>
+  </div>
+
+  <script>
+    var NEW_EXTENSION_ID = 'lpkjdhnmgkhaabhimpdinmdgejoaejic'
+    var statusEl = document.getElementById('status')
+    var actionsNotInstalled = document.getElementById('actions-not-installed')
+    var actionsInstalled = document.getElementById('actions-installed')
+
+    // Check if new extension is installed
+    chrome.runtime.sendMessage(NEW_EXTENSION_ID, {type: 'ping'}, function(response) {
+      if (chrome.runtime.lastError) {
+        statusEl.textContent = 'New extension not yet installed'
+        statusEl.className = 'status not-installed'
+      } else {
+        statusEl.textContent = 'New extension installed (v' + response.version + ')'
+        statusEl.className = 'status installed'
+        actionsNotInstalled.classList.add('hidden')
+        actionsInstalled.classList.remove('hidden')
+      }
+    })
+
+    document.getElementById('uninstall-btn').addEventListener('click', function() {
+      chrome.management.uninstallSelf({ showConfirmDialog: true })
+    })
+
+    document.getElementById('dismiss-btn').addEventListener('click', function() {
+      window.close()
+    })
+
+    document.getElementById('keep-btn').addEventListener('click', function() {
+      window.close()
+    })
+  </script>
+</body>
+</html>

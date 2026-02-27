@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!android/quickjs-engine/src/main/cpp"]
+    "includes": ["**", "!android/quickjs-engine/src/main/cpp", "!legacy"]
   },
   "formatter": {
     "enabled": true,

@@ -1,0 +1,67 @@
+{
+"update_url": "https://clients2.google.com/service/update2/crx",
+
+    "key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv7ZULSqbpKKQ1QP5Tb9f8g306PlY87OYYlXBrp7PlBHd/LJMUBDNWMCrWhpFR8sIjpvHjYipDr60j+2i7vj3PZlwbxZ7e3x+2A4cQt1LaC1PVZ6avnbsV0YMkFQi8H5f7NQiBKE2i2/Z/kB2r/DzyiUdGW63/sgjpBvgDCCMysHl3NWCnHqIOOtGD8SFlT5clgNJgVOgosFwHE4yYJDpIkvJ+nrLia9v6V/Cyc8ITEd0njvsp0q0aFJp332Ua/RPvh/m1UKcj8f3FNbaCrdScFzfKo5UNmifKLGhT377xhnvhOKuEJbyghNkPheMUquwVpTEHdRFMm7nVcLAt/kuZwIDAQAB",
+    "name": "Web Server for Chrome",
+    "short_name": "Web Server",
+    "description": "A Web Server for Chrome, serves web pages from a local folder over the network, using HTTP. Runs offline.",
+    "author": "Kyle Graehl",
+    "version": "0.5.3",
+    "manifest_version": 2,
+    "offline_enabled": true,
+    "minimum_chrome_version": "45",
+    "app": {
+        "background": {
+            "scripts": ["underscore.js","encoding.js","common.js","assets/bundle.js",
+            "log-full.js", "mime.js", "buffer.js","request.js","crypto.js","stream.js", "chromesocketxhr.js",
+            "connection.js","webapp.js","websocket.js","handlers.js","httplib.js","upnp.js","background.js"]
+        }
+    },
+    "permissions": [
+        "alarms",
+        "unlimitedStorage",
+        "storage",
+        "notifications",
+		"browser",
+        "power",
+		"system.network",
+        {"fileSystem":["write","directory","retainEntries"]}
+    ],
+	"optional_permissions": [
+        "background"
+	],
+    "sockets": {
+       "udp": {
+         "send": [""],
+         "bind": [""],
+         "multicastMembership": ""
+       },
+       "tcp": {
+         "connect": [""]
+       },
+       "tcpServer": {
+         "listen": ["*:*"]
+       }
+    },
+    "oauth2": {
+      "client_id": "458955919969-ip5gtdesaugnbn0tcqfaf39kn72ncddl.apps.googleusercontent.com",
+      "scopes": [
+        "https://www.googleapis.com/auth/chromewebstore.readonly"
+      ]
+    },
+    "externally_connectable": {
+        "ids": ["lpkjdhnmgkhaabhimpdinmdgejoaejic"]
+    },
+    "icons": {
+        "16": "images/200ok-16.png",
+        "19": "images/200ok-19.png",
+        "32": "images/200ok-32.png",
+        "38": "images/200ok-38.png",
+        "48": "images/200ok-48.png",
+        "64": "images/200ok-64.png",
+        "96": "images/200ok-96.png",
+        "128": "images/200ok-128.png",
+        "256": "images/200ok-256.png",
+        "512": "images/200ok-512.png"
+    }
+}

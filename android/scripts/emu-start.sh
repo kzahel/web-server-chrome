@@ -6,7 +6,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SDK_ROOT="${ANDROID_HOME:-$HOME/.android-sdk}"
-AVD_NAME="${AVD_NAME:-ok200-dev}"
+AVD_NAME="${AVD_NAME:-jstorrent-dev}"
 DAEMON_PORT="${DAEMON_PORT:-7800}"
 #GPU_MODE="${GPU_MODE:-auto}"
 GPU_MODE="${GPU_MODE:-off}"

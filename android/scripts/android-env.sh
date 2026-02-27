@@ -49,8 +49,8 @@ alias emu-shell="adb_emu shell"
 alias emu-reset="adb_emu shell pm clear app.ok200.android"
 
 # Device-specific aliases
-alias emu-phone="AVD_NAME=ok200-dev $_SCRIPTS_DIR/emu-start.sh"
-alias emu-tablet="AVD_NAME=ok200-tablet $_SCRIPTS_DIR/emu-start.sh"
+alias emu-phone="AVD_NAME=jstorrent-dev $_SCRIPTS_DIR/emu-start.sh"
+alias emu-tablet="AVD_NAME=jstorrent-tablet $_SCRIPTS_DIR/emu-start.sh"
 
 # Quick status
 alias emu-status="adb devices && adb forward --list 2>/dev/null || echo 'No forwards'"
@@ -65,8 +65,8 @@ emu() {
         shell)       adb_emu shell ;;
         status)      emu-status ;;
         restart)     emu-stop; sleep 1; emu-start ;;
-        phone)       AVD_NAME=ok200-dev emu-start ;;
-        tablet)      AVD_NAME=ok200-tablet emu-start ;;
+        phone)       AVD_NAME=jstorrent-dev emu-start ;;
+        tablet)      AVD_NAME=jstorrent-tablet emu-start ;;
         reset)       emu-reset ;;
         *)
             echo "Usage: emu <command>"

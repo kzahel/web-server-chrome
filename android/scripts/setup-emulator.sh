@@ -2,16 +2,16 @@
 #
 # setup-emulator.sh - One-time Android emulator setup without Android Studio
 #
-# Creates a lightweight Android dev environment for Ok200 daemon work.
+# Creates a lightweight Android dev environment.
 # Tested on: macOS (Apple Silicon), Linux (x86_64)
 #
 set -euo pipefail
 
 # Configuration
 SDK_ROOT="${ANDROID_HOME:-$HOME/Android/Sdk}"
-AVD_NAME="ok200-dev"
-AVD_NAME_TABLET="ok200-tablet"
-AVD_NAME_PLAYSTORE="ok200-playstore"
+AVD_NAME="jstorrent-dev"
+AVD_NAME_TABLET="jstorrent-tablet"
+AVD_NAME_PLAYSTORE="jstorrent-playstore"
 API_LEVEL="34"
 CMDLINE_TOOLS_VERSION="11076708"  # Update if needed
 
@@ -42,7 +42,7 @@ case "$OS" in
         ;;
 esac
 
-echo "=== Ok200 Android Emulator Setup ==="
+echo "=== Android Emulator Setup ==="
 echo "Platform: $PLATFORM ($ARCH)"
 echo "SDK location: $SDK_ROOT"
 echo "System image: android-$API_LEVEL;google_apis;$SYSTEM_IMAGE"
@@ -187,15 +187,15 @@ echo "Then run:"
 echo "    source ~/.zshrc  # or restart terminal"
 echo ""
 echo "Quick start:"
-echo "    ./emu-start.sh                        # Start phone emulator"
-echo "    AVD_NAME=ok200-tablet ./emu-start.sh    # Start tablet emulator"
-echo "    AVD_NAME=ok200-playstore ./emu-start.sh # Start phone with Play Store"
+echo "    ./emu-start.sh                              # Start phone emulator"
+echo "    AVD_NAME=jstorrent-tablet ./emu-start.sh    # Start tablet emulator"
+echo "    AVD_NAME=jstorrent-playstore ./emu-start.sh # Start phone with Play Store"
 echo "    ./emu-install.sh                      # Build and install APK"
 echo "    ./emu-logs.sh                         # View filtered logs"
 echo "    ./emu-stop.sh                         # Stop emulator"
 echo ""
 echo "AVDs created:"
-echo "    ok200-dev       (Pixel 6 - phone)"
-echo "    ok200-tablet    (Pixel Tablet)"
-echo "    ok200-playstore (Pixel 6 - phone with Play Store)"
+echo "    jstorrent-dev       (Pixel 6 - phone)"
+echo "    jstorrent-tablet    (Pixel Tablet)"
+echo "    jstorrent-playstore (Pixel 6 - phone with Play Store)"
 echo ""

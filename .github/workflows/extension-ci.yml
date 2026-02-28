@@ -73,8 +73,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build extension
-        run: pnpm run build
+      - name: Build extension (no key for CWS)
+        run: SKIP_INJECT_KEY=1 pnpm run build
 
       - name: Package extension
         run: |

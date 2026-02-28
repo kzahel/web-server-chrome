@@ -60,6 +60,41 @@ function sourcemapIgnoreLogger() {
   };
 }
 
+function injectPublicKey() {
+  return {
+    name: "inject-public-key",
+    generateBundle() {
+      try {
+        const manifestPath = resolve(__dirname, "public/manifest.json");
+        const manifestContent = fs.readFileSync(manifestPath, "utf-8");
+        const manifestJson = JSON.parse(manifestContent);
+
+        const pemContent = fs.readFileSync(
+          resolve(__dirname, "fullpubkey.txt"),
+          "utf-8",
+        );
+        const base64Key = pemContent
+          .replace(/-----BEGIN PUBLIC KEY-----/, "")
+          .replace(/-----END PUBLIC KEY-----/, "")
+          .replace(/\s/g, "");
+
+        if (base64Key) {
+          manifestJson.key = base64Key;
+          console.log("Injected public key into manifest.json");
+        }
+
+        this.emitFile({
+          type: "asset",
+          fileName: "manifest.json",
+          source: JSON.stringify(manifestJson, null, 2),
+        });
+      } catch (e) {
+        console.warn("Failed to inject public key:", (e as Error).message);
+      }
+    },
+  };
+}
+
 function printDevUrls() {
   return {
     name: "print-dev-urls",
@@ -79,7 +114,13 @@ Development URLs:
 }
 
 export default defineConfig({
-  plugins: [react(), printDevUrls(), sourcemapIgnoreLogger()],
+  plugins: [
+    react(),
+    printDevUrls(),
+    // Skip public key injection for CWS builds (set SKIP_INJECT_KEY=1)
+    !process.env.SKIP_INJECT_KEY && injectPublicKey(),
+    sourcemapIgnoreLogger(),
+  ].filter(Boolean),
   server: {
     host: DEV_HOST,
     port: 3001,

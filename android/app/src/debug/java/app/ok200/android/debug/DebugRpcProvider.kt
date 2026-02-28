@@ -2,7 +2,6 @@ package app.ok200.android.debug
 
 import android.content.ContentProvider
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
@@ -12,6 +11,7 @@ import android.os.Looper
 import android.util.Log
 import app.ok200.android.Ok200Application
 import app.ok200.android.service.WebServerService
+import app.ok200.android.settings.WakeLockMode
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
@@ -21,19 +21,14 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 private const val TAG = "DebugRpcProvider"
-private const val PREFS_NAME = "ok200_prefs"
-private const val KEY_PORT = "port"
-private const val KEY_ROOT_URI = "root_uri"
-private const val KEY_ROOT_DISPLAY = "root_display"
 
 class DebugRpcProvider : ContentProvider() {
 
     private val app: Ok200Application
         get() = context!!.applicationContext as Ok200Application
 
-    private val prefs by lazy {
-        context!!.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    }
+    private val settings
+        get() = app.settingsStore
 
     private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
 
@@ -47,6 +42,10 @@ class DebugRpcProvider : ContentProvider() {
                 "setRootPath" -> handleSetRootPath(arg)
                 "startServer" -> handleStartServer()
                 "stopServer" -> handleStopServer()
+                "getPowerState" -> handleGetPowerState()
+                "getSettings" -> handleGetSettings()
+                "setWakeLockMode" -> handleSetWakeLockMode(arg)
+                "setBackgroundEnabled" -> handleSetBackgroundEnabled(arg)
                 else -> errorJson("Unknown method: $method")
             }
         } catch (e: Exception) {
@@ -63,18 +62,15 @@ class DebugRpcProvider : ContentProvider() {
     private fun handleGetState(): String {
         val controller = app.engineController
         val state = controller?.state?.value
-        val port = prefs.getInt(KEY_PORT, 8080)
-        val rootUri = prefs.getString(KEY_ROOT_URI, null)
-        val rootDisplay = prefs.getString(KEY_ROOT_DISPLAY, null)
 
         return buildJsonObject {
             put("running", state?.running ?: false)
-            put("port", state?.port ?: port)
+            put("port", state?.port ?: settings.port)
             put("host", state?.host ?: "")
             put("error", state?.error?.let { JsonPrimitive(it) } ?: JsonNull)
-            put("rootUri", rootUri?.let { JsonPrimitive(it) } ?: JsonNull)
-            put("rootDisplayName", rootDisplay?.let { JsonPrimitive(it) } ?: JsonNull)
-            put("configuredPort", port)
+            put("rootUri", settings.rootUri?.let { JsonPrimitive(it) } ?: JsonNull)
+            put("rootDisplayName", settings.rootDisplayName?.let { JsonPrimitive(it) } ?: JsonNull)
+            put("configuredPort", settings.port)
             put("engineInitialized", controller != null)
         }.toString()
     }
@@ -84,7 +80,7 @@ class DebugRpcProvider : ContentProvider() {
             ?: return errorJson("Invalid port: $arg")
         if (port !in 1..65535)
             return errorJson("Port out of range: $port")
-        prefs.edit().putInt(KEY_PORT, port).apply()
+        settings.port = port
         return """{"ok":true,"port":$port}"""
     }
 
@@ -94,10 +90,8 @@ class DebugRpcProvider : ContentProvider() {
         val uri = Uri.parse("file://$arg")
         val displayName = arg.substringAfterLast('/')
         app.servingRootUri = uri
-        prefs.edit()
-            .putString(KEY_ROOT_URI, uri.toString())
-            .putString(KEY_ROOT_DISPLAY, displayName)
-            .apply()
+        settings.rootUri = uri.toString()
+        settings.rootDisplayName = displayName
         return buildJsonObject {
             put("ok", true)
             put("rootUri", uri.toString())
@@ -106,11 +100,11 @@ class DebugRpcProvider : ContentProvider() {
     }
 
     private fun handleStartServer(): String {
-        val rootUri = prefs.getString(KEY_ROOT_URI, null)
+        val rootUri = settings.rootUri
             ?: return errorJson("No root URI configured. Call setRootPath first.")
 
         app.servingRootUri = Uri.parse(rootUri)
-        val port = prefs.getInt(KEY_PORT, 8080)
+        val port = settings.port
 
         val controller = app.initializeEngine()
         controller.startServer(port, "0.0.0.0")
@@ -147,6 +141,60 @@ class DebugRpcProvider : ContentProvider() {
         }
 
         return """{"ok":true}"""
+    }
+
+    private fun handleGetPowerState(): String {
+        return buildJsonObject {
+            put("ok", true)
+            put("summary", app.dozeMonitor.getDebugSummary())
+            put("powerState", app.dozeMonitor.powerState.value.name)
+            put("isCharging", app.dozeMonitor.isCharging.value)
+            put("isDozing", app.dozeMonitor.isDozing.value)
+            put("isScreenOn", app.dozeMonitor.isScreenOn.value)
+            put("batteryLevel", app.dozeMonitor.batteryLevel.value)
+            put("isUiVisible", app.dozeMonitor.isUiVisible.value)
+            put("ignoringBatteryOptimizations", app.dozeMonitor.isIgnoringBatteryOptimizations())
+        }.toString()
+    }
+
+    private fun handleGetSettings(): String {
+        return buildJsonObject {
+            put("ok", true)
+            put("port", settings.port)
+            put("rootUri", settings.rootUri?.let { JsonPrimitive(it) } ?: JsonNull)
+            put("rootDisplayName", settings.rootDisplayName?.let { JsonPrimitive(it) } ?: JsonNull)
+            put("allFilesAccess", settings.allFilesAccess)
+            put("backgroundEnabled", settings.backgroundEnabled)
+            put("wakeLockMode", settings.wakeLockMode.key)
+            put("startOnBoot", settings.startOnBoot)
+            put("shutdownOnLowBattery", settings.shutdownOnLowBattery)
+            put("shutdownBatteryThreshold", settings.shutdownBatteryThreshold)
+        }.toString()
+    }
+
+    private fun handleSetWakeLockMode(arg: String?): String {
+        if (arg.isNullOrBlank())
+            return errorJson("Mode required (none, wifi_only, full)")
+        val mode = WakeLockMode.fromString(arg)
+        settings.wakeLockMode = mode
+        WebServerService.instance?.updateWakeLockMode(mode)
+        return buildJsonObject {
+            put("ok", true)
+            put("wakeLockMode", mode.key)
+        }.toString()
+    }
+
+    private fun handleSetBackgroundEnabled(arg: String?): String {
+        val enabled = when (arg?.lowercase()) {
+            "true", "1", "yes" -> true
+            "false", "0", "no" -> false
+            else -> return errorJson("Boolean required: $arg")
+        }
+        settings.backgroundEnabled = enabled
+        return buildJsonObject {
+            put("ok", true)
+            put("backgroundEnabled", enabled)
+        }.toString()
     }
 
     private fun errorJson(message: String): String {

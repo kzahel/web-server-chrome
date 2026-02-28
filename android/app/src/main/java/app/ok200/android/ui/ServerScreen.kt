@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Folder
@@ -24,7 +26,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -39,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import app.ok200.android.settings.WakeLockMode
 import app.ok200.android.viewmodel.ServerViewModel
 
 @Composable
@@ -54,6 +60,11 @@ fun ServerScreen(
     val rootDisplayName by viewModel.rootDisplayName.collectAsState()
     val allFilesAccess by viewModel.allFilesAccess.collectAsState()
     val localIp by viewModel.localIpAddress.collectAsState()
+    val backgroundEnabled by viewModel.backgroundEnabled.collectAsState()
+    val wakeLockMode by viewModel.wakeLockMode.collectAsState()
+    val startOnBoot by viewModel.startOnBoot.collectAsState()
+    val shutdownOnLowBattery by viewModel.shutdownOnLowBattery.collectAsState()
+    val shutdownBatteryThreshold by viewModel.shutdownBatteryThreshold.collectAsState()
     val context = LocalContext.current
 
     var portText by remember(port) { mutableStateOf(port.toString()) }
@@ -77,6 +88,7 @@ fun ServerScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -284,6 +296,142 @@ fun ServerScreen(
                     }
                 }
             }
+
+            // --- Power settings ---
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            HorizontalDivider()
+
+            Text(
+                text = "Power & Background",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            // Run in background
+            SettingToggle(
+                title = "Run in background",
+                description = "Keep server running when app is minimized",
+                checked = backgroundEnabled,
+                onCheckedChange = { viewModel.setBackgroundEnabled(it) }
+            )
+
+            // Wake lock mode
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Keep awake",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = "Prevent device from sleeping while serving",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        WakeLockMode.entries.forEach { mode ->
+                            FilterChip(
+                                selected = wakeLockMode == mode,
+                                onClick = { viewModel.setWakeLockMode(mode) },
+                                label = { Text(mode.label) }
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Start on boot
+            SettingToggle(
+                title = "Start on boot",
+                description = "Automatically start server when device boots",
+                checked = startOnBoot,
+                onCheckedChange = { viewModel.setStartOnBoot(it) }
+            )
+
+            // Low battery shutdown
+            SettingToggle(
+                title = "Stop on low battery",
+                description = if (shutdownOnLowBattery) {
+                    "Stop server when battery drops below ${shutdownBatteryThreshold}%"
+                } else {
+                    "Stop server when battery is critically low"
+                },
+                checked = shutdownOnLowBattery,
+                onCheckedChange = { viewModel.setShutdownOnLowBattery(it) }
+            )
+
+            // Battery threshold slider (only when enabled)
+            if (shutdownOnLowBattery) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = "Battery threshold: ${shutdownBatteryThreshold}%",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Slider(
+                        value = shutdownBatteryThreshold.toFloat(),
+                        onValueChange = { viewModel.setShutdownBatteryThreshold(it.toInt()) },
+                        valueRange = 5f..50f,
+                        steps = 8
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SettingToggle(
+    title: String,
+    description: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    enabled: Boolean = true
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Switch(
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+                enabled = enabled
+            )
         }
     }
 }

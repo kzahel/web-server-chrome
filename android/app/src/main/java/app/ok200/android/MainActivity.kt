@@ -51,6 +51,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        (application as Ok200Application).serviceLifecycleManager.onActivityStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (application as Ok200Application).serviceLifecycleManager.onActivityStop()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

@@ -5,6 +5,9 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.net.Uri
 import android.util.Log
+import app.ok200.android.power.DozeMonitor
+import app.ok200.android.service.ServiceLifecycleManager
+import app.ok200.android.settings.SettingsStore
 import app.ok200.quickjs.EngineController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +20,15 @@ class Ok200Application : Application() {
     object NotificationChannels {
         const val SERVICE = "ok200_service"
     }
+
+    lateinit var settingsStore: SettingsStore
+        private set
+
+    lateinit var dozeMonitor: DozeMonitor
+        private set
+
+    lateinit var serviceLifecycleManager: ServiceLifecycleManager
+        private set
 
     private val engineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -33,6 +45,17 @@ class Ok200Application : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        settingsStore = SettingsStore(this)
+
+        dozeMonitor = DozeMonitor(this)
+        dozeMonitor.start()
+
+        serviceLifecycleManager = ServiceLifecycleManager(
+            context = this,
+            settingsStore = settingsStore
+        )
+
         createNotificationChannels()
     }
 

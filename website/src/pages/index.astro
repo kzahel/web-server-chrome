@@ -17,12 +17,28 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <h1>Serve files locally.<br>From any device.</h1>
         <div class="hero-badge">From the creator of Web Server for Chrome (200k+ users)</div>
         <p>Web Server for Chrome is back — rebuilt from scratch as a native app for desktop, Android, and the command line. Same simple workflow. Modern architecture.</p>
-        <div class="cta-buttons">
-          <a href="#cli" class="btn btn-primary">Get the CLI</a>
-          <a href="https://github.com/kzahel/web-server-chrome" class="btn btn-secondary">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-            View on GitHub
-          </a>
+        <div class="signup-form-wrapper" id="signup-section">
+          <form
+            action="https://buttondown.com/api/emails/embed-subscribe/ok200"
+            method="post"
+            class="signup-form"
+            id="signup-form"
+            referrerpolicy="unsafe-url"
+          >
+            <input
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              required
+              aria-label="Email address"
+              id="email-input"
+            />
+            <button type="submit" id="submit-btn">Sign up for updates</button>
+          </form>
+          <div id="form-error" class="form-error" style="display: none"></div>
+          <div id="form-success" class="form-success" style="display: none">
+            You're on the list. We'll email you when it's ready.
+          </div>
         </div>
       </div>
     </section>
@@ -214,12 +230,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   }
 
   .hero-badge {
-    display: inline-block;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 6px 16px;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-secondary);
     margin-bottom: 24px;
   }
@@ -516,21 +527,90 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     text-decoration: underline;
   }
 
+  /* Signup form */
+  .signup-form-wrapper {
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  .signup-form {
+    display: flex;
+    gap: 8px;
+  }
+
+  .signup-form input[type="email"] {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .signup-form input[type="email"]::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+  }
+
+  .signup-form input[type="email"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(248, 210, 3, 0.15);
+  }
+
+  .signup-form button {
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    background: var(--accent);
+    color: #1a1a1a;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+  }
+
+  .signup-form button:hover {
+    background: var(--accent-hover);
+  }
+
+  .signup-form button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .form-error {
+    color: #f85149;
+    font-size: 14px;
+    margin-top: 12px;
+  }
+
+  .form-success {
+    color: #22c55e;
+    font-size: 16px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border: 1px solid #22c55e;
+    border-radius: 8px;
+  }
+
   /* Mobile */
   @media (max-width: 600px) {
     .hero {
       padding: 48px 0 40px;
     }
 
-    .cta-buttons {
+    .signup-form {
       flex-direction: column;
-      align-items: center;
     }
 
-    .cta-buttons .btn {
+    .signup-form button {
       width: 100%;
-      max-width: 280px;
-      justify-content: center;
     }
 
     .platform-grid {
@@ -538,3 +618,39 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
   }
 </style>
+
+<script is:inline>
+document.getElementById('signup-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  var form = e.target;
+  var email = document.getElementById('email-input').value;
+  var submitBtn = document.getElementById('submit-btn');
+  var errorDiv = document.getElementById('form-error');
+  var successDiv = document.getElementById('form-success');
+
+  errorDiv.style.display = 'none';
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+
+  try {
+    var response = await fetch(form.action, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ email: email }),
+    });
+
+    if (response.ok || response.status === 303) {
+      form.style.display = 'none';
+      successDiv.style.display = 'block';
+    } else {
+      throw new Error('Subscription failed');
+    }
+  } catch (err) {
+    errorDiv.textContent = 'Subscription failed. Please try again.';
+    errorDiv.style.display = 'block';
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Sign up for updates';
+  }
+});
+</script>

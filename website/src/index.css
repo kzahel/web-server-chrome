@@ -16,8 +16,8 @@ html[data-theme="light"] {
   --bg-tertiary: #e8e8e8;
   --text-primary: #1a1a1a;
   --text-secondary: #555555;
-  --accent: #d4a800;
-  --accent-hover: #f8d203;
+  --accent: #e8b800;
+  --accent-hover: #f5c800;
   --border: #c0c0c0;
   color-scheme: light;
 }

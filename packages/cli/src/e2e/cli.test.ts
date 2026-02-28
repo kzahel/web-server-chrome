@@ -5,7 +5,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-const CLI_PATH = new URL("../../dist/index.js", import.meta.url).pathname;
+const CLI_PATH = new URL("../../dist/cli.js", import.meta.url).pathname;
 const describeSocket =
   process.env.OK200_SOCKET_TESTS === "1" ? describe : describe.skip;
 

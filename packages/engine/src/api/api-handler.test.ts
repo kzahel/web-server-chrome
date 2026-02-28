@@ -322,4 +322,47 @@ describe("ApiHandler auth", () => {
       { authToken: "secret-token" },
     );
   });
+
+  it("UI assets are served without auth token", async () => {
+    const indexHtml = fromString("<h1>200 OK</h1>");
+    const uiAssets = {
+      getFile(path: string) {
+        if (path === "index.html") {
+          return { data: indexHtml, mimeType: "text/html; charset=utf-8" };
+        }
+        if (path === "assets/index.js") {
+          return {
+            data: fromString("console.log('ok')"),
+            mimeType: "application/javascript; charset=utf-8",
+          };
+        }
+        return undefined;
+      },
+    };
+
+    await withApiServer(
+      async ({ request }) => {
+        // HTML should load without token
+        const html = await request(
+          "GET /_api/ui/ HTTP/1.1\r\nHost: local\r\nConnection: close\r\n\r\n",
+        );
+        expect(html.status).toBe(200);
+        expect(html.body).toBe("<h1>200 OK</h1>");
+
+        // JS assets should load without token
+        const js = await request(
+          "GET /_api/ui/assets/index.js HTTP/1.1\r\nHost: local\r\nConnection: close\r\n\r\n",
+        );
+        expect(js.status).toBe(200);
+        expect(js.body).toBe("console.log('ok')");
+
+        // API endpoints should still require auth
+        const api = await request(
+          "GET /_api/servers HTTP/1.1\r\nHost: local\r\nConnection: close\r\n\r\n",
+        );
+        expect(api.status).toBe(401);
+      },
+      { authToken: "secret-token", uiAssets },
+    );
+  });
 });

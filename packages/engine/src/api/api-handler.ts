@@ -38,19 +38,9 @@ export function createApiInterceptor(
       return false;
     }
 
-    if (!isAuthorized(socket, request, options.authToken)) {
-      sendJsonResponse(
-        socket,
-        401,
-        { error: "Unauthorized" },
-        connectionHeader,
-      );
-      return true;
-    }
-
     const path = request.url.split("?")[0];
 
-    // /_api/ui/* — serve embedded UI assets
+    // /_api/ui/* — serve embedded UI assets (before auth so <script>/<link> tags work)
     if (path.startsWith("/_api/ui/") || path === "/_api/ui") {
       handleUiRequest(
         socket,
@@ -58,6 +48,16 @@ export function createApiInterceptor(
         path,
         connectionHeader,
         options.uiAssets,
+      );
+      return true;
+    }
+
+    if (!isAuthorized(socket, request, options.authToken)) {
+      sendJsonResponse(
+        socket,
+        401,
+        { error: "Unauthorized" },
+        connectionHeader,
       );
       return true;
     }

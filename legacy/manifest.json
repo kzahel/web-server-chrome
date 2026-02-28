@@ -50,7 +50,8 @@
       ]
     },
     "externally_connectable": {
-        "ids": ["lpkjdhnmgkhaabhimpdinmdgejoaejic"]
+        "ids": ["lpkjdhnmgkhaabhimpdinmdgejoaejic"],
+        "matches": ["https://ok200.app/*"]
     },
     "icons": {
         "16": "images/200ok-16.png",

@@ -3,6 +3,7 @@ package app.ok200.android.ui
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,16 +45,30 @@ import app.ok200.android.viewmodel.ServerViewModel
 fun ServerScreen(
     viewModel: ServerViewModel,
     onPickFolder: () -> Unit,
+    onRequestAllFilesAccess: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val serverState by viewModel.serverState.collectAsState()
     val port by viewModel.port.collectAsState()
     val rootUri by viewModel.rootUri.collectAsState()
     val rootDisplayName by viewModel.rootDisplayName.collectAsState()
+    val allFilesAccess by viewModel.allFilesAccess.collectAsState()
     val localIp by viewModel.localIpAddress.collectAsState()
     val context = LocalContext.current
 
     var portText by remember(port) { mutableStateOf(port.toString()) }
+    var showFolderPicker by remember { mutableStateOf(false) }
+
+    if (showFolderPicker) {
+        FolderPickerDialog(
+            onFolderSelected = { file ->
+                val uri = Uri.parse("file://${file.absolutePath}")
+                viewModel.setRootUri(uri, file.absolutePath)
+                showFolderPicker = false
+            },
+            onDismiss = { showFolderPicker = false }
+        )
+    }
 
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -112,11 +127,49 @@ fun ServerScreen(
                         )
                     }
                     Button(
-                        onClick = onPickFolder,
+                        onClick = {
+                            if (allFilesAccess) {
+                                showFolderPicker = true
+                            } else {
+                                onPickFolder()
+                            }
+                        },
                         enabled = !serverState.running
                     ) {
                         Text(if (rootUri != null) "Change" else "Select")
                     }
+                }
+            }
+
+            // All files access toggle
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "All files access",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = "Allow serving from any folder including Downloads",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = allFilesAccess,
+                        onCheckedChange = { onRequestAllFilesAccess() },
+                        enabled = !serverState.running
+                    )
                 }
             }
 

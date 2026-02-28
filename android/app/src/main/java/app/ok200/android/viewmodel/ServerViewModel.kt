@@ -22,6 +22,7 @@ private const val PREFS_NAME = "ok200_prefs"
 private const val KEY_PORT = "port"
 private const val KEY_ROOT_URI = "root_uri"
 private const val KEY_ROOT_DISPLAY = "root_display"
+private const val KEY_ALL_FILES_ACCESS = "all_files_access"
 
 class ServerViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -41,6 +42,9 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
     )
     val rootDisplayName: StateFlow<String> = _rootDisplayName.asStateFlow()
 
+    private val _allFilesAccess = MutableStateFlow(prefs.getBoolean(KEY_ALL_FILES_ACCESS, false))
+    val allFilesAccess: StateFlow<Boolean> = _allFilesAccess.asStateFlow()
+
     private val _serverState = MutableStateFlow(ServerState())
     val serverState: StateFlow<ServerState> = _serverState.asStateFlow()
 
@@ -54,6 +58,11 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
     fun setPort(port: Int) {
         _port.value = port
         prefs.edit().putInt(KEY_PORT, port).apply()
+    }
+
+    fun setAllFilesAccess(enabled: Boolean) {
+        _allFilesAccess.value = enabled
+        prefs.edit().putBoolean(KEY_ALL_FILES_ACCESS, enabled).apply()
     }
 
     fun setRootUri(uri: Uri, displayName: String) {

@@ -1,7 +1,11 @@
 package app.ok200.android
 
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -20,6 +24,17 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: ServerViewModel by viewModels()
+
+    private val allFilesAccessLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        // User returned from system settings — check if permission was granted
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val granted = Environment.isExternalStorageManager()
+            viewModel.setAllFilesAccess(granted)
+            Log.i(TAG, "All files access: $granted")
+        }
+    }
 
     private val folderPickerLauncher = registerForActivityResult(
         ActivityResultContracts.OpenDocumentTree()
@@ -46,9 +61,25 @@ class MainActivity : AppCompatActivity() {
                     ServerScreen(
                         viewModel = viewModel,
                         onPickFolder = { folderPickerLauncher.launch(null) },
+                        onRequestAllFilesAccess = { requestAllFilesAccess() },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
+            }
+        }
+    }
+
+    private fun requestAllFilesAccess() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+                // Already granted — just toggle off
+                viewModel.setAllFilesAccess(false)
+            } else {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                    Uri.parse("package:$packageName")
+                )
+                allFilesAccessLauncher.launch(intent)
             }
         }
     }

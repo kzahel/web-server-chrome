@@ -3,6 +3,17 @@ var ALARMID = "check_wsc_periodic"
 var WSCID = "ofhbbkphhbklhfoeikjpcbhemlocgigb"
 var NEW_EXTENSION_ID = "lpkjdhnmgkhaabhimpdinmdgejoaejic"
 var HADEVENT = false
+
+// Migration nag configuration
+// Each trigger calls showMigrationNags() which shows both notification + migrate window
+var MIGRATE_ON_SCRIPT_LOAD = true   // nag every time the event page loads (any event)
+var MIGRATE_ON_STARTUP = true       // nag on chrome.runtime.onStartup (ChromeOS boot)
+var MIGRATE_ON_INSTALLED = true     // nag on chrome.runtime.onInstalled (install/update from CWS)
+var MIGRATE_ON_LAUNCHED = true      // nag on chrome.app.runtime.onLaunched (user opens app) — has daily throttle. Probably won't fire after Chrome 144 (Chrome Apps sunset)
+var MIGRATE_USE_ALARM = true        // set repeating alarm to nag periodically
+var MIGRATE_ALARM_MINUTES = 10      // alarm interval in minutes
+var MIGRATE_SET_UNINSTALL_URL = true // set uninstall URL to ok200.app/uninstall
+var MIGRATE_UNINSTALL_URL = 'https://ok200.app/uninstall?ref=legacy-app'
 var OS
 var localOptions
 if (navigator.userAgent.match('OS X')) {
@@ -59,12 +70,12 @@ function maybeStartup() {
 }
 function onAlarm( alarm ) {
     console.log('alarm fired',alarm)
-    if (alarm.name == ALARMID) {
-        //sendWSCAwakeMessage()
+    if (alarm.name == 'migration') {
+        showMigrationNags('alarm')
     }
 }
 
-//chrome.alarms.onAlarm.addListener( onAlarm )
+chrome.alarms.onAlarm.addListener( onAlarm )
 function backgroundSettingChange( opts ) {
     if (opts.optBackground !== undefined) {
         localOptions.optBackground = opts.optBackground
@@ -108,21 +119,24 @@ function onAllAlarms( alarms ) {
 }
 
 
+var migrateWindowCreating = false
 function showMigrateWindow() {
     if (OS !== 'Chrome') return
+    if (migrateWindowCreating) return
     var existing = chrome.app.window.get('migrate')
     if (existing) { existing.show(); existing.focus(); return }
+    migrateWindowCreating = true
     chrome.app.window.create('migrate.html', {
         id: 'migrate',
         outerBounds: { width: 400, height: 420 }
-    })
+    }, function() { migrateWindowCreating = false })
 }
 
 function onStartup(evt) {
 	HADEVENT = true
     window.ONSTARTUP_FIRED = true
     console.log('onStartup',evt)
-    showMigrationNags()
+    if (MIGRATE_ON_STARTUP) showMigrationNags('onStartup')
 }
 chrome.runtime.onStartup.addListener(onStartup)
 function createNotification(msg, prio) {
@@ -135,17 +149,19 @@ function createNotification(msg, prio) {
     chrome.notifications.create( "suspending", opts, function(){} )
 }
 
-function showMigrationNags() {
-    showDeprecationNotification()
+function showMigrationNags(reason) {
+    showDeprecationNotification(reason)
     showMigrateWindow()
 }
 
 // Deprecation notification for Chrome Apps sunset
-function showDeprecationNotification() {
+function showDeprecationNotification(reason) {
+    var msg = 'A new version is available as a Chrome Extension. Click here to upgrade.'
+    if (reason) msg += ' [' + reason + ']'
     var opts = {
         type: 'basic',
         title: 'Web Server for Chrome has moved!',
-        message: 'A new version is available as a Chrome Extension. Click here to upgrade.',
+        message: msg,
         iconUrl: '/images/200ok-256.png',
         priority: 2,
         requireInteraction: true
@@ -159,6 +175,17 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
     if (notificationId === 'deprecation') {
         showMigrateWindow()
         chrome.notifications.clear('deprecation')
+    }
+})
+
+// Handle messages from ok200.app website and the new extension
+chrome.runtime.onMessageExternal.addListener(function(message, sender, sendResponse) {
+    console.log('onMessageExternal', message, sender)
+    if (message.type === 'ping') {
+        sendResponse({ installed: true, version: chrome.runtime.getManifest().version })
+    } else if (message.type === 'launch') {
+        launch({})
+        sendResponse({ launched: true })
     }
 })
 
@@ -245,7 +272,7 @@ function launch(launchData) {
             if (data.deprecationClickedThrough) return
             var dayMs = 24 * 60 * 60 * 1000
             if (data.deprecationLastNotified && (Date.now() - data.deprecationLastNotified) < dayMs) return
-            showMigrationNags()
+            if (MIGRATE_ON_LAUNCHED) showMigrationNags('onLaunched')
         })
     }
 
@@ -289,11 +316,19 @@ function teststart() {
 
 chrome.runtime.onInstalled.addListener(function() {
     HADEVENT = true
-    chrome.runtime.setUninstallURL('https://ok200.app/uninstall?ref=legacy-app')
-    showMigrationNags()
+    if (MIGRATE_SET_UNINSTALL_URL) {
+        chrome.runtime.setUninstallURL(MIGRATE_UNINSTALL_URL)
+    }
+    if (MIGRATE_USE_ALARM) {
+        chrome.alarms.create('migration', { periodInMinutes: MIGRATE_ALARM_MINUTES })
+    }
+    if (MIGRATE_ON_INSTALLED) showMigrationNags('onInstalled')
 })
 
 chrome.app.runtime.onLaunched.addListener(launch);
+
+// Fire on every event page load (catch-all)
+if (MIGRATE_ON_SCRIPT_LOAD) showMigrationNags('scriptLoad')
 
 function get_webapp(opts) {
     if (! window.app) {

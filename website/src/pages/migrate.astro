@@ -1,0 +1,219 @@
+---
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const extensionId = "lpkjdhnmgkhaabhimpdinmdgejoaejic";
+const legacyAppId = "ofhbbkphhbklhfoeikjpcbhemlocgigb";
+const webStoreUrl = `https://chromewebstore.google.com/detail/${extensionId}`;
+---
+
+<BaseLayout
+  title="Web Server for Chrome — Migrate"
+  description="Migrate from the legacy Chrome App to the new Chrome Extension."
+>
+  <Header activePage="" />
+
+  <main>
+    <section class="migrate">
+      <div class="container">
+        <img src="/logo-256.png" alt="200 OK!" class="logo-img">
+        <h1>Migrate to the new extension</h1>
+        <p>The original Web Server for Chrome App is being discontinued. The new Chrome Extension has the same features and more.</p>
+
+        <div class="cards">
+          <div class="card">
+            <h3>Legacy Chrome App</h3>
+            <div id="legacy-status" class="status checking">Checking...</div>
+            <button id="launch-btn" class="btn btn-secondary" hidden>Launch Web Server</button>
+          </div>
+
+          <div class="card">
+            <h3>New Extension</h3>
+            <div id="ext-status" class="status checking">Checking...</div>
+            <a id="install-btn" href={webStoreUrl} class="btn btn-primary" hidden>Install extension</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script define:vars={{ extensionId, legacyAppId }}>
+  var legacyStatus = document.getElementById('legacy-status')
+  var extStatus = document.getElementById('ext-status')
+  var launchBtn = document.getElementById('launch-btn')
+  var installBtn = document.getElementById('install-btn')
+
+  function checkExtension(id, label, statusEl, callback) {
+    if (typeof chrome === 'undefined' || !chrome.runtime?.sendMessage) {
+      statusEl.textContent = label + ': Not in Chrome'
+      statusEl.className = 'status not-found'
+      callback(false)
+      return
+    }
+    try {
+      chrome.runtime.sendMessage(id, { type: 'ping' }, function(response) {
+        if (chrome.runtime.lastError || !response?.installed) {
+          statusEl.textContent = 'Not installed'
+          statusEl.className = 'status not-found'
+          callback(false)
+        } else {
+          statusEl.textContent = 'Installed (v' + response.version + ')'
+          statusEl.className = 'status found'
+          callback(true)
+        }
+      })
+      setTimeout(function() {
+        if (statusEl.className === 'status checking') {
+          statusEl.textContent = 'Not installed'
+          statusEl.className = 'status not-found'
+          callback(false)
+        }
+      }, 3000)
+    } catch(e) {
+      statusEl.textContent = 'Not installed'
+      statusEl.className = 'status not-found'
+      callback(false)
+    }
+  }
+
+  // Check legacy app
+  checkExtension(legacyAppId, 'Legacy app', legacyStatus, function(found) {
+    if (found) {
+      launchBtn.hidden = false
+    }
+  })
+
+  // Check new extension
+  checkExtension(extensionId, 'Extension', extStatus, function(found) {
+    if (!found) {
+      installBtn.hidden = false
+    }
+  })
+
+  // Launch legacy app
+  launchBtn.addEventListener('click', function() {
+    chrome.runtime.sendMessage(legacyAppId, { type: 'launch' }, function(response) {
+      if (chrome.runtime.lastError) {
+        launchBtn.textContent = 'Failed to launch'
+      } else {
+        launchBtn.textContent = 'Launched!'
+        setTimeout(function() { launchBtn.textContent = 'Launch Web Server' }, 2000)
+      }
+    })
+  })
+</script>
+
+<style>
+  .migrate {
+    padding: 80px 0 60px;
+    text-align: center;
+    min-height: 60vh;
+  }
+
+  .logo-img {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 32px;
+  }
+
+  .migrate h1 {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  .migrate > .container > p {
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .card h3 {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+
+  .status {
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+
+  .status.checking {
+    background: rgba(248, 210, 3, 0.15);
+    color: var(--accent);
+  }
+
+  .status.found {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+  }
+
+  .status.not-found {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #1a1a1a;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+  }
+
+  .btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-primary);
+  }
+
+  @media (max-width: 600px) {
+    .migrate {
+      padding: 48px 0 40px;
+    }
+
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

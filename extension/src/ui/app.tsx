@@ -29,6 +29,11 @@ function App() {
     async function init() {
       const os = await getPlatformOS();
 
+      if (os === "cros") {
+        if (!cancelled) setState("chromeos");
+        return;
+      }
+
       const response = await new Promise<{
         connected: boolean;
         hostVersion?: string;
@@ -64,8 +69,6 @@ function App() {
         setState("ready");
         if (connectResponse.hostVersion)
           setHostVersion(connectResponse.hostVersion);
-      } else if (os === "cros") {
-        setState("chromeos");
       } else {
         setState("not-installed");
       }

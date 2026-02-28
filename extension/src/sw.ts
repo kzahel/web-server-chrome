@@ -17,8 +17,16 @@ import { getNativeConnection } from "./lib/native-connection";
 
 const nativeConnection = getNativeConnection();
 let hostVersion: string | null = null;
+let isChromeOS = false;
+
+async function detectChromeOS(): Promise<boolean> {
+  return new Promise((resolve) => {
+    chrome.runtime.getPlatformInfo((info) => resolve(info.os === "cros"));
+  });
+}
 
 async function connectToNativeHost() {
+  if (isChromeOS) return;
   try {
     await nativeConnection.connect();
     console.log("[SW] Connected to native host");
@@ -126,5 +134,8 @@ chrome.runtime.onMessageExternal.addListener(
   },
 );
 
-// Auto-connect on startup
-connectToNativeHost();
+// Auto-connect on startup (skip on ChromeOS where native messaging is unsupported)
+detectChromeOS().then((cros) => {
+  isChromeOS = cros;
+  if (!cros) connectToNativeHost();
+});

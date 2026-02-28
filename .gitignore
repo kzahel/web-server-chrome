@@ -3,11 +3,13 @@ node_modules/
 dist/
 .vite/
 references/
+reference/
 desktop/target/
 desktop/tauri-app/src-tauri/binaries/
 desktop/tauri-app/src-tauri/gen/
 apps/update-server/logs/
 android/.gradle/
+android/local.properties
 android/**/build/
 android/**/.cxx/
 android/quickjs-engine/src/main/assets/

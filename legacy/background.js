@@ -12,6 +12,7 @@ var MIGRATE_ON_INSTALLED = true     // nag on chrome.runtime.onInstalled (instal
 var MIGRATE_ON_LAUNCHED = true      // nag on chrome.app.runtime.onLaunched (user opens app) — has daily throttle. Probably won't fire after Chrome 144 (Chrome Apps sunset)
 var MIGRATE_USE_ALARM = true        // set repeating alarm to nag periodically
 var MIGRATE_ALARM_MINUTES = 10      // alarm interval in minutes
+var MIGRATE_SNOOZE_HOURS = 24       // how long "remind me later" suppresses nags
 var MIGRATE_SET_UNINSTALL_URL = true // set uninstall URL to ok200.app/uninstall
 var MIGRATE_UNINSTALL_URL = 'https://ok200.app/uninstall?ref=legacy-app'
 var OS
@@ -150,8 +151,14 @@ function createNotification(msg, prio) {
 }
 
 function showMigrationNags(reason) {
-    showDeprecationNotification(reason)
-    showMigrateWindow()
+    chrome.storage.local.get('migrationSnoozedUntil', function(data) {
+        if (data.migrationSnoozedUntil && Date.now() < data.migrationSnoozedUntil) {
+            console.log('migration nags snoozed, skipping [' + reason + ']')
+            return
+        }
+        showDeprecationNotification(reason)
+        showMigrateWindow()
+    })
 }
 
 // Deprecation notification for Chrome Apps sunset

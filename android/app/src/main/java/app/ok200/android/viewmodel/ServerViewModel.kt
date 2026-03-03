@@ -1,10 +1,14 @@
 package app.ok200.android.viewmodel
 
+import android.Manifest
 import android.app.Application
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.net.wifi.WifiManager
+import android.os.Build
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.ok200.android.Ok200Application
@@ -62,6 +66,29 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
 
     private val _shutdownBatteryThreshold = MutableStateFlow(settings.shutdownBatteryThreshold)
     val shutdownBatteryThreshold: StateFlow<Int> = _shutdownBatteryThreshold.asStateFlow()
+
+    // --- Notification permission ---
+
+    private val _notificationPermissionGranted = MutableStateFlow(checkNotificationPermission())
+    val notificationPermissionGranted: StateFlow<Boolean> = _notificationPermissionGranted.asStateFlow()
+
+    fun updateNotificationPermission(granted: Boolean) {
+        _notificationPermissionGranted.value = granted
+    }
+
+    fun refreshNotificationPermission() {
+        _notificationPermissionGranted.value = checkNotificationPermission()
+    }
+
+    private fun checkNotificationPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(
+                app, Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true // Pre-Android 13: notifications always show
+        }
+    }
 
     init {
         refreshLocalIp()

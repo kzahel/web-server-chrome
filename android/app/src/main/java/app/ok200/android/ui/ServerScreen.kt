@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -52,6 +53,7 @@ fun ServerScreen(
     viewModel: ServerViewModel,
     onPickFolder: () -> Unit,
     onRequestAllFilesAccess: () -> Unit,
+    onRequestNotificationPermission: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val serverState by viewModel.serverState.collectAsState()
@@ -65,6 +67,7 @@ fun ServerScreen(
     val startOnBoot by viewModel.startOnBoot.collectAsState()
     val shutdownOnLowBattery by viewModel.shutdownOnLowBattery.collectAsState()
     val shutdownBatteryThreshold by viewModel.shutdownBatteryThreshold.collectAsState()
+    val notificationPermissionGranted by viewModel.notificationPermissionGranted.collectAsState()
     val context = LocalContext.current
 
     var portText by remember(port) { mutableStateOf(port.toString()) }
@@ -316,6 +319,20 @@ fun ServerScreen(
                 checked = backgroundEnabled,
                 onCheckedChange = { viewModel.setBackgroundEnabled(it) }
             )
+
+            // Show status notification (Android 13+ only, when background is enabled)
+            if (backgroundEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                SettingToggle(
+                    title = "Show status notification",
+                    description = if (notificationPermissionGranted) {
+                        "Notification visible while serving in the background"
+                    } else {
+                        "Show a notification while serving in the background"
+                    },
+                    checked = notificationPermissionGranted,
+                    onCheckedChange = { onRequestNotificationPermission() }
+                )
+            }
 
             // Wake lock mode
             Card(

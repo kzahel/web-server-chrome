@@ -1,6 +1,8 @@
 package app.ok200.android
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import app.ok200.android.ui.ServerScreen
 import app.ok200.android.ui.theme.Ok200Theme
 import app.ok200.android.viewmodel.ServerViewModel
@@ -36,6 +39,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        viewModel.updateNotificationPermission(granted)
+        if (!granted) {
+            Log.i(TAG, "Notification permission denied")
+        }
+    }
+
+    private val notificationSettingsLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        // User returned from notification settings — refresh permission state
+        viewModel.refreshNotificationPermission()
+    }
+
     private val folderPickerLauncher = registerForActivityResult(
         ActivityResultContracts.OpenDocumentTree()
     ) { uri ->
@@ -54,6 +73,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         (application as Ok200Application).serviceLifecycleManager.onActivityStart()
+        viewModel.refreshNotificationPermission()
     }
 
     override fun onStop() {
@@ -72,9 +92,29 @@ class MainActivity : AppCompatActivity() {
                         viewModel = viewModel,
                         onPickFolder = { folderPickerLauncher.launch(null) },
                         onRequestAllFilesAccess = { requestAllFilesAccess() },
+                        onRequestNotificationPermission = { requestNotificationPermission() },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
+            }
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val granted = ContextCompat.checkSelfPermission(
+                this, Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if (granted) {
+                // Permission already granted — user is toggling OFF, open notification settings
+                val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                }
+                notificationSettingsLauncher.launch(intent)
+            } else {
+                // Permission not granted — request it
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
     }

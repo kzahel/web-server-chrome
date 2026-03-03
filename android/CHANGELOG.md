@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.1]
+
+### Added
+- Power management system: DozeMonitor, WakeLockManager for reliable background operation
+- Boot receiver to auto-start server on device boot
+- ServiceLifecycleManager for robust foreground service handling
+- Custom folder picker with root filesystem browsing
+- All-files-access (MANAGE_EXTERNAL_STORAGE) permission support
+- SettingsStore for persistent server configuration
+- Store assets (screenshots, feature graphic, icon)
+
+### Changed
+- Updated launcher icons to full-bleed square for adaptive icon support
+- Enhanced Debug RPC with additional methods (startServer, stopServer, setPort, setRootPath)
+- Improved ServerScreen UI with more controls and status display
+
 ## [0.1.0]
 
 ### Added

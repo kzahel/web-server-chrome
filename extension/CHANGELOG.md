@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.3]
+
+### Fixed
+- Remove unused storage permission flagged by Chrome Web Store review
+
 ## [0.1.2]
 
 ### Changed

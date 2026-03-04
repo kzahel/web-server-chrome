@@ -3,7 +3,7 @@
   "name": "Web Server for Chrome",
   "version": "0.1.2",
   "description": "Serve any folder on your local machine over HTTP.",
-  "permissions": ["nativeMessaging", "storage"],
+  "permissions": ["nativeMessaging"],
   "background": {
     "service_worker": "sw.js",
     "type": "module"

@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.2]
+
+### Fixed
+- Fix 403 Forbidden when opening files from directory listing (root path check failed for "/" root)
+
 ## [0.1.1]
 
 ### Added

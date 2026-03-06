@@ -311,6 +311,38 @@ describe("WebServer integration (in-memory)", () => {
     }
   });
 
+  it("serves files when root is /", async () => {
+    const socketFactory = new InMemorySocketFactory();
+    const fileSystem = new InMemoryFileSystem();
+    await fileSystem.mkdir("/");
+    await fileSystem.writeFile(
+      "/hello.txt",
+      new TextEncoder().encode("hello world"),
+    );
+
+    const server = new WebServer({
+      socketFactory,
+      fileSystem,
+      config: {
+        ...defaultConfig("/"),
+        quiet: true,
+        port: 0,
+      },
+    });
+
+    await server.start();
+    try {
+      const responseRaw = await socketFactory.request(
+        "GET /hello.txt HTTP/1.1\r\nHost: local\r\nConnection: close\r\n\r\n",
+      );
+      const res = parseResponse(responseRaw);
+      expect(res.status).toBe(200);
+      expect(res.body).toBe("hello world");
+    } finally {
+      await server.stop();
+    }
+  });
+
   it("handles HEAD request", async () => {
     await fs.writeFile(path.join(tmpDir, "head-test.txt"), "test content");
 

@@ -671,6 +671,9 @@ function normalizePathForComparison(path: string): string {
 function isPathWithinRoot(path: string, root: string): boolean {
   const normalizedPath = normalizePathForComparison(path);
   const normalizedRoot = normalizePathForComparison(root);
+  if (normalizedRoot === "/") {
+    return normalizedPath.startsWith("/");
+  }
   return (
     normalizedPath === normalizedRoot ||
     normalizedPath.startsWith(`${normalizedRoot}/`)

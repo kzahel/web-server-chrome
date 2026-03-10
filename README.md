@@ -11,7 +11,7 @@ The original Chrome App was used by 200,000+ people for local web development an
 - **Chrome Extension** — The familiar UI, now as an extension
 - **Desktop App** — Native app (Tauri) for Mac, Windows, and Linux
 - **CLI** — `ok200` command for developers who live in the terminal
-- **Android / ChromeOS** — Native app (in development)
+- **Android / ChromeOS** — Native app, published on Google Play
 
 Same author. Same mission. Modern architecture.
 
@@ -19,7 +19,13 @@ Same author. Same mission. Modern architecture.
 
 ## Current Status
 
-The CLI server is functional today. The Chrome extension and desktop app are in active development.
+The CLI server is functional today. The Chrome extension is published as a lightweight launcher surface, the Android app is published on Google Play, and the desktop app is in active development.
+
+## Install
+
+- Chrome Extension: [Web Server for Chrome on the Chrome Web Store](https://chromewebstore.google.com/detail/web-server-for-chrome/lpkjdhnmgkhaabhimpdinmdgejoaejic?authuser=0&hl=en)
+- Android / ChromeOS: [200 OK on Google Play](https://play.google.com/store/apps/details?id=app.ok200.android)
+- Desktop app: packaged separately; the extension can launch it via native messaging when installed
 
 ### CLI Usage
 
@@ -56,9 +62,9 @@ npx ok200 ./dist --upload          # enable PUT/POST file uploads
 ## Roadmap
 
 ### Coming Soon
-- Chrome Extension with native helper app
+- Expanded Chrome Extension + desktop helper integration
 - Tauri desktop app (Mac, Windows, Linux) — ~10MB vs 100MB+ Electron alternatives
-- Android / ChromeOS native app (QuickJS + Kotlin, in development)
+- Android / ChromeOS feature expansion
 - HTTPS with self-signed cert generation
 - HTTP Basic Auth
 - Range requests for media streaming
@@ -87,9 +93,10 @@ android/             Android app (QuickJS + Kotlin/Compose)
 
 If you were a user of the original Web Server for Chrome:
 
-1. **The Chrome Web Store listing will be updated** to point to the new extension once it's ready.
-2. **All features from the original app will be supported** — same options, same workflow.
-3. **Sign up to be notified:** [Google Form](https://forms.gle/88Q5rbZ81sKqXZTt8)
+1. **The new extension is published here:** [Chrome Web Store listing](https://chromewebstore.google.com/detail/web-server-for-chrome/lpkjdhnmgkhaabhimpdinmdgejoaejic?authuser=0&hl=en)
+2. **The Android / ChromeOS app is published here:** [Google Play listing](https://play.google.com/store/apps/details?id=app.ok200.android)
+3. **All features from the original app will be supported** — same options, same workflow.
+4. **Sign up to be notified:** [Google Form](https://forms.gle/88Q5rbZ81sKqXZTt8)
 
 ## Development
 

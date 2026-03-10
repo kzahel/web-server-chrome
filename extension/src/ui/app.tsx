@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 
 const REPO_URL = "https://github.com/kzahel/web-server";
+const PLAY_STORE_URL =
+  "https://play.google.com/store/apps/details?id=app.ok200.android";
+const CHROMEOS_INTENT_URL =
+  "intent://launch#Intent;scheme=ok200;package=app.ok200.android;" +
+  `S.browser_fallback_url=${encodeURIComponent(PLAY_STORE_URL)};end`;
 
 type AppState =
   | "loading"
@@ -96,6 +101,21 @@ function App() {
     );
   };
 
+  const handleChromeOsLaunch = () => {
+    setState("launching");
+    chrome.tabs.create({ url: CHROMEOS_INTENT_URL }, () => {
+      if (chrome.runtime.lastError) {
+        setError(
+          chrome.runtime.lastError.message || "Failed to open Android app",
+        );
+        setState("error");
+        return;
+      }
+      setState("launched");
+      setTimeout(() => window.close(), 200);
+    });
+  };
+
   return (
     <div
       style={{
@@ -160,16 +180,25 @@ function App() {
       {state === "chromeos" && (
         <>
           <p style={{ color: "#666", margin: "0 0 12px", fontSize: 13 }}>
-            On ChromeOS, use the 200 OK Android app to serve files locally.
+            On ChromeOS, launch the 200 OK Android app to serve files locally.
           </p>
-          <a
-            href="https://play.google.com/store/apps/details?id=app.ok200.android"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={primaryLink}
+          <button
+            type="button"
+            onClick={handleChromeOsLaunch}
+            style={primaryButton}
           >
-            Get it on Google Play
-          </a>
+            Open Android App
+          </button>
+          <div style={{ marginTop: 8 }}>
+            <a
+              href={PLAY_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={secondaryLink}
+            >
+              View on Google Play
+            </a>
+          </div>
         </>
       )}
 
@@ -230,6 +259,12 @@ const secondaryButton: React.CSSProperties = {
   background: "#f5f5f5",
   color: "#333",
   border: "1px solid #ddd",
+};
+
+const secondaryLink: React.CSSProperties = {
+  color: "#666",
+  fontSize: 12,
+  textDecoration: "none",
 };
 
 const root = document.getElementById("root");

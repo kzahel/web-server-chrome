@@ -1,0 +1,8 @@
+{
+  "id": "web-server-chrome",
+  "displayName": "200 OK - Web Server",
+  "hostnames": ["updates.ok200.app"],
+  "githubRepo": "kzahel/web-server-chrome",
+  "tagPrefix": "desktop-v",
+  "tauriUpdates": true
+}

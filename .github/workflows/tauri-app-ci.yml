@@ -42,10 +42,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # macos-latest is mid-migration to macOS 26 (runner-images#14167, rolling
+          # out 2026-06-15 → ~2026-07-15), so during the window it is a coin-flip
+          # between the 15 and 26 images. Pin the runner to macos-26 for deterministic
+          # signing/notarization. `platform: macos-latest` stays as the discriminator
+          # the `if:` steps key on; `runner` controls the image. Bump to macos-27 after
+          # a test build when announced.
           - platform: macos-latest
+            runner: macos-26
             args: '--target aarch64-apple-darwin'
             rust_target: aarch64-apple-darwin
           - platform: macos-latest
+            runner: macos-26
             args: '--target x86_64-apple-darwin'
             rust_target: x86_64-apple-darwin
           - platform: ubuntu-22.04
@@ -55,7 +63,7 @@ jobs:
             args: ''
             rust_target: ''
 
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner || matrix.platform }}
 
     env:
       HAS_MACOS_SIGNING: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 != '' }}

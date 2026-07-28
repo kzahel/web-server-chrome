@@ -341,7 +341,11 @@ async fn handle_request(
     {
         response
     } else {
-        let mut response = text_response(StatusCode::REQUEST_TIMEOUT, "Request Timeout", false);
+        let mut response = text_response(
+            StatusCode::REQUEST_TIMEOUT,
+            "Request Timeout",
+            method == Method::HEAD,
+        );
         response
             .extensions_mut()
             .insert(ResponseError("request timed out".to_owned()));
@@ -382,14 +386,19 @@ async fn handle_request(
 }
 
 fn request_metadata_size(request: &Request<Body>) -> usize {
-    request
-        .headers()
-        .iter()
-        .fold(request.uri().to_string().len(), |size, (name, value)| {
+    request.headers().iter().fold(
+        request
+            .uri()
+            .to_string()
+            .len()
+            .saturating_add(request.method().as_str().len())
+            .saturating_add(16),
+        |size, (name, value)| {
             size.saturating_add(name.as_str().len())
                 .saturating_add(value.as_bytes().len())
                 .saturating_add(4)
-        })
+        },
+    )
 }
 
 async fn serve_request(state: Arc<ServerState>, request: Request<Body>) -> Response<Body> {
@@ -648,10 +657,14 @@ fn parse_range_header(value: Option<&HeaderValue>, file_size: u64) -> RangeResul
     let Some(value) = value.and_then(|value| value.to_str().ok()) else {
         return RangeResult::None;
     };
-    let Some(range_value) = value.trim().strip_prefix("bytes=") else {
+    let value = value.trim();
+    let Some(prefix) = value.get(.."bytes=".len()) else {
         return RangeResult::None;
     };
-    let range_value = range_value.trim();
+    if !prefix.eq_ignore_ascii_case("bytes=") {
+        return RangeResult::None;
+    }
+    let range_value = value["bytes=".len()..].trim();
     if range_value.is_empty() || range_value.contains(',') {
         return RangeResult::None;
     }

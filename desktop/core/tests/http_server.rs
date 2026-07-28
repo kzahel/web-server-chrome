@@ -211,6 +211,14 @@ async fn supports_etags_and_single_byte_ranges() {
     assert_eq!(suffix.status, 206);
     assert_eq!(suffix.text(), "789");
 
+    let case_insensitive = request(
+        &server,
+        &close_request("GET", "/range.txt", &[("Range", "Bytes=0-1")]),
+    )
+    .await;
+    assert_eq!(case_insensitive.status, 206);
+    assert_eq!(case_insensitive.text(), "01");
+
     let open_ended = request(
         &server,
         &close_request("GET", "/range.txt", &[("Range", "bytes=8-")]),
@@ -363,6 +371,7 @@ async fn emits_structured_request_logs() {
     assert_eq!(log.status, 200);
     assert_eq!(log.response_bytes, 5);
     assert!(log.remote_addr.starts_with("127.0.0.1:"));
+    assert_eq!(log.error, None);
 
     server.stop().await.expect("stop server");
 }

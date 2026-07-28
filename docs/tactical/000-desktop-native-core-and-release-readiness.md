@@ -2,11 +2,13 @@
 
 Status: **active parent plan.** Documentation baseline, Phase A1
 implementation, standalone Rust core, and native desktop control surface
-implementation completed 2026-07-28. Human product smoke is active in
+implementation completed 2026-07-28. macOS product smoke is accepted in
 [`004-portrait-desktop-polish-and-directory-listing.md`](004-portrait-desktop-polish-and-directory-listing.md);
 the updater control flow is recorded in
 [`005-in-app-desktop-updater.md`](005-in-app-desktop-updater.md); and
-tagged release proof remains pending.
+native Windows validation is queued in
+[`006-windows-desktop-validation.md`](006-windows-desktop-validation.md).
+Tagged release proof remains pending.
 
 Topics:
 
@@ -255,7 +257,8 @@ Exit: complete in `f0559cf`; the core passes its test corpus without Tauri.
 - Child tacticals:
   [`003-native-desktop-control-surface.md`](003-native-desktop-control-surface.md),
   [`004-portrait-desktop-polish-and-directory-listing.md`](004-portrait-desktop-polish-and-directory-listing.md),
-  and [`005-in-app-desktop-updater.md`](005-in-app-desktop-updater.md)
+  [`005-in-app-desktop-updater.md`](005-in-app-desktop-updater.md), and
+  [`006-windows-desktop-validation.md`](006-windows-desktop-validation.md)
 - [x] Own server instances in Rust application state.
 - [x] Expose narrow commands for get/configure/start/stop/status.
 - [x] Emit request/status/error events to the webview.

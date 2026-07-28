@@ -6,9 +6,10 @@
 
 Topic: desktop-native-core
 
-Status: **Rust-native desktop cutover implemented on `main`; human product
-smoke and release proof pending.** The already-published desktop `v0.1.3`
-still runs the older TypeScript HTTP engine in the webview.
+Status: **Rust-native desktop cutover implemented on `main`; macOS product
+smoke accepted; native Windows/Linux and release proof pending.** The
+already-published desktop `v0.1.3` still runs the older TypeScript HTTP engine
+in the webview.
 
 Last reconciled: **2026-07-28**.
 
@@ -221,9 +222,10 @@ plugin, then relaunches through the process plugin.
 ## Known gaps
 
 - Native folder selection and the full visible start/serve/stop/relaunch flow
-  still need human product smoke in the installed macOS review app. That
-  review should also cover the lifecycle switch, locked-setting tooltip and
-  cursor, default-browser URL action, and persisted portrait window state.
+  have been accepted in the installed macOS review app. Equivalent native
+  Windows validation is queued in
+  [Tactical 006](../tactical/006-windows-desktop-validation.md); Linux remains
+  pending.
 - The existing WebdriverIO E2E specification targets the Rust command path and
   type-checks, but its direct `tauri-driver` runner is Windows/Linux-only and
   was not executed on macOS.

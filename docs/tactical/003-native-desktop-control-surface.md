@@ -1,6 +1,6 @@
 # 003: Native Desktop Control Surface
 
-Status: **implementation complete; human product smoke pending.**
+Status: **complete; macOS product smoke accepted.**
 
 Topic: `desktop-native-core`
 
@@ -143,9 +143,11 @@ Completed on an Apple Silicon Mac on 2026-07-28:
 The only preflight worktree change, the maintainer's unrelated
 `pnpm-lock.yaml` cleanup, remains unstaged.
 
-## Review checkpoint
+## Review outcome
 
-Human review should now exercise the installed macOS app:
+The maintainer accepted the macOS control-surface direction on 2026-07-28
+after exercising the installed production-asset review build through the
+iterative folder-selection, lifecycle, serving, and UX review:
 
 1. choose a folder without typing a path;
 2. clearly show its stopped/running state;
@@ -155,7 +157,7 @@ Human review should now exercise the installed macOS app:
 6. retain its configuration after a relaunch.
 
 The Rust tests prove root rejection, state persistence, idempotent lifecycle,
-and real-socket serving independently. The remaining checkpoint is the actual
-native-dialog and visible product workflow above. Release signing, updater
-migration, cross-platform installers, and release publication remain gated by
-the parent tactical.
+and real-socket serving independently. The remaining Tauri E2E harness work is
+not part of the accepted macOS product checkpoint. Windows/Linux validation,
+release signing, updater migration, cross-platform installers, and release
+publication remain gated by the parent tactical.

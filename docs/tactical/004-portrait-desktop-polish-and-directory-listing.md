@@ -1,6 +1,6 @@
 # 004: Portrait Desktop Polish and Directory Listing
 
-Status: **implementation complete; human product smoke pending.**
+Status: **complete; macOS product smoke accepted.**
 
 Topic: `desktop-native-core`
 
@@ -132,9 +132,11 @@ Completed on an Apple Silicon Mac on 2026-07-28:
 - the installed app launched without a Vite process or listener on the Vite
   development port.
 
-## Review checkpoint
+## Review outcome
 
-Stop for human review when the installed macOS app:
+The maintainer accepted the macOS portrait control appliance and directory
+listing direction on 2026-07-28 after reviewing the installed app and serving
+flow:
 
 1. opens at the portrait default with a complete compact primary workflow;
 2. uses the canonical logo, wordmark, and yellow accent;
@@ -147,7 +149,6 @@ Stop for human review when the installed macOS app:
 Signing, updater migration, cross-platform installer proof, and release
 publication remain owned by the parent tactical.
 
-The implementation has reached this checkpoint. Human review still needs to
-exercise the native folder picker, lifecycle switch, locked-setting tooltip
-and cursor, default-browser URL action, Copy action, and actual start/serve/
-stop flow in the installed app.
+The implementation and macOS product checkpoint are complete. Windows and
+Linux must still prove the native folder picker, lifecycle controls, URL
+actions, directory listing, and actual start/serve/stop flow before release.

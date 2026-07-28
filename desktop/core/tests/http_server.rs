@@ -129,6 +129,9 @@ async fn serves_files_indexes_mime_and_head_over_real_sockets() {
 #[tokio::test]
 async fn lists_directories_with_safe_links_and_can_disable_listings() {
     let root = TempDir::new().expect("temporary root");
+    tokio::fs::create_dir(root.path().join("A folder"))
+        .await
+        .expect("create listing directory");
     for name in [
         "space name.txt",
         "100% real.txt",
@@ -154,6 +157,25 @@ async fn lists_directories_with_safe_links_and_can_disable_listings() {
     assert!(html.contains("href=\"/caf%C3%A9.txt\""));
     assert!(html.contains("&lt;script&gt;.txt"));
     assert!(!html.contains("<script>.txt"));
+    assert!(html.contains("data-kind=\"directory\""));
+    assert!(html.contains("<use href=\"#icon-folder\"></use>"));
+    assert!(html.contains("<use href=\"#icon-file\"></use>"));
+    assert!(html.contains(">14 B</td>"));
+    assert!(html.contains("<th class=\"modified\">Modified</th>"));
+    assert!(html.contains("<time>"));
+    assert!(html.contains("prefers-color-scheme: dark"));
+    assert!(html.contains("name=\"color-scheme\" content=\"light dark\""));
+    let directory_position = html.find("A folder/").expect("directory row");
+    let file_position = html.find("100% real.txt").expect("file row");
+    assert!(directory_position < file_position);
+
+    let nested = request(&server, &close_request("GET", "/A%20folder/", &[])).await;
+    assert_eq!(nested.status, 200);
+    let nested_html = nested.text();
+    assert!(nested_html.contains("data-kind=\"parent\""));
+    assert!(nested_html.contains("<use href=\"#icon-parent\"></use>"));
+    assert!(nested_html.contains("href=\"../\""));
+    assert!(nested_html.contains("Parent directory"));
 
     let released_port = server.local_addr().port();
     server.stop().await.expect("stop listing server");

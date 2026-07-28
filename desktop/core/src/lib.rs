@@ -828,7 +828,156 @@ struct DirectoryEntry {
     name: String,
     is_directory: bool,
     size: u64,
+    modified: Option<SystemTime>,
 }
+
+const DIRECTORY_LISTING_STYLE: &str = r#"
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --surface: #f5f5f3;
+    --text: #1a1a1a;
+    --muted: #666666;
+    --border: #d7d7d2;
+    --row-hover: #fff9d6;
+    --accent: #8a6800;
+    --brand: #f8d203;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d0d0d;
+      --surface: #1a1a1a;
+      --text: #ffffff;
+      --muted: #a0a0a0;
+      --border: #333333;
+      --row-hover: #27230f;
+      --accent: #f8d203;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 28px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+  }
+  .page { max-width: 920px; margin: 0 auto; }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .brand-mark {
+    display: inline-flex;
+    width: 26px;
+    height: 26px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--brand);
+    color: #1a1a1a;
+    font-size: 9px;
+    font-weight: 800;
+  }
+  h1 {
+    margin: 0 0 18px;
+    font-size: 22px;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+  h1 code {
+    color: var(--accent);
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 0.9em;
+    overflow-wrap: anywhere;
+  }
+  .listing {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  td {
+    height: 38px;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--row-hover); }
+  .size, .modified {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .size { width: 90px; }
+  .modified { width: 230px; }
+  .entry-link {
+    display: inline-flex;
+    min-width: 0;
+    max-width: 100%;
+    align-items: center;
+    gap: 9px;
+    color: var(--text);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .entry-link:hover span { color: var(--accent); text-decoration: underline; }
+  .entry-icon {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    color: var(--accent);
+  }
+  .entry-name { overflow-wrap: anywhere; }
+  .icon-file { color: var(--muted); }
+  .empty {
+    padding: 20px 12px;
+    color: var(--muted);
+    text-align: center;
+  }
+  @media (max-width: 620px) {
+    body { padding: 16px 12px; }
+    h1 { margin-bottom: 14px; font-size: 19px; }
+    .brand { margin-bottom: 12px; }
+    th, td { padding-right: 9px; padding-left: 9px; }
+    .modified { display: none; }
+    .size { width: 72px; }
+  }
+</style>
+"#;
+
+const DIRECTORY_LISTING_ICONS: &str = r#"
+<svg aria-hidden="true" style="display:none">
+  <symbol id="icon-parent" viewBox="0 0 20 20">
+    <path fill="currentColor" d="M10 2.5 17 9h-4v7H7V9H3l7-6.5Z"/>
+  </symbol>
+  <symbol id="icon-folder" viewBox="0 0 20 20">
+    <path fill="currentColor" d="M2 4h6l2 2h8v10H2V4Zm1.5 3.5v7h13v-7h-13Z"/>
+  </symbol>
+  <symbol id="icon-file" viewBox="0 0 20 20">
+    <path fill="currentColor" d="M5 2h6l4 4v12H5V2Zm7 2v3h3l-3-3ZM6.5 3.5v13h7v-8h-3v-5h-4Z"/>
+  </symbol>
+</svg>
+"#;
 
 async fn directory_listing(directory: &Path, url_path: &str) -> io::Result<String> {
     let mut reader = fs::read_dir(directory).await?;
@@ -843,6 +992,7 @@ async fn directory_listing(directory: &Path, url_path: &str) -> io::Result<Strin
             name,
             is_directory: metadata.is_dir(),
             size: metadata.len(),
+            modified: metadata.modified().ok(),
         });
     }
     entries.sort_by(|left, right| {
@@ -853,34 +1003,100 @@ async fn directory_listing(directory: &Path, url_path: &str) -> io::Result<Strin
     });
 
     let display_path = escape_html(url_path);
-    let mut html = format!(
-        "<!doctype html><html><head><meta charset=\"utf-8\"><title>Index of {display_path}</title></head><body><h1>Index of {display_path}</h1><ul>"
+    let mut html = String::with_capacity(4096 + entries.len() * 240);
+    let _ = write!(
+        html,
+        "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"color-scheme\" content=\"light dark\"><title>Index of {display_path}</title>"
     );
+    html.push_str(DIRECTORY_LISTING_STYLE);
+    html.push_str("</head><body><div class=\"page\">");
+    html.push_str(
+        "<div class=\"brand\"><span class=\"brand-mark\" aria-hidden=\"true\">200</span><span>Web Server for Chrome · 200 OK</span></div>",
+    );
+    let _ = write!(html, "<h1>Index of <code>{display_path}</code></h1>");
+    html.push_str(DIRECTORY_LISTING_ICONS);
+    html.push_str(
+        "<div class=\"listing\"><table><thead><tr><th>Name</th><th class=\"size\">Size</th><th class=\"modified\">Modified</th></tr></thead><tbody>",
+    );
+
     if url_path != "/" {
-        html.push_str("<li><a href=\"../\">../</a></li>");
+        html.push_str(
+            "<tr data-kind=\"parent\"><td><a class=\"entry-link\" href=\"../\"><svg class=\"entry-icon\" aria-hidden=\"true\"><use href=\"#icon-parent\"></use></svg><span class=\"entry-name\">Parent directory</span></a></td><td class=\"size\">—</td><td class=\"modified\">—</td></tr>",
+        );
     }
     let base = if url_path == "/" {
         "/".to_owned()
     } else {
         format!("{url_path}/")
     };
+    let is_empty = entries.is_empty();
     for entry in entries {
         let encoded_name = utf8_percent_encode(&entry.name, PATH_SEGMENT_ENCODE_SET);
         let suffix = if entry.is_directory { "/" } else { "" };
         let href = escape_html(&format!("{base}{encoded_name}{suffix}"));
         let display_name = escape_html(&entry.name);
         let size = if entry.is_directory {
-            "-".to_owned()
+            "—".to_owned()
         } else {
-            entry.size.to_string()
+            format_file_size(entry.size)
+        };
+        let modified = entry
+            .modified
+            .map_or_else(|| "—".to_owned(), httpdate::fmt_http_date);
+        let kind = if entry.is_directory {
+            "directory"
+        } else {
+            "file"
+        };
+        let icon = if entry.is_directory {
+            "icon-folder"
+        } else {
+            "icon-file"
+        };
+        let icon_class = if entry.is_directory {
+            "entry-icon"
+        } else {
+            "entry-icon icon-file"
         };
         let _ = write!(
             html,
-            "<li><a href=\"{href}\">{display_name}{suffix}</a> <span>{size}</span></li>"
+            "<tr data-kind=\"{kind}\"><td><a class=\"entry-link\" href=\"{href}\"><svg class=\"{icon_class}\" aria-hidden=\"true\"><use href=\"#{icon}\"></use></svg><span class=\"entry-name\">{display_name}{suffix}</span></a></td><td class=\"size\">{size}</td><td class=\"modified\"><time>{modified}</time></td></tr>"
         );
     }
-    html.push_str("</ul></body></html>");
+    if is_empty && url_path == "/" {
+        html.push_str("<tr><td class=\"empty\" colspan=\"3\">This folder is empty</td></tr>");
+    }
+    html.push_str("</tbody></table></div></div></body></html>");
     Ok(html)
+}
+
+fn format_file_size(bytes: u64) -> String {
+    const UNITS: [&str; 5] = ["B", "KB", "MB", "GB", "TB"];
+    if bytes < 1024 {
+        return format!("{bytes} B");
+    }
+
+    let mut divisor = 1_u64;
+    let mut unit = 0;
+    while bytes / divisor >= 1024 && unit < UNITS.len() - 1 {
+        divisor *= 1024;
+        unit += 1;
+    }
+
+    let whole = bytes / divisor;
+    let remainder = bytes % divisor;
+    if whole >= 10 || remainder == 0 {
+        format!("{whole} {}", UNITS[unit])
+    } else {
+        let tenths = (remainder * 10 + divisor / 2) / divisor;
+        if tenths == 10 {
+            format!("{} {}", whole + 1, UNITS[unit])
+        } else if tenths == 0 {
+            format!("{whole} {}", UNITS[unit])
+        } else {
+            format!("{whole}.{tenths} {}", UNITS[unit])
+        }
+    }
 }
 
 fn escape_html(value: &str) -> String {
@@ -961,7 +1177,7 @@ fn add_common_headers(mut response: Response<Body>, config: &ServerConfig) -> Re
 mod tests {
     use std::path::PathBuf;
 
-    use super::{decode_request_path, parse_range_header, RangeResult};
+    use super::{decode_request_path, format_file_size, parse_range_header, RangeResult};
     use axum::http::HeaderValue;
 
     #[test]
@@ -1002,5 +1218,15 @@ mod tests {
             parse_range_header(Some(&value), 10),
             RangeResult::Unsatisfiable
         ));
+    }
+
+    #[test]
+    fn formats_human_readable_file_sizes() {
+        assert_eq!(format_file_size(0), "0 B");
+        assert_eq!(format_file_size(999), "999 B");
+        assert_eq!(format_file_size(1024), "1 KB");
+        assert_eq!(format_file_size(1536), "1.5 KB");
+        assert_eq!(format_file_size(10 * 1024), "10 KB");
+        assert_eq!(format_file_size(3 * 1024 * 1024), "3 MB");
     }
 }

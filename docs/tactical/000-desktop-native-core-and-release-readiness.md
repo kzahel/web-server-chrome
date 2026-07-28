@@ -1,8 +1,10 @@
 # 000: Desktop Native Core and Release Readiness
 
 Status: **active parent plan.** Documentation baseline, Phase A1
-implementation, and standalone Rust core completed 2026-07-28. Tagged release
-proof and Tauri integration are pending.
+implementation, and standalone Rust core completed 2026-07-28. Native control
+surface integration is active in
+[`003-native-desktop-control-surface.md`](003-native-desktop-control-surface.md);
+tagged release proof remains pending.
 
 Topics:
 
@@ -246,6 +248,8 @@ Exit: complete in `f0559cf`; the core passes its test corpus without Tauri.
 
 ### Phase B2 — Tauri state and UI command integration
 
+- Active child:
+  [`003-native-desktop-control-surface.md`](003-native-desktop-control-surface.md)
 - [ ] Own server instances in Rust application state.
 - [ ] Expose narrow commands for list/configure/start/stop/status.
 - [ ] Emit request/status/error events to the webview.

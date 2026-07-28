@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.1.4]
+
 ### Changed
 
 - Move desktop HTTP execution and lifecycle from the webview into the
@@ -24,6 +26,14 @@
 
 - Remove the desktop TypeScript server, primitive Tauri TCP/filesystem IPC, and
   the desktop/UI dependency on `@ok200/engine`.
+
+### Fixed
+
+- Use the per-user Windows installer by default, harden uninstall cleanup, and
+  preserve the published extension identity across native-messaging builds.
+- Make desktop releases fail closed and verify Apple notarization, Windows
+  Authenticode signatures, updater metadata, artifact names, and checksums
+  before publication.
 
 ## [0.1.3]
 

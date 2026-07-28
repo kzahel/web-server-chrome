@@ -16,6 +16,9 @@ status. Do not create a topic for every small standalone change.
 
 - [`product-branding.md`](product-branding.md) — canonical **200 OK Web
   Server** identity, compact naming, and legacy/search-language rules.
+- [`product-feedback-and-support.md`](product-feedback-and-support.md) —
+  stable feedback aliases, current intake routing, accountless-form intent,
+  and public source/license presentation.
 - [`desktop-runtime.md`](desktop-runtime.md) — released runtime matrix, the
   Rust-native desktop implementation on main, and its remaining release gates.
 - [`desktop-release-readiness.md`](desktop-release-readiness.md) — desktop

@@ -11,6 +11,7 @@ use tauri_plugin_autostart::ManagerExt as AutostartManagerExt;
 mod fs_commands;
 mod headless_updater;
 mod native_host;
+mod server_control;
 mod tcp;
 
 /// Strip the `\\?\` extended-length path prefix that Windows APIs produce.
@@ -245,11 +246,17 @@ pub fn run() {
             fs_commands::fs_list_tree,
             fs_commands::fs_truncate,
             fs_commands::fs_sync,
+            server_control::server_get,
+            server_control::server_update_config,
+            server_control::server_start,
+            server_control::server_stop,
+            server_control::server_pick_root,
         ])
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
             show_main_window(app);
         }))
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_autostart::init(
@@ -284,6 +291,16 @@ pub fn run() {
             // Settings
             let settings = load_settings(app.handle());
             app.manage(Mutex::new(settings.clone()));
+            let server_config_path = app
+                .path()
+                .app_data_dir()
+                .expect("no app data directory")
+                .join("server.json");
+            let home_dir = app.path().home_dir().ok();
+            app.manage(server_control::DesktopServerController::new(
+                server_config_path,
+                home_dir,
+            ));
 
             // Build settings submenu items. Each menu needs its own item
             // instances (macOS NSMenuItem can only have one parent).
@@ -465,12 +482,18 @@ pub fn run() {
         .build(context)
         .expect("error building Tauri application");
 
-    app.run(|_app_handle, event| {
-        if let tauri::RunEvent::ExitRequested { api, code, .. } = event {
+    app.run(|app_handle, event| match event {
+        tauri::RunEvent::ExitRequested { api, code, .. } => {
             if code.is_none() {
                 api.prevent_exit();
             }
         }
+        tauri::RunEvent::Exit => {
+            if let Some(state) = app_handle.try_state::<server_control::DesktopServerController>() {
+                tauri::async_runtime::block_on(state.shutdown());
+            }
+        }
+        _ => {}
     });
 }
 

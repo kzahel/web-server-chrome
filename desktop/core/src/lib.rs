@@ -81,6 +81,11 @@ impl ServerConfig {
     }
 
     fn validate(&self) -> Result<(), CoreError> {
+        if self.root.as_os_str().is_empty() {
+            return Err(CoreError::InvalidConfig(
+                "root directory must be selected".to_owned(),
+            ));
+        }
         if self.request_timeout.is_zero() {
             return Err(CoreError::InvalidConfig(
                 "request_timeout must be greater than zero".to_owned(),
@@ -180,13 +185,7 @@ impl RunningServer {
     pub async fn start(mut config: ServerConfig) -> Result<Self, CoreError> {
         config.validate()?;
         let configured_root = config.root.clone();
-        let root =
-            fs::canonicalize(&configured_root)
-                .await
-                .map_err(|source| CoreError::InvalidRoot {
-                    path: configured_root.clone(),
-                    source,
-                })?;
+        let root = canonicalize_serving_root(&configured_root).await?;
         let metadata = fs::metadata(&root)
             .await
             .map_err(|source| CoreError::InvalidRoot {
@@ -293,6 +292,31 @@ impl RunningServer {
             }
         }
     }
+}
+
+/// Canonicalize and validate a directory before it is authorized as a serving
+/// root. This is public so native control surfaces can apply the exact same
+/// safety boundary before starting a server.
+pub async fn canonicalize_serving_root(root: &Path) -> Result<PathBuf, CoreError> {
+    if root.as_os_str().is_empty() {
+        return Err(CoreError::InvalidConfig(
+            "root directory must be selected".to_owned(),
+        ));
+    }
+
+    let canonical = fs::canonicalize(root)
+        .await
+        .map_err(|source| CoreError::InvalidRoot {
+            path: root.to_path_buf(),
+            source,
+        })?;
+    if canonical.parent().is_none() {
+        return Err(CoreError::InvalidConfig(format!(
+            "filesystem root cannot be served: {}",
+            canonical.display()
+        )));
+    }
+    Ok(canonical)
 }
 
 impl Drop for RunningServer {

@@ -3,7 +3,7 @@ use std::fmt::Write as _;
 use std::path::Path;
 use std::time::Duration;
 
-use ok200_core::{CoreError, RunningServer, ServerConfig, ServerStatus};
+use ok200_core::{canonicalize_serving_root, CoreError, RunningServer, ServerConfig, ServerStatus};
 use tempfile::TempDir;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
@@ -393,4 +393,21 @@ async fn rejects_missing_or_non_directory_roots() {
         panic!("file root should fail");
     };
     assert!(matches!(error, CoreError::InvalidConfig(_)));
+}
+
+#[tokio::test]
+async fn rejects_empty_and_filesystem_roots() {
+    let empty = canonicalize_serving_root(Path::new(""))
+        .await
+        .expect_err("empty root should fail");
+    assert!(matches!(empty, CoreError::InvalidConfig(_)));
+    assert!(empty.to_string().contains("must be selected"));
+
+    let current = std::env::current_dir().expect("current directory");
+    let filesystem_root = current.ancestors().last().expect("filesystem root");
+    let root_error = canonicalize_serving_root(filesystem_root)
+        .await
+        .expect_err("filesystem root should fail");
+    assert!(matches!(root_error, CoreError::InvalidConfig(_)));
+    assert!(root_error.to_string().contains("filesystem root"));
 }

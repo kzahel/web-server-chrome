@@ -1006,12 +1006,12 @@ async fn directory_listing(directory: &Path, url_path: &str) -> io::Result<Strin
     let mut html = String::with_capacity(4096 + entries.len() * 240);
     let _ = write!(
         html,
-        "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"color-scheme\" content=\"light dark\"><title>Index of {display_path}</title>"
+        "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"color-scheme\" content=\"light dark\"><title>Index of {display_path} — 200 OK Web Server</title>"
     );
     html.push_str(DIRECTORY_LISTING_STYLE);
     html.push_str("</head><body><div class=\"page\">");
     html.push_str(
-        "<div class=\"brand\"><span class=\"brand-mark\" aria-hidden=\"true\">200</span><span>Web Server for Chrome · 200 OK</span></div>",
+        "<div class=\"brand\"><span class=\"brand-mark\" aria-hidden=\"true\">200</span><span>200 OK Web Server</span></div>",
     );
     let _ = write!(html, "<h1>Index of <code>{display_path}</code></h1>");
     html.push_str(DIRECTORY_LISTING_ICONS);

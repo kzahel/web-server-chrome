@@ -165,6 +165,8 @@ async fn lists_directories_with_safe_links_and_can_disable_listings() {
     assert!(html.contains("<time>"));
     assert!(html.contains("prefers-color-scheme: dark"));
     assert!(html.contains("name=\"color-scheme\" content=\"light dark\""));
+    assert!(html.contains("200 OK Web Server"));
+    assert!(!html.contains("Web Server for Chrome"));
     let directory_position = html.find("A folder/").expect("directory row");
     let file_position = html.find("100% real.txt").expect("file row");
     assert!(directory_position < file_position);

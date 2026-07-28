@@ -14,10 +14,10 @@ export function Layout() {
           />
           <div>
             <h1 className="text-[15px] font-semibold leading-tight">
-              Web Server for Chrome
+              200 OK Web Server
             </h1>
             <p className="mt-0.5 text-[11px] leading-none text-gray-500 dark:text-gray-400">
-              200 OK desktop
+              Desktop
             </p>
           </div>
         </div>

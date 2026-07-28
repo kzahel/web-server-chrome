@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Web Server for Chrome",
+        "title": "200 OK Web Server",
         "width": 410,
         "height": 700,
         "minWidth": 380,

@@ -214,15 +214,20 @@ The accepted package policy is:
   deployment.
 - No custom installer UI or dual-scope chooser is required for the initial
   release.
+- Windows-created query-user firewall rules remain owned by Windows. The
+  non-elevated current-user uninstaller does not try to remove security-policy
+  records; optional explicitly elevated cleanup can be evaluated separately.
 
 The installed per-user NSIS application passed native folder selection,
 external HTTP serving, both SPA and directory-listing routing modes, stop and
 old-port teardown, settings persistence, background/single-instance lifecycle,
 headless updater service flow, native-messaging registration/framing/launch,
-and removal of installed binaries plus native-messaging state. Uninstall left
-the saved server configuration and WebView data when invoked against a
-background-resident app; Tactical 006 records the minimal reproduction as a
-non-blocking cleanup/privacy defect.
+and real unpacked-extension invocation. The development extension key was
+corrected to the published extension identity and is now asserted during every
+Vite build. Uninstall now gracefully requests application shutdown, terminates
+only exact product process trees as a fallback, and removes installed binaries,
+native-messaging state, saved server configuration, and WebView data even when
+the desktop and helper began resident in the background.
 
 Windows CI now gives uploaded artifacts canonical no-whitespace names using
 Tauri Action's release asset pattern. The local Tauri bundle still uses

@@ -357,3 +357,7 @@ This parent closes only when:
   recommended installer. The standard elevated WiX MSI remains a secondary
   system-wide package; no custom dual-scope installer UI is required for the
   initial release.
+- **2026-07-28:** Windows unpacked-extension launch now passes with the
+  published extension identity, and current-user NSIS uninstall owns graceful
+  shutdown plus cleanup of exact product app-data paths. Tray automation,
+  elevated MSI smoke, and signed-candidate verification remain pending.

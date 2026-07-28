@@ -226,9 +226,10 @@ plugin, then relaunches through the process plugin.
   have been accepted in installed macOS and Windows review apps. The Windows
   run also passed per-user NSIS installation, external HTTP behavior,
   persistence, background single-instance lifecycle, headless updater service
-  flow, native-host registration/framing/launch, and uninstall of installed
-  binaries and registration. Tray-only controls, MSI installation, signed
-  artifacts, and real browser-extension invocation remain pending in
+  flow, native-host registration/framing/launch, real unpacked-extension
+  invocation, and uninstall of installed binaries, registration, and per-user
+  state. Tray-only controls, MSI installation, and signed artifacts remain
+  pending in
   [Tactical 006](../tactical/006-windows-desktop-validation.md). Linux remains
   pending.
 - The existing WebdriverIO E2E specification targets the Rust command path and

@@ -1,8 +1,8 @@
 # 006: Windows Desktop Validation
 
-Status: **executed and remediated on native Windows; unsigned runtime and
-per-user NSIS validation pass, while signed-release, tray, MSI-install, and
-browser-extension proof remain pending.**
+Status: **executed and remediated on native Windows; unsigned runtime,
+per-user NSIS, uninstall cleanup, and browser-extension launch validation
+pass, while signed-release, tray, and MSI-install proof remain pending.**
 
 Topics:
 
@@ -599,6 +599,7 @@ The implementation commits are:
 | `93f9a43` | Made the JavaScript/Rust test fixtures and release-script paths portable on Windows, removed current Rust warnings, and replaced the Bash-only sidecar preparation script with Node. |
 | `1d12ef7` | Upgraded the Tauri JavaScript and Rust stack. |
 | `349fc39` | Selected explicit current-user NSIS installation, repaired supported NSIS hooks and installed-sidecar lookup/launch, and aligned CI Windows release asset naming. |
+| `a284356` | Added graceful/fallback product shutdown for NSIS uninstall, retried exact per-user state removal, corrected the development extension identity, and made extension builds fail closed on identity drift. |
 
 The follow-up ran from
 `C:\Users\sox\Documents\code\web-server-chrome` in PowerShell `7.6.4` with Git
@@ -615,6 +616,9 @@ These native PowerShell commands passed:
 ```powershell
 pnpm install --frozen-lockfile
 pnpm --filter @ok200/desktop prepare-sidecar
+pnpm --filter @ok200/extension build
+$env:SKIP_INJECT_KEY='1'; pnpm --filter @ok200/extension build
+Remove-Item Env:SKIP_INJECT_KEY
 pnpm typecheck
 pnpm test
 pnpm lint
@@ -636,8 +640,8 @@ warnings.
 
 | Format | Exact local artifact | Bytes | SHA-256 | Signature |
 | --- | --- | ---: | --- | --- |
-| NSIS | `C:\Users\sox\Documents\code\web-server-chrome\desktop\target\release\bundle\nsis\200 OK_0.1.3_x64-setup.exe` | 6,349,113 | `219C52CC7EE49CF0F34581EB90AE7B3DD8D7181028C61754572D1A91BDCB5951` | `NotSigned` |
-| MSI | `C:\Users\sox\Documents\code\web-server-chrome\desktop\target\release\bundle\msi\200 OK_0.1.3_x64_en-US.msi` | 9,060,352 | `7C6E3A063BD74390136044414A9237934720EA61EF0DC9AB6C632E4B53EF5075` | `NotSigned` |
+| NSIS | `C:\Users\sox\Documents\code\web-server-chrome\desktop\target\release\bundle\nsis\200 OK_0.1.3_x64-setup.exe` | 6,360,889 | `70A5232A61CDFBAA2C517FFBFCDF57A4F5935F14985A631600D89074117106AC` | `NotSigned` |
+| MSI | `C:\Users\sox\Documents\code\web-server-chrome\desktop\target\release\bundle\msi\200 OK_0.1.3_x64_en-US.msi` | 9,064,448 | `A099CD3D9AA91B929CD96AB8923A1C5332D4D40B41952962EED351946C4FA37C` | `NotSigned` |
 
 Local bundle names remain Tauri's product-name-derived outputs. The Windows CI
 upload now uses Tauri Action's `releaseAssetNamePattern` to publish canonical
@@ -658,9 +662,9 @@ installed:
 
 | File | Bytes | SHA-256 | Signature |
 | --- | ---: | --- | --- |
-| `ok200-desktop.exe` | 17,508,864 | `C02E829AAC33648139B5FB6827C0DBCA7A0B2A26D19595B65867149A8C88D93C` | `NotSigned` |
+| `ok200-desktop.exe` | 17,519,104 | `0E67A19C53B3670A25AF01972E1D8DAB5D48AF925154A1CC4E34540554703155` | `NotSigned` |
 | `ok200-host.exe` | 2,378,752 | `71A34E7D0DC92DE7A3691FDE421316DCA36773C5104DD1662947A5D3CD8E70E0` | `NotSigned` |
-| `uninstall.exe` | 79,216 | `9C9AE76B880BE6A256980222E8552F2DC8D562DA4FC4C1AE72459F194ECCC5AF` | `NotSigned` |
+| `uninstall.exe` | 82,306 | `60475284D811D2E0716CA6C1B76C7176C1B613E7B6392A3EFA3ECDAB359F2972` | `NotSigned` |
 
 The installed app launched at the compact portrait size with canonical 200 OK
 branding and the active Windows dark preference. The native Windows folder
@@ -726,32 +730,66 @@ returned:
 
 The host exited 0, launched/focused `ok200-desktop.exe`, and did not create a
 second desktop instance. This closes the original installer registration,
-flat-sidecar lookup, and wrong executable-name defects. End-to-end invocation
-from the Chrome extension remains blocked because the compatible extension is
-not installed.
+flat-sidecar lookup, and wrong executable-name defects.
+
+The first unpacked-extension attempt exposed a separate identity defect:
+`extension/fullpubkey.txt` derived extension ID
+`ofhbbkphhbklhfoeikjpcbhemlocgigb`, the legacy Chrome App identity, while the
+native host correctly allowed the published extension ID
+`lpkjdhnmgkhaabhimpdinmdgejoaejic`. The published extension's RSA public key
+was extracted from its public CRX3 proof, installed as the development public
+key, and checked at Vite configuration time. Both development and
+`SKIP_INJECT_KEY=1` builds now fail before bundling if that public key drifts
+from the native-host allowlist identity.
+
+End-to-end browser invocation then passed with Playwright Core `1.54.2`,
+Chromium `139.0.7258.5`, an isolated profile, and the unpacked
+`extension/dist` build. Installed stable Chrome `150.0.7871.187` did not load
+the command-line unpacked extension, so the test used Playwright's Chromium
+rather than modifying the user's browser profile. The installed same-source
+NSIS build exercised by this browser test was 6,357,239 bytes with SHA-256
+`7163A4FFA1E420F3CBFC06EE42311EE3FBCF082C1DB0CC85923AEFC491063076`;
+the final rebuilt artifact and its separate install/uninstall smoke are
+recorded above and below. The observed service worker URL was exactly:
+
+```text
+chrome-extension://lpkjdhnmgkhaabhimpdinmdgejoaejic/sw.js
+```
+
+The popup reported `Desktop app detected (v0.1.3).` Chrome started the
+installed `ok200-host.exe` with the extension origin and parent-window
+arguments. Clicking **Open 200 OK** changed the popup to `App launched!` and
+started the installed desktop executable. A second click kept exactly one
+desktop and one host process, proving the single-instance focus path. After
+uninstall, the same popup changed to the not-installed state and offered
+**Get the Desktop App**. This proves popup to service worker to Chrome native
+messaging to installed helper to desktop launch, plus disconnect behavior.
 
 ### Uninstall and remaining observations
 
-Running `%LOCALAPPDATA%\200 OK\uninstall.exe /S` while the stopped application
-was resident in the background returned exit code 0. It removed the install
-directory, desktop process, Start Menu and desktop shortcuts, all four browser
-registry keys, and the native-messaging manifest.
+The original post-fix run reproduced a cleanup/privacy defect: uninstalling
+while the closed-window application remained resident left
+`%APPDATA%\app.ok200.desktop\server.json` and
+`%LOCALAPPDATA%\app.ok200.desktop\EBWebView\...`. The NSIS hooks now request
+graceful shutdown through the application's single-instance channel, fall
+back to exact product process-tree termination, and retry recursive removal
+of those two product-owned per-user directories.
 
-Two per-user state directories remained:
-
-- `%APPDATA%\app.ok200.desktop\server.json`
-- `%LOCALAPPDATA%\app.ok200.desktop\EBWebView\...`
-
-Tauri's generated NSIS script requests recursive removal of both paths, but
-the WebView/process shutdown path left them behind in this run. Minimal
-reproduction: install the NSIS package, launch and close the app so it remains
-in the background, run `uninstall.exe /S`, then inspect those two exact paths.
-This is a cleanup/privacy defect, not a server, launch, update, or registration
-failure. It was recorded without adding more custom installer behavior.
+The exact reproduction now passes. With one hidden/background desktop process
+and one browser-owned native-host process, silent uninstall returned exit 0 in
+3.151 seconds and left zero desktop or host processes. The install directory,
+both app-data directories, native-messaging manifest, and all four HKCU browser
+registration keys were absent. A final install/run/uninstall smoke against
+the artifact hash recorded above returned install exit 0 and uninstall exit 0
+in 3.168 seconds with the same zero-process and zero-state result.
 
 The previously recorded Windows Firewall query-user rules were not changed.
-The product-created native-messaging state was removed; unrelated or
-OS-created security configuration was not deleted.
+They are Windows-created security-policy records, not installer-created
+product state, and deleting them from the recommended current-user uninstaller
+would itself require elevation. The accepted initial-release policy is to
+leave them under Windows ownership; an explicitly elevated optional cleanup
+may be considered later. Product-created native-messaging and app-data state
+was removed.
 
 ### Remaining blocked release checks
 
@@ -761,8 +799,6 @@ OS-created security configuration was not deleted.
 - Tray Show App, checkmarks, Quit, Start at Login, and the tray-triggered
   updater UI remain blocked because the approved automation surface cannot
   target the Windows tray menu.
-- Chrome-extension-to-host invocation remains blocked by the missing compatible
-  extension, although installed host framing, registration, and launch pass.
 - Released EXE/MSI Authenticode checks remain blocked until a signed CI
   candidate exists. These local artifacts are intentionally `NotSigned`.
 - CI asset renaming and the complete fail-closed gate still require a tagged

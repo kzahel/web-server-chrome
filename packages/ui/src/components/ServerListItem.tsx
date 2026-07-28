@@ -1,4 +1,4 @@
-import type { ServerInfo } from "@ok200/engine";
+import type { ServerInfo } from "../lib/server-manager";
 
 interface ServerListItemProps {
   server: ServerInfo;

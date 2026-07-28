@@ -1,5 +1,9 @@
-import type { ServerConfig, ServerInfo } from "@ok200/engine";
-import type { DirectoryListing, ServerManager } from "./server-manager";
+import type {
+  DirectoryListing,
+  ServerConfig,
+  ServerInfo,
+  ServerManager,
+} from "./server-manager";
 
 export class HttpServerManager implements ServerManager {
   private baseUrl: string;

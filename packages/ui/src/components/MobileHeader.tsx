@@ -1,5 +1,5 @@
-import type { ServerInfo } from "@ok200/engine";
 import { useState } from "react";
+import type { ServerInfo } from "../lib/server-manager";
 import { ServerListItem } from "./ServerListItem";
 
 interface MobileHeaderProps {

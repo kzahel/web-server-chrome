@@ -1,9 +1,14 @@
-import type { ServerConfig, ServerInfo, ServerRegistry } from "@ok200/engine";
-import type { ServerManager } from "./server-manager";
+import type { ServerConfig, ServerInfo, ServerManager } from "./server-manager";
+
+interface DirectServerRegistry {
+  listServers(): ServerInfo[];
+  getServer(id: string): ServerInfo | undefined;
+  updateConfig(id: string, partial: Partial<ServerConfig>): ServerConfig;
+}
 
 export class DirectServerManager implements ServerManager {
   constructor(
-    private registry: ServerRegistry,
+    private registry: DirectServerRegistry,
     private callbacks: {
       onStart: (id: string) => Promise<ServerInfo>;
       onStop: (id: string) => Promise<ServerInfo>;

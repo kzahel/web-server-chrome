@@ -1,6 +1,6 @@
-import type { ServerConfig } from "@ok200/engine";
 import type {
   ManagedServerInfo,
+  ServerConfig,
   ServerManager,
   StartAssessment,
   StartOptions,

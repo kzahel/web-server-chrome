@@ -1,4 +1,4 @@
-import type { ServerConfig, ServerInfo } from "@ok200/engine";
+import type { ServerConfig, ServerInfo } from "../lib/server-manager";
 
 interface ServingSettingsProps {
   server: ServerInfo;

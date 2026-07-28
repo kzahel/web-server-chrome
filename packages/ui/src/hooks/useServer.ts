@@ -1,6 +1,9 @@
-import type { ServerConfig } from "@ok200/engine";
 import { useCallback, useEffect, useState } from "react";
-import type { ManagedServerInfo, StartOptions } from "../lib/server-manager";
+import type {
+  ManagedServerInfo,
+  ServerConfig,
+  StartOptions,
+} from "../lib/server-manager";
 import { useServerManager } from "../lib/server-manager-context";
 
 export function useServer(serverId: string) {

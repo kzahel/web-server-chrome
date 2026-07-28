@@ -1,5 +1,4 @@
-import type { ServerConfig } from "@ok200/engine";
-import type { ManagedServerInfo } from "../lib/server-manager";
+import type { ManagedServerInfo, ServerConfig } from "../lib/server-manager";
 import { ServingSettings } from "./ServingSettings";
 
 interface SettingsZoneProps {

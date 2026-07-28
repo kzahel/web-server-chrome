@@ -32,9 +32,6 @@ importers:
 
   desktop/tauri-app:
     dependencies:
-      '@ok200/engine':
-        specifier: workspace:*
-        version: link:../../packages/engine
       '@ok200/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -155,9 +152,6 @@ importers:
 
   packages/ui:
     dependencies:
-      '@ok200/engine':
-        specifier: workspace:*
-        version: link:../engine
       react:
         specifier: ^19.2.4
         version: 19.2.4

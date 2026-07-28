@@ -1,5 +1,5 @@
-import type { ServerInfo } from "@ok200/engine";
 import { useCallback, useEffect, useState } from "react";
+import type { ServerInfo } from "../lib/server-manager";
 import { useServerManager } from "../lib/server-manager-context";
 
 export function useServers() {

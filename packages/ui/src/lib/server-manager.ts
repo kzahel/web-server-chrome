@@ -1,4 +1,34 @@
-import type { ServerConfig, ServerInfo } from "@ok200/engine";
+export interface ServerConfig {
+  port: number;
+  host: string;
+  root: string;
+  cors: boolean;
+  spa: boolean;
+  directoryListing: boolean;
+  quiet: boolean;
+  upload: boolean;
+  requestTimeoutMs: number;
+  maxRequestBodySize: number;
+  tls?: {
+    cert: Uint8Array;
+    key: Uint8Array;
+  };
+}
+
+export type ServerStatus =
+  | "stopped"
+  | "starting"
+  | "running"
+  | "stopping"
+  | "error";
+
+export interface ServerInfo {
+  id: string;
+  config: ServerConfig;
+  status: ServerStatus;
+  actualPort?: number;
+  error?: string;
+}
 
 export interface StartAssessment {
   allowed: boolean;

@@ -8,8 +8,8 @@ const webStoreUrl = `https://chromewebstore.google.com/detail/${extensionId}`;
 ---
 
 <BaseLayout
-  title="Web Server for Chrome — Uninstalled"
-  description="You've uninstalled Web Server for Chrome. Here's what's next."
+  title="Web Server for Chrome uninstalled — 200 OK Web Server"
+  description="Continue with 200 OK Web Server, the cross-platform successor to Web Server for Chrome."
 >
   <Header activePage="" />
 
@@ -24,7 +24,7 @@ const webStoreUrl = `https://chromewebstore.google.com/detail/${extensionId}`;
 
         <div id="has-extension" class="state" hidden>
           <h1>You're all set!</h1>
-          <p>You already have the new <strong>Web Server for Chrome</strong> extension installed. The old Chrome App has been removed — no action needed.</p>
+          <p>You already have the <strong>200 OK Web Server</strong> extension installed. It can launch the desktop or Android server app; the old Chrome App has been removed.</p>
           <div class="cta-buttons">
             <a href="/" class="btn btn-primary">Learn more</a>
           </div>
@@ -32,16 +32,16 @@ const webStoreUrl = `https://chromewebstore.google.com/detail/${extensionId}`;
 
         <div id="no-extension" class="state" hidden>
           <h1>Thanks for using Web Server for Chrome</h1>
-          <p>The original Chrome App has been discontinued by Google, but we've rebuilt it as a modern Chrome Extension with the same features and workflow.</p>
+          <p>The original Chrome App has been discontinued by Google. Its successor is 200 OK Web Server: a small server app for desktop or Android with a companion Chrome extension.</p>
           <div class="cta-buttons">
-            <a href={webStoreUrl} class="btn btn-primary">Get the new extension</a>
+            <a href={webStoreUrl} class="btn btn-primary">Get the 200 OK extension</a>
             <a href="/" class="btn btn-secondary">Learn more</a>
           </div>
         </div>
 
         <div id="not-chrome" class="state" hidden>
           <h1>Thanks for using Web Server for Chrome</h1>
-          <p>The original Chrome App has been discontinued by Google, but we've rebuilt it for every platform — including a Chrome Extension, desktop app, and CLI.</p>
+          <p>The original Chrome App has been discontinued by Google, but 200 OK Web Server carries its workflow forward on desktop, Android, ChromeOS, and the command line.</p>
           <div class="cta-buttons">
             <a href="/" class="btn btn-primary">See all platforms</a>
           </div>

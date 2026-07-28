@@ -2,13 +2,13 @@
   <img src="images/200ok-256.png" alt="200 OK!" width="128">
 </p>
 
-<h1 align="center">Web Server for Chrome</h1>
+<h1 align="center">200 OK Web Server</h1>
 
-<p align="center"><strong>The next generation of <a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">Web Server for Chrome</a>, rebuilt from scratch by the original author.</strong></p>
+<p align="center"><strong>The cross-platform successor to <a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">Web Server for Chrome</a>, rebuilt by the original author.</strong></p>
 
-The original Chrome App was used by 200,000+ people for local web development and file sharing. Google discontinued Chrome Apps, so Web Server for Chrome is being rebuilt as:
+The original Chrome App was used by 200,000+ people for local web development and file sharing. Google discontinued Chrome Apps, so 200 OK Web Server carries that simple workflow forward as:
 
-- **Chrome Extension** — The familiar UI, now as an extension
+- **Chrome Extension** — A familiar launcher for the installed server app
 - **Desktop App** — Native app (Tauri) for Mac, Windows, and Linux
 - **CLI** — `ok200` command for developers who live in the terminal
 - **Android / ChromeOS** — Native app, published on Google Play
@@ -35,12 +35,13 @@ release, so the released desktop behavior remains unchanged. Android and the
 published Node CLI are deliberately deferred while they work.
 
 See the living
+[product branding decision](docs/topics/product-branding.md),
 [desktop runtime decision](docs/topics/desktop-runtime.md) and
 [Tactical 003](docs/tactical/003-native-desktop-control-surface.md).
 
 ## Install
 
-- Chrome Extension: [Web Server for Chrome on the Chrome Web Store](https://chromewebstore.google.com/detail/web-server-for-chrome/lpkjdhnmgkhaabhimpdinmdgejoaejic?authuser=0&hl=en)
+- Chrome Extension: [200 OK Web Server on the Chrome Web Store](https://chromewebstore.google.com/detail/web-server-for-chrome/lpkjdhnmgkhaabhimpdinmdgejoaejic?authuser=0&hl=en)
 - Android / ChromeOS: [200 OK on Google Play](https://play.google.com/store/apps/details?id=app.ok200.android)
 - Desktop app: packaged separately; `v0.1.3` is an early partial release and
   does not yet pass the current

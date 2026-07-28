@@ -20,12 +20,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.1.0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: pnpm
       - name: Install and build
-        working-directory: website
-        run: npm install && npm run build
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter ok200-website build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: website/dist

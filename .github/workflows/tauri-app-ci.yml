@@ -8,12 +8,14 @@ on:
     paths:
       - 'desktop/**'
       - 'packages/**'
+      - '.github/scripts/**'
       - '.github/workflows/tauri-app-ci.yml'
   pull_request:
     branches: [main]
     paths:
       - 'desktop/**'
       - 'packages/**'
+      - '.github/scripts/**'
       - '.github/workflows/tauri-app-ci.yml'
 
 permissions:
@@ -24,6 +26,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Test release validation
+        run: node --test .github/scripts/validate-desktop-release.test.mjs
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -66,12 +76,30 @@ jobs:
     runs-on: ${{ matrix.runner || matrix.platform }}
 
     env:
-      HAS_MACOS_SIGNING: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 != '' }}
-      HAS_MACOS_NOTARIZATION: ${{ secrets.ASC_API_KEY_P8_BASE64 != '' }}
-      HAS_WINDOWS_SIGNING: ${{ secrets.AZURE_CLIENT_SECRET != '' }}
+      HAS_UPDATER_SIGNING: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY != '' }}
+      HAS_MACOS_SIGNING: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 != '' && secrets.MACOS_CERTIFICATE_PASSWORD != '' && secrets.MACOS_KEYCHAIN_PASSWORD != '' }}
+      HAS_MACOS_NOTARIZATION: ${{ secrets.ASC_API_KEY_P8_BASE64 != '' && secrets.ASC_API_KEY_ID != '' && secrets.ASC_API_ISSUER_ID != '' }}
+      HAS_WINDOWS_SIGNING: ${{ secrets.AZURE_CLIENT_ID != '' && secrets.AZURE_TENANT_ID != '' && secrets.AZURE_CLIENT_SECRET != '' }}
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Require release signing credentials
+        if: startsWith(github.ref, 'refs/tags/desktop-v')
+        shell: bash
+        run: |
+          if [ "$HAS_UPDATER_SIGNING" != "true" ]; then
+            echo "::error::Tagged releases require TAURI_SIGNING_PRIVATE_KEY"
+            exit 1
+          fi
+          if [ "$RUNNER_OS" = "macOS" ] && { [ "$HAS_MACOS_SIGNING" != "true" ] || [ "$HAS_MACOS_NOTARIZATION" != "true" ]; }; then
+            echo "::error::Tagged macOS releases require signing and notarization credentials"
+            exit 1
+          fi
+          if [ "$RUNNER_OS" = "Windows" ] && [ "$HAS_WINDOWS_SIGNING" != "true" ]; then
+            echo "::error::Tagged Windows releases require trusted-signing credentials"
+            exit 1
+          fi
 
       # --- Node.js + pnpm ---
       - name: Setup Node.js
@@ -210,7 +238,7 @@ jobs:
           tagName: ${{ startsWith(github.ref, 'refs/tags/') && 'desktop-v__VERSION__' || '' }}
           releaseName: '200 OK v__VERSION__'
           releaseBody: ${{ steps.changelog.outputs.notes || 'See the assets to download and install this version.' }}
-          releaseDraft: false
+          releaseDraft: true
           prerelease: false
           includeUpdaterJson: ${{ startsWith(github.ref, 'refs/tags/') }}
           updaterJsonKeepUniversal: true
@@ -232,30 +260,23 @@ jobs:
           else
             ARCH="x64"
           fi
-          # Find the .app bundle from Tauri build output
-          APP_PATH=$(find desktop/tauri-app/src-tauri/target/"$TARGET"/release/bundle/macos -name "200 OK.app" -maxdepth 1 2>/dev/null | head -1)
-          if [ -z "$APP_PATH" ]; then
-            echo "Warning: Could not find 200 OK.app, skipping .pkg build"
-            exit 0
+          APP_PATH="desktop/target/$TARGET/release/bundle/macos/200 OK.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "::error::Could not find required app bundle at $APP_PATH"
+            find desktop/target -maxdepth 6 -type d -name '*.app' -print || true
+            exit 1
           fi
           bash desktop/tauri-app/scripts/build-macos-pkg.sh "$APP_PATH" "$VERSION" "$ARCH"
-          echo "PKG_FILE=200_OK_${VERSION}_${ARCH}.pkg" >> "$GITHUB_ENV"
-
-      - name: Upload .pkg to release
-        if: matrix.platform == 'macos-latest' && startsWith(github.ref, 'refs/tags/desktop-v') && env.PKG_FILE != ''
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG="${GITHUB_REF_NAME}"
-          gh release upload "$TAG" "$PKG_FILE" --clobber
+          PKG_FILE="200_OK_${VERSION}_${ARCH}.pkg"
+          test -f "$PKG_FILE"
+          echo "PKG_FILE=$PKG_FILE" >> "$GITHUB_ENV"
 
       # --- Notarize .pkg ---
       - name: Notarize .pkg
-        if: matrix.platform == 'macos-latest' && startsWith(github.ref, 'refs/tags/desktop-v') && env.HAS_MACOS_NOTARIZATION == 'true' && env.PKG_FILE != ''
+        if: matrix.platform == 'macos-latest' && startsWith(github.ref, 'refs/tags/desktop-v') && env.PKG_FILE != ''
         env:
           ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
           ASC_API_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           xcrun notarytool submit "$PKG_FILE" \
             --key "$APPLE_API_KEY_PATH" \
@@ -263,7 +284,13 @@ jobs:
             --issuer "$ASC_API_ISSUER_ID" \
             --wait
           xcrun stapler staple "$PKG_FILE"
-          # Re-upload stapled .pkg
+          xcrun stapler validate "$PKG_FILE"
+
+      - name: Upload notarized .pkg to draft release
+        if: matrix.platform == 'macos-latest' && startsWith(github.ref, 'refs/tags/desktop-v') && env.PKG_FILE != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           TAG="${GITHUB_REF_NAME}"
           gh release upload "$TAG" "$PKG_FILE" --clobber
 
@@ -272,7 +299,7 @@ jobs:
         if: failure() && matrix.platform == 'macos-latest'
         run: |
           echo ""
-          echo "::error::macOS DMG bundling failed. This is likely the known flaky hdiutil issue on GitHub Actions runners. Re-run this job: gh run rerun ${{ github.run_id }} --failed"
+          echo "::error::macOS packaging failed. Inspect the failing build, signing, PKG, or notarization step before rerunning: gh run rerun ${{ github.run_id }} --failed"
 
       # --- Cleanup ---
       - name: Clean up macOS keychain
@@ -281,32 +308,79 @@ jobs:
           security delete-keychain build.keychain 2>/dev/null || true
           rm -rf ~/private_keys 2>/dev/null || true
 
-  # Clean up release assets after all builds complete
+  # A matrix leg may create the draft, but only this job can publish it.
   finalize-release:
-    if: startsWith(github.ref, 'refs/tags/desktop-v')
-    needs: build-tauri
+    if: always() && startsWith(github.ref, 'refs/tags/desktop-v')
+    needs:
+      - test-desktop
+      - build-tauri
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Remove .sig files from release
+      - name: Keep failed builds private
+        if: needs.test-desktop.result != 'success' || needs.build-tauri.result != 'success'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${GITHUB_REF_NAME}"
-          gh release view "$TAG" --json assets --jq '.assets[].name' | grep '\.sig$' | while read -r name; do
-            echo "Deleting $name"
-            gh release delete-asset "$TAG" "$name" --yes
-          done
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --draft
+            echo "::error::One or more required jobs failed; $TAG remains a draft"
+          else
+            echo "::error::One or more required jobs failed; no release was created"
+          fi
+          exit 1
 
-      - name: Update release body with download table
+      - name: Download and validate complete draft release
+        if: needs.test-desktop.result == 'success' && needs.build-tauri.result == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          REPO="${GITHUB_REPOSITORY}"
+          RELEASE_DIR="${RUNNER_TEMP}/desktop-release"
+          mkdir -p "$RELEASE_DIR"
+
+          gh release view "$TAG" \
+            --json tagName,isDraft,assets \
+            > "$RELEASE_DIR/release.json"
+          gh release download "$TAG" \
+            --pattern latest.json \
+            --dir "$RELEASE_DIR"
+
+          node .github/scripts/validate-desktop-release.mjs \
+            --release "$RELEASE_DIR/release.json" \
+            --latest "$RELEASE_DIR/latest.json" \
+            --tag "$TAG" \
+            --repository "$REPO"
+
+          node .github/scripts/write-release-checksums.mjs \
+            "$RELEASE_DIR/release.json" \
+            "$RELEASE_DIR/SHA256SUMS"
+          gh release upload "$TAG" "$RELEASE_DIR/SHA256SUMS" --clobber
+
+      - name: Remove detached updater signatures
+        if: needs.test-desktop.result == 'success' && needs.build-tauri.result == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          while read -r name; do
+            if [ -n "$name" ]; then
+              echo "Deleting $name after latest.json validation"
+              gh release delete-asset "$TAG" "$name" --yes
+            fi
+          done < <(gh release view "$TAG" --json assets --jq '.assets[].name | select(endswith(".sig"))')
+
+      - name: Write exact download links
+        if: needs.test-desktop.result == 'success' && needs.build-tauri.result == 'success'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${GITHUB_REF_NAME}"
           VERSION="${TAG#desktop-v}"
-          REPO="${GITHUB_REPOSITORY}"
-          BASE="https://github.com/${REPO}/releases/download/${TAG}"
+          BASE="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}"
 
           CHANGELOG=$(awk "/^## \\[$VERSION\\]/{found=1; next} /^## \\[/{found=0} found" desktop/tauri-app/CHANGELOG.md 2>/dev/null || true)
 
@@ -319,10 +393,18 @@ jobs:
             echo ""
             echo "| Platform | |"
             echo "|----------|-|"
-            echo "| macOS (Apple Silicon) | [.dmg](${BASE}/200+OK_${VERSION}_aarch64.dmg) · [.pkg](${BASE}/200_OK_${VERSION}_aarch64.pkg) |"
-            echo "| macOS (Intel) | [.dmg](${BASE}/200+OK_${VERSION}_x64.dmg) · [.pkg](${BASE}/200_OK_${VERSION}_x64.pkg) |"
-            echo "| Windows | [.exe](${BASE}/200+OK_${VERSION}_x64-setup.exe) · [.msi](${BASE}/200+OK_${VERSION}_x64_en-US.msi) |"
-            echo "| Linux | [.deb](${BASE}/200-ok_${VERSION}_amd64.deb) · [.AppImage](${BASE}/200-ok_${VERSION}_amd64.AppImage) · [.rpm](${BASE}/200-ok-${VERSION}-1.x86_64.rpm) |"
+            echo "| macOS (Apple Silicon) | [PKG](${BASE}/200_OK_${VERSION}_aarch64.pkg) (recommended) · [DMG](${BASE}/200.OK_${VERSION}_aarch64.dmg) |"
+            echo "| macOS (Intel) | [PKG](${BASE}/200_OK_${VERSION}_x64.pkg) (recommended) · [DMG](${BASE}/200.OK_${VERSION}_x64.dmg) |"
+            echo "| Windows | [EXE](${BASE}/200.OK_${VERSION}_x64-setup.exe) · [MSI](${BASE}/200.OK_${VERSION}_x64_en-US.msi) |"
+            echo "| Linux | [DEB](${BASE}/200.OK_${VERSION}_amd64.deb) · [AppImage](${BASE}/200.OK_${VERSION}_amd64.AppImage) · [RPM](${BASE}/200.OK-${VERSION}-1.x86_64.rpm) |"
+            echo ""
+            echo "[SHA-256 checksums](${BASE}/SHA256SUMS)"
           } > /tmp/release-body.md
 
           gh release edit "$TAG" --notes-file /tmp/release-body.md
+
+      - name: Publish validated release
+        if: needs.test-desktop.result == 'success' && needs.build-tauri.result == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$GITHUB_REF_NAME" --draft=false --latest

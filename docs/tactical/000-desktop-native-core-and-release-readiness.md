@@ -1,7 +1,7 @@
 # 000: Desktop Native Core and Release Readiness
 
-Status: **active parent plan.** Documentation baseline completed 2026-07-28;
-implementation has not started.
+Status: **active parent plan.** Documentation baseline and Phase A1
+implementation completed 2026-07-28; tagged release proof is pending.
 
 Topics:
 
@@ -139,18 +139,19 @@ Status: complete in this documentation pass.
 
 ### Phase A1 — make desktop release publication fail closed
 
-Create a child tactical before implementation.
+Implementation is recorded in
+[`001-fail-closed-desktop-releases.md`](001-fail-closed-desktop-releases.md).
 
-- [ ] Fix the macOS bundle path used by PKG creation.
-- [ ] Make asset filenames/table links exact and machine-checked.
-- [ ] Stage matrix outputs in Actions artifacts or a draft release.
-- [ ] Port/implement `latest.json` validation for version, target coverage,
+- [x] Fix the macOS bundle path used by PKG creation.
+- [x] Make asset filenames/table links exact and machine-checked.
+- [x] Stage matrix outputs in Actions artifacts or a draft release.
+- [x] Port/implement `latest.json` validation for version, target coverage,
   URLs, and signatures.
-- [ ] Validate required installer/updater artifact completeness.
-- [ ] Make finalization run with `if: always()` and explicitly fail/retain a
+- [x] Validate required installer/updater artifact completeness.
+- [x] Make finalization run with `if: always()` and explicitly fail/retain a
   draft when any required leg fails.
-- [ ] Publish only after the single completeness gate succeeds.
-- [ ] Correct the desktop signing runbook's 200 OK tag note.
+- [x] Publish only after the single completeness gate succeeds.
+- [x] Correct the desktop signing runbook's 200 OK tag note.
 
 Validation:
 

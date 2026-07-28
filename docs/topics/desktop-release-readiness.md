@@ -6,13 +6,16 @@
 
 Topic: desktop-release-readiness
 
-Status: **signing is configured, but the latest public desktop release is
-partial and does not pass the release gate below.**
+Status: **the fail-closed pipeline is implemented, but the latest public
+desktop release is still partial and a tagged run has not yet proven the new
+gate.**
 
 Last reconciled: **2026-07-28**.
 
 Implementation sequencing lives in
-[Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md).
+[Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
+the release-pipeline implementation and remaining tagged proof are recorded in
+[Tactical 001](../tactical/001-fail-closed-desktop-releases.md).
 
 ## Source of truth
 
@@ -27,8 +30,8 @@ material, identities, regeneration procedures, and verification commands; it
 does not store secret values. JSTorrent and Yep Anywhere are useful workflow
 references, but this repository must keep its own release gate current.
 
-The runbook currently misstates 200 OK's tag pattern on line 30. This repository
-uses `desktop-v*`, as declared by
+The runbook's stale 200 OK tag pattern and unsigned-release wording were
+corrected on 2026-07-28. This repository uses `desktop-v*`, as declared by
 `.github/workflows/tauri-app-ci.yml` and the release script.
 
 ## Configured credentials and identity
@@ -84,7 +87,7 @@ The release body also generates download URLs using filenames such as
 `200+OK_...` and `200-ok_...`, while the uploaded Tauri artifacts use
 `200.OK_...`. Advertised links can therefore 404 even when an artifact exists.
 
-## Known CI and publication defects
+## `v0.1.3` CI and publication defects
 
 1. Tauri Action creates a non-draft GitHub release from each matrix leg before
    overall completeness is known.
@@ -100,6 +103,16 @@ The release body also generates download URLs using filenames such as
    `Get-AuthenticodeSignature`.
 8. The workflow's generic “flaky DMG” failure annotation can mask unrelated
    macOS failures; the underlying step log must remain authoritative.
+
+The current workflow addresses defects 1–5 and 8: tag builds now require
+release credentials, stage into a draft, hard-fail a missing PKG, validate the
+complete asset/updater set, generate exact download links and checksums, and
+publish only from one final job. Detached updater signatures are retained until
+after `latest.json` validation.
+
+This is implementation evidence, not release evidence. Defects 6 and 7, plus
+the real-world behavior of the new gate, remain open until the tagged validation
+and clean-system inspection in Tactical 001/Phase A2.
 
 ## Required release gate
 
@@ -148,7 +161,7 @@ A desktop tag may be made public only after all of these pass.
 - Extension-to-native-host launch works on macOS, Windows, and Linux.
 - The release is tested once from a clean install and once as an update.
 
-## Recommended pipeline shape
+## Implemented pipeline shape
 
 1. Build and sign matrix artifacts without publishing a production release.
 2. Upload them to an Actions artifact or draft release.
@@ -158,7 +171,6 @@ A desktop tag may be made public only after all of these pass.
 6. Promote update-server metadata only after the public artifact set is
    immutable and verified.
 
-The signing setup should be repaired before the desktop engine rewrite. A
-small signed release candidate using the current runtime proves distribution
-independently; a later Rust-core candidate then changes one risk axis at a
-time.
+The workflow now follows this shape. A small signed release candidate using the
+current runtime still needs to prove distribution independently; a later
+Rust-core candidate then changes one risk axis at a time.

@@ -21,6 +21,8 @@ cutover is recorded in
 portrait review surface and browser-like Rust directory listing are recorded
 in
 [Tactical 004](../tactical/004-portrait-desktop-polish-and-directory-listing.md).
+The in-app updater behavior and its signed public-artifact proof are recorded
+in [Tactical 005](../tactical/005-in-app-desktop-updater.md).
 Current product naming is governed by
 [`product-branding.md`](product-branding.md).
 
@@ -206,6 +208,16 @@ modified metadata, deterministic folder-first ordering, a responsive table,
 and automatic browser light/dark presentation. They add no webview or
 JavaScript server dependency.
 
+The Tauri webview now also owns a compact in-app updater notification. The
+native menu focuses the existing window and requests a manual check; the
+webview invokes Tauri's signed updater with `X-Check-Reason: manual` and shows
+checking, current, available, progress, installation, and failure state
+without opening a separate dialog. Successful checks persist a timestamp so
+ordinary launches check at most once per 24 hours with reason `app-launch`.
+Automatic checks are quiet unless an update is available. “Update and
+restart” delegates signature verification and installation to the Tauri
+plugin, then relaunches through the process plugin.
+
 ## Known gaps
 
 - Native folder selection and the full visible start/serve/stop/relaunch flow
@@ -220,3 +232,7 @@ JavaScript server dependency.
 - Current-vs-candidate whole-app memory, startup, and first-request
   measurements are still missing.
 - No tagged Rust-core release candidate exists.
+- The in-app updater has installed and relaunched the signed public macOS
+  `0.1.3` artifact from a controlled `0.1.2` review build, but the required
+  direction—public `0.1.3` to a signed Rust-core candidate—remains unproven,
+  as do Windows and Linux updater flows.

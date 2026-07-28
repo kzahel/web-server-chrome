@@ -65,6 +65,12 @@ Repository configuration currently preserves:
 The Rust-core migration must keep the identifier, updater key, and endpoint so
 installed desktop apps can update in place.
 
+The desktop control surface now performs manual checks with
+`X-Check-Reason: manual`, successful launch checks at most once per 24 hours
+with `X-Check-Reason: app-launch`, and signed download/install/relaunch through
+the Tauri plugins. Implementation and local proof are recorded in
+[Tactical 005](../tactical/005-in-app-desktop-updater.md).
+
 ## Latest release evidence
 
 Public desktop release: **`desktop-v0.1.3`**, created 2026-02-27.
@@ -86,6 +92,21 @@ Public desktop release: **`desktop-v0.1.3`**, created 2026-02-27.
 The release body also generates download URLs using filenames such as
 `200+OK_...` and `200-ok_...`, while the uploaded Tauri artifacts use
 `200.OK_...`. Advertised links can therefore 404 even when an artifact exists.
+
+## Local updater control-flow proof
+
+On 2026-07-28, the production-asset macOS review build reached the deployed
+Remy service with distinct `app-launch` and `manual` reasons. A repeated launch
+inside the persisted 24-hour window produced no request, and a manual current
+check rendered the expected in-app `0.1.3` current result.
+
+A controlled build reporting `0.1.2` then discovered, downloaded, verified,
+installed, and relaunched the signed public `0.1.3` macOS updater artifact
+through the new “Update and restart” action. This proves the UI/plugin/server
+control path and the existing macOS updater key. It does not prove the next
+candidate: the release gate still requires the actual public `0.1.3` build to
+update to a complete signed Rust-core release, with post-update behavior and
+Windows/Linux coverage.
 
 ## `v0.1.3` CI and publication defects
 

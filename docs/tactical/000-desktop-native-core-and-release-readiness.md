@@ -4,6 +4,8 @@ Status: **active parent plan.** Documentation baseline, Phase A1
 implementation, standalone Rust core, and native desktop control surface
 implementation completed 2026-07-28. Human product smoke is active in
 [`004-portrait-desktop-polish-and-directory-listing.md`](004-portrait-desktop-polish-and-directory-listing.md);
+the updater control flow is recorded in
+[`005-in-app-desktop-updater.md`](005-in-app-desktop-updater.md); and
 tagged release proof remains pending.
 
 Topics:
@@ -250,14 +252,18 @@ Exit: complete in `f0559cf`; the core passes its test corpus without Tauri.
 
 ### Phase B2 — Tauri state and UI command integration
 
-- Active child:
-  [`003-native-desktop-control-surface.md`](003-native-desktop-control-surface.md)
+- Child tacticals:
+  [`003-native-desktop-control-surface.md`](003-native-desktop-control-surface.md),
+  [`004-portrait-desktop-polish-and-directory-listing.md`](004-portrait-desktop-polish-and-directory-listing.md),
+  and [`005-in-app-desktop-updater.md`](005-in-app-desktop-updater.md)
 - [x] Own server instances in Rust application state.
 - [x] Expose narrow commands for get/configure/start/stop/status.
 - [x] Emit request/status/error events to the webview.
 - [x] Keep file selection in Tauri, pass authorized paths to the core.
 - [x] Preserve background/tray/window lifecycle.
 - [x] Preserve native messaging host behavior and application identity.
+- [x] Surface manual and daily update checks plus update/restart progress in
+  the control surface.
 - [ ] Add/repair Tauri E2E that starts through the UI and fetches externally.
 
 No HTTP request body or served file byte stream should cross Tauri IPC.

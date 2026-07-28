@@ -21,3 +21,4 @@ decisions, evidence, or recommended next work changes.
 | [`002-standalone-rust-http-core.md`](002-standalone-rust-http-core.md) | complete | Build a Tauri-independent native HTTP core and development CLI |
 | [`003-native-desktop-control-surface.md`](003-native-desktop-control-surface.md) | implementation complete; human product smoke pending | Cut the desktop control surface over to Rust state with native folder selection and safe lifecycle UX |
 | [`004-portrait-desktop-polish-and-directory-listing.md`](004-portrait-desktop-polish-and-directory-listing.md) | implementation complete; human product smoke pending | Restore the portrait control appliance, canonical branding, calm lifecycle UX, and browser-like Rust directory listing |
+| [`005-in-app-desktop-updater.md`](005-in-app-desktop-updater.md) | implementation complete; signed candidate proof pending | Provide manual and daily update checks, in-app status, and signed update-and-restart flow |

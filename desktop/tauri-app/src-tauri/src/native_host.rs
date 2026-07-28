@@ -1,3 +1,4 @@
+#[cfg(any(target_os = "macos", target_os = "linux"))]
 use std::path::Path;
 
 const MANIFEST_NAME: &str = "app.ok200.native";
@@ -63,6 +64,7 @@ pub fn register_native_messaging_hosts(app: &tauri::AppHandle) -> Result<usize, 
 /// Write manifest to a browser's `NativeMessagingHosts` directory.
 /// Only writes if the browser's parent config directory already exists
 /// (i.e., the browser is installed).
+#[cfg(any(target_os = "macos", target_os = "linux"))]
 fn write_manifest_for_browser(browser_config_dir: &Path, manifest_bytes: &[u8]) -> bool {
     if !browser_config_dir.exists() {
         return false;
@@ -134,7 +136,7 @@ fn register_windows_browsers(
     manifest_bytes: &[u8],
 ) -> Result<usize, String> {
     use tauri::Manager;
-    use winreg::enums::*;
+    use winreg::enums::HKEY_CURRENT_USER;
     use winreg::RegKey;
 
     let app_data =

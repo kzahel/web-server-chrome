@@ -139,7 +139,7 @@ fn launch_app() -> Result<(), String> {
             return Ok(());
         }
 
-        return Err("could not find 200 OK.exe".to_string());
+        Err("could not find 200 OK.exe".to_string())
     }
 
     #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]

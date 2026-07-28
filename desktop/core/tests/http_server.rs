@@ -135,9 +135,9 @@ async fn lists_directories_with_safe_links_and_can_disable_listings() {
     for name in [
         "space name.txt",
         "100% real.txt",
-        "hash#q?.txt",
+        "hash#q.txt",
         "café.txt",
-        "<script>.txt",
+        "script&tag.txt",
     ] {
         tokio::fs::write(root.path().join(name), name)
             .await
@@ -153,10 +153,10 @@ async fn lists_directories_with_safe_links_and_can_disable_listings() {
     let html = listing.text();
     assert!(html.contains("href=\"/space%20name.txt\""));
     assert!(html.contains("href=\"/100%25%20real.txt\""));
-    assert!(html.contains("href=\"/hash%23q%3F.txt\""));
+    assert!(html.contains("href=\"/hash%23q.txt\""));
     assert!(html.contains("href=\"/caf%C3%A9.txt\""));
-    assert!(html.contains("&lt;script&gt;.txt"));
-    assert!(!html.contains("<script>.txt"));
+    assert!(html.contains("script&amp;tag.txt"));
+    assert!(!html.contains("script&tag.txt"));
     assert!(html.contains("data-kind=\"directory\""));
     assert!(html.contains("<use href=\"#icon-folder\"></use>"));
     assert!(html.contains("<use href=\"#icon-file\"></use>"));
@@ -167,6 +167,15 @@ async fn lists_directories_with_safe_links_and_can_disable_listings() {
     assert!(html.contains("name=\"color-scheme\" content=\"light dark\""));
     assert!(html.contains("200 OK Web Server"));
     assert!(!html.contains("Web Server for Chrome"));
+
+    let queried = request(
+        &server,
+        &close_request("GET", "/hash%23q.txt?cache=ignored", &[]),
+    )
+    .await;
+    assert_eq!(queried.status, 200);
+    assert_eq!(queried.text(), "hash#q.txt");
+
     let directory_position = html.find("A folder/").expect("directory row");
     let file_position = html.find("100% real.txt").expect("file row");
     assert!(directory_position < file_position);

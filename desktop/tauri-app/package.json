@@ -9,7 +9,7 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "tauri": "tauri",
-    "prepare-sidecar": "bash scripts/prepare-sidecar.sh"
+    "prepare-sidecar": "node scripts/prepare-sidecar.mjs"
   },
   "dependencies": {
     "@ok200/ui": "workspace:*",

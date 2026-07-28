@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import fs from "node:fs";
+import { fileURLToPath } from "node:url";
 
 function fail(message) {
   throw new Error(message);
@@ -14,28 +14,30 @@ function requireAsset(assetNames, name) {
 }
 
 export function validateDesktopRelease({ release, latest, tag, repository }) {
-  if (!tag.startsWith('desktop-v')) {
+  if (!tag.startsWith("desktop-v")) {
     fail(`unexpected desktop tag: ${tag}`);
   }
 
-  const version = tag.slice('desktop-v'.length);
+  const version = tag.slice("desktop-v".length);
   if (release.tagName !== tag) {
     fail(`release tag ${release.tagName} does not match ${tag}`);
   }
   if (!release.isDraft) {
-    fail('release must remain a draft until validation succeeds');
+    fail("release must remain a draft until validation succeeds");
   }
   if (!Array.isArray(release.assets)) {
-    fail('release assets are missing');
+    fail("release assets are missing");
   }
 
   const assetNames = new Set();
   for (const asset of release.assets) {
     if (!asset.name || assetNames.has(asset.name)) {
-      fail(`missing or duplicate release asset name: ${asset.name ?? '<empty>'}`);
+      fail(
+        `missing or duplicate release asset name: ${asset.name ?? "<empty>"}`,
+      );
     }
     assetNames.add(asset.name);
-    if (!/^sha256:[0-9a-f]{64}$/i.test(asset.digest ?? '')) {
+    if (!/^sha256:[0-9a-f]{64}$/i.test(asset.digest ?? "")) {
       fail(`release asset ${asset.name} is missing a GitHub SHA-256 digest`);
     }
   }
@@ -50,7 +52,7 @@ export function validateDesktopRelease({ release, latest, tag, repository }) {
     `200.OK_${version}_amd64.AppImage`,
     `200.OK_${version}_amd64.deb`,
     `200.OK-${version}-1.x86_64.rpm`,
-    'latest.json',
+    "latest.json",
   ];
   for (const name of requiredInstallers) {
     requireAsset(assetNames, name);
@@ -61,13 +63,13 @@ export function validateDesktopRelease({ release, latest, tag, repository }) {
   }
 
   const requiredPlatforms = [
-    'darwin-aarch64',
-    'darwin-x86_64',
-    'linux-x86_64',
-    'windows-x86_64',
+    "darwin-aarch64",
+    "darwin-x86_64",
+    "linux-x86_64",
+    "windows-x86_64",
   ];
-  if (!latest.platforms || typeof latest.platforms !== 'object') {
-    fail('latest.json platforms are missing');
+  if (!latest.platforms || typeof latest.platforms !== "object") {
+    fail("latest.json platforms are missing");
   }
   for (const platform of requiredPlatforms) {
     if (!latest.platforms[platform]) {
@@ -75,17 +77,26 @@ export function validateDesktopRelease({ release, latest, tag, repository }) {
     }
   }
 
-  const expectedUrlPrefix =
-    `https://github.com/${repository}/releases/download/${tag}/`;
+  const expectedUrlPrefix = `https://github.com/${repository}/releases/download/${tag}/`;
   for (const [platform, metadata] of Object.entries(latest.platforms)) {
-    if (typeof metadata.signature !== 'string' || metadata.signature.length < 32) {
+    if (
+      typeof metadata.signature !== "string" ||
+      metadata.signature.length < 32
+    ) {
       fail(`latest.json platform ${platform} has no usable signature`);
     }
-    if (typeof metadata.url !== 'string' || !metadata.url.startsWith(expectedUrlPrefix)) {
-      fail(`latest.json platform ${platform} has an unexpected URL: ${metadata.url}`);
+    if (
+      typeof metadata.url !== "string" ||
+      !metadata.url.startsWith(expectedUrlPrefix)
+    ) {
+      fail(
+        `latest.json platform ${platform} has an unexpected URL: ${metadata.url}`,
+      );
     }
 
-    const assetName = decodeURIComponent(metadata.url.slice(expectedUrlPrefix.length));
+    const assetName = decodeURIComponent(
+      metadata.url.slice(expectedUrlPrefix.length),
+    );
     requireAsset(assetNames, assetName);
     requireAsset(assetNames, `${assetName}.sig`);
   }
@@ -94,7 +105,7 @@ export function validateDesktopRelease({ release, latest, tag, repository }) {
 }
 
 function readJson(path) {
-  return JSON.parse(fs.readFileSync(path, 'utf8'));
+  return JSON.parse(fs.readFileSync(path, "utf8"));
 }
 
 function parseArguments(argv) {
@@ -102,12 +113,12 @@ function parseArguments(argv) {
   for (let index = 0; index < argv.length; index += 2) {
     const name = argv[index];
     const value = argv[index + 1];
-    if (!name?.startsWith('--') || value === undefined) {
-      fail(`invalid argument list near ${name ?? '<end>'}`);
+    if (!name?.startsWith("--") || value === undefined) {
+      fail(`invalid argument list near ${name ?? "<end>"}`);
     }
     args[name.slice(2)] = value;
   }
-  for (const name of ['release', 'latest', 'tag', 'repository']) {
+  for (const name of ["release", "latest", "tag", "repository"]) {
     if (!args[name]) {
       fail(`missing --${name}`);
     }

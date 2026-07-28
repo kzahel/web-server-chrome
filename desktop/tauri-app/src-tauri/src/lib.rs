@@ -1,12 +1,16 @@
-use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Mutex;
 use tauri::{
-    menu::{CheckMenuItem, Menu, MenuItem, MenuItemKind, PredefinedMenuItem, SubmenuBuilder},
+    menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem, SubmenuBuilder},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     Emitter, Manager,
 };
 use tauri_plugin_autostart::ManagerExt as AutostartManagerExt;
+
+#[cfg(target_os = "macos")]
+use std::collections::HashMap;
+#[cfg(target_os = "macos")]
+use tauri::menu::MenuItemKind;
 
 mod headless_updater;
 mod native_host;
@@ -179,6 +183,7 @@ fn handle_menu_event(app: &tauri::AppHandle, event_id: &str) {
             let state = app.state::<Mutex<Settings>>();
             let mut s = state.lock().unwrap();
             s.run_in_background = !s.run_in_background;
+            #[cfg(target_os = "macos")]
             let checked = s.run_in_background;
             save_settings(app, &s);
             drop(s);
@@ -308,11 +313,11 @@ pub fn run() {
                     settings.run_in_background,
                     None::<&str>,
                 )?;
-                let mut builder = SubmenuBuilder::new(app, "Settings")
+                let builder = SubmenuBuilder::new(app, "Settings")
                     .item(&autostart_i)
                     .item(&background_i);
                 #[cfg(target_os = "macos")]
-                {
+                let builder = {
                     let show_in_menu_bar_i = CheckMenuItem::with_id(
                         app,
                         "show-in-menu-bar",
@@ -321,8 +326,8 @@ pub fn run() {
                         settings.show_in_menu_bar,
                         None::<&str>,
                     )?;
-                    builder = builder.item(&show_in_menu_bar_i);
-                }
+                    builder.item(&show_in_menu_bar_i)
+                };
                 Ok(builder.build()?)
             };
 

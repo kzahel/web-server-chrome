@@ -385,12 +385,7 @@ describe("WebServer integration (in-memory)", () => {
       await fs.unlink(path.join(tmpDir, "index.html"));
     } catch {}
 
-    const names = [
-      "space name.txt",
-      "100% real.txt",
-      "hash#q?.txt",
-      "café.txt",
-    ];
+    const names = ["space name.txt", "100% real.txt", "hash#q.txt", "café.txt"];
     for (const name of names) {
       await fs.writeFile(path.join(tmpDir, name), name);
     }
@@ -400,9 +395,15 @@ describe("WebServer integration (in-memory)", () => {
       expect(res.status).toBe(200);
       expect(res.body).toContain('href="/space%20name.txt"');
       expect(res.body).toContain('href="/100%25%20real.txt"');
-      expect(res.body).toContain('href="/hash%23q%3F.txt"');
+      expect(res.body).toContain('href="/hash%23q.txt"');
       expect(res.body).toContain('href="/caf%C3%A9.txt"');
-      expect(res.body).toContain(">hash#q?.txt<");
+      expect(res.body).toContain(">hash#q.txt<");
+
+      const queried = await request(
+        "GET /hash%23q.txt?cache=ignored HTTP/1.1\r\nHost: local\r\n\r\n",
+      );
+      expect(queried.status).toBe(200);
+      expect(queried.body).toBe("hash#q.txt");
     });
   });
 

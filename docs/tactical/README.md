@@ -18,3 +18,4 @@ decisions, evidence, or recommended next work changes.
 |---|---|---|
 | [`000-desktop-native-core-and-release-readiness.md`](000-desktop-native-core-and-release-readiness.md) | active parent; documentation baseline recorded 2026-07-28 | Sequence release/signing hardening, desktop Rust-core migration, launcher fixes, and the final legacy Chrome App migration window |
 | [`001-fail-closed-desktop-releases.md`](001-fail-closed-desktop-releases.md) | implementation complete; tagged proof pending | Stage signed desktop assets in a draft, validate completeness, and publish once |
+| [`002-standalone-rust-http-core.md`](002-standalone-rust-http-core.md) | active | Build a Tauri-independent native HTTP core and development CLI |

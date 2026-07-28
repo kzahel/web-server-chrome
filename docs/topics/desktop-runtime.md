@@ -12,7 +12,9 @@ Status: **accepted direction; not implemented.** The released desktop
 Last reconciled: **2026-07-28**.
 
 Implementation sequencing lives in
-[Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md).
+[Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
+the standalone core boundary and compatibility baseline are recorded in
+[Tactical 002](../tactical/002-standalone-rust-http-core.md).
 
 ## Scope
 
@@ -146,12 +148,20 @@ The Rust cutover is acceptable only when:
 5. A signed release candidate passes the artifact gate in
    [`desktop-release-readiness.md`](desktop-release-readiness.md).
 
+## Selected implementation boundary
+
+Tactical 002 fixes the first crate boundary at `desktop/core`, package
+`ok200-core`. It will use Tokio plus Axum/Hyper, canonical native filesystem
+access, native streaming bodies, a bounded structured-log channel, and
+graceful lifecycle state. A development CLI exercises the same public library
+without Tauri.
+
+This selection is intentionally reversible at the HTTP-library level: Tauri
+will depend on the core's configuration/lifecycle/event API, not Axum types.
+The TypeScript desktop path remains active until a later integration tactical.
+
 ## Known gaps
 
-- The exact Rust HTTP library and `ok200-core` workspace location are not yet
-  selected.
-- The complete desktop-visible TypeScript behavior corpus has not been
-  enumerated.
 - It is not yet proven whether the webview-to-Rust command surface can replace
   every current option without a compatibility shim.
 - No tagged Rust-core release candidate exists.

@@ -2,6 +2,11 @@
 
 Cross-platform UI design for 200 OK. Same design language on Android (Jetpack Compose), desktop (Tauri/HTML), and eventually iOS. The layout adapts by screen width, not by platform.
 
+Architecture status: the visual design remains useful. The original
+cross-platform TypeScript engine assumptions are superseded for desktop by
+[`topics/desktop-runtime.md`](topics/desktop-runtime.md). Android remains
+Compose + QuickJS for now.
+
 ## Principles
 
 - **Simple by default.** First-time user: pick a folder, hit start. Done.
@@ -139,9 +144,12 @@ Accessed via the gear icon in the toolbar (phone) or sidebar header (tablet/desk
 
 This list is intentionally short. If a setting is per-server, it goes on the server page, not here.
 
-## Architecture: Management API + Web UI
+## Architecture: Management API + Control UI
 
-The web UI is not a separate mock or prototype — it's a **remote control for the real server**, served by the server itself. This same web UI is also the Tauri desktop frontend. An adapter interface abstracts over the transport.
+The web UI is not a separate mock or prototype — it is a control surface for a
+real server. The same React components can be served remotely and embedded in
+the Tauri desktop webview. An adapter interface abstracts the control
+transport; it does not require the HTTP server itself to run in JavaScript.
 
 ### Management API
 
@@ -174,7 +182,7 @@ interface ServerManager {
 }
 
 class HttpServerManager implements ServerManager    // web UI → HTTP calls to /_api/
-class DirectServerManager implements ServerManager  // desktop → direct JS calls to engine (same process)
+class TauriServerManager implements ServerManager   // desktop → typed Tauri commands to Rust
 ```
 
 Same React components, same state management, different transport.
@@ -184,8 +192,8 @@ Same React components, same state management, different transport.
 | Platform | UI | Backend adapter |
 |----------|-----|----------------|
 | **CLI remote UI** | Web UI served at `/_api/ui/` | `HttpServerManager` → HTTP to `/_api/` |
-| **Desktop (Tauri)** | Same React app in webview | `DirectServerManager` → JS calls to engine in same process |
-| **Android** | Jetpack Compose (native) | Direct Kotlin calls to engine |
+| **Desktop (Tauri)** | Same React app in webview | `TauriServerManager` → commands/events to Rust-owned servers |
+| **Android** | Jetpack Compose (native) | Kotlin control layer → QuickJS engine |
 
 ### Development workflow
 
@@ -202,7 +210,8 @@ Run `ok200` on your laptop, open `http://<lan-ip>:8080/_api/ui/` on your phone. 
 
 ### Desktop (Tauri)
 - Embeds the same React web UI in a webview
-- Uses `TauriServerManager` adapter instead of HTTP
+- Uses `TauriServerManager` commands/events instead of HTTP or direct
+  JavaScript server calls
 - Always shows sidebar layout (window is wide enough)
 - System tray support for background mode
 - Native file picker via Tauri dialog API

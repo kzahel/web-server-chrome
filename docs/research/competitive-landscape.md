@@ -1,5 +1,8 @@
 # Competitive Landscape & Positioning
 
+Status: dated positioning research. Current platform/runtime truth lives in
+[`../topics/desktop-runtime.md`](../topics/desktop-runtime.md).
+
 ## Direct Competitors
 
 ### Simple Web Server (the fork)
@@ -26,12 +29,14 @@
 
 ## Our Positioning: 200 OK Web Server
 
-### What makes us different
+### Target differentiators
 
 1. **Lightweight** - Tauri (Rust + webview) vs Electron bloat. ~5-15MB vs ~100MB+
-2. **Native performance** - Rust core HTTP server, not Node.js
+2. **Native desktop performance** - target Rust core HTTP server, not a
+   webview-hosted server
 3. **ChromeOS + Android** - Nobody else does this well
-4. **No nonsense** - No ads, no telemetry, no upsells
+4. **No nonsense** - No ads or upsells; any operational telemetry should stay
+   minimal and explicitly documented
 5. **Existing user base** - ~2k emails from Chrome extension migration
 
 ### Platform Strategy
@@ -40,8 +45,8 @@
 | Windows | Tauri | P0 |
 | macOS | Tauri | P0 |
 | Linux | Tauri | P1 |
-| Android | Native (Kotlin?) | P1 |
-| ChromeOS | Android app | P1 |
+| Android | Compose + QuickJS + Kotlin native I/O | Maintain current release |
+| ChromeOS | Android app launched by extension | Maintain current release |
 | iOS | Native (Swift?) or skip | P2 |
 
 ### Size Advantage

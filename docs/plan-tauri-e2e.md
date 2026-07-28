@@ -1,5 +1,11 @@
 # Plan: Tauri WebDriver E2E Tests
 
+Status: **historical implementation plan.** The initial Tauri E2E harness was
+added in February 2026 under `desktop/tauri-app/e2e/`. Preserve useful
+black-box cases, but the Rust-core migration and current E2E acceptance are
+owned by
+[Tactical 000](tactical/000-desktop-native-core-and-release-readiness.md).
+
 ## Context
 
 The engine is fully wired as the HTTP server in the Tauri desktop app, but there are no E2E tests verifying it works end-to-end. The CLI has comprehensive E2E tests (`packages/cli/src/e2e/cli.test.ts`) covering file serving, directory listing, 404s, path traversal, CORS, etc. We need equivalent coverage for the Tauri app.

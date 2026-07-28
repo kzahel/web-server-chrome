@@ -1,28 +1,48 @@
 # 200 OK Web Server
 
-Read [docs/vision.md](docs/vision.md) first — it explains what we're building, why, and the phased roadmap.
+Read [docs/vision.md](docs/vision.md) first for product intent. For current
+architecture and implementation direction, read
+[docs/topics/desktop-runtime.md](docs/topics/desktop-runtime.md) and
+[docs/tactical/000-desktop-native-core-and-release-readiness.md](docs/tactical/000-desktop-native-core-and-release-readiness.md).
 
 ## Quick Context
 
-Lightweight web server app for every platform. Successor to "Web Server for Chrome" (200k+ users). First app built on the Transistor pattern (TypeScript engine + native I/O adapters). Desktop will be Tauri (same as JSTorrent).
+Lightweight web server app for every platform. Successor to "Web Server for
+Chrome" (200k+ users). The CLI, Android app, extension, and an early Tauri
+desktop app have shipped.
 
-Currently in **Phase 0**: CLI server that replaces `python -m http.server`.
+The old Transistor proof is not the current desktop goal. Desktop keeps Tauri
+and its webview for control/configuration, but moves HTTP execution into a
+small Rust core shared by Windows, macOS, and Linux. Android QuickJS and the
+Node/TypeScript CLI are deferred.
 
 ## Architecture
 
-Monorepo with pnpm workspaces:
+Current repository shape:
 
-- `packages/engine` — Platform-agnostic HTTP server. Adapter pattern: abstract interfaces for socket/filesystem, concrete adapters per platform. This is the core.
-- `packages/cli` — Thin CLI wrapper using the engine with Node.js adapters.
+- `packages/engine` — TypeScript HTTP engine currently used by CLI, Android,
+  and the released desktop app.
+- `packages/cli` — CLI wrapper using the engine with Node.js adapters.
+- `android` — Published Compose app running the engine in QuickJS with Kotlin
+  I/O.
+- `desktop` — Tauri app. Current release runs the engine in the webview; target
+  is a Tauri-independent Rust HTTP core plus a thin Tauri command/event layer.
+- `extension` — Published launcher/status surface.
 
-The engine must stay platform-agnostic. No Node.js imports in engine code outside of `adapters/node/`.
+Do not extend the generic TypeScript native-I/O architecture for desktop.
+Changes needed only by Android/CLI may still use `packages/engine`; keep Node
+imports within its Node adapter.
 
 ## Cross-Project Context
 
 This project is part of a larger ecosystem. See `~/code/dotfiles/projects/README.md` for the full map. Key relationships:
 
-- **Transistor** (`~/code/transistor`) — The framework vision this app proves out
-- **JSTorrent** (`~/code/jstorrent`) — Shipped product that proved the adapter pattern works (same IFileSystem/IFileHandle approach, QuickJS+JNI on Android, Tauri on desktop)
+- **JSTorrent** (`~/code/jstorrent`) — Reference for Tauri signing/release
+  mechanics and the already-shipped QuickJS/JNI Android pattern.
+- **Desktop signing runbook**
+  (`~/code/dotfiles/runbooks/desktop-code-signing.md`) — Credential names,
+  source material, setup, and verification. Release truth for this repository
+  lives in `docs/topics/desktop-release-readiness.md`.
 
 ## Environment Setup
 
@@ -136,7 +156,7 @@ All components follow the same release pattern:
 | Component | Tag | CI builds | Publishing |
 |-----------|-----|-----------|------------|
 | **CLI** | `v{ver}` | npm package | CI auto-publishes to npm |
-| **Desktop** | `desktop-v{ver}` | Signed installers (Mac/Win/Linux) | Auto-updates via updater JSON |
+| **Desktop** | `desktop-v{ver}` | Targets signed Mac/Win/Linux installers | Auto-updates only after the release-readiness gate passes |
 | **Extension** | `extension-v{ver}` | ZIP | Manual upload to Chrome Web Store |
 | **Android** | `android-v{ver}` | Signed APK + AAB | Manual upload to Google Play Console |
 
@@ -159,7 +179,9 @@ All components follow the same release pattern:
 
 - Updates `desktop/tauri-app/src-tauri/tauri.conf.json`, `desktop/tauri-app/package.json`, and `desktop/Cargo.toml`
 - Creates tag: `desktop-v{version}`
-- CI builds signed/notarized installers for macOS, Windows, and Linux
+- CI targets signed/notarized installers for macOS and Windows plus Linux
+  packages. Do not describe a release as complete until
+  `docs/topics/desktop-release-readiness.md` is updated with artifact evidence.
 - Changelog: `desktop/tauri-app/CHANGELOG.md`
 
 ### Extension Releases

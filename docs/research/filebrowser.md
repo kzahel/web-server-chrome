@@ -1,5 +1,9 @@
 # Filebrowser Analysis
 
+Status: competitor research. The 200 OK comparison was reconciled on
+2026-07-28 with the accepted desktop Rust-core direction; Filebrowser facts
+remain a dated research snapshot.
+
 **Repo**: https://github.com/filebrowser/filebrowser
 **Local clone**: `references/filebrowser/`
 **Stars**: 33.6k | **Contributors**: 226 | **License**: Apache 2.0
@@ -90,12 +94,12 @@ Vue 3, TypeScript, Vite, Pinia (state), Vue Router. Key features:
 
 | Filebrowser | 200 OK |
 |---|---|
-| Go monolith | TypeScript engine + native adapters |
-| Server-side rendering decisions | Engine is platform-agnostic |
+| Go monolith | Desktop target is Rust core + Tauri control UI; Android/CLI retain their current runtimes |
+| Server-side rendering decisions | Desktop Rust core owns HTTP behavior; platform UI owns control |
 | Single embedded DB (BoltDB) | No DB needed (Phase 0) |
 | Multi-user with RBAC | Single-user initially |
-| Gorilla Mux routing | Our own HTTP handling in engine |
-| Afero for FS abstraction | Custom `IFileSystem` interface |
+| Gorilla Mux routing | Rust HTTP library is not yet selected |
+| Afero for FS abstraction | Native desktop filesystem boundary; existing `IFileSystem` remains in Android/CLI engine |
 
 ## Lessons for Us
 
@@ -103,6 +107,8 @@ Vue 3, TypeScript, Vite, Pinia (state), Vue Router. Key features:
 - **Sensible defaults + zero config** — works out of the box with just `filebrowser` command
 - **Docker-first deployment** drove adoption in the self-hosted community
 - **Maintenance mode is telling** — feature-complete for its scope; we can learn from what they built
-- **Their adapter/interface patterns validate our architecture** (pluggable auth, filesystem abstraction, storage backends)
+- **Their interfaces validate clear ownership boundaries** (pluggable auth,
+  filesystem abstraction, storage backends), but do not require a
+  TypeScript-native-I/O desktop core
 - **Shareable links** are a killer feature for file servers
 - **Resumable uploads (TUS)** important for reliability on mobile/flaky connections

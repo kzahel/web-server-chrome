@@ -1,5 +1,11 @@
 # Feature Roadmap Ideas
 
+Status: **historical research and feature inventory.** Its early Rust-core
+notes anticipated the accepted desktop direction, but its Rust CLI, Android
+JNI, iOS, sequencing, and unchecked task states are not current commitments.
+See [`../topics/desktop-runtime.md`](../topics/desktop-runtime.md) and
+[Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md).
+
 ## Phase 0: CLI Server (Start Here)
 
 CLI-first. Build the Rust binary, test everything without GUI overhead.
@@ -95,6 +101,10 @@ These are things SWS has that might not be worth the complexity:
   better
 
 ## Architecture Notes
+
+The following is the original Rust-core proposal. Only the native desktop core
+has now been accepted. Android remains QuickJS and the CLI remains
+Node/TypeScript until separate decisions change them.
 
 ### Rust Core Module
 The HTTP server should be a standalone Rust library/crate that:

@@ -1,5 +1,12 @@
 # Plan: Add UDP + Port Mapping (UPnP / NAT-PMP / PCP)
 
+Status: **deferred historical plan.** Do not implement its Tauri
+TypeScript/native-I/O adapter layer. Desktop networking features must be
+replanned on top of the Rust core after the basic server and release gate land.
+The Android/QuickJS notes remain possible reference material, not approved
+current work. See [`topics/desktop-runtime.md`](topics/desktop-runtime.md) and
+[Tactical 000](tactical/000-desktop-native-core-and-release-readiness.md).
+
 ## Goal
 Port UDP socket infrastructure from JSTorrent and implement automatic port mapping supporting all three standard protocols — UPnP IGD, NAT-PMP, and PCP — on desktop (Tauri) and Android (QuickJS).
 

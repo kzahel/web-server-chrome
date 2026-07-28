@@ -19,13 +19,30 @@ Same author. Same mission. Modern architecture.
 
 ## Current Status
 
-The CLI server is functional today. The Chrome extension is published as a lightweight launcher surface, the Android app is published on Google Play, and the desktop app is in active development.
+The CLI server, Chrome extension, Android app, and an early desktop build have
+all shipped. Their runtimes are not currently unified:
+
+- the CLI uses the TypeScript engine on Node.js;
+- Android uses the TypeScript engine in QuickJS with Kotlin native I/O;
+- desktop `v0.1.3` uses the TypeScript engine in the Tauri webview with Rust
+  native I/O; and
+- the extension is a launcher/status surface, not the HTTP server.
+
+The accepted next direction is to replace only the desktop HTTP execution path
+with a small Rust core shared by the macOS, Windows, and Linux Tauri builds.
+Android and the CLI are deliberately deferred while they work.
+
+See the living
+[desktop runtime decision](docs/topics/desktop-runtime.md) and
+[Tactical 000](docs/tactical/000-desktop-native-core-and-release-readiness.md).
 
 ## Install
 
 - Chrome Extension: [Web Server for Chrome on the Chrome Web Store](https://chromewebstore.google.com/detail/web-server-for-chrome/lpkjdhnmgkhaabhimpdinmdgejoaejic?authuser=0&hl=en)
 - Android / ChromeOS: [200 OK on Google Play](https://play.google.com/store/apps/details?id=app.ok200.android)
-- Desktop app: packaged separately; the extension can launch it via native messaging when installed
+- Desktop app: packaged separately; `v0.1.3` is an early partial release and
+  does not yet pass the current
+  [release-readiness gate](docs/topics/desktop-release-readiness.md)
 
 ### CLI Usage
 
@@ -62,9 +79,9 @@ npx ok200 ./dist --upload          # enable PUT/POST file uploads
 ## Roadmap
 
 ### Coming Soon
+- Hardened signed desktop releases for Mac, Windows, and Linux
+- Rust-native desktop HTTP core behind the existing Tauri control UI
 - Expanded Chrome Extension + desktop helper integration
-- Tauri desktop app (Mac, Windows, Linux) — ~10MB vs 100MB+ Electron alternatives
-- Android / ChromeOS feature expansion
 - HTTPS with self-signed cert generation
 - HTTP Basic Auth
 - Range requests for media streaming
@@ -79,15 +96,22 @@ See [docs/vision.md](docs/vision.md) for the full roadmap.
 
 ## Architecture
 
-Platform-agnostic TypeScript HTTP engine with native I/O adapters per platform. Same adapter pattern proven in [JSTorrent](https://jstorrent.com).
+The repository contains the currently shipped TypeScript engine and the
+platform applications that use or launch it:
 
 ```
 packages/engine/     Platform-agnostic HTTP server (no platform deps)
 packages/cli/        CLI wrapper (Node.js adapters)
 extension/           Chrome Extension
-desktop/             Tauri desktop app
+desktop/             Tauri app: current JS server, target Rust server
 android/             Android app (QuickJS + Kotlin/Compose)
 ```
+
+The TypeScript native-I/O adapter pattern is retained for Android and the CLI.
+It is superseded as the desktop target. The Tauri webview remains for
+configuration and control, while native Rust will own sockets, filesystem
+access, HTTP behavior, and server lifecycle. The authoritative current/target
+boundary is [`docs/topics/desktop-runtime.md`](docs/topics/desktop-runtime.md).
 
 ## Migration from Chrome App
 
@@ -95,8 +119,13 @@ If you were a user of the original Web Server for Chrome:
 
 1. **The new extension is published here:** [Chrome Web Store listing](https://chromewebstore.google.com/detail/web-server-for-chrome/lpkjdhnmgkhaabhimpdinmdgejoaejic?authuser=0&hl=en)
 2. **The Android / ChromeOS app is published here:** [Google Play listing](https://play.google.com/store/apps/details?id=app.ok200.android)
-3. **All features from the original app will be supported** — same options, same workflow.
-4. **Sign up to be notified:** [Google Form](https://forms.gle/88Q5rbZ81sKqXZTt8)
+3. The extension launches the server application; it does not contain the
+   server itself.
+4. Feature parity is a direction, not a claim that every legacy option is
+   already available.
+
+Migration status and the final legacy update plan are in
+[`docs/topics/legacy-app-migration.md`](docs/topics/legacy-app-migration.md).
 
 ## Development
 

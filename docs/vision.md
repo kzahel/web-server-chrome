@@ -1,114 +1,166 @@
 # 200 OK Web Server
 
-## What This Is
+## What this is
 
-A lightweight web server app for every platform. Successor to "Web Server for Chrome" (~200k users). The original was a Chrome App; Chrome Apps were deprecated. A fork called "Simple Web Server" went Electron. We're doing it right: small, fast, native.
+200 OK is a lightweight successor to Web Server for Chrome, the Chrome
+packaged app used by more than 200,000 people. The product should preserve the
+original appeal: choose a folder, start a local server, and understand what it
+is doing without running a general-purpose development stack.
 
-This is also the first app built on the Transistor pattern — TypeScript engine, native I/O, every platform. See `~/code/transistor/docs/vision.md` for the framework vision.
+The replacement is a family of small platform surfaces:
 
-## Architecture
+- a desktop application for Windows, macOS, and Linux;
+- an Android application that is also the ChromeOS server path;
+- a Chrome extension that provides familiar browser presence and launches the
+  correct installed application; and
+- a CLI for terminal users.
 
-### Engine + Shell
+The extension is not itself the HTTP server.
 
-The HTTP server is a platform-agnostic TypeScript engine (`packages/engine`) with an adapter pattern for I/O. Platform-specific shells provide the actual sockets and filesystem.
+## Current state
 
-```
-packages/engine/          TypeScript HTTP server engine (no platform deps)
-  interfaces/             Abstract I/O: socket, filesystem
-  adapters/node/          Node.js adapter (used by CLI today)
-  http/                   Request parser, response writer
-  server/                 Static server, directory listing, MIME types
-  config/                 Server configuration
+As of 2026-07-28:
 
-packages/cli/             CLI shell (Node.js, ships standalone)
-```
+| Surface | Runtime | Released state |
+|---|---|---|
+| CLI | TypeScript engine on Node.js | `v0.1.1` |
+| Desktop | Tauri; TypeScript engine in webview; Rust TCP/filesystem adapters | `v0.1.3`, partial release |
+| Android / ChromeOS | Compose UI; TypeScript engine in QuickJS; Kotlin native I/O | `v0.1.2`, published |
+| Chrome extension | MV3 launcher/status UI | `v0.1.3`, published |
+| Legacy Chrome App | Chrome packaged-app APIs | Migration channel approaching end of life |
 
-This is the same adapter pattern proven in JSTorrent — one engine, multiple I/O backends.
+This mixed state is intentional during migration. “Current implementation” and
+“accepted direction” must not be conflated.
 
-### Platform Targets
+## Accepted architecture
 
-| Platform | Shell | Runtime | Status |
-|----------|-------|---------|--------|
-| CLI | Node.js process | Node.js | In progress |
-| Desktop (Mac/Win/Linux) | Tauri | Rust backend + webview | Planned |
-| Android / ChromeOS | Native app | QuickJS + JNI | Planned |
-| iOS | Native app | System JSC | Future |
+### Desktop
 
-Desktop uses Tauri (same as JSTorrent). ~5-15MB install vs ~100MB+ Electron. The HTTP server logic is always TypeScript — Rust only provides the native I/O layer (sockets, filesystem) that the JS engine calls into. Same principle on every platform: native code exposes I/O primitives, TypeScript does everything else.
+Desktop keeps Tauri and the React webview for:
 
-### Why This Order
+- selecting and authorizing download/serve roots;
+- configuration;
+- starting, stopping, and inspecting servers;
+- request/status display;
+- tray, autostart, window, updater, and native messaging behavior.
 
-CLI first because it's the fastest iteration loop — no GUI overhead, just serve files. Tauri desktop second because we've done it before (JSTorrent). Android third because QuickJS+JNI is proven (JSTorrent). iOS last.
+The HTTP server moves into a small Tauri-independent Rust core shared by the
+Windows, macOS, and Linux builds. Rust owns sockets, filesystem access, HTTP
+behavior, configuration validation, lifecycle, and request events. Served file
+bytes and HTTP connections do not cross webview IPC.
 
-## Roadmap
+The living contract is
+[`topics/desktop-runtime.md`](topics/desktop-runtime.md).
 
-### Phase 0: CLI Server (current)
+### Android / ChromeOS
 
-`ok200 serve .` should just work. Replace `python -m http.server` and `npx serve`.
+The published Android app keeps its working QuickJS + Kotlin implementation for
+now. ChromeOS uses the Android application as the server; the Chrome extension
+launches its custom `ok200` scheme through an Android intent with a Play Store
+fallback.
 
-- Serve static files from a directory (default: cwd)
-- `--port` (default: 8080), `--host` (default: 127.0.0.1)
-- Directory listing when no index.html
-- Auto-serve index.html
-- MIME type detection
-- `--cors`, `--spa` flags
-- Request logging
-- Graceful shutdown
+This campaign does not attempt a pure-Kotlin or Rust/JNI Android rewrite.
 
-### Phase 0.5: Tauri Desktop Shell
+### CLI
 
-Wrap the engine in a Tauri app with minimal UI:
+The CLI keeps the TypeScript engine and Node adapters. It remains useful and
+provides a behavioral reference, but it does not dictate the desktop runtime.
+A Rust CLI may be reconsidered only as a separate product decision.
 
-- Directory picker
-- Port input, start/stop button
-- Clickable server URL
-- Request log viewer
-- LAN / CORS / SPA toggles
+### Extension
 
-### Phase 1: Feature Parity with Original Chrome App
+On desktop, the extension talks to the installed Tauri app through native
+messaging. On ChromeOS, where native messaging is unavailable, it launches the
+Android app. Its product copy must explain this launcher role honestly.
 
-- HTTPS with self-signed cert generation
-- HTTP Basic Auth
-- File upload (PUT)
-- Range requests (media streaming)
-- IPv6
+## Why the desktop direction changed
 
-### Phase 2: Quality of Life
+The TypeScript engine plus native-I/O adapters successfully shipped on Android
+and proved that QuickJS could host the server. It also placed the desktop HTTP
+engine, parser, filesystem orchestration, and socket event flow in the Tauri
+webview. That architecture adds JavaScript/webview runtime work to a product
+whose main promise is a tiny local server, without delivering a current product
+requirement.
 
-- Multiple simultaneous servers
-- Clean URLs (strip .html)
-- Precompressed file serving (.gz/.br)
-- Cache-Control config
-- Hidden/dot file toggles
-- System tray / background mode
+The desktop application already includes Rust through Tauri. A direct Rust
+server provides a simpler ownership boundary and should materially reduce
+runtime overhead while keeping the existing control UI and release identity.
 
-### Phase 3: Differentiation
+This is a scoped correction, not a mandate to unify every platform immediately.
 
-Features neither the original nor Simple Web Server has:
+## Product principles
 
-- QR code for mobile access (LAN URL)
-- Live reload (file watching + browser refresh)
-- Reverse proxy (`--proxy /api=http://localhost:8080`)
-- Custom response headers
-- Drag-and-drop upload in browser UI
-- .gitignore respect
+- **Simple first run.** Pick a folder, choose a port, start.
+- **Lightweight in use, not only on disk.** Measure idle memory, CPU, startup,
+  and first-request latency.
+- **Native platform ownership.** File authorization, networking, background
+  lifecycle, and installation follow platform rules.
+- **Honest surfaces.** The extension launches; Android and desktop serve.
+- **Safe local defaults.** Loopback by default, explicit LAN exposure, strict
+  path containment, bounded parsing, and clear running state.
+- **Updatable replacements.** Stable application identity and signed update
+  metadata matter as much as implementation language.
+- **Parity by evidence.** Preserve useful legacy behavior through black-box
+  tests, not broad claims that parity is already complete.
 
-## Competitive Position
+## Delivery priorities
 
-| | Us | Simple Web Server | CLI tools (serve, miniserve) |
-|---|---|---|---|
-| Install size | 5-15MB (Tauri) | 100MB+ (Electron) | Varies |
-| Mobile | Android + ChromeOS | No | No |
-| Performance | Rust/native | Node.js | Varies |
-| GUI | Yes (Tauri) | Yes (Electron) | No |
+### 1. Release integrity and migration readiness
 
-Key gaps we fill: ChromeOS/Android (nobody else does this), lightweight desktop (Tauri not Electron), and the existing user base (~2k emails from Chrome extension migration).
+- Make desktop release publication fail closed.
+- Verify macOS and Windows signatures on released artifacts.
+- Validate updater metadata and complete artifact coverage.
+- Fix extension links and platform-aware migration copy.
+- Submit the final restrained legacy notification update before the
+  maintainer's 2026-08-31 deadline.
 
-## Research
+### 2. Rust-native desktop core
 
-Detailed competitive analysis in `docs/research/`:
+- Freeze a black-box compatibility corpus and resource baseline.
+- Implement the minimum static server in a standalone Rust crate.
+- Integrate it through narrow Tauri commands and events.
+- Remove the desktop TypeScript HTTP runtime and primitive socket/filesystem
+  IPC once no longer used.
+- Ship through the already-proven signed updater path.
 
-- `feature-comparison.md` — Web Server for Chrome vs Simple Web Server feature matrix
-- `competitive-landscape.md` — Market positioning and distribution strategy
-- `cli-servers-comparison.md` — CLI server landscape (miniserve, dufs, serve, http-server, etc.)
-- `feature-roadmap-ideas.md` — Full feature brainstorm with architecture notes
+### 3. Legacy parity
+
+Prioritize the original product's core workflow before differentiation:
+
+- one or more server roots;
+- port and network exposure;
+- directory index and `index.html`;
+- CORS, SPA fallback, ranges, conditional requests, and uploads where exposed;
+- HTTPS and authentication where product readiness requires them;
+- reliable background/tray behavior; and
+- visible URLs, state, and request logs.
+
+### 4. Quality of life and differentiation
+
+After the replacement and release path are dependable:
+
+- QR code for LAN access;
+- live reload;
+- multiple simultaneous servers;
+- custom headers and reverse proxy;
+- precompressed content and cache controls; and
+- remote management where its security model is explicit.
+
+## Non-goals for the current campaign
+
+- Proving a reusable Transistor JavaScript socket/filesystem architecture.
+- Rewriting Android while the published app works.
+- Rewriting the CLI solely for language uniformity.
+- Removing the Tauri webview.
+- Expanding UDP/UPnP, proxying, or other power features before the basic server
+  and release gate are solid.
+- Treating ChromeOS as a separate desktop runtime instead of the Android route.
+
+## Planning and current truth
+
+- [Desktop runtime topic](topics/desktop-runtime.md)
+- [Desktop release/signing topic](topics/desktop-release-readiness.md)
+- [Legacy migration topic](topics/legacy-app-migration.md)
+- [Tactical 000: implementation sequence](tactical/000-desktop-native-core-and-release-readiness.md)
+- [`research/`](research/) — historical comparisons and proposals; not
+  automatically current decisions

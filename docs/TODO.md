@@ -1,5 +1,11 @@
 # TODO
 
+Status: feature backlog for the existing TypeScript engine. It does not define
+the target desktop architecture. Before implementing a desktop item, route it
+through the Rust-core direction in
+[`topics/desktop-runtime.md`](topics/desktop-runtime.md) and the active
+[tactical](tactical/000-desktop-native-core-and-release-readiness.md).
+
 ## High Priority
 
 - [x] **HTTP/1.1 keep-alive** — Loop `handleConnection` instead of closing after one response. Respect `Connection: close`, add idle timeout (~5s). Big perf win for browsers loading many assets.

@@ -1,7 +1,8 @@
 # 000: Desktop Native Core and Release Readiness
 
-Status: **active parent plan.** Documentation baseline and Phase A1
-implementation completed 2026-07-28; tagged release proof is pending.
+Status: **active parent plan.** Documentation baseline, Phase A1
+implementation, and standalone Rust core completed 2026-07-28. Tagged release
+proof and Tauri integration are pending.
 
 Topics:
 
@@ -212,9 +213,10 @@ finish before the legacy notification package is submitted.
 
 ### Phase B0 — compatibility corpus and measurements
 
-Create a child tactical before implementation.
+The initial inventory and native-core corpus are recorded in
+[`002-standalone-rust-http-core.md`](002-standalone-rust-http-core.md).
 
-- [ ] Inventory every desktop-exposed server option and persisted setting.
+- [x] Inventory every desktop-exposed server option and persisted setting.
 - [ ] Convert current TypeScript desktop/CLI HTTP behavior into black-box
   request/response fixtures where possible.
 - [ ] Include security cases: traversal, percent encoding, symlinks/canonical
@@ -223,19 +225,24 @@ Create a child tactical before implementation.
 - [ ] Capture current desktop resident memory, idle CPU, startup time, and
   first-request latency on one fixed Mac baseline; add Windows/Linux evidence
   where practical.
-- [ ] Record which behavior is compatibility-required and which is accidental.
+- [x] Record which behavior is compatibility-required and which is accidental.
+
+The Rust corpus is real-socket black-box coverage derived from the existing
+TypeScript tests. It is not yet one shared executable corpus against both
+runtimes; request timeout and interrupted-transfer cases are also still
+missing. Those remain required before deleting the TypeScript path.
 
 ### Phase B1 — standalone `ok200-core`
 
-- [ ] Add a UI/Tauri-independent Rust crate to the desktop workspace.
-- [ ] Implement configuration validation and lifecycle state.
-- [ ] Implement the minimum static HTTP server contract from the runtime topic.
-- [ ] Use native async filesystem/networking without webview IPC for request
+- [x] Add a UI/Tauri-independent Rust crate to the desktop workspace.
+- [x] Implement configuration validation and lifecycle state.
+- [x] Implement the minimum static HTTP server contract from the runtime topic.
+- [x] Use native async filesystem/networking without webview IPC for request
   data.
-- [ ] Add unit and integration tests using temporary roots and real sockets.
-- [ ] Keep request logging structured and bounded.
+- [x] Add unit and integration tests using temporary roots and real sockets.
+- [x] Keep request logging structured and bounded.
 
-Exit: the core passes its test corpus without Tauri.
+Exit: complete in `f0559cf`; the core passes its test corpus without Tauri.
 
 ### Phase B2 — Tauri state and UI command integration
 

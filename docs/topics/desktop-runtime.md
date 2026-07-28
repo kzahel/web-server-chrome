@@ -6,8 +6,9 @@
 
 Topic: desktop-native-core
 
-Status: **accepted direction; not implemented.** The released desktop
-`v0.1.3` still runs the TypeScript HTTP engine in the Tauri webview.
+Status: **standalone Rust core implemented; Tauri cutover not started.** The
+released desktop `v0.1.3` and current Tauri UI still run the TypeScript HTTP
+engine in the webview.
 
 Last reconciled: **2026-07-28**.
 
@@ -148,10 +149,10 @@ The Rust cutover is acceptable only when:
 5. A signed release candidate passes the artifact gate in
    [`desktop-release-readiness.md`](desktop-release-readiness.md).
 
-## Selected implementation boundary
+## Implemented standalone boundary
 
 Tactical 002 fixes the first crate boundary at `desktop/core`, package
-`ok200-core`. It will use Tokio plus Axum/Hyper, canonical native filesystem
+`ok200-core`. It uses Tokio plus Axum/Hyper, canonical native filesystem
 access, native streaming bodies, a bounded structured-log channel, and
 graceful lifecycle state. A development CLI exercises the same public library
 without Tauri.
@@ -160,8 +161,19 @@ This selection is intentionally reversible at the HTTP-library level: Tauri
 will depend on the core's configuration/lifecycle/event API, not Axum types.
 The TypeScript desktop path remains active until a later integration tactical.
 
+The core passes its real-socket HTTP/security corpus and the full desktop Rust
+workspace passes formatting, strict Clippy, and tests. Its Apple Silicon
+release-mode development process measured roughly 2.9 MiB RSS idle and 3.2 MiB
+after a request, with a 2.0 MiB unstripped binary. This demonstrates that the
+server execution path itself is small; it does not measure the complete Tauri
+application or eliminate the webview's fixed UI cost.
+
 ## Known gaps
 
 - It is not yet proven whether the webview-to-Rust command surface can replace
   every current option without a compatibility shim.
+- The derived Rust compatibility corpus has not yet been made into one shared
+  harness run against both the TypeScript and Rust servers.
+- Current-vs-candidate whole-app memory, startup, and first-request
+  measurements are still missing.
 - No tagged Rust-core release candidate exists.

@@ -1,6 +1,6 @@
 # 002: Standalone Rust HTTP Core
 
-Status: **active.**
+Status: **complete; human review checkpoint before Tauri integration.**
 
 Topic: `desktop-native-core`
 
@@ -63,15 +63,15 @@ outside the configured root return `403`; symlinks staying inside are served.
 
 ## Implementation decisions
 
-- [ ] Add `desktop/core` as workspace package `ok200-core`.
-- [ ] Use Tokio and Axum/Hyper rather than a custom HTTP parser.
-- [ ] Keep all public core types free of Tauri dependencies.
-- [ ] Canonicalize the root at startup and every served target before access.
-- [ ] Stream files from native async file handles.
-- [ ] Bound parsed request metadata and the structured-log broadcast channel.
-- [ ] Expose observable status and graceful shutdown.
-- [ ] Add a small `ok200-core` development binary using the same library API.
-- [ ] Test with temporary roots and real TCP sockets.
+- [x] Add `desktop/core` as workspace package `ok200-core`.
+- [x] Use Tokio and Axum/Hyper rather than a custom HTTP parser.
+- [x] Keep all public core types free of Tauri dependencies.
+- [x] Canonicalize the root at startup and every served target before access.
+- [x] Stream files from native async file handles.
+- [x] Bound parsed request metadata and the structured-log broadcast channel.
+- [x] Expose observable status and graceful shutdown.
+- [x] Add a small `ok200-core` development binary using the same library API.
+- [x] Test with temporary roots and real TCP sockets.
 
 ## Deferred from this slice
 
@@ -94,3 +94,61 @@ cargo run -p ok200-core -- --root /tmp --port 0
 
 The final CLI smoke should fetch a real file over loopback, stop on interrupt,
 and leave no listener behind.
+
+## Result
+
+Implemented in commit `f0559cf`.
+
+The public crate surface is deliberately small:
+
+- `ServerConfig` contains the desktop-visible serving options plus core safety
+  bounds;
+- `RunningServer::start` validates/canonicalizes configuration and returns the
+  actual bound address;
+- `RunningServer` exposes current status plus bounded broadcast subscriptions
+  for status and structured request/error logs; and
+- `RunningServer::stop` performs graceful shutdown with a bounded fallback.
+
+The development binary is also named `ok200-core`. It is explicitly not a
+replacement for the published Node `ok200` CLI.
+
+## Validation evidence
+
+Completed on an Apple Silicon Mac on 2026-07-28:
+
+- `cargo fmt --all -- --check` passed;
+- `cargo clippy --workspace --all-targets -- -D warnings` passed;
+- `cargo test --workspace` passed all 36 tests;
+- the core itself passed 13 tests, including eight real-socket integration
+  tests;
+- the release-mode development binary served `desktop/core/Cargo.toml` with
+  `200`, native streaming headers, and the expected TOML MIME type;
+- Ctrl-C exited cleanly and the selected listener no longer accepted a
+  connection; and
+- Actionlint `v1.7.12` and the six release-validator tests still passed after
+  adding the core to desktop CI.
+
+The unstripped release binary was 2.0 MiB on arm64. The standalone quiet process
+reported 2,944 KiB RSS at idle and 3,232 KiB after one request. These are
+directional core-only numbers, not a before/after Tauri product comparison; the
+webview remains an accepted fixed UI cost. A later cutover tactical must measure
+the whole current and candidate desktop apps on the same machine.
+
+The workspace-wide Clippy pass also removed unnecessary `unsafe` wrappers in
+native-host tests and formatted one pre-existing unreadable numeric fixture.
+There was no production behavior change in either cleanup.
+
+## Review gate
+
+Do not start the Tauri cutover until a human is comfortable with:
+
+1. the `ServerConfig` / `RunningServer` boundary;
+2. the explicit upload and TLS deferral;
+3. strict canonical containment and cross-platform path rejection;
+4. the bounded shutdown and log-channel behavior; and
+5. using Axum/Hyper as a conventional implementation detail.
+
+After approval, create the next numbered tactical for Rust managed state,
+commands/events, persisted DTO mapping, UI start/stop integration, and the
+same-corpus TypeScript/Rust comparison. Keep TypeScript deletion in a later
+commit after the Tauri path is proven.

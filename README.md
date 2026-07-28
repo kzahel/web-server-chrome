@@ -28,13 +28,14 @@ all shipped. Their runtimes are not currently unified:
   native I/O; and
 - the extension is a launcher/status surface, not the HTTP server.
 
-The accepted next direction is to replace only the desktop HTTP execution path
-with a small Rust core shared by the macOS, Windows, and Linux Tauri builds.
-Android and the CLI are deliberately deferred while they work.
+The standalone Rust core for the next desktop execution path now exists and is
+tested independently of Tauri. The current Tauri UI is not wired to it yet, so
+the released desktop behavior remains unchanged. Android and the published
+Node CLI are deliberately deferred while they work.
 
 See the living
 [desktop runtime decision](docs/topics/desktop-runtime.md) and
-[Tactical 000](docs/tactical/000-desktop-native-core-and-release-readiness.md).
+[Tactical 002](docs/tactical/002-standalone-rust-http-core.md).
 
 ## Install
 
@@ -80,7 +81,7 @@ npx ok200 ./dist --upload          # enable PUT/POST file uploads
 
 ### Coming Soon
 - Hardened signed desktop releases for Mac, Windows, and Linux
-- Rust-native desktop HTTP core behind the existing Tauri control UI
+- Wire the tested Rust-native HTTP core into the existing Tauri control UI
 - Expanded Chrome Extension + desktop helper integration
 - HTTPS with self-signed cert generation
 - HTTP Basic Auth
@@ -104,6 +105,7 @@ packages/engine/     Platform-agnostic HTTP server (no platform deps)
 packages/cli/        CLI wrapper (Node.js adapters)
 extension/           Chrome Extension
 desktop/             Tauri app: current JS server, target Rust server
+desktop/core/        Standalone Rust HTTP core and development CLI
 android/             Android app (QuickJS + Kotlin/Compose)
 ```
 
@@ -135,6 +137,16 @@ pnpm build       # compile TypeScript
 pnpm test        # run tests
 pnpm typecheck   # type check
 pnpm lint        # lint with Biome
+```
+
+For the standalone desktop Rust core:
+
+```sh
+cd desktop
+cargo run -p ok200-core -- --root .. --port 0
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
 ```
 
 ## License

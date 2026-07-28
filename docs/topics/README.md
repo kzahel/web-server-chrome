@@ -14,8 +14,8 @@ status. Do not create a topic for every small standalone change.
 
 ## Current topics
 
-- [`desktop-runtime.md`](desktop-runtime.md) — released runtime matrix and the
-  accepted Rust-native desktop server direction.
+- [`desktop-runtime.md`](desktop-runtime.md) — released runtime matrix, the
+  standalone Rust core, and the pending Tauri cutover.
 - [`desktop-release-readiness.md`](desktop-release-readiness.md) — desktop
   signing evidence, known release defects, and the artifact acceptance gate.
 - [`legacy-app-migration.md`](legacy-app-migration.md) — August 31 migration

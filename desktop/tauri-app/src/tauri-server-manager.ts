@@ -102,6 +102,10 @@ export class TauriServerManager implements ServerManager {
     });
   }
 
+  async openUrl(url: string): Promise<void> {
+    return invoke("plugin:opener|open_url", { url, with: null });
+  }
+
   async subscribe(
     listener: (server: ManagedServerInfo) => void,
   ): Promise<() => void> {

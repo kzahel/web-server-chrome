@@ -77,6 +77,17 @@ export function useServer(serverId: string) {
     setServer(info);
   }, [manager, server?.config.root, serverId]);
 
+  const openUrl = useCallback(
+    async (url: string) => {
+      if (manager.openUrl) {
+        await manager.openUrl(url);
+        return;
+      }
+      window.open(url, "_blank", "noopener,noreferrer");
+    },
+    [manager],
+  );
+
   return {
     server,
     loading,
@@ -84,6 +95,7 @@ export function useServer(serverId: string) {
     stop,
     updateConfig,
     chooseRoot,
+    openUrl,
     hasNativeFolderChooser: Boolean(manager.pickDirectory),
     refresh,
   };

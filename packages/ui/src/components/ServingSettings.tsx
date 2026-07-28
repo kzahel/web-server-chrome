@@ -1,4 +1,5 @@
 import type { ServerConfig, ServerInfo } from "../lib/server-manager";
+import { LockedControl } from "./LockedControl";
 
 interface ServingSettingsProps {
   server: ServerInfo;
@@ -18,29 +19,32 @@ function Toggle({
   disabled?: boolean;
 }) {
   return (
-    <label
-      className={`flex items-center justify-between py-2 ${
-        disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-      }`}
-    >
-      <span className="text-sm">{label}</span>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        disabled={disabled}
-        onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-5 w-9 shrink-0 rounded-full transition-colors ${
-          checked ? "bg-blue-500" : "bg-gray-300 dark:bg-gray-600"
+    <LockedControl locked={disabled}>
+      <div
+        className={`flex items-center justify-between py-1.5 ${
+          disabled ? "opacity-50" : ""
         }`}
       >
-        <span
-          className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform mt-0.5 ${
-            checked ? "translate-x-4 ml-0.5" : "translate-x-0 ml-0.5"
+        <span className="text-[13px]">{label}</span>
+        <button
+          type="button"
+          role="switch"
+          aria-label={label}
+          aria-checked={checked}
+          disabled={disabled}
+          onClick={() => onChange(!checked)}
+          className={`relative inline-flex h-5 w-9 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f8d203] focus-visible:ring-offset-2 disabled:pointer-events-none dark:focus-visible:ring-offset-gray-900 ${
+            checked ? "bg-[#f8d203]" : "bg-gray-300 dark:bg-gray-600"
           }`}
-        />
-      </button>
-    </label>
+        >
+          <span
+            className={`mt-0.5 ml-0.5 inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+              checked ? "translate-x-4" : "translate-x-0"
+            }`}
+          />
+        </button>
+      </div>
+    </LockedControl>
   );
 }
 

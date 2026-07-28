@@ -14,6 +14,7 @@ export function ServerPage({ serverId }: ServerPageProps) {
     stop,
     updateConfig,
     chooseRoot,
+    openUrl,
     hasNativeFolderChooser,
   } = useServer(serverId);
 
@@ -34,13 +35,14 @@ export function ServerPage({ serverId }: ServerPageProps) {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-5 p-5 sm:p-7">
+    <div className="mx-auto max-w-md space-y-3 p-3">
       <HeroZone
         server={server}
         onStart={start}
         onStop={stop}
         onConfigChange={updateConfig}
         onChooseRoot={chooseRoot}
+        onOpenUrl={openUrl}
         hasNativeFolderChooser={hasNativeFolderChooser}
       />
       <SettingsZone server={server} onConfigChange={updateConfig} />

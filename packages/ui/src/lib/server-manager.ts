@@ -66,6 +66,7 @@ export interface ServerManager {
   startServer(id: string, options?: StartOptions): Promise<ManagedServerInfo>;
   stopServer(id: string): Promise<ManagedServerInfo>;
   pickDirectory?(startDir?: string): Promise<string | null>;
+  openUrl?(url: string): Promise<void>;
   subscribe?(
     listener: (server: ManagedServerInfo) => void,
   ): Promise<() => void>;

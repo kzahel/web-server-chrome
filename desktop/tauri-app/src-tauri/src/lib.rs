@@ -219,6 +219,7 @@ pub fn run() {
     let args: Vec<String> = std::env::args().collect();
     let check_update = args.iter().any(|a| a == "--check-update");
     let auto_update = args.iter().any(|a| a == "--auto-update");
+    let quit_for_uninstall = args.iter().any(|a| a == "--quit-for-uninstall");
     if check_update || auto_update {
         headless_updater::run(auto_update, context);
         return;
@@ -232,8 +233,12 @@ pub fn run() {
             server_control::server_stop,
             server_control::server_pick_root,
         ])
-        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-            show_main_window(app);
+        .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+            if args.iter().any(|arg| arg == "--quit-for-uninstall") {
+                app.exit(0);
+            } else {
+                show_main_window(app);
+            }
         }))
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
@@ -262,6 +267,14 @@ pub fn run() {
             }
         })
         .setup(move |app| {
+            // The NSIS uninstaller starts this command to request a graceful
+            // shutdown. If no app instance is running, exit this temporary
+            // process without creating the normal window or tray state.
+            if quit_for_uninstall {
+                app.handle().exit(0);
+                return Ok(());
+            }
+
             // Auto-updater with check-for-update ID header
             #[cfg(desktop)]
             {

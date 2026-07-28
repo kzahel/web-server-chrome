@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import dns from "node:dns";
 import fs from "node:fs";
 import { resolve } from "node:path";
@@ -5,6 +6,33 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 const DEV_HOST = "local.ok200.app";
+const EXTENSION_ID = "lpkjdhnmgkhaabhimpdinmdgejoaejic";
+const CHROME_ID_ALPHABET = "abcdefghijklmnop";
+
+function extensionIdFromPublicKey(base64Key: string): string {
+  const digest = crypto
+    .createHash("sha256")
+    .update(Buffer.from(base64Key, "base64"))
+    .digest()
+    .subarray(0, 16);
+  return [...digest]
+    .map(
+      (byte) => CHROME_ID_ALPHABET[byte >> 4] + CHROME_ID_ALPHABET[byte & 0x0f],
+    )
+    .join("");
+}
+
+const DEVELOPMENT_PUBLIC_KEY = fs
+  .readFileSync(resolve(__dirname, "fullpubkey.txt"), "utf-8")
+  .replace(/-----BEGIN PUBLIC KEY-----/, "")
+  .replace(/-----END PUBLIC KEY-----/, "")
+  .replace(/\s/g, "");
+const developmentExtensionId = extensionIdFromPublicKey(DEVELOPMENT_PUBLIC_KEY);
+if (developmentExtensionId !== EXTENSION_ID) {
+  throw new Error(
+    `fullpubkey.txt produces ${developmentExtensionId}; expected ${EXTENSION_ID}`,
+  );
+}
 
 // Only check DNS when starting the dev server (not during build/watch)
 const isDevServer =
@@ -64,33 +92,18 @@ function injectPublicKey() {
   return {
     name: "inject-public-key",
     generateBundle() {
-      try {
-        const manifestPath = resolve(__dirname, "public/manifest.json");
-        const manifestContent = fs.readFileSync(manifestPath, "utf-8");
-        const manifestJson = JSON.parse(manifestContent);
+      const manifestPath = resolve(__dirname, "public/manifest.json");
+      const manifestContent = fs.readFileSync(manifestPath, "utf-8");
+      const manifestJson = JSON.parse(manifestContent);
 
-        const pemContent = fs.readFileSync(
-          resolve(__dirname, "fullpubkey.txt"),
-          "utf-8",
-        );
-        const base64Key = pemContent
-          .replace(/-----BEGIN PUBLIC KEY-----/, "")
-          .replace(/-----END PUBLIC KEY-----/, "")
-          .replace(/\s/g, "");
+      manifestJson.key = DEVELOPMENT_PUBLIC_KEY;
+      console.log(`Injected public key for ${developmentExtensionId}`);
 
-        if (base64Key) {
-          manifestJson.key = base64Key;
-          console.log("Injected public key into manifest.json");
-        }
-
-        this.emitFile({
-          type: "asset",
-          fileName: "manifest.json",
-          source: JSON.stringify(manifestJson, null, 2),
-        });
-      } catch (e) {
-        console.warn("Failed to inject public key:", (e as Error).message);
-      }
+      this.emitFile({
+        type: "asset",
+        fileName: "manifest.json",
+        source: JSON.stringify(manifestJson, null, 2),
+      });
     },
   };
 }

@@ -14,5 +14,6 @@ android/**/build/
 android/**/.cxx/
 android/quickjs-engine/src/main/assets/
 tmp/
+.yep/
 wsc-crx/
 legacy-app.zip

@@ -1,14 +1,22 @@
 ; Lightweight extensions to Tauri's standard per-user NSIS installer.
 
-!macro _Kill200OKProcesses
+!macro _Stop200OKProcesses
+  ; Ask an existing single instance to shut down cleanly so its server and
+  ; WebView2 children release their app-data files.
+  IfFileExists "$INSTDIR\ok200-desktop.exe" 0 +2
+    nsExec::ExecToLog '"$INSTDIR\ok200-desktop.exe" --quit-for-uninstall'
+
+  Sleep 1000
+
+  ; Fall back to killing only the installed product's process trees.
   nsis_tauri_utils::FindProcess "ok200-desktop.exe" $R0
   ${If} $R0 = 0
-    nsis_tauri_utils::KillProcess "ok200-desktop.exe" $R0
+    nsExec::ExecToLog '"$SYSDIR\taskkill.exe" /F /T /IM ok200-desktop.exe'
   ${EndIf}
 
   nsis_tauri_utils::FindProcess "ok200-host.exe" $R0
   ${If} $R0 = 0
-    nsis_tauri_utils::KillProcess "ok200-host.exe" $R0
+    nsExec::ExecToLog '"$SYSDIR\taskkill.exe" /F /T /IM ok200-host.exe'
   ${EndIf}
 
   Sleep 500
@@ -17,7 +25,7 @@
 !include "WordFunc.nsh"
 
 !macro NSIS_HOOK_PREINSTALL
-  !insertmacro _Kill200OKProcesses
+  !insertmacro _Stop200OKProcesses
 !macroend
 
 !macro NSIS_HOOK_POSTINSTALL
@@ -52,7 +60,7 @@
 !macroend
 
 !macro NSIS_HOOK_PREUNINSTALL
-  !insertmacro _Kill200OKProcesses
+  !insertmacro _Stop200OKProcesses
 !macroend
 
 !macro NSIS_HOOK_POSTUNINSTALL
@@ -62,5 +70,13 @@
   DeleteRegKey HKCU "Software\Microsoft\Edge\NativeMessagingHosts\app.ok200.native"
 
   Delete "$LOCALAPPDATA\app.ok200.desktop\app.ok200.native.json"
-  RMDir "$LOCALAPPDATA\app.ok200.desktop"
+
+  ; Tauri's standard uninstaller already removes these paths. Retry after the
+  ; graceful/process-tree shutdown in case WebView2 released a file late.
+  SetShellVarContext current
+  RMDir /r "$APPDATA\app.ok200.desktop"
+  RMDir /r "$LOCALAPPDATA\app.ok200.desktop"
+  Sleep 500
+  RMDir /r "$APPDATA\app.ok200.desktop"
+  RMDir /r "$LOCALAPPDATA\app.ok200.desktop"
 !macroend

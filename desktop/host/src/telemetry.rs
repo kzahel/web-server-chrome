@@ -94,29 +94,29 @@ mod tests {
     #[serial]
     fn test_should_check_no_file() {
         let tmp = tempfile::tempdir().unwrap();
-        unsafe { std::env::set_var("OK200_CONFIG_DIR", tmp.path()) };
+        std::env::set_var("OK200_CONFIG_DIR", tmp.path());
         let result = should_check();
         assert!(result.is_some());
-        unsafe { std::env::remove_var("OK200_CONFIG_DIR") };
+        std::env::remove_var("OK200_CONFIG_DIR");
     }
 
     #[test]
     #[serial]
     fn test_should_check_recent() {
         let tmp = tempfile::tempdir().unwrap();
-        unsafe { std::env::set_var("OK200_CONFIG_DIR", tmp.path()) };
+        std::env::set_var("OK200_CONFIG_DIR", tmp.path());
         let path = last_check_path().unwrap();
         write_last_check(&path);
         let result = should_check();
         assert!(result.is_none());
-        unsafe { std::env::remove_var("OK200_CONFIG_DIR") };
+        std::env::remove_var("OK200_CONFIG_DIR");
     }
 
     #[test]
     #[serial]
     fn test_should_check_stale() {
         let tmp = tempfile::tempdir().unwrap();
-        unsafe { std::env::set_var("OK200_CONFIG_DIR", tmp.path()) };
+        std::env::set_var("OK200_CONFIG_DIR", tmp.path());
         let path = last_check_path().unwrap();
         let stale = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -129,7 +129,7 @@ mod tests {
         std::fs::write(&path, stale.to_string()).unwrap();
         let result = should_check();
         assert!(result.is_some());
-        unsafe { std::env::remove_var("OK200_CONFIG_DIR") };
+        std::env::remove_var("OK200_CONFIG_DIR");
     }
 
     #[test]

@@ -56,10 +56,10 @@ The initial black-box corpus is taken from
 - start on port zero, stop, and restart on a released port.
 
 Semantic compatibility is required, not byte-identical generated HTML or ETag
-tokens. The Rust core deliberately rejects decoded `.`/`..`, NUL, and backslash
-path components with `400` instead of normalizing traversal-like input as the
-TypeScript implementation does. Symlinks resolving outside the configured root
-return `403`; symlinks staying inside are served.
+tokens. The Rust core deliberately rejects decoded `.`/`..`, NUL, backslash,
+and drive-prefix colon path components with `400` instead of normalizing
+traversal-like input as the TypeScript implementation does. Symlinks resolving
+outside the configured root return `403`; symlinks staying inside are served.
 
 ## Implementation decisions
 
@@ -94,4 +94,3 @@ cargo run -p ok200-core -- --root /tmp --port 0
 
 The final CLI smoke should fetch a real file over loopback, stop on interrupt,
 and leave no listener behind.
-

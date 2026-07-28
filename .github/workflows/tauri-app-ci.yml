@@ -43,9 +43,17 @@ jobs:
         with:
           workspaces: './desktop -> target'
 
+      - name: Check Rust formatting
+        working-directory: desktop
+        run: cargo fmt --all -- --check
+
+      - name: Lint native Rust crates
+        working-directory: desktop
+        run: cargo clippy -p ok200-core -p ok200-common -p ok200-host --all-targets -- -D warnings
+
       - name: Run Rust tests
         working-directory: desktop
-        run: cargo test -p ok200-host -p ok200-common
+        run: cargo test -p ok200-core -p ok200-host -p ok200-common
 
   build-tauri:
     strategy:

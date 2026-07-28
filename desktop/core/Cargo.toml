@@ -1,0 +1,21 @@
+[package]
+name = "ok200-core"
+version.workspace = true
+edition.workspace = true
+description = "Native HTTP server core for 200 OK desktop"
+
+[dependencies]
+axum = { version = "0.8.9", default-features = false, features = ["http1", "tokio"] }
+httpdate = "1.0.3"
+mime_guess = "2.0.5"
+percent-encoding = "2.3.2"
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { version = "1", features = ["fs", "io-util", "macros", "net", "rt-multi-thread", "signal", "sync", "time"] }
+tokio-util = { version = "0.7", features = ["io"] }
+
+[dev-dependencies]
+tempfile = "3"
+
+[lints]
+workspace = true

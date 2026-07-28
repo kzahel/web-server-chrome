@@ -318,7 +318,7 @@ mod tests {
     fn test_file_stat_serialization() {
         let stat = FileStat {
             size: 1024,
-            mtime_ms: 1700000000000.0,
+            mtime_ms: 1_700_000_000_000.0,
             is_directory: false,
             is_file: true,
         };

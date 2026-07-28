@@ -6,8 +6,8 @@
 
 Topic: product-feedback-and-support
 
-Status: **accepted routing contract; interim GitHub Issues destination being
-implemented.**
+Status: **interim GitHub Issues routing implemented in source; accountless
+intake and publication pending.**
 
 Last reconciled: **2026-07-28**.
 
@@ -116,15 +116,59 @@ a temporary accountless intake if it permits submission without sign-in.
 
 ## Acceptance checks
 
-- `/feedback`, `/support`, and `/suggestions` build as static redirect pages
+- [x] `/feedback`, `/support`, and `/suggestions` build as static redirect pages
   with an accessible fallback link.
-- Every current application surface opens `/feedback` externally rather than
+- [x] Every current application surface opens `/feedback` externally rather than
   navigating its embedded UI.
-- Every current application surface exposes the public repository and MIT
+- [x] Every current application surface exposes the public repository and MIT
   label.
-- A root MIT `LICENSE` exists and active package metadata does not contradict
+- [x] A root MIT `LICENSE` exists and active package metadata does not contradict
   it.
-- No product surface links directly to a form provider that would require an
+- [x] No product surface links directly to a form provider that would require an
   app release to change.
-- The topic continues to call out GitHub-account dependence until an
+- [x] The topic continues to call out GitHub-account dependence until an
   accountless flow is deployed.
+
+## Implementation result
+
+Implemented as reviewable commits:
+
+- `354ef59` establishes this routing and accountless-intake contract;
+- `6ff9b1a` adds the three Astro aliases, root MIT license, stable package
+  feedback metadata, and the corrected public CLI repository URL;
+- `671dbd1` adds the feedback/source controls to desktop, website, and README;
+- `e506b18` adds equivalent controls to the Chrome extension and Android app;
+  and
+- `c2090f9` makes the GitHub Pages workflow use the repository's frozen pnpm
+  lockfile.
+
+Current source behavior:
+
+- desktop opens both links through Tauri's native opener;
+- Android uses the platform URI handler;
+- the extension opens both links in browser tabs;
+- the website exposes Feedback and Source in primary navigation and the footer;
+  and
+- `/feedback`, `/support`, and `/suggestions` all replace themselves with the
+  public GitHub Issues list while retaining a normal fallback link.
+
+## Validation evidence
+
+Completed on 2026-07-28:
+
+- `gh` confirmed the public Issues configuration and enumerated all 15 open
+  requests;
+- the repository TypeScript workflow passed, including 76 engine tests with
+  two existing skips;
+- the production Astro build emitted all six current routes, and the three
+  aliases were checked for both automatic and fallback destinations;
+- production desktop and extension bundles built successfully;
+- Android debug Kotlin compilation and unit tests passed;
+- the production-style macOS app was rebuilt, installed, and visually
+  inspected with both controls present at its portrait size; and
+- the installed desktop app runs as one process with no Vite listener.
+
+These changes have not been published. Local `main` remains ahead of
+`origin/main`; the public aliases will not resolve until the branch is pushed
+and the GitHub Pages workflow succeeds. Published Android and extension builds
+likewise retain their current UI until their next releases.

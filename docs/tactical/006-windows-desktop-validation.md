@@ -1,6 +1,8 @@
 # 006: Windows Desktop Validation
 
-Status: **executed on native Windows; evidence awaiting maintainer review.**
+Status: **executed and remediated on native Windows; unsigned runtime and
+per-user NSIS validation pass, while signed-release, tray, MSI-install, and
+browser-extension proof remain pending.**
 
 Topics:
 
@@ -580,6 +582,191 @@ finish; align installer/native-host paths and release artifact names next;
 and rerun this tactical with one attended UAC/tray session. Only after those
 checks pass should a signed Windows candidate be produced and independently
 verified as `Valid`.
+
+## Authorized remediation and post-fix rerun
+
+After the initial evidence checkpoint, the maintainer authorized implementation
+directly on `main`, selected Tauri's standard per-user NSIS installer as the
+recommended Windows package, retained MSI as a secondary system-wide package,
+and requested a Tauri upgrade plus another end-to-end Windows run. No release,
+tag, signing infrastructure, updater service, or production update metadata was
+changed.
+
+The implementation commits are:
+
+| Commit | Change |
+| --- | --- |
+| `93f9a43` | Made the JavaScript/Rust test fixtures and release-script paths portable on Windows, removed current Rust warnings, and replaced the Bash-only sidecar preparation script with Node. |
+| `1d12ef7` | Upgraded the Tauri JavaScript and Rust stack. |
+| `349fc39` | Selected explicit current-user NSIS installation, repaired supported NSIS hooks and installed-sidecar lookup/launch, and aligned CI Windows release asset naming. |
+
+The follow-up ran from
+`C:\Users\sox\Documents\code\web-server-chrome` in PowerShell `7.6.4` with Git
+`2.54.0.windows.1`, Node `24.18.0`, pnpm `9.1.0`, rustc/cargo `1.96.0`, and
+Tauri CLI `2.11.4`. The upgraded resolved Tauri packages include JavaScript API
+`2.11.1`, Rust `tauri` `2.11.5`, runtime `2.11.3`, runtime-wry `2.11.4`,
+updater `2.10.1`, build `2.6.3`, opener `2.5.4`, and single-instance `2.4.3`.
+WebView2 was `150.0.4078.105`.
+
+### Post-fix source and build results
+
+These native PowerShell commands passed:
+
+```powershell
+pnpm install --frozen-lockfile
+pnpm --filter @ok200/desktop prepare-sidecar
+pnpm typecheck
+pnpm test
+pnpm lint
+node --test .github/scripts/*.test.mjs
+
+Push-Location desktop
+cargo fmt --all --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+Pop-Location
+
+pnpm --filter @ok200/desktop tauri build --no-bundle --no-sign
+pnpm --filter @ok200/desktop tauri build --no-sign --bundles 'nsis,msi'
+```
+
+The release validator's six tests passed. The no-bundle build and both
+unsigned installer bundles completed without the five original Windows Rust
+warnings.
+
+| Format | Exact local artifact | Bytes | SHA-256 | Signature |
+| --- | --- | ---: | --- | --- |
+| NSIS | `C:\Users\sox\Documents\code\web-server-chrome\desktop\target\release\bundle\nsis\200 OK_0.1.3_x64-setup.exe` | 6,349,113 | `219C52CC7EE49CF0F34581EB90AE7B3DD8D7181028C61754572D1A91BDCB5951` | `NotSigned` |
+| MSI | `C:\Users\sox\Documents\code\web-server-chrome\desktop\target\release\bundle\msi\200 OK_0.1.3_x64_en-US.msi` | 9,060,352 | `7C6E3A063BD74390136044414A9237934720EA61EF0DC9AB6C632E4B53EF5075` | `NotSigned` |
+
+Local bundle names remain Tauri's product-name-derived outputs. The Windows CI
+upload now uses Tauri Action's `releaseAssetNamePattern` to publish canonical
+`200.OK_[version]_[arch][setup][ext]` names. The validator and generated
+release table therefore expect
+`200.OK_0.1.3_x64-setup.exe` and `200.OK_0.1.3_x64.msi`. A tagged CI run is
+still required to prove that normalization with real uploaded assets.
+
+The generated NSIS script records `INSTALLMODE "currentUser"` and installs
+under `%LOCALAPPDATA%\200 OK` without requiring an administrator token. The
+standard WiX MSI remains a system-wide/elevated package and was built but not
+installed during the post-fix run.
+
+### Installed per-user application
+
+Silent installation of the unsigned NSIS artifact returned exit code 0 and
+installed:
+
+| File | Bytes | SHA-256 | Signature |
+| --- | ---: | --- | --- |
+| `ok200-desktop.exe` | 17,508,864 | `C02E829AAC33648139B5FB6827C0DBCA7A0B2A26D19595B65867149A8C88D93C` | `NotSigned` |
+| `ok200-host.exe` | 2,378,752 | `71A34E7D0DC92DE7A3691FDE421316DCA36773C5104DD1662947A5D3CD8E70E0` | `NotSigned` |
+| `uninstall.exe` | 79,216 | `9C9AE76B880BE6A256980222E8552F2DC8D562DA4FC4C1AE72459F194ECCC5AF` | `NotSigned` |
+
+The installed app launched at the compact portrait size with canonical 200 OK
+branding and the active Windows dark preference. The native Windows folder
+picker selected
+`C:\Users\sox\AppData\Local\Temp\ok200-windows-validation-20260728-fixes`
+without typing a path. Port `0` allocated `57083` and `62747` in two runs, each
+with exactly one listener owned by the single installed desktop process.
+
+The first run used CORS and SPA mode with directory listing disabled:
+
+| Path | Status | Content type/result |
+| --- | ---: | --- |
+| `/` | 200 | exact fixture `index.html` |
+| `/hello.txt` | 200 | `text/plain; charset=utf-8`, exact fixture body |
+| `/subdir/nested.txt` | 200 | exact nested fixture body |
+| `/missing.txt` | 200 | exact SPA fallback `index.html` |
+| `/listing/` | 200 | exact SPA fallback `index.html` |
+| `/listing/space%20name.txt` | 200 | exact file body |
+
+Every response included `Access-Control-Allow-Origin: *`. Copy URL placed the
+exact `http://127.0.0.1:57083` value on the Windows clipboard. While running,
+the folder, port, and serving options were disabled and showed the locked
+explanation. Stop removed the listener and the old URL immediately refused the
+connection.
+
+The complementary run persisted SPA off and directory listing on.
+`/listing/` returned the branded listing, both `alpha.txt` and the encoded
+`space%20name.txt` returned 200 with correct plain-text MIME types, and
+`/missing.txt` returned 404 `Not Found`. A full process exit followed by native
+host launch created one new desktop process and restored the same root, port
+0, CORS on, directory listing on, and SPA off. Closing the window hid it while
+the original process remained alive; a native-host launch showed the existing
+single instance.
+
+The installed headless updater path exited after writing
+`%APPDATA%\ok200-native\update-check-result.json` with
+`{"available": false}`. The tray-only manual updater command remained
+inaccessible, so this proves the installed service path rather than the tray
+UI.
+
+### Native messaging result
+
+The repaired installer created valid HKCU registration for Google Chrome,
+Chromium, Brave, and Edge. Each default value pointed to:
+
+```text
+C:\Users\sox\AppData\Local\app.ok200.desktop\app.ok200.native.json
+```
+
+The manifest named `app.ok200.native`, allowed extension
+`lpkjdhnmgkhaabhimpdinmdgejoaejic`, and pointed to the installed flat
+`C:\Users\sox\AppData\Local\200 OK\ok200-host.exe`. Runtime registration
+self-healed the same manifest after application launch. Direct framed stdio
+returned:
+
+```json
+[
+  {"action":"handshake","name":"ok200-host","version":"0.1.3"},
+  {"action":"pong"},
+  {"action":"launch","ok":true}
+]
+```
+
+The host exited 0, launched/focused `ok200-desktop.exe`, and did not create a
+second desktop instance. This closes the original installer registration,
+flat-sidecar lookup, and wrong executable-name defects. End-to-end invocation
+from the Chrome extension remains blocked because the compatible extension is
+not installed.
+
+### Uninstall and remaining observations
+
+Running `%LOCALAPPDATA%\200 OK\uninstall.exe /S` while the stopped application
+was resident in the background returned exit code 0. It removed the install
+directory, desktop process, Start Menu and desktop shortcuts, all four browser
+registry keys, and the native-messaging manifest.
+
+Two per-user state directories remained:
+
+- `%APPDATA%\app.ok200.desktop\server.json`
+- `%LOCALAPPDATA%\app.ok200.desktop\EBWebView\...`
+
+Tauri's generated NSIS script requests recursive removal of both paths, but
+the WebView/process shutdown path left them behind in this run. Minimal
+reproduction: install the NSIS package, launch and close the app so it remains
+in the background, run `uninstall.exe /S`, then inspect those two exact paths.
+This is a cleanup/privacy defect, not a server, launch, update, or registration
+failure. It was recorded without adding more custom installer behavior.
+
+The previously recorded Windows Firewall query-user rules were not changed.
+The product-created native-messaging state was removed; unrelated or
+OS-created security configuration was not deleted.
+
+### Remaining blocked release checks
+
+- The MSI install/launch/uninstall flow remains blocked by secure-desktop
+  approval and is intentionally secondary to the now-passing per-user NSIS
+  path.
+- Tray Show App, checkmarks, Quit, Start at Login, and the tray-triggered
+  updater UI remain blocked because the approved automation surface cannot
+  target the Windows tray menu.
+- Chrome-extension-to-host invocation remains blocked by the missing compatible
+  extension, although installed host framing, registration, and launch pass.
+- Released EXE/MSI Authenticode checks remain blocked until a signed CI
+  candidate exists. These local artifacts are intentionally `NotSigned`.
+- CI asset renaming and the complete fail-closed gate still require a tagged
+  draft run; no release or tag was created here.
 
 ## Exit criteria
 

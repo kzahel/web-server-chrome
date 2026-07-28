@@ -195,3 +195,37 @@ A desktop tag may be made public only after all of these pass.
 The workflow now follows this shape. A small signed release candidate using the
 current runtime still needs to prove distribution independently; a later
 Rust-core candidate then changes one risk axis at a time.
+
+## Windows local post-fix evidence
+
+Native Windows remediation and unsigned installed-product evidence are
+recorded in
+[Tactical 006](../tactical/006-windows-desktop-validation.md). On 2026-07-28,
+source checks passed with Tauri CLI `2.11.4` / Rust `tauri` `2.11.5`, and both
+unsigned `0.1.3` NSIS and MSI bundles built successfully.
+
+The accepted package policy is:
+
+- Tauri's standard **current-user NSIS EXE is the recommended Windows
+  installer**. It installs under `%LOCALAPPDATA%` without requiring an
+  administrator token.
+- Tauri's standard **WiX MSI is a secondary system-wide installer**. It
+  retains its normal elevation requirement for managed or administrator-led
+  deployment.
+- No custom installer UI or dual-scope chooser is required for the initial
+  release.
+
+The installed per-user NSIS application passed native folder selection,
+external HTTP serving, both SPA and directory-listing routing modes, stop and
+old-port teardown, settings persistence, background/single-instance lifecycle,
+headless updater service flow, native-messaging registration/framing/launch,
+and removal of installed binaries plus native-messaging state. Uninstall left
+the saved server configuration and WebView data when invoked against a
+background-resident app; Tactical 006 records the minimal reproduction as a
+non-blocking cleanup/privacy defect.
+
+Windows CI now gives uploaded artifacts canonical no-whitespace names using
+Tauri Action's release asset pattern. The local Tauri bundle still uses
+product-name-derived whitespace filenames. A real tagged draft run must prove
+the upload names, Azure signatures, full asset gate, and update metadata before
+this evidence can satisfy the release gate.

@@ -6,7 +6,7 @@ implementation completed 2026-07-28. macOS product smoke is accepted in
 [`004-portrait-desktop-polish-and-directory-listing.md`](004-portrait-desktop-polish-and-directory-listing.md);
 the updater control flow is recorded in
 [`005-in-app-desktop-updater.md`](005-in-app-desktop-updater.md); and
-native Windows validation is queued in
+native Windows validation and remediation are recorded in
 [`006-windows-desktop-validation.md`](006-windows-desktop-validation.md).
 Tagged release proof remains pending.
 
@@ -353,3 +353,7 @@ This parent closes only when:
   compact `410x700` portrait shape and canonical branding. Rust owns a
   browser-like self-contained directory listing; human product smoke precedes
   release work.
+- **2026-07-28:** Windows uses Tauri's standard current-user NSIS EXE as the
+  recommended installer. The standard elevated WiX MSI remains a secondary
+  system-wide package; no custom dual-scope installer UI is required for the
+  initial release.

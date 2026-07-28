@@ -6,8 +6,9 @@
 
 Topic: desktop-native-core
 
-Status: **Rust-native desktop cutover implemented on `main`; macOS product
-smoke accepted; native Windows/Linux and release proof pending.** The
+Status: **Rust-native desktop cutover implemented on `main`; installed macOS
+and Windows product smoke accepted; native Linux and signed-release proof
+pending.** The
 already-published desktop `v0.1.3` still runs the older TypeScript HTTP engine
 in the webview.
 
@@ -222,9 +223,13 @@ plugin, then relaunches through the process plugin.
 ## Known gaps
 
 - Native folder selection and the full visible start/serve/stop/relaunch flow
-  have been accepted in the installed macOS review app. Equivalent native
-  Windows validation is queued in
-  [Tactical 006](../tactical/006-windows-desktop-validation.md); Linux remains
+  have been accepted in installed macOS and Windows review apps. The Windows
+  run also passed per-user NSIS installation, external HTTP behavior,
+  persistence, background single-instance lifecycle, headless updater service
+  flow, native-host registration/framing/launch, and uninstall of installed
+  binaries and registration. Tray-only controls, MSI installation, signed
+  artifacts, and real browser-extension invocation remain pending in
+  [Tactical 006](../tactical/006-windows-desktop-validation.md). Linux remains
   pending.
 - The existing WebdriverIO E2E specification targets the Rust command path and
   type-checks, but its direct `tauri-driver` runner is Windows/Linux-only and

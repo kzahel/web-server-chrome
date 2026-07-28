@@ -84,7 +84,7 @@ jobs:
     runs-on: ${{ matrix.runner || matrix.platform }}
 
     env:
-      HAS_UPDATER_SIGNING: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY != '' }}
+      HAS_UPDATER_SIGNING: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY != '' && secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD != '' }}
       HAS_MACOS_SIGNING: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 != '' && secrets.MACOS_CERTIFICATE_PASSWORD != '' && secrets.MACOS_KEYCHAIN_PASSWORD != '' }}
       HAS_MACOS_NOTARIZATION: ${{ secrets.ASC_API_KEY_P8_BASE64 != '' && secrets.ASC_API_KEY_ID != '' && secrets.ASC_API_ISSUER_ID != '' }}
       HAS_WINDOWS_SIGNING: ${{ secrets.AZURE_CLIENT_ID != '' && secrets.AZURE_TENANT_ID != '' && secrets.AZURE_CLIENT_SECRET != '' }}
@@ -171,6 +171,41 @@ jobs:
           chmod 600 "$KEY_PATH"
           echo "APPLE_API_KEY_PATH=$KEY_PATH" >> "$GITHUB_ENV"
 
+      # Inject multiline and metacharacter-bearing signing values without
+      # reparsing them through the shell. Keep absent secrets out of the
+      # environment entirely so fork builds can take the unsigned path.
+      - name: Set signing environment
+        shell: bash
+        env:
+          UPDATER_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          UPDATER_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+          ASC_API_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
+        run: |
+          emit() {
+            {
+              printf '%s<<__OK200EOF__\n' "$1"
+              printf '%s\n' "$2"
+              printf '__OK200EOF__\n'
+            } >> "$GITHUB_ENV"
+          }
+
+          if [ -n "$UPDATER_KEY" ]; then
+            emit TAURI_SIGNING_PRIVATE_KEY "$UPDATER_KEY"
+            emit TAURI_SIGNING_PRIVATE_KEY_PASSWORD "$UPDATER_PASSWORD"
+          fi
+          if [ -n "$MACOS_CERTIFICATE" ] && [ "${{ matrix.platform }}" = "macos-latest" ]; then
+            emit APPLE_CERTIFICATE "$MACOS_CERTIFICATE"
+            emit APPLE_CERTIFICATE_PASSWORD "$MACOS_CERTIFICATE_PASSWORD"
+            echo "APPLE_SIGNING_IDENTITY=Developer ID Application: Kyle Graehl (VD7BYQ6ABM)" >> "$GITHUB_ENV"
+          fi
+          if [ -n "$ASC_API_KEY_ID" ] && [ "${{ matrix.platform }}" = "macos-latest" ]; then
+            emit APPLE_API_KEY "$ASC_API_KEY_ID"
+            emit APPLE_API_ISSUER "$ASC_API_ISSUER_ID"
+          fi
+
       # --- Windows signing tool ---
       - name: Install trusted-signing-cli
         if: matrix.platform == 'windows-latest' && env.HAS_WINDOWS_SIGNING == 'true'
@@ -226,16 +261,6 @@ jobs:
         env:
           APPIMAGE_EXTRACT_AND_RUN: '1'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Updater signing
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          # macOS code signing
-          APPLE_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: "${{ matrix.platform == 'macos-latest' && 'Developer ID Application: Kyle Graehl (VD7BYQ6ABM)' || '' }}"
-          # macOS notarization
-          APPLE_API_KEY: ${{ secrets.ASC_API_KEY_ID }}
-          APPLE_API_ISSUER: ${{ secrets.ASC_API_ISSUER_ID }}
           # Windows signing
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -248,12 +273,61 @@ jobs:
           releaseBody: ${{ steps.changelog.outputs.notes || 'See the assets to download and install this version.' }}
           releaseDraft: true
           prerelease: false
-          releaseAssetNamePattern: ${{ matrix.platform == 'windows-latest' && '200.OK_[version]_[arch][setup][ext]' || '' }}
+          # tauri-action v0 calls this input assetNamePattern. Version 1 renamed
+          # it to releaseAssetNamePattern.
+          assetNamePattern: ${{ matrix.platform == 'windows-latest' && '200.OK_[version]_[arch][setup][ext]' || '' }}
           includeUpdaterJson: ${{ startsWith(github.ref, 'refs/tags/') }}
+          updaterJsonPreferNsis: true
           updaterJsonKeepUniversal: true
           args: >-
             ${{ matrix.args }}
+            ${{ matrix.platform == 'macos-latest' && env.HAS_MACOS_SIGNING != 'true' && '--no-sign' || '' }}
+            ${{ env.HAS_UPDATER_SIGNING != 'true' && '--config ''{"bundle":{"createUpdaterArtifacts":false}}''' || '' }}
             ${{ matrix.platform == 'windows-latest' && secrets.AZURE_CLIENT_SECRET != '' && '--config ''{"bundle":{"windows":{"signCommand":"trusted-signing-cli -e https://eus.codesigning.azure.net -a kylegraehl -c jstorrent-profile %1"}}}''' || '' }}
+
+      - name: Verify macOS app signing and notarization
+        if: matrix.platform == 'macos-latest' && env.HAS_MACOS_SIGNING == 'true' && env.HAS_MACOS_NOTARIZATION == 'true'
+        shell: bash
+        run: |
+          VERSION="$(node -p "require('./desktop/tauri-app/src-tauri/tauri.conf.json').version")"
+          if [ "${{ matrix.rust_target }}" = "aarch64-apple-darwin" ]; then
+            ARCH="aarch64"
+          else
+            ARCH="x64"
+          fi
+          APP_PATH="desktop/target/${{ matrix.rust_target }}/release/bundle/macos/200 OK.app"
+          DMG_PATH="desktop/target/${{ matrix.rust_target }}/release/bundle/dmg/200 OK_${VERSION}_${ARCH}.dmg"
+
+          test -d "$APP_PATH"
+          test -f "$DMG_PATH"
+          codesign --verify --deep --strict --verbose=2 "$APP_PATH"
+          spctl --assess --type execute --verbose=2 "$APP_PATH"
+          xcrun stapler validate "$APP_PATH"
+          codesign --verify --verbose=2 "$DMG_PATH"
+
+      - name: Verify Windows Authenticode signatures
+        if: matrix.platform == 'windows-latest' && env.HAS_WINDOWS_SIGNING == 'true'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $artifacts = @(
+            @(Get-ChildItem 'desktop/target/release/bundle/nsis' -Filter '*-setup.exe' -File)
+            @(Get-ChildItem 'desktop/target/release/bundle/msi' -Filter '*.msi' -File)
+          )
+          if ($artifacts.Count -ne 2) {
+            throw "Expected exactly one NSIS EXE and one MSI, found $($artifacts.Count)"
+          }
+
+          foreach ($artifact in $artifacts) {
+            $signature = Get-AuthenticodeSignature -FilePath $artifact.FullName
+            Write-Host "$($artifact.Name): $($signature.Status) / $($signature.SignerCertificate.Subject)"
+            if ($signature.Status -ne 'Valid') {
+              throw "$($artifact.Name) does not have a valid Authenticode signature"
+            }
+            if ($signature.SignerCertificate.Subject -notmatch 'CN=Kyle Graehl(?:,|$)') {
+              throw "$($artifact.Name) has unexpected signer $($signature.SignerCertificate.Subject)"
+            }
+          }
 
       # --- Build macOS .pkg installer ---
       - name: Build macOS .pkg installer
@@ -294,6 +368,8 @@ jobs:
             --wait
           xcrun stapler staple "$PKG_FILE"
           xcrun stapler validate "$PKG_FILE"
+          pkgutil --check-signature "$PKG_FILE"
+          spctl --assess --type install --verbose=2 "$PKG_FILE"
 
       - name: Upload notarized .pkg to draft release
         if: matrix.platform == 'macos-latest' && startsWith(github.ref, 'refs/tags/desktop-v') && env.PKG_FILE != ''

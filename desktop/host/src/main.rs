@@ -121,7 +121,7 @@ fn launch_app() -> Result<(), String> {
             return Ok(());
         }
 
-        return Err("could not find 200 OK app".to_string());
+        Err("could not find 200 OK app".to_string())
     }
 
     #[cfg(target_os = "windows")]

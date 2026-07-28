@@ -26,6 +26,7 @@ export function ServerUrl({ host, port }: ServerUrlProps) {
         href={url}
         target="_blank"
         rel="noopener noreferrer"
+        data-testid="server-url"
         className="text-blue-500 hover:text-blue-600 text-sm font-mono flex-1 truncate"
       >
         {url}

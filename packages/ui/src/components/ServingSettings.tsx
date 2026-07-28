@@ -3,24 +3,32 @@ import type { ServerConfig, ServerInfo } from "@ok200/engine";
 interface ServingSettingsProps {
   server: ServerInfo;
   onConfigChange: (partial: Partial<ServerConfig>) => Promise<void>;
+  disabled?: boolean;
 }
 
 function Toggle({
   label,
   checked,
   onChange,
+  disabled = false,
 }: {
   label: string;
   checked: boolean;
   onChange: (checked: boolean) => void;
+  disabled?: boolean;
 }) {
   return (
-    <label className="flex items-center justify-between py-2 cursor-pointer">
+    <label
+      className={`flex items-center justify-between py-2 ${
+        disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+      }`}
+    >
       <span className="text-sm">{label}</span>
       <button
         type="button"
         role="switch"
         aria-checked={checked}
+        disabled={disabled}
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-5 w-9 shrink-0 rounded-full transition-colors ${
           checked ? "bg-blue-500" : "bg-gray-300 dark:bg-gray-600"
@@ -39,6 +47,7 @@ function Toggle({
 export function ServingSettings({
   server,
   onConfigChange,
+  disabled = false,
 }: ServingSettingsProps) {
   const { config } = server;
 
@@ -50,21 +59,25 @@ export function ServingSettings({
         onChange={(on) =>
           onConfigChange({ host: on ? "0.0.0.0" : "127.0.0.1" })
         }
+        disabled={disabled}
       />
       <Toggle
         label="Directory listing"
         checked={config.directoryListing}
         onChange={(on) => onConfigChange({ directoryListing: on })}
+        disabled={disabled}
       />
       <Toggle
         label="CORS"
         checked={config.cors}
         onChange={(on) => onConfigChange({ cors: on })}
+        disabled={disabled}
       />
       <Toggle
         label="SPA mode"
         checked={config.spa}
         onChange={(on) => onConfigChange({ spa: on })}
+        disabled={disabled}
       />
     </div>
   );

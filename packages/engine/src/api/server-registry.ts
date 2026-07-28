@@ -1,6 +1,11 @@
 import type { ServerConfig } from "../config/server-config.js";
 
-export type ServerStatus = "stopped" | "starting" | "running" | "error";
+export type ServerStatus =
+  | "stopped"
+  | "starting"
+  | "running"
+  | "stopping"
+  | "error";
 
 export interface ServerInfo {
   id: string;

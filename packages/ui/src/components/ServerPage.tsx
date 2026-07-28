@@ -4,11 +4,18 @@ import { SettingsZone } from "./SettingsZone";
 
 interface ServerPageProps {
   serverId: string;
-  onServerChange: () => void;
 }
 
-export function ServerPage({ serverId, onServerChange }: ServerPageProps) {
-  const { server, loading, start, stop, updateConfig } = useServer(serverId);
+export function ServerPage({ serverId }: ServerPageProps) {
+  const {
+    server,
+    loading,
+    start,
+    stop,
+    updateConfig,
+    chooseRoot,
+    hasNativeFolderChooser,
+  } = useServer(serverId);
 
   if (loading) {
     return (
@@ -26,23 +33,15 @@ export function ServerPage({ serverId, onServerChange }: ServerPageProps) {
     );
   }
 
-  const handleStart = async () => {
-    await start();
-    onServerChange();
-  };
-
-  const handleStop = async () => {
-    await stop();
-    onServerChange();
-  };
-
   return (
-    <div className="p-4 max-w-xl mx-auto space-y-6">
+    <div className="mx-auto max-w-2xl space-y-5 p-5 sm:p-7">
       <HeroZone
         server={server}
-        onStart={handleStart}
-        onStop={handleStop}
+        onStart={start}
+        onStop={stop}
         onConfigChange={updateConfig}
+        onChooseRoot={chooseRoot}
+        hasNativeFolderChooser={hasNativeFolderChooser}
       />
       <SettingsZone server={server} onConfigChange={updateConfig} />
     </div>

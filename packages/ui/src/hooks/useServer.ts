@@ -1,10 +1,11 @@
-import type { ServerConfig, ServerInfo } from "@ok200/engine";
+import type { ServerConfig } from "@ok200/engine";
 import { useCallback, useEffect, useState } from "react";
+import type { ManagedServerInfo, StartOptions } from "../lib/server-manager";
 import { useServerManager } from "../lib/server-manager-context";
 
 export function useServer(serverId: string) {
   const manager = useServerManager();
-  const [server, setServer] = useState<ServerInfo | null>(null);
+  const [server, setServer] = useState<ManagedServerInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
@@ -23,10 +24,32 @@ export function useServer(serverId: string) {
     return () => clearInterval(interval);
   }, [refresh]);
 
-  const start = useCallback(async () => {
-    const info = await manager.startServer(serverId);
-    setServer(info);
+  useEffect(() => {
+    if (!manager.subscribe) return;
+    let disposed = false;
+    let unsubscribe: (() => void) | undefined;
+    manager
+      .subscribe((info) => {
+        if (!disposed && info.id === serverId) setServer(info);
+      })
+      .then((cleanup) => {
+        if (disposed) cleanup();
+        else unsubscribe = cleanup;
+      })
+      .catch((error) => console.error("Failed to subscribe to server:", error));
+    return () => {
+      disposed = true;
+      unsubscribe?.();
+    };
   }, [manager, serverId]);
+
+  const start = useCallback(
+    async (options?: StartOptions) => {
+      const info = await manager.startServer(serverId, options);
+      setServer(info);
+    },
+    [manager, serverId],
+  );
 
   const stop = useCallback(async () => {
     const info = await manager.stopServer(serverId);
@@ -41,5 +64,24 @@ export function useServer(serverId: string) {
     [manager, serverId],
   );
 
-  return { server, loading, start, stop, updateConfig, refresh };
+  const chooseRoot = useCallback(async () => {
+    if (!manager.pickDirectory) {
+      throw new Error("A native folder chooser is not available");
+    }
+    const path = await manager.pickDirectory(server?.config.root);
+    if (path === null) return;
+    const info = await manager.updateServer(serverId, { root: path });
+    setServer(info);
+  }, [manager, server?.config.root, serverId]);
+
+  return {
+    server,
+    loading,
+    start,
+    stop,
+    updateConfig,
+    chooseRoot,
+    hasNativeFolderChooser: Boolean(manager.pickDirectory),
+    refresh,
+  };
 }

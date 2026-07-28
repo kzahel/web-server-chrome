@@ -68,6 +68,36 @@ Local validation completed 2026-07-28:
 The shared signing runbook's 200 OK tag pattern and unsigned-release wording
 were corrected in the dotfiles repository in commit `aac91d7`.
 
+## 2026-07-28 CI signing audit
+
+Commit `2dcd4db` repaired the Rust `1.97` Clippy failure and strengthened the
+build workflow:
+
+- updater signing is enabled only when both private-key inputs are present;
+- signing secrets are written to the job environment without shell expansion;
+- macOS CI verifies the app with `codesign` and `spctl`, validates the stapled
+  notarization ticket, and verifies the DMG signature;
+- Windows CI requires `Get-AuthenticodeSignature` status `Valid` and publisher
+  `CN=Kyle Graehl` for exactly one NSIS EXE and one MSI;
+- the tagged PKG path now also requires `pkgutil` and `spctl` acceptance;
+- unsigned fork builds explicitly disable macOS and updater signing; and
+- the Tauri Action `v0` input was corrected from the ignored
+  `releaseAssetNamePattern` to `assetNamePattern`, with
+  `updaterJsonPreferNsis: true`.
+
+[Tauri App CI run 30379994625](https://github.com/kzahel/web-server-chrome/actions/runs/30379994625)
+then completed every job successfully. Apple accepted and notarized both macOS
+builds, and the Windows EXE and MSI both reported valid Kyle Graehl
+Authenticode signatures.
+[General CI run 30379994627](https://github.com/kzahel/web-server-chrome/actions/runs/30379994627)
+also passed.
+
+This proves that the current 200 OK Apple, Azure Trusted Signing, and updater
+credentials work in CI. The Apple/Azure configuration agrees with the
+known-good JSTorrent workflow. Yep Anywhere was not treated as authoritative;
+its key state was uncertain. The updater key is correctly 200 OK-specific and
+must not be copied from JSTorrent.
+
 ## Tagged validation still required
 
 This implementation does not create or push a public tag. Before calling the
@@ -83,3 +113,14 @@ release lane proven:
 
 If a leg fails, confirm that the release is absent or remains a draft. Do not
 manually publish a release that has failed the completeness gate.
+
+The tag is still necessary because an untagged run cannot prove:
+
+- the tag-only required-secret gate and macOS PKG build/sign/notarize/staple
+  path;
+- concurrent asset staging into one draft release;
+- the canonical uploaded filenames produced by `assetNamePattern`;
+- complete `latest.json` NSIS target selection, signatures, and URLs;
+- finalizer validation, checksums, release-body links, detached-signature
+  cleanup, and single-point publication; or
+- download and clean-system inspection of the exact retained candidate.

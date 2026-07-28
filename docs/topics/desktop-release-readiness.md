@@ -50,7 +50,8 @@ As of 2026-07-28, the GitHub repository has all expected secret **names**:
   `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`.
 
 Secret presence does not prove that a credential is current or that the output
-was signed. Values remain intentionally opaque.
+was signed. Values remain intentionally opaque. The current values have now
+also been exercised by the successful CI signing audit below.
 
 Repository configuration currently preserves:
 
@@ -85,7 +86,7 @@ Public desktop release: **`desktop-v0.1.3`**, created 2026-02-27.
 | macOS DMG, arm64 and x64 | DMG is signed, but the downloaded container has no stapled ticket and fails the strict container acceptance check | Do not call the DMG artifact fully verified |
 | macOS PKG | No package is present; workflow searches below `desktop/tauri-app/src-tauri/target/`, while the Cargo workspace emits under `desktop/target/` | Workflow path bug blocks the advertised PKG |
 | Windows EXE/MSI | No Windows artifact exists in `v0.1.3`; that tagged run used the wrong Azure certificate profile | Latest public release has no Windows installer |
-| Windows post-fix CI | Commit `3b02f9c` changed the profile to `jstorrent-profile`; a later untagged CI build completed the Windows signing/build path | Encouraging build evidence, not a released signature inspection |
+| Windows post-fix CI | Commit `3b02f9c` changed the profile to `jstorrent-profile`; the 2026-07-28 untagged audit inspected the newly built EXE and MSI with `Get-AuthenticodeSignature` | Current CI credentials and signed output are proven, but there is still no released Windows installer |
 | Linux AppImage/DEB/RPM | Artifacts are present | Build availability proven; Linux has no equivalent platform signing claim |
 | Tauri updater metadata | `latest.json` and per-artifact updater signatures exist, but the platform list follows the partial release and omits Windows | Updater metadata is signed but incomplete |
 
@@ -134,6 +135,44 @@ after `latest.json` validation.
 This is implementation evidence, not release evidence. Defects 6 and 7, plus
 the real-world behavior of the new gate, remain open until the tagged validation
 and clean-system inspection in Tactical 001/Phase A2.
+
+## Current CI signing proof
+
+Commit `2dcd4db` fixed the Rust `1.97` Clippy failure and made the signing lane
+verify its own output. The resulting 2026-07-28 runs passed:
+
+- [Tauri App CI run 30379994625](https://github.com/kzahel/web-server-chrome/actions/runs/30379994625)
+  completed every test and Linux, macOS arm64, macOS x64, and Windows build
+  job successfully; and
+- [general CI run 30379994627](https://github.com/kzahel/web-server-chrome/actions/runs/30379994627)
+  completed successfully.
+
+The Tauri run is direct credential and output evidence:
+
+- both macOS application builds were Developer ID signed, accepted by Apple
+  notarization, stapled, accepted by `spctl`, and validated by `codesign`;
+- each DMG passed `codesign` verification;
+- the Windows NSIS EXE and MSI each reported Authenticode status `Valid` and
+  publisher `CN=Kyle Graehl`; and
+- updater artifact signing was enabled with the repository's 200 OK key.
+
+The Apple identities and Azure Trusted Signing account/profile match the
+known-good JSTorrent workflow. The updater key intentionally does not match
+JSTorrent: it is a per-application trust root, and the configured public key
+matches the local 200 OK key material named by the shared runbook. Yep Anywhere
+was not used as authoritative signing evidence.
+
+The audit also corrected two release-only configuration hazards:
+
+- Tauri Action `v0` accepts `assetNamePattern`, not
+  `releaseAssetNamePattern`; the old input was ignored with a workflow warning.
+- `updaterJsonPreferNsis: true` now makes the Windows updater metadata select
+  the recommended NSIS installer instead of MSI.
+
+Because this was an untagged run, it did not upload a draft release or execute
+the tag-only PKG/finalizer path. The corrected asset-name pattern and NSIS
+metadata choice therefore still need one tagged draft candidate before they
+count as release evidence.
 
 ## Required release gate
 
@@ -229,8 +268,10 @@ only exact product process trees as a fallback, and removes installed binaries,
 native-messaging state, saved server configuration, and WebView data even when
 the desktop and helper began resident in the background.
 
-Windows CI now gives uploaded artifacts canonical no-whitespace names using
-Tauri Action's release asset pattern. The local Tauri bundle still uses
-product-name-derived whitespace filenames. A real tagged draft run must prove
-the upload names, Azure signatures, full asset gate, and update metadata before
-this evidence can satisfy the release gate.
+Windows CI is now configured to give uploaded artifacts canonical
+no-whitespace names using Tauri Action's release asset pattern. The local Tauri
+bundle still uses product-name-derived whitespace filenames. A real tagged
+draft run must prove the upload names, complete asset gate, and update metadata.
+Azure signing itself is now proven in untagged CI, but the exact downloadable
+release assets must still be inspected before this evidence can satisfy the
+release gate.

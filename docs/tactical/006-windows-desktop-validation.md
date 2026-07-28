@@ -799,8 +799,11 @@ was removed.
 - Tray Show App, checkmarks, Quit, Start at Login, and the tray-triggered
   updater UI remain blocked because the approved automation surface cannot
   target the Windows tray menu.
-- Released EXE/MSI Authenticode checks remain blocked until a signed CI
-  candidate exists. These local artifacts are intentionally `NotSigned`.
+- Untagged CI now proves that its newly built EXE and MSI report
+  Authenticode status `Valid` with publisher `CN=Kyle Graehl`. Inspection of
+  the exact downloadable candidate on this Windows system remains blocked
+  until a tagged draft retains those assets. These local artifacts are
+  intentionally `NotSigned`.
 - CI asset renaming and the complete fail-closed gate still require a tagged
   draft run; no release or tag was created here.
 

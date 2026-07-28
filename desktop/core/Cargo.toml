@@ -2,7 +2,7 @@
 name = "ok200-core"
 version.workspace = true
 edition.workspace = true
-description = "Native HTTP server core for 200 OK desktop"
+description = "Native HTTP server core for the 200 OK Web Server desktop app"
 
 [dependencies]
 axum = { version = "0.8.9", default-features = false, features = ["http1", "tokio"] }

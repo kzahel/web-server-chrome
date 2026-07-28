@@ -1,6 +1,6 @@
 # ok200-core
 
-Native static HTTP server for the 200 OK desktop application.
+Native static HTTP server for the 200 OK Web Server desktop application.
 
 The library has no Tauri or webview dependency. It owns HTTP handling, safe
 filesystem resolution, file streaming, lifecycle, status, and structured

@@ -6,7 +6,8 @@
 
 Topic: product-branding
 
-Status: **accepted product identity; repository reconciliation active.**
+Status: **accepted product identity; active source surfaces reconciled,
+publication pending.**
 
 Last reconciled: **2026-07-28**.
 
@@ -110,6 +111,40 @@ The stable technical identities already align with this decision:
 Current reconciliation should update active product surfaces while preserving
 accurate historical references in `legacy/`, research documents, changelogs,
 and migration history.
+
+As of 2026-07-28, current source now uses the accepted identity in the desktop
+window and control header, Rust directory listings, website header and
+metadata, README, and Chrome extension manifest and popup. Android already
+uses the compact **200 OK** label with a **Web Server** descriptor.
+
+This source state is ahead of distribution. The locally installed desktop
+review app has been rebuilt and visually checked with the changed window and
+header title. The published website, Chrome Web Store listing, and
+application/store metadata will not change until their normal deployment or
+release workflows run. The existing Chrome Web Store release may therefore
+continue to display its previous name until the branded extension update is
+reviewed and published.
+
+Implementation commits:
+
+- `32ba314` defines this canonical naming contract;
+- `c2da50f` applies it to the desktop control surface and Rust directory
+  listing;
+- `90b921d` reconciles the README, website, SEO, and migration copy; and
+- `cd4f7f4` applies it to the Chrome extension and removes its stale product
+  destination.
+
+Validation on 2026-07-28:
+
+- repository TypeScript type-checking and tests passed;
+- the Astro site, Chrome extension, and static desktop webview production
+  builds passed;
+- strict Rust formatting and Clippy passed, along with all 37 workspace tests;
+- the generated website was inspected with the current header, legacy
+  relationship, and cross-platform message; and
+- the unsigned production-style macOS app was rebuilt, installed, and
+  inspected at its persisted portrait size with **200 OK Web Server** in both
+  the title bar and control header and no Vite listener.
 
 ## Acceptance checks
 

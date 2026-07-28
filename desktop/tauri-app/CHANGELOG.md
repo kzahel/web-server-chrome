@@ -10,8 +10,9 @@
   configuration.
 - Simplify the control surface to one server with explicit lifecycle status,
   guarded roots, and idempotent Start/Stop actions.
-- Restore the compact portrait window, canonical branding, lifecycle switch,
-  point-of-use locked-setting guidance, and native URL opening.
+- Restore the compact portrait window, adopt the 200 OK Web Server identity,
+  add a lifecycle switch and point-of-use locked-setting guidance, and support
+  native URL opening.
 - Restore browser-like Rust directory listings with inline file/folder icons,
   human-readable metadata, responsive layout, and automatic light/dark mode.
 

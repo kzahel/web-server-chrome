@@ -21,6 +21,8 @@ cutover is recorded in
 portrait review surface and browser-like Rust directory listing are recorded
 in
 [Tactical 004](../tactical/004-portrait-desktop-polish-and-directory-listing.md).
+Current product naming is governed by
+[`product-branding.md`](product-branding.md).
 
 ## Scope
 

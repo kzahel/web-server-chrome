@@ -15,6 +15,8 @@ Last reconciled: **2026-07-28**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md).
+Current-product and legacy-name usage is governed by
+[`product-branding.md`](product-branding.md).
 Google's current Chrome App support policy is documented in
 [Chrome Apps support on ChromeOS](https://support.google.com/chrome/a/answer/15950395).
 
@@ -68,8 +70,8 @@ The landing page and notification must describe the platform split honestly:
 
 | User environment | Primary destination | Fallback |
 |---|---|---|
-| ChromeOS with Play support | 200 OK Android app on Google Play | Explain that the extension launches Android; do not promise native messaging |
-| Windows, macOS, Linux | New Chrome extension plus installed 200 OK desktop app | Direct signed desktop download with platform-specific instructions |
+| ChromeOS with Play support | 200 OK Web Server Android app on Google Play | Explain that the extension launches Android; do not promise native messaging |
+| Windows, macOS, Linux | 200 OK Web Server extension plus installed desktop app | Direct signed desktop download with platform-specific instructions |
 | Unsupported/no replacement detected | Platform-aware migration page | Signup/status information without claiming feature parity |
 
 The extension provides familiar Chrome presence, status, and launch behavior.

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+- Adopt the 200 OK Web Server product name and explain the extension's launcher
+  role while retaining the legacy name in successor copy.
+- Replace the stale desktop-app destination with the canonical product site.
+
 ## [0.1.3]
 
 ### Fixed

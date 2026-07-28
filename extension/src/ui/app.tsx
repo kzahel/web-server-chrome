@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 
-const REPO_URL = "https://github.com/kzahel/web-server";
+const PRODUCT_URL = "https://ok200.app/#platforms";
 const PLAY_STORE_URL =
   "https://play.google.com/store/apps/details?id=app.ok200.android";
 const CHROMEOS_INTENT_URL =
@@ -133,7 +133,7 @@ function App() {
         }}
       >
         <img src="../../icons/ok-32.png" width={32} height={32} alt="" />
-        <span style={{ fontSize: 18, fontWeight: 600 }}>200 OK</span>
+        <span style={{ fontSize: 18, fontWeight: 600 }}>200 OK Web Server</span>
       </div>
 
       {state === "loading" && (
@@ -167,7 +167,7 @@ function App() {
             Serve any folder over HTTP. Install the desktop app to get started.
           </p>
           <a
-            href={REPO_URL}
+            href={PRODUCT_URL}
             target="_blank"
             rel="noopener noreferrer"
             style={primaryLink}
@@ -180,7 +180,8 @@ function App() {
       {state === "chromeos" && (
         <>
           <p style={{ color: "#666", margin: "0 0 12px", fontSize: 13 }}>
-            On ChromeOS, launch the 200 OK Android app to serve files locally.
+            On ChromeOS, launch the 200 OK Web Server Android app to serve files
+            locally.
           </p>
           <button
             type="button"
@@ -239,8 +240,8 @@ function App() {
 const primaryButton: React.CSSProperties = {
   display: "inline-block",
   padding: "8px 20px",
-  background: "#2563eb",
-  color: "#fff",
+  background: "#f8d203",
+  color: "#1a1a1a",
   border: "none",
   borderRadius: 6,
   fontSize: 14,

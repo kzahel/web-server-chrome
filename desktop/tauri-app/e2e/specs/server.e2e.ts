@@ -1,8 +1,10 @@
 import {
   clickStart,
   clickStop,
+  getStatus,
   isServerUrlVisible,
   setDirectory,
+  setOptions,
   setPort,
   waitForServerUrl,
 } from "../helpers/app";
@@ -36,13 +38,15 @@ describe("200 OK Desktop E2E", () => {
     }
   });
 
-  it("shows error when no directory is set", async () => {
+  it("prevents start when no directory is set", async () => {
     await setDirectory("");
-    await clickStart();
-    const errorEl = await $('[data-testid="error-msg"]');
-    await errorEl.waitForExist({ timeout: 5000 });
-    const error = await errorEl.getText();
-    expect(error).toBeTruthy();
+    const start = await $('[data-testid="start-btn"]');
+    await browser.waitUntil(() =>
+      start.isEnabled().then((enabled) => !enabled),
+    );
+    const assessment = await $('[data-testid="root-assessment"]');
+    expect(await assessment.getText()).toContain("Choose a folder");
+    expect(await getStatus()).toBe("Stopped");
   });
 
   it("starts server and displays URL", async () => {
@@ -116,6 +120,7 @@ describe("200 OK Desktop E2E", () => {
   it("includes CORS headers", async () => {
     await setDirectory(fixtures.rootDir);
     await setPort(0);
+    await setOptions({ cors: true });
     await clickStart();
     const url = await waitForServerUrl();
 

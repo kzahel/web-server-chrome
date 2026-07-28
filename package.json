@@ -1,5 +1,9 @@
 {
   "private": true,
+  "license": "MIT",
+  "homepage": "https://ok200.app/",
+  "repository": "github:kzahel/web-server-chrome",
+  "bugs": "https://ok200.app/feedback",
   "workspaces": [
     "packages/*",
     "desktop/tauri-app",

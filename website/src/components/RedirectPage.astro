@@ -1,0 +1,96 @@
+---
+interface Props {
+  destination: string;
+  heading: string;
+  title: string;
+}
+
+const { destination, heading, title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0; url=${destination}`} />
+    <link rel="canonical" href={destination} />
+    <title>{title}</title>
+    <script is:inline define:vars={{ destination }}>
+      window.location.replace(destination);
+    </script>
+  </head>
+  <body>
+    <main>
+      <img src="/logo-128.png" alt="" />
+      <h1>{heading}</h1>
+      <p>
+        Taking you to the current 200 OK Web Server feedback location.
+      </p>
+      <a href={destination}>Continue to GitHub Issues</a>
+    </main>
+  </body>
+</html>
+
+<style>
+  :global(*) {
+    box-sizing: border-box;
+  }
+
+  :global(html) {
+    color-scheme: light dark;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+
+  :global(body) {
+    min-height: 100vh;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    background: #0d0d0d;
+    color: #f7f7f5;
+  }
+
+  main {
+    width: min(90vw, 460px);
+    text-align: center;
+  }
+
+  img {
+    width: 72px;
+    height: 72px;
+  }
+
+  h1 {
+    margin: 20px 0 8px;
+    font-size: 1.5rem;
+  }
+
+  p {
+    margin: 0 0 24px;
+    color: #aaa;
+    line-height: 1.5;
+  }
+
+  a {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: #f8d203;
+    color: #1a1a1a;
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :global(body) {
+      background: #f7f7f5;
+      color: #1a1a1a;
+    }
+
+    p {
+      color: #666;
+    }
+  }
+</style>

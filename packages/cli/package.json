@@ -10,11 +10,13 @@
     "dist/cli.js",
     "README.md"
   ],
+  "homepage": "https://ok200.app/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kzahel/web-server.git",
+    "url": "git+https://github.com/kzahel/web-server-chrome.git",
     "directory": "packages/cli"
   },
+  "bugs": "https://ok200.app/feedback",
   "license": "MIT",
   "engines": {
     "node": ">=18"

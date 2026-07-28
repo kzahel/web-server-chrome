@@ -106,6 +106,20 @@ test("rejects updater URLs outside the tagged GitHub release", () => {
   );
 });
 
+test("rejects a non-AppImage Linux updater", () => {
+  const data = fixture();
+  data.release.assets.push({
+    name: `200.OK_${version}_amd64.deb.sig`,
+    digest,
+  });
+  data.latest.platforms["linux-x86_64"].url =
+    `https://github.com/${repository}/releases/download/${tag}/200.OK_${version}_amd64.deb`;
+  assert.throws(
+    () => validateDesktopRelease({ ...data, tag, repository }),
+    /Linux updater must use the recommended AppImage/,
+  );
+});
+
 test("writes stable checksums only for assets retained in the release", () => {
   const directory = fs.mkdtempSync(
     path.join(os.tmpdir(), "ok200-release-test-"),

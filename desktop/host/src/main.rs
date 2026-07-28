@@ -41,6 +41,26 @@ fn write_message(value: &serde_json::Value) -> io::Result<()> {
     write_message_to(&mut io::stdout().lock(), value)
 }
 
+#[cfg(target_os = "linux")]
+fn linux_app_candidates(host_path: &std::path::Path) -> Vec<std::path::PathBuf> {
+    let mut candidates = Vec::new();
+    if let Some(dir) = host_path.parent() {
+        for name in ["200-ok", "ok200-desktop", "200 OK"] {
+            candidates.push(dir.join(name));
+        }
+    }
+
+    if let Some(appimage) = ok200_common::get_recorded_appimage_path() {
+        candidates.push(appimage);
+    }
+
+    if let Some(home) = dirs::home_dir() {
+        candidates.push(home.join(".local/bin/200-ok.AppImage"));
+    }
+
+    candidates
+}
+
 fn handle_message(msg: &serde_json::Value) -> serde_json::Value {
     let action = msg.get("action").and_then(|v| v.as_str()).unwrap_or("");
 
@@ -94,15 +114,9 @@ fn launch_app() -> Result<(), String> {
 
     #[cfg(target_os = "linux")]
     {
-        // Try to find the Tauri binary relative to our own path
         let host_path = std::env::current_exe().map_err(|e| format!("cannot find own exe: {e}"))?;
-        let dir = host_path
-            .parent()
-            .ok_or_else(|| "cannot find parent directory".to_string())?;
-
-        for name in &["200-ok", "ok200-desktop", "200 OK"] {
-            let candidate = dir.join(name);
-            if candidate.exists() {
+        for candidate in linux_app_candidates(&host_path) {
+            if candidate.is_file() {
                 std::process::Command::new(&candidate)
                     .spawn()
                     .map_err(|e| format!("failed to spawn {}: {e}", candidate.display()))?;
@@ -179,6 +193,8 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(target_os = "linux")]
+    use serial_test::serial;
     use std::io::Cursor;
 
     #[test]
@@ -237,5 +253,28 @@ mod tests {
         assert_eq!(response["action"], "launch");
         // In test/CI the app won't be installed, so ok will be false
         assert!(response.get("ok").is_some());
+    }
+
+    #[cfg(target_os = "linux")]
+    #[test]
+    #[serial]
+    fn test_linux_candidates_include_recorded_appimage() {
+        let tmp = tempfile::tempdir().unwrap();
+        let key = "OK200_CONFIG_DIR";
+        let original = std::env::var(key).ok();
+        std::env::set_var(key, tmp.path().join("config"));
+
+        let appimage = tmp.path().join("custom name.AppImage");
+        std::fs::write(&appimage, b"appimage").unwrap();
+        let appimage = ok200_common::record_appimage_path(&appimage).unwrap();
+
+        let host = tmp.path().join("lib/ok200/ok200-host");
+        let candidates = linux_app_candidates(&host);
+        assert!(candidates.contains(&appimage));
+
+        match original {
+            Some(val) => std::env::set_var(key, val),
+            None => std::env::remove_var(key),
+        }
     }
 }

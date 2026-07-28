@@ -13,6 +13,9 @@ pub fn register_native_messaging_hosts(app: &tauri::AppHandle) -> Result<usize, 
     // location that persists after the AppImage exits.
     #[cfg(target_os = "linux")]
     let host_path = if std::env::var_os("APPDIR").is_some() {
+        if let Err(e) = register_appimage_installation() {
+            eprintln!("native-host: failed to register AppImage installation: {e}");
+        }
         match copy_sidecar_for_appimage(&host_path) {
             Ok(stable_path) => {
                 eprintln!(
@@ -171,21 +174,141 @@ fn register_windows_browsers(
     Ok(count)
 }
 
-/// Copy the sidecar binary from the AppImage FUSE mount to `~/.local/lib/ok200/`.
+/// Copy the sidecar binary from the `AppImage` FUSE mount to `~/.local/lib/ok200/`.
 #[cfg(target_os = "linux")]
 fn copy_sidecar_for_appimage(fuse_path: &std::path::Path) -> Result<std::path::PathBuf, String> {
     let home = dirs::home_dir().ok_or("could not determine home directory")?;
     let lib_dir = home.join(".local/lib/ok200");
-    std::fs::create_dir_all(&lib_dir).map_err(|e| format!("mkdir {}: {e}", lib_dir.display()))?;
+    copy_sidecar_to_lib_dir(fuse_path, &lib_dir)
+}
+
+#[cfg(target_os = "linux")]
+fn copy_sidecar_to_lib_dir(
+    fuse_path: &std::path::Path,
+    lib_dir: &std::path::Path,
+) -> Result<std::path::PathBuf, String> {
+    std::fs::create_dir_all(lib_dir).map_err(|e| format!("mkdir {}: {e}", lib_dir.display()))?;
 
     let dest = lib_dir.join("ok200-host");
-    std::fs::copy(fuse_path, &dest)
-        .map_err(|e| format!("copy {} -> {}: {e}", fuse_path.display(), dest.display()))?;
+    let staged = lib_dir.join(format!("ok200-host.{}.tmp", std::process::id()));
+    std::fs::copy(fuse_path, &staged)
+        .map_err(|e| format!("copy {} -> {}: {e}", fuse_path.display(), staged.display()))?;
 
     // Ensure executable
     use std::os::unix::fs::PermissionsExt;
     let perms = std::fs::Permissions::from_mode(0o755);
-    std::fs::set_permissions(&dest, perms).map_err(|e| format!("chmod {}: {e}", dest.display()))?;
+    if let Err(e) = std::fs::set_permissions(&staged, perms) {
+        let _ = std::fs::remove_file(&staged);
+        return Err(format!("chmod {}: {e}", staged.display()));
+    }
+    if let Err(e) = std::fs::rename(&staged, &dest) {
+        let _ = std::fs::remove_file(&staged);
+        return Err(format!(
+            "replace {} with {}: {e}",
+            dest.display(),
+            staged.display()
+        ));
+    }
 
     Ok(dest)
+}
+
+/// Remember the `AppImage` and install a user-level desktop identity.
+///
+/// `ok200-host` is copied out of the temporary FUSE mount. The recorded path
+/// gives that stable helper a direct launch target, while `200-ok.desktop`
+/// makes the `AppImage` visible in application menus and preserves the helper's
+/// existing `gtk-launch 200-ok` fallback.
+#[cfg(target_os = "linux")]
+fn register_appimage_installation() -> Result<(), String> {
+    let appimage = std::env::var_os("APPIMAGE").ok_or("APPIMAGE is not set")?;
+    let appimage = ok200_common::record_appimage_path(std::path::Path::new(&appimage))?;
+    let data_dir = dirs::data_dir().ok_or("could not determine user data directory")?;
+
+    let icon_name = "ok200-desktop";
+    if let Some(appdir) = std::env::var_os("APPDIR") {
+        let icon_source = std::path::PathBuf::from(appdir).join("200 OK.png");
+        let icon_dir = data_dir.join("icons/hicolor/128x128/apps");
+        if icon_source.is_file() {
+            std::fs::create_dir_all(&icon_dir)
+                .map_err(|e| format!("mkdir {}: {e}", icon_dir.display()))?;
+            let icon_dest = icon_dir.join(format!("{icon_name}.png"));
+            std::fs::copy(&icon_source, &icon_dest).map_err(|e| {
+                format!(
+                    "copy {} -> {}: {e}",
+                    icon_source.display(),
+                    icon_dest.display()
+                )
+            })?;
+        }
+    }
+
+    let applications_dir = data_dir.join("applications");
+    std::fs::create_dir_all(&applications_dir)
+        .map_err(|e| format!("mkdir {}: {e}", applications_dir.display()))?;
+    let desktop_path = applications_dir.join("200-ok.desktop");
+    let desktop_entry = format!(
+        "[Desktop Entry]\n\
+         Type=Application\n\
+         Name=200 OK\n\
+         Comment=200 OK Web Server Desktop App\n\
+         Exec={} %U\n\
+         Icon={icon_name}\n\
+         Terminal=false\n\
+         Categories=Development;Network;\n\
+         StartupWMClass=ok200-desktop\n",
+        desktop_exec_arg(&appimage)
+    );
+    std::fs::write(&desktop_path, desktop_entry)
+        .map_err(|e| format!("write {}: {e}", desktop_path.display()))?;
+    eprintln!(
+        "native-host: registered AppImage desktop entry: {}",
+        desktop_path.display()
+    );
+
+    Ok(())
+}
+
+#[cfg(target_os = "linux")]
+fn desktop_exec_arg(path: &std::path::Path) -> String {
+    let escaped = path
+        .to_string_lossy()
+        .replace('\\', "\\\\")
+        .replace('"', "\\\"")
+        .replace('`', "\\`")
+        .replace('$', "\\$");
+    format!("\"{escaped}\"")
+}
+
+#[cfg(all(test, target_os = "linux"))]
+mod tests {
+    use super::{copy_sidecar_to_lib_dir, desktop_exec_arg};
+    use std::path::Path;
+
+    #[test]
+    fn desktop_exec_arg_quotes_reserved_characters() {
+        assert_eq!(
+            desktop_exec_arg(Path::new("/tmp/200 OK $preview.AppImage")),
+            "\"/tmp/200 OK \\$preview.AppImage\""
+        );
+    }
+
+    #[test]
+    fn sidecar_refresh_atomically_replaces_existing_file() {
+        let tmp = tempfile::tempdir().unwrap();
+        let source = tmp.path().join("source-host");
+        let lib_dir = tmp.path().join("lib");
+        std::fs::create_dir_all(&lib_dir).unwrap();
+        std::fs::write(&source, b"new host").unwrap();
+        std::fs::write(lib_dir.join("ok200-host"), b"old host").unwrap();
+
+        let installed = copy_sidecar_to_lib_dir(&source, &lib_dir).unwrap();
+        assert_eq!(installed, lib_dir.join("ok200-host"));
+        assert_eq!(std::fs::read(installed).unwrap(), b"new host");
+        assert_eq!(
+            std::fs::read_dir(&lib_dir).unwrap().count(),
+            1,
+            "staged sidecar should be renamed or cleaned up"
+        );
+    }
 }

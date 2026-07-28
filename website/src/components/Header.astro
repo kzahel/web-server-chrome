@@ -15,6 +15,7 @@ const { activePage } = Astro.props;
     <nav>
       {activePage === 'home' ? (
         <>
+          <a href="/download">Download</a>
           <a href="#features" class="mobile-hide">Features</a>
           <a href="#platforms" class="mobile-hide">Platforms</a>
           <a href="#cli">CLI</a>
@@ -23,8 +24,9 @@ const { activePage } = Astro.props;
         </>
       ) : (
         <>
-          <a href="/#features">Features</a>
-          <a href="/#platforms">Platforms</a>
+          <a href="/download" class={activePage === 'download' ? 'active' : undefined}>Download</a>
+          <a href="/#features" class="mobile-hide">Features</a>
+          <a href="/#platforms" class="mobile-hide">Platforms</a>
           <a href="/feedback">Feedback</a>
           <a href="https://github.com/kzahel/web-server-chrome">Source</a>
         </>

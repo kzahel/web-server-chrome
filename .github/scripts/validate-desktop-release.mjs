@@ -101,6 +101,16 @@ export function validateDesktopRelease({ release, latest, tag, repository }) {
     requireAsset(assetNames, `${assetName}.sig`);
   }
 
+  const linuxUpdaterName = decodeURIComponent(
+    latest.platforms["linux-x86_64"].url.slice(expectedUrlPrefix.length),
+  );
+  const expectedLinuxUpdater = `200.OK_${version}_amd64.AppImage`;
+  if (linuxUpdaterName !== expectedLinuxUpdater) {
+    fail(
+      `Linux updater must use the recommended AppImage: ${linuxUpdaterName}`,
+    );
+  }
+
   return { version, requiredInstallers };
 }
 

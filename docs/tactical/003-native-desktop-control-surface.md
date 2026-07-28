@@ -160,4 +160,7 @@ The Rust tests prove root rejection, state persistence, idempotent lifecycle,
 and real-socket serving independently. The remaining Tauri E2E harness work is
 not part of the accepted macOS product checkpoint. Windows/Linux validation,
 release signing, updater migration, cross-platform installers, and release
-publication remain gated by the parent tactical.
+publication remained gated by the parent tactical at this checkpoint.
+Subsequent Windows and published Linux evidence is recorded in
+[`006-windows-desktop-validation.md`](006-windows-desktop-validation.md) and
+[`007-linux-desktop-validation.md`](007-linux-desktop-validation.md).

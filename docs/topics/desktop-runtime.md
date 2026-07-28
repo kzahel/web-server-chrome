@@ -8,8 +8,11 @@ Topic: desktop-native-core
 
 Status: **Rust-native desktop `v0.1.4` is published with complete signed
 artifacts; installed macOS and Windows pre-release product smoke is accepted.
-Native Linux smoke, exact published Windows install/signature inspection, and
-the installed `0.1.3` → `0.1.4` update remain pending.**
+Published Linux DEB and AppImage server smoke and DEB extension launch are
+accepted. The current source candidate implements the AppImage-only
+native-host repair and AppImage-first installation path; a signed follow-up
+artifact, exact published Windows install/signature inspection, and an
+installed update remain pending.**
 
 Last reconciled: **2026-07-28**.
 
@@ -24,6 +27,10 @@ in
 [Tactical 004](../tactical/004-portrait-desktop-polish-and-directory-listing.md).
 The in-app updater behavior and its signed public-artifact proof are recorded
 in [Tactical 005](../tactical/005-in-app-desktop-updater.md).
+Published Linux package smoke and the AppImage launcher defect are recorded in
+[Tactical 007](../tactical/007-linux-desktop-validation.md).
+The accepted AppImage-first repair and distribution path are recorded in
+[Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
 Current product naming is governed by
 [`product-branding.md`](product-branding.md).
 
@@ -75,8 +82,8 @@ not requirements for this migration.
 
 | Surface | Runtime | Current role | Direction |
 |---|---|---|---|
-| Desktop `main` | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | Same runtime shipped in `v0.1.4` | Continue compatibility/resource measurements and remaining product smoke |
-| Desktop release `v0.1.4` | Tauri/React controls with the Rust server state and HTTP core | Complete signed release for macOS, Windows, and Linux | Verify exact Windows clean install, installed update, and native Linux behavior |
+| Desktop source candidate | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | `v0.1.4` runtime plus AppImage-first integration and relaunch repair | Publish and accept the signed AppImage follow-up, then continue compatibility/resource measurements |
+| Desktop release `v0.1.4` | Tauri/React controls with the Rust server state and HTTP core | Complete signed release; published Linux DEB/AppImage server path accepted | Verify exact Windows clean install, installed update, AppImage-only native-host relaunch, and RPM-native installation |
 | Previous desktop `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Partial legacy release and updater source | Must update in place to `v0.1.4` without identity or settings loss |
 | Android `v0.1.2` | QuickJS runs the TypeScript engine; Kotlin/Java provides native I/O and Compose UI | Published app | Defer changes while it works |
 | CLI `v0.1.1` | Node.js runs the TypeScript engine and Node adapters | Published developer CLI | Keep independent; do not make it block desktop |
@@ -220,18 +227,47 @@ Automatic checks are quiet unless an update is available. “Update and
 restart” delegates signature verification and installation to the Tauri
 plugin, then relaunches through the process plugin.
 
+## Linux distribution decision
+
+AppImage is the recommended Linux desktop package. The supported installer
+places a checksum-verified AppImage at
+`~/.local/bin/200-ok.AppImage`, installs browser and desktop integration below
+the current user's home directory, and requires no administrator token. A
+directly launched AppImage records its real path and installs the same stable
+desktop identity, so the copied native host can launch it after the temporary
+FUSE mount disappears.
+
+DEB and RPM remain published as secondary system packages for users who
+deliberately prefer them. Their installation requires administrator
+privileges and their updates are manual until a separate bundle-aware package
+update policy is accepted. The currently supported Linux release architecture
+is x86_64.
+
+Implementation and release sequencing are recorded in
+[Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
+
 ## Known gaps
 
 - Native folder selection and the full visible start/serve/stop/relaunch flow
-  have been accepted in installed macOS and Windows review apps. The Windows
+  have been accepted in installed macOS and Windows review apps and in the
+  exact published Linux DEB. The Windows
   run also passed per-user NSIS installation, external HTTP behavior,
   persistence, background single-instance lifecycle, headless updater service
   flow, native-host registration/framing/launch, real unpacked-extension
   invocation, and uninstall of installed binaries, registration, and per-user
   state. Tray-only controls, MSI installation, and inspection of the exact
   published `v0.1.4` Windows artifacts remain pending in
-  [Tactical 006](../tactical/006-windows-desktop-validation.md). Linux remains
-  pending.
+  [Tactical 006](../tactical/006-windows-desktop-validation.md).
+- The exact published Linux AppImage also passes launch, visible
+  start/serve/stop, and current updater-check smoke. Its copied stable native
+  host cannot relaunch or focus an AppImage-only installation because it falls
+  back to the nonexistent desktop ID `200-ok`. The source candidate repairs
+  this by recording the AppImage path and installing that identity, but the
+  change is not yet in a signed public artifact. The DEB's real
+  extension-to-host path passes. RPM install/launch remains untested on a
+  native RPM-family system; see
+  [Tactical 007](../tactical/007-linux-desktop-validation.md) and
+  [Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
 - The existing WebdriverIO E2E specification targets the Rust command path and
   type-checks, but its direct `tauri-driver` runner is Windows/Linux-only and
   was not executed on macOS.
@@ -243,4 +279,5 @@ plugin, then relaunches through the process plugin.
   `0.1.3` clients. The in-app updater previously installed and relaunched the
   signed public macOS `0.1.3` artifact from a controlled `0.1.2` review build,
   but an actual installed `0.1.3` → `0.1.4` transition remains unproven, as do
-  Windows and Linux updater flows.
+  Windows and Linux update transitions. Linux `0.1.4` current-version
+  detection itself passes.

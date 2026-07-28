@@ -34,9 +34,10 @@ all shipped. Their runtimes are not currently unified:
 
 Desktop `main` now uses the standalone Rust core for HTTP, filesystem, and
 server lifecycle work; its Tauri webview is only a static React control
-surface. This cutover is an unsigned local-review candidate, not a published
-release, so the released desktop behavior remains unchanged. Android and the
-published Node CLI are deliberately deferred while they work.
+surface. That runtime shipped in signed desktop `v0.1.4`; the current source
+candidate additionally contains the AppImage-first Linux installation and
+native-host relaunch repair. Android and the published Node CLI are
+deliberately deferred while they work.
 
 See the living
 [product branding decision](docs/topics/product-branding.md),
@@ -47,9 +48,9 @@ See the living
 
 - Chrome Extension: [200 OK Web Server on the Chrome Web Store](https://chromewebstore.google.com/detail/web-server-for-chrome/lpkjdhnmgkhaabhimpdinmdgejoaejic?authuser=0&hl=en)
 - Android / ChromeOS: [200 OK on Google Play](https://play.google.com/store/apps/details?id=app.ok200.android)
-- Desktop app: packaged separately; `v0.1.3` is an early partial release and
-  does not yet pass the current
-  [release-readiness gate](docs/topics/desktop-release-readiness.md)
+- Desktop app: [download the latest signed release](https://ok200.app/download).
+  AppImage is recommended on Linux because it installs and updates without an
+  administrator password; DEB and RPM remain secondary system packages.
 
 ### CLI Usage
 
@@ -86,8 +87,8 @@ npx ok200 ./dist --upload          # enable PUT/POST file uploads
 ## Roadmap
 
 ### Coming Soon
-- Hardened signed desktop releases for Mac, Windows, and Linux
-- Complete product smoke and release the Rust-native desktop app
+- Complete exact-artifact desktop product smoke on Windows and Linux
+- Publish and accept the AppImage-first Linux follow-up
 - Expanded Chrome Extension + desktop helper integration
 - HTTPS with self-signed cert generation
 - HTTP Basic Auth

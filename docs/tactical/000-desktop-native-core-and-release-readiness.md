@@ -8,7 +8,12 @@ the updater control flow is recorded in
 [`005-in-app-desktop-updater.md`](005-in-app-desktop-updater.md); and
 native Windows validation and remediation are recorded in
 [`006-windows-desktop-validation.md`](006-windows-desktop-validation.md).
-Tagged release proof remains pending.
+Published Linux package validation and the AppImage launcher defect are
+recorded in
+[`007-linux-desktop-validation.md`](007-linux-desktop-validation.md).
+The accepted AppImage-first distribution repair is implemented in
+[`008-appimage-first-linux-distribution.md`](008-appimage-first-linux-distribution.md).
+The complete `desktop-v0.1.4` tagged release proof is accepted.
 
 Topics:
 
@@ -123,6 +128,7 @@ becomes a useful current bug surface again.
 | P1 | Release-body filenames do not match uploaded Tauri asset names | Every generated link is derived from or checked against release assets |
 | P1 | Extension links to a stale private GitHub repository | Link is removed or points to the public canonical destination |
 | P1 | Migration/homepage copy treats the extension as feature-complete server | Copy consistently explains extension + desktop/Android roles |
+| P1 | Linux has no supported default installer and the published AppImage helper cannot relaunch it | Verified per-user AppImage installer, stable desktop identity, real extension launch, and signed update pass |
 | P2 | Desktop current-vs-target architecture is contradictory in docs | Topic, README, vision, agent guidance, and old plans agree |
 
 ## Workstream A: release and migration deadline
@@ -178,7 +184,11 @@ mark any non-production test release after inspection.
   `stapler`.
 - [ ] Verify Windows EXE/MSI with `Get-AuthenticodeSignature` and a clean VM
   install/serve/uninstall smoke.
-- [ ] Verify Linux install/launch/serve for the published package set.
+- [ ] Verify Linux install/launch/serve for the published package set. Exact
+  DEB and AppImage server smoke passes; AppImage-only native-host relaunch and
+  RPM-native install remain open in Tactical 007. The source repair and
+  AppImage-first package policy are implemented in Tactical 008 and require a
+  signed follow-up artifact.
 - [ ] Verify updater metadata and update from `v0.1.3`.
 - [ ] Record artifact names, hashes, CI run, and inspection results in the
   release-readiness topic.
@@ -361,3 +371,8 @@ This parent closes only when:
   published extension identity, and current-user NSIS uninstall owns graceful
   shutdown plus cleanup of exact product app-data paths. Tray automation,
   elevated MSI smoke, and signed-candidate verification remain pending.
+- **2026-07-28:** Exact published Linux DEB and AppImage visible
+  start/serve/stop smoke passes, and the DEB passes real extension launch. The
+  copied AppImage helper cannot relaunch an AppImage-only installation because
+  its `gtk-launch 200-ok` fallback has no matching desktop identity; RPM-native
+  installation and an actual update transition remain pending.

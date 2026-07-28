@@ -2682,6 +2682,7 @@ dependencies = [
 name = "ok200-host"
 version = "0.1.4"
 dependencies = [
+ "dirs 5.0.1",
  "ok200-common",
  "serde",
  "serde_json",

@@ -27,6 +27,8 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
+      - name: Validate Linux installer
+        run: bash -n website/public/install.sh
       - name: Install and build
         run: |
           pnpm install --frozen-lockfile

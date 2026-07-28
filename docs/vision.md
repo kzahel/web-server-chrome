@@ -27,8 +27,8 @@ As of 2026-07-28:
 | Surface | Runtime | Released state |
 |---|---|---|
 | CLI | TypeScript engine on Node.js | `v0.1.1` |
-| Desktop release | Tauri/React controls; Rust server state and HTTP core | `v0.1.4`, complete signed artifact release; clean-system acceptance continuing |
-| Desktop `main` | Same Rust-native desktop runtime, plus subsequent work | Published baseline is `v0.1.4` |
+| Desktop release | Tauri/React controls; Rust server state and HTTP core | `v0.1.4`, complete signed artifact release; Linux DEB/AppImage server smoke accepted, remaining package/platform acceptance continuing |
+| Desktop source candidate | Same Rust-native desktop runtime, plus AppImage-first Linux integration and native-host repair | Published baseline is `v0.1.4`; signed follow-up pending |
 | Android / ChromeOS | Compose UI; TypeScript engine in QuickJS; Kotlin native I/O | `v0.1.2`, published |
 | Chrome extension | MV3 launcher/status UI | `v0.1.3`, published |
 | Legacy Chrome App | Chrome packaged-app APIs | Migration channel approaching end of life |
@@ -113,6 +113,10 @@ This is a scoped correction, not a mandate to unify every platform immediately.
 
 - Keep desktop release publication fail closed; `v0.1.4` proved the mechanism.
 - Complete clean-system acceptance of the exact published Windows installers.
+- Repair and retest AppImage-only native-host relaunch; the published Linux
+  DEB extension path already passes. AppImage is the accepted recommended
+  Linux package; publish and accept the implemented per-user repair and
+  installer before public promotion.
 - Keep updater metadata and artifact coverage complete across releases.
 - Fix extension links and platform-aware migration copy.
 - Submit the final restrained legacy notification update before the

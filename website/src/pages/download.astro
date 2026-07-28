@@ -1,0 +1,293 @@
+---
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const fallbackRelease =
+  "https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.4";
+---
+
+<BaseLayout
+  title="Download 200 OK Web Server"
+  description="Download 200 OK Web Server for Linux, macOS, or Windows. AppImage is the recommended Linux installation."
+>
+  <Header activePage="download" />
+
+  <main>
+    <section class="download-hero">
+      <div class="container">
+        <p class="eyebrow">Desktop app</p>
+        <h1>Download 200 OK Web Server</h1>
+        <p class="lede">
+          Choose a folder and serve it from a small native desktop app. The
+          latest signed release is <strong id="release-version">v0.1.4</strong>.
+        </p>
+      </div>
+    </section>
+
+    <section class="downloads">
+      <div class="container platform-list">
+        <article class="download-card recommended" id="linux">
+          <div>
+            <p class="platform-label">Linux · x86_64</p>
+            <h2>AppImage</h2>
+            <p>
+              Recommended. Installs for your user, needs no administrator
+              password, integrates with the Chrome extension, and updates in
+              place.
+            </p>
+          </div>
+          <div class="install-command">
+            <code>curl -fsSL https://ok200.app/install.sh | bash</code>
+          </div>
+          <div class="actions">
+            <a
+              class="btn btn-primary"
+              data-asset="appimage"
+              href={fallbackRelease}>Download AppImage</a
+            >
+            <a class="text-link" data-release-link href={fallbackRelease}
+              >Release notes and checksums</a
+            >
+          </div>
+          <details>
+            <summary>Other Linux packages</summary>
+            <p>
+              DEB and RPM install system-wide and require administrator
+              privileges. Update those packages manually.
+            </p>
+            <div class="alternate-links">
+              <a data-asset="deb" href={fallbackRelease}>Download DEB</a>
+              <a data-asset="rpm" href={fallbackRelease}>Download RPM</a>
+            </div>
+          </details>
+        </article>
+
+        <article class="download-card" id="mac">
+          <div>
+            <p class="platform-label">macOS</p>
+            <h2>Signed PKG</h2>
+            <p>
+              Recommended signed, notarized, and stapled installer. Choose the
+              build matching your Mac.
+            </p>
+          </div>
+          <div class="actions">
+            <a class="btn btn-primary" data-asset="mac-arm" href={fallbackRelease}
+              >Apple Silicon PKG</a
+            >
+            <a class="btn btn-secondary" data-asset="mac-intel" href={fallbackRelease}
+              >Intel PKG</a
+            >
+          </div>
+        </article>
+
+        <article class="download-card" id="windows">
+          <div>
+            <p class="platform-label">Windows · x86_64</p>
+            <h2>Current-user EXE</h2>
+            <p>
+              Recommended. Installs for your Windows account without an
+              administrator password.
+            </p>
+          </div>
+          <div class="actions">
+            <a class="btn btn-primary" data-asset="windows-exe" href={fallbackRelease}
+              >Download EXE</a
+            >
+            <a class="text-link" data-asset="windows-msi" href={fallbackRelease}
+              >System-wide MSI</a
+            >
+          </div>
+        </article>
+
+        <p class="release-fallback">
+          If automatic link discovery is unavailable, use the
+          <a data-release-link href={fallbackRelease}>latest desktop release</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script is:inline>
+  (async function () {
+    var response = await fetch(
+      'https://api.github.com/repos/kzahel/web-server-chrome/releases?per_page=100',
+      { headers: { Accept: 'application/vnd.github+json' } },
+    );
+    if (!response.ok) return;
+
+    var releases = await response.json();
+    var release = releases.find(function (candidate) {
+      return !candidate.draft &&
+        !candidate.prerelease &&
+        candidate.tag_name.indexOf('desktop-v') === 0;
+    });
+    if (!release) return;
+
+    var version = release.tag_name.slice('desktop-v'.length);
+    var expected = {
+      appimage: '200.OK_' + version + '_amd64.AppImage',
+      deb: '200.OK_' + version + '_amd64.deb',
+      rpm: '200.OK-' + version + '-1.x86_64.rpm',
+      'mac-arm': '200_OK_' + version + '_aarch64.pkg',
+      'mac-intel': '200_OK_' + version + '_x64.pkg',
+      'windows-exe': '200.OK_' + version + '_x64-setup.exe',
+      'windows-msi': '200.OK_' + version + '_x64.msi',
+    };
+    var assets = new Map(
+      release.assets.map(function (asset) {
+        return [asset.name, asset.browser_download_url];
+      }),
+    );
+
+    document.getElementById('release-version').textContent = 'v' + version;
+    document.querySelectorAll('[data-release-link]').forEach(function (link) {
+      link.href = release.html_url;
+    });
+    document.querySelectorAll('[data-asset]').forEach(function (link) {
+      var name = expected[link.dataset.asset];
+      if (name && assets.has(name)) {
+        link.href = assets.get(name);
+      }
+    });
+  })().catch(function () {
+    // The pinned release links remain usable if GitHub API discovery fails.
+  });
+</script>
+
+<style>
+  .download-hero {
+    padding: 72px 0 40px;
+    text-align: center;
+  }
+
+  .eyebrow,
+  .platform-label {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .download-hero h1 {
+    font-size: clamp(34px, 7vw, 52px);
+    line-height: 1.1;
+    margin: 8px 0 16px;
+  }
+
+  .lede {
+    color: var(--text-secondary);
+    font-size: 18px;
+    margin: 0 auto;
+    max-width: 650px;
+  }
+
+  .downloads {
+    padding: 16px 0 80px;
+  }
+
+  .platform-list {
+    display: grid;
+    gap: 20px;
+  }
+
+  .download-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: grid;
+    gap: 20px;
+    padding: 28px;
+  }
+
+  .download-card.recommended {
+    border-color: var(--accent);
+  }
+
+  .download-card h2 {
+    font-size: 26px;
+    margin: 2px 0 6px;
+  }
+
+  .download-card p {
+    color: var(--text-secondary);
+  }
+
+  .install-command {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow-x: auto;
+    padding: 14px 16px;
+  }
+
+  .install-command code {
+    color: var(--accent);
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .actions,
+  .alternate-links {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .text-link,
+  details a,
+  .release-fallback a {
+    color: var(--text-primary);
+  }
+
+  details {
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+  }
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  details p {
+    margin: 12px 0;
+  }
+
+  .release-fallback {
+    color: var(--text-secondary);
+    font-size: 14px;
+    text-align: center;
+  }
+
+  @media (max-width: 600px) {
+    .download-hero {
+      padding-top: 48px;
+    }
+
+    .download-card {
+      padding: 22px;
+    }
+
+    .actions {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .actions .btn {
+      justify-content: center;
+    }
+
+    .install-command code {
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+  }
+</style>

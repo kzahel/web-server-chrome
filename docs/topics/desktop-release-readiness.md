@@ -7,16 +7,23 @@
 Topic: desktop-release-readiness
 
 Status: **`desktop-v0.1.4` is a complete signed Rust-core release and proves
-the fail-closed artifact/publication gate. Clean-system acceptance of the exact
-published Windows installers and the `0.1.3` → `0.1.4` updater transition
-remain pending before broad migration promotion.**
+the fail-closed artifact/publication gate. Published Linux DEB/AppImage server
+smoke and DEB extension launch pass; the AppImage-only launcher defect, exact
+published Windows acceptance, and the `0.1.3` → `0.1.4` updater transition
+remain in the public `v0.1.4` baseline before broad migration promotion.
+The current source candidate implements the AppImage-first repair and download
+path; signed follow-up acceptance is pending.**
 
 Last reconciled: **2026-07-28**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
 the release-pipeline implementation and tagged proof are recorded in
-[Tactical 001](../tactical/001-fail-closed-desktop-releases.md).
+[Tactical 001](../tactical/001-fail-closed-desktop-releases.md), and published
+Linux product evidence is recorded in
+[Tactical 007](../tactical/007-linux-desktop-validation.md).
+The AppImage-first Linux package decision and source repair are recorded in
+[Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
 
 ## Source of truth
 
@@ -95,7 +102,7 @@ removed detached signatures only after metadata validation; and then published
 | macOS PKG, arm64 and x64 | CI and an independent post-publication download passed `pkgutil --check-signature`, `spctl --type install`, and stapler validation | PKG is the accepted recommended macOS installer |
 | macOS DMG, arm64 and x64 | Downloaded containers pass `codesign --verify` | Signed alternative; PKG remains recommended because the DMG container is not held to the same stapled-ticket claim |
 | Windows NSIS EXE and MSI | CI reported Authenticode `Valid`, publisher `CN=Kyle Graehl`, for both build outputs; canonical uploaded names and published digests/checksums passed the finalizer | Signed Windows artifacts are published; independent Windows inspection of the exact downloads remains |
-| Linux AppImage/DEB/RPM | All three canonical assets are published and their downloaded hashes match `SHA256SUMS` | Build availability and updater coverage proven; native Linux product smoke remains |
+| Linux AppImage/DEB/RPM | All three canonical assets independently match `SHA256SUMS`; exact DEB and AppImage visible start/serve/stop pass on Ubuntu; DEB extension launch passes; RPM metadata/payload inspection passes | Native server path accepted for DEB/AppImage; AppImage-only native-host relaunch is defective and RPM-native install remains |
 | Tauri updater metadata | `latest.json` is version `0.1.4`, covers macOS arm64/x64, Windows x64, and Linux x64 with non-empty signatures and on-release URLs; Windows defaults to NSIS | Complete signed updater metadata published |
 
 Every retained release asset was downloaded after publication and matched
@@ -112,8 +119,11 @@ It does not replace clean-system product acceptance. Still required:
   Windows, then clean-install/serve/uninstall the recommended NSIS build;
 - perform an actual installed `0.1.3` → `0.1.4` signed update and verify
   settings, identity, native messaging, and serving afterward; and
-- complete native Linux install/serve/update smoke. Tray-only Windows checks
-  and the secondary elevated MSI flow remain separate known gaps.
+- fix and retest AppImage-only native-host relaunch and install/launch the RPM
+  on an RPM-family system. Linux DEB/AppImage server smoke and current-version
+  updater detection are complete; no Linux update transition was performed.
+  Tray-only Windows checks and the secondary elevated MSI flow remain separate
+  known gaps.
 
 ## Historical `v0.1.3` baseline
 
@@ -150,7 +160,8 @@ through the new “Update and restart” action. This proves the UI/plugin/serve
 control path and the existing macOS updater key. The signed Rust-core
 `v0.1.4` candidate and deployed metadata now exist, but the actual installed
 public `0.1.3` → `0.1.4` transition and its post-update behavior still need to
-be exercised, as do Windows/Linux updater flows.
+be exercised, as do Windows/Linux update transitions. The exact public Linux
+AppImage now separately passes `0.1.4` current-version detection.
 
 ## `v0.1.3` CI and publication defects
 
@@ -274,6 +285,51 @@ A desktop tag may be made public only after all of these pass.
 The `desktop-v0.1.4` run proves this pipeline shape for the Rust-core runtime.
 Clean-system installation and update acceptance remain product gates rather
 than artifact-publication uncertainties.
+
+## Linux post-publication evidence
+
+Native Linux validation is recorded in
+[Tactical 007](../tactical/007-linux-desktop-validation.md). On Ubuntu 24.04
+x86_64, the exact downloaded DEB installed through `apt`, opened the native GTK
+folder chooser, started from the visible control, served an external request
+and Rust directory listing, stopped with old-port teardown, persisted its
+configuration, remained resident after a normal background close, and
+was removed through `apt`; test-created per-user state was backed up
+separately. Its installed helper registered with Chromium browsers, passed
+framing, and passed a real published-extension popup → native host →
+single-instance launch flow.
+
+The exact AppImage launched through FUSE and passed the same visible
+start/serve/stop server smoke. Its `--check-update` path correctly reported
+current `0.1.4`. The RPM independently matched the public checksum and its
+metadata, payload, and dependencies were inspected; it was not installed on
+the Debian-family host.
+
+One package-specific correctness defect remains: the AppImage copies its
+helper to `~/.local/lib/ok200/ok200-host`, but that stable helper no longer
+knows the AppImage path and falls back to `gtk-launch 200-ok`. No such desktop
+ID exists, so AppImage-only extension launch returns
+`{"action":"launch","ok":false}`. The DEB extension path is accepted; a blanket
+all-Linux-package native-messaging claim is not.
+
+## Accepted Linux package policy
+
+AppImage is the recommended Linux package. The supported installer is
+per-user, checksum-verifies the public release asset, installs no system
+files, and does not request administrator privileges. Future release bodies
+and `ok200.app/download` present AppImage first.
+
+DEB and RPM remain required release assets but are secondary system packages.
+They require administrator privileges to install and are documented as manual
+update paths until a bundle-aware package updater is deliberately accepted.
+The release validator now also requires the Linux Tauri updater target to be
+the x86_64 AppImage.
+
+The source repair records the real AppImage path, installs a stable
+`200-ok.desktop` identity and icon, and teaches the copied native host to launch
+the recorded file. The public `v0.1.4` binary does not contain that repair. A
+signed follow-up release must pass direct-download and verified-installer
+extension-launch smoke before the new download surface is deployed.
 
 ## Windows local post-fix evidence
 

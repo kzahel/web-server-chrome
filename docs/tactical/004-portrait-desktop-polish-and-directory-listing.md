@@ -149,6 +149,9 @@ flow:
 Signing, updater migration, cross-platform installer proof, and release
 publication remain owned by the parent tactical.
 
-The implementation and macOS product checkpoint are complete. Windows and
-Linux must still prove the native folder picker, lifecycle controls, URL
-actions, directory listing, and actual start/serve/stop flow before release.
+The implementation and macOS product checkpoint are complete. At this
+checkpoint Windows and Linux still needed native product proof. Subsequent
+Windows evidence is recorded in
+[`006-windows-desktop-validation.md`](006-windows-desktop-validation.md), and
+published Linux package evidence is recorded in
+[`007-linux-desktop-validation.md`](007-linux-desktop-validation.md).

@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## [0.1.5]
+
+### Changed
+
+- Make AppImage the recommended Linux package and support a checksum-verified
+  per-user installation that does not require administrator privileges.
+
+### Fixed
+
+- Persist the real AppImage path and install a stable desktop identity so the
+  Chrome extension's copied native host can launch AppImage-only installs.
+- Refresh the copied Linux native host atomically when the AppImage starts.
+
 ## [0.1.4]
 
 ### Changed

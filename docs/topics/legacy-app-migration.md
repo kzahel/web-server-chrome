@@ -58,10 +58,17 @@ those are linked below.
 - The new extension and Android app are published. The extension is a launcher,
   not a replacement HTTP engine.
 - Desktop `v0.1.4` is a complete signed Rust-core artifact release and passed
-  the fail-closed publication gate. Exact published Windows install/signature
-  inspection, the installed `0.1.3` → `0.1.4` transition, and native Linux
-  smoke remain before broad migration promotion; see
+  the fail-closed publication gate. Published Linux DEB/AppImage server smoke
+  and DEB extension launch pass. Exact published Windows install/signature
+  inspection, the installed `0.1.3` → `0.1.4` transition, and repair of the
+  AppImage-only native-host relaunch defect remain before broad migration
+  promotion; see
   [`desktop-release-readiness.md`](desktop-release-readiness.md).
+- The current source candidate implements an AppImage-first, per-user Linux
+  installer and the corresponding native-host repair. It remains a candidate
+  destination until the signed follow-up AppImage and public download
+  deployment pass the acceptance in
+  [Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
 
 The old detailed plan in `docs/legacy-migration.md` described the unpublished
 maximum-nag candidate currently present in `legacy/`. Its cadence remains an
@@ -74,7 +81,7 @@ The landing page and notification must describe the platform split honestly:
 | User environment | Primary destination | Fallback |
 |---|---|---|
 | ChromeOS with Play support | 200 OK Web Server Android app on Google Play | Explain that the extension launches Android; do not promise native messaging |
-| Windows, macOS, Linux | 200 OK Web Server extension plus installed desktop app | Direct signed desktop download with platform-specific instructions |
+| Windows, macOS, Linux | 200 OK Web Server extension plus installed desktop app | Direct signed desktop download with platform-specific instructions; AppImage is the recommended no-admin Linux path |
 | Unsupported/no replacement detected | Platform-aware migration page | Signup/status information without claiming feature parity |
 
 The extension provides familiar Chrome presence, status, and launch behavior.

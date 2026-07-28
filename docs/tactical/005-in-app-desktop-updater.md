@@ -1,7 +1,8 @@
 # 005: In-App Desktop Updater
 
-Status: **implementation complete; signed candidate and cross-platform proof
-pending.**
+Status: **implementation complete; signed `v0.1.4` metadata is public, while
+the installed `0.1.3` → `0.1.4` transition and remaining cross-platform update
+proof are pending.**
 
 Topic: `desktop-release-readiness`
 

@@ -1,5 +1,8 @@
 # 200 OK Web Server
 
+The canonical current-product naming and legacy/search-language contract lives
+in [`topics/product-branding.md`](topics/product-branding.md).
+
 ## What this is
 
 200 OK is a lightweight successor to Web Server for Chrome, the Chrome

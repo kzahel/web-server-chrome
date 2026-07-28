@@ -19,7 +19,7 @@ tauri-plugin-shell = "2"
 ok200-common = { path = "../../common" }
 ok200-core = { path = "../../core" }
 tauri-plugin-dialog = "2"
-tokio = { version = "1", features = ["net", "rt", "sync", "io-util", "macros", "fs"] }
+tokio = { version = "1", features = ["rt", "sync", "macros", "fs"] }
 serde = { workspace = true }
 serde_json = { workspace = true }
 dirs = { workspace = true }

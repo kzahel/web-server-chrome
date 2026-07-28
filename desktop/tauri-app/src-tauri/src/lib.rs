@@ -8,11 +8,9 @@ use tauri::{
 };
 use tauri_plugin_autostart::ManagerExt as AutostartManagerExt;
 
-mod fs_commands;
 mod headless_updater;
 mod native_host;
 mod server_control;
-mod tcp;
 
 /// Strip the `\\?\` extended-length path prefix that Windows APIs produce.
 /// Chrome's native messaging launcher doesn't understand this prefix.
@@ -225,27 +223,7 @@ pub fn run() {
     }
 
     let app = tauri::Builder::default()
-        .manage(tcp::TcpState::new())
-        .manage(fs_commands::FsState::new())
         .invoke_handler(tauri::generate_handler![
-            tcp::tcp_server_create,
-            tcp::tcp_send,
-            tcp::tcp_close,
-            tcp::tcp_server_close,
-            tcp::tcp_server_address,
-            fs_commands::fs_open,
-            fs_commands::fs_read,
-            fs_commands::fs_write,
-            fs_commands::fs_close,
-            fs_commands::fs_stat,
-            fs_commands::fs_exists,
-            fs_commands::fs_readdir,
-            fs_commands::fs_mkdir,
-            fs_commands::fs_delete,
-            fs_commands::fs_realpath,
-            fs_commands::fs_list_tree,
-            fs_commands::fs_truncate,
-            fs_commands::fs_sync,
             server_control::server_get,
             server_control::server_update_config,
             server_control::server_start,

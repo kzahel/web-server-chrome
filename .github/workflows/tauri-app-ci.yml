@@ -248,6 +248,7 @@ jobs:
           releaseBody: ${{ steps.changelog.outputs.notes || 'See the assets to download and install this version.' }}
           releaseDraft: true
           prerelease: false
+          releaseAssetNamePattern: ${{ matrix.platform == 'windows-latest' && '200.OK_[version]_[arch][setup][ext]' || '' }}
           includeUpdaterJson: ${{ startsWith(github.ref, 'refs/tags/') }}
           updaterJsonKeepUniversal: true
           args: >-
@@ -403,7 +404,7 @@ jobs:
             echo "|----------|-|"
             echo "| macOS (Apple Silicon) | [PKG](${BASE}/200_OK_${VERSION}_aarch64.pkg) (recommended) · [DMG](${BASE}/200.OK_${VERSION}_aarch64.dmg) |"
             echo "| macOS (Intel) | [PKG](${BASE}/200_OK_${VERSION}_x64.pkg) (recommended) · [DMG](${BASE}/200.OK_${VERSION}_x64.dmg) |"
-            echo "| Windows | [EXE](${BASE}/200.OK_${VERSION}_x64-setup.exe) · [MSI](${BASE}/200.OK_${VERSION}_x64_en-US.msi) |"
+            echo "| Windows | [EXE](${BASE}/200.OK_${VERSION}_x64-setup.exe) (recommended) · [MSI](${BASE}/200.OK_${VERSION}_x64.msi) (system-wide) |"
             echo "| Linux | [DEB](${BASE}/200.OK_${VERSION}_amd64.deb) · [AppImage](${BASE}/200.OK_${VERSION}_amd64.AppImage) · [RPM](${BASE}/200.OK-${VERSION}-1.x86_64.rpm) |"
             echo ""
             echo "[SHA-256 checksums](${BASE}/SHA256SUMS)"

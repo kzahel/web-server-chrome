@@ -131,15 +131,17 @@ fn launch_app() -> Result<(), String> {
             .parent()
             .ok_or_else(|| "cannot find parent directory".to_string())?;
 
-        let app_exe = dir.join("200 OK.exe");
-        if app_exe.exists() {
-            std::process::Command::new(&app_exe)
-                .spawn()
-                .map_err(|e| format!("failed to spawn: {e}"))?;
-            return Ok(());
+        for name in ["ok200-desktop.exe", "200 OK.exe"] {
+            let app_exe = dir.join(name);
+            if app_exe.exists() {
+                std::process::Command::new(&app_exe)
+                    .spawn()
+                    .map_err(|e| format!("failed to spawn {}: {e}", app_exe.display()))?;
+                return Ok(());
+            }
         }
 
-        Err("could not find 200 OK.exe".to_string())
+        Err("could not find ok200-desktop.exe beside native host".to_string())
     }
 
     #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]

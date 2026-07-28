@@ -41,7 +41,8 @@
     },
     "windows": {
       "nsis": {
-        "installerHooks": "./nsis/hooks.nsh"
+        "installerHooks": "./nsis/hooks.nsh",
+        "installMode": "currentUser"
       },
       "webviewInstallMode": {
         "type": "embedBootstrapper"

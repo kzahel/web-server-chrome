@@ -1,39 +1,66 @@
-; NSIS installer hooks for 200 OK Web Server
+; Lightweight extensions to Tauri's standard per-user NSIS installer.
 
-!macro CUSTOM_PREINSTALL
-  ; Kill running processes before install
-  nsExec::Exec 'taskkill /f /im "200 OK.exe"'
-  nsExec::Exec 'taskkill /f /im ok200-host.exe'
+!macro _Kill200OKProcesses
+  nsis_tauri_utils::FindProcess "ok200-desktop.exe" $R0
+  ${If} $R0 = 0
+    nsis_tauri_utils::KillProcess "ok200-desktop.exe" $R0
+  ${EndIf}
+
+  nsis_tauri_utils::FindProcess "ok200-host.exe" $R0
+  ${If} $R0 = 0
+    nsis_tauri_utils::KillProcess "ok200-host.exe" $R0
+  ${EndIf}
+
   Sleep 500
 !macroend
 
-!macro CUSTOM_PREUNINSTALL
-  ; Kill running processes before uninstall
-  nsExec::Exec 'taskkill /f /im "200 OK.exe"'
-  nsExec::Exec 'taskkill /f /im ok200-host.exe'
-  Sleep 500
+!include "WordFunc.nsh"
+
+!macro NSIS_HOOK_PREINSTALL
+  !insertmacro _Kill200OKProcesses
 !macroend
 
-!macro CUSTOM_POSTINSTALL
-  ; Register native messaging host with Chromium browsers via registry
-  ; Manifest file path
-  nsExec::ExecToLog 'cmd /c echo {"name":"app.ok200.native","description":"200 OK Web Server Native Messaging Host","path":"$INSTDIR\\ok200-host.exe","type":"stdio","allowed_origins":["chrome-extension://lpkjdhnmgkhaabhimpdinmdgejoaejic/"]} > "$LOCALAPPDATA\app.ok200.desktop\app.ok200.native.json"'
+!macro NSIS_HOOK_POSTINSTALL
+  ; Tauri currently installs an external binary without its source target
+  ; suffix. The wildcard also tolerates a target-suffixed future layout.
+  FindFirst $0 $1 "$INSTDIR\ok200-host*.exe"
+  FindClose $0
 
-  ; Create registry keys for each browser
-  WriteRegStr HKCU "Software\Google\Chrome\NativeMessagingHosts\app.ok200.native" "" "$LOCALAPPDATA\app.ok200.desktop\app.ok200.native.json"
-  WriteRegStr HKCU "Software\Chromium\NativeMessagingHosts\app.ok200.native" "" "$LOCALAPPDATA\app.ok200.desktop\app.ok200.native.json"
-  WriteRegStr HKCU "Software\BraveSoftware\Brave-Browser\NativeMessagingHosts\app.ok200.native" "" "$LOCALAPPDATA\app.ok200.desktop\app.ok200.native.json"
-  WriteRegStr HKCU "Software\Microsoft\Edge\NativeMessagingHosts\app.ok200.native" "" "$LOCALAPPDATA\app.ok200.desktop\app.ok200.native.json"
+  ${If} $1 != ""
+    StrCpy $2 "$INSTDIR\$1"
+    ${WordReplace} $2 "\" "\\" "+" $3
+
+    CreateDirectory "$LOCALAPPDATA\app.ok200.desktop"
+    FileOpen $4 "$LOCALAPPDATA\app.ok200.desktop\app.ok200.native.json" w
+    FileWrite $4 '{$\r$\n'
+    FileWrite $4 '  "name": "app.ok200.native",$\r$\n'
+    FileWrite $4 '  "description": "200 OK Web Server Native Messaging Host",$\r$\n'
+    FileWrite $4 '  "path": "$3",$\r$\n'
+    FileWrite $4 '  "type": "stdio",$\r$\n'
+    FileWrite $4 '  "allowed_origins": [$\r$\n'
+    FileWrite $4 '    "chrome-extension://lpkjdhnmgkhaabhimpdinmdgejoaejic/"$\r$\n'
+    FileWrite $4 '  ]$\r$\n'
+    FileWrite $4 '}'
+    FileClose $4
+
+    StrCpy $5 "$LOCALAPPDATA\app.ok200.desktop\app.ok200.native.json"
+    WriteRegStr HKCU "Software\Google\Chrome\NativeMessagingHosts\app.ok200.native" "" $5
+    WriteRegStr HKCU "Software\Chromium\NativeMessagingHosts\app.ok200.native" "" $5
+    WriteRegStr HKCU "Software\BraveSoftware\Brave-Browser\NativeMessagingHosts\app.ok200.native" "" $5
+    WriteRegStr HKCU "Software\Microsoft\Edge\NativeMessagingHosts\app.ok200.native" "" $5
+  ${EndIf}
 !macroend
 
-!macro CUSTOM_POSTUNINSTALL
-  ; Clean up native messaging host registry keys
+!macro NSIS_HOOK_PREUNINSTALL
+  !insertmacro _Kill200OKProcesses
+!macroend
+
+!macro NSIS_HOOK_POSTUNINSTALL
   DeleteRegKey HKCU "Software\Google\Chrome\NativeMessagingHosts\app.ok200.native"
   DeleteRegKey HKCU "Software\Chromium\NativeMessagingHosts\app.ok200.native"
   DeleteRegKey HKCU "Software\BraveSoftware\Brave-Browser\NativeMessagingHosts\app.ok200.native"
   DeleteRegKey HKCU "Software\Microsoft\Edge\NativeMessagingHosts\app.ok200.native"
 
-  ; Clean up manifest file
   Delete "$LOCALAPPDATA\app.ok200.desktop\app.ok200.native.json"
   RMDir "$LOCALAPPDATA\app.ok200.desktop"
 !macroend

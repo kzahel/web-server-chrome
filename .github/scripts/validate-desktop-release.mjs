@@ -48,7 +48,7 @@ export function validateDesktopRelease({ release, latest, tag, repository }) {
     `200_OK_${version}_aarch64.pkg`,
     `200_OK_${version}_x64.pkg`,
     `200.OK_${version}_x64-setup.exe`,
-    `200.OK_${version}_x64_en-US.msi`,
+    `200.OK_${version}_x64.msi`,
     `200.OK_${version}_amd64.AppImage`,
     `200.OK_${version}_amd64.deb`,
     `200.OK-${version}-1.x86_64.rpm`,

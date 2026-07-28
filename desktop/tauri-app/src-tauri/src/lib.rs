@@ -87,24 +87,21 @@ pub(crate) fn resolve_sidecar(app: &tauri::AppHandle, name: &str) -> Result<Path
         .ok()
         .and_then(|p| p.parent().map(std::path::Path::to_path_buf));
 
-    let base_name = name.rsplit('/').next().unwrap_or(name);
+    let base_name = std::path::Path::new(name)
+        .file_name()
+        .and_then(|part| part.to_str())
+        .unwrap_or(name);
 
-    let mut candidates: Vec<PathBuf> = Vec::new();
-
+    let mut candidates = Vec::new();
     for dir in [Some(&resource_dir), exe_dir.as_ref()]
         .into_iter()
         .flatten()
     {
-        // With triple suffix (standard Tauri sidecar naming)
-        candidates.push(dir.join(name).with_file_name(format!(
-            "{base_name}-{target_triple}{ext}",
-            ext = std::env::consts::EXE_SUFFIX,
-        )));
-        // Without triple suffix (dev builds)
-        candidates.push(dir.join(name).with_file_name(format!(
-            "{base_name}{ext}",
-            ext = std::env::consts::EXE_SUFFIX,
-        )));
+        let extension = std::env::consts::EXE_SUFFIX;
+        candidates.push(dir.join(format!("{name}-{target_triple}{extension}")));
+        candidates.push(dir.join(format!("{name}{extension}")));
+        candidates.push(dir.join(format!("{base_name}-{target_triple}{extension}")));
+        candidates.push(dir.join(format!("{base_name}{extension}")));
     }
 
     for candidate in &candidates {

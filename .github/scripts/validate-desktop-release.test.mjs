@@ -20,7 +20,7 @@ function fixture() {
     `200_OK_${version}_aarch64.pkg`,
     `200_OK_${version}_x64.pkg`,
     `200.OK_${version}_x64-setup.exe`,
-    `200.OK_${version}_x64_en-US.msi`,
+    `200.OK_${version}_x64.msi`,
     `200.OK_${version}_amd64.AppImage`,
     `200.OK_${version}_amd64.deb`,
     `200.OK-${version}-1.x86_64.rpm`,
@@ -79,7 +79,7 @@ test("rejects an already-public release", () => {
 test("rejects a missing installer", () => {
   const data = fixture();
   data.release.assets = data.release.assets.filter(
-    (asset) => asset.name !== `200.OK_${version}_x64_en-US.msi`,
+    (asset) => asset.name !== `200.OK_${version}_x64.msi`,
   );
   assert.throws(
     () => validateDesktopRelease({ ...data, tag, repository }),

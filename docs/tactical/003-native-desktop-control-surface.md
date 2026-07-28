@@ -1,6 +1,6 @@
 # 003: Native Desktop Control Surface
 
-Status: **active; implementation in progress.**
+Status: **implementation complete; human product smoke pending.**
 
 Topic: `desktop-native-core`
 
@@ -53,53 +53,99 @@ remains a development server for `tauri dev` and a production asset bundler for
 `tauri build`; no Vite server or hot-reload client is part of the installed
 application.
 
-The previous TypeScript/Tauri primitive path remains available only until the
-new path passes the command and product smoke tests. Removal is a separate,
-reviewable commit in this tactical rather than a prerequisite for proving the
-new state layer.
+The previous TypeScript/Tauri primitive path was removed after the Rust command
+surface, UI integration, and command-level tests passed. Android and the Node
+CLI still use `packages/engine`; the desktop app and shared desktop UI no
+longer depend on it.
 
 ## Implementation checklist
 
 ### Rust state and safety
 
-- [ ] Make `ok200-desktop` depend on `ok200-core`.
-- [ ] Add one persisted desktop server configuration with backward-compatible
+- [x] Make `ok200-desktop` depend on `ok200-core`.
+- [x] Add one persisted desktop server configuration with backward-compatible
   defaults.
-- [ ] Add narrow commands for get, configure, start, stop, and native folder
+- [x] Add narrow commands for get, configure, start, stop, and native folder
   selection.
-- [ ] Serialize lifecycle transitions so Start and Stop are idempotent.
-- [ ] Forward bounded status, request, and error events without forwarding file
+- [x] Serialize lifecycle transitions so Start and Stop are idempotent.
+- [x] Forward bounded status, request, and error events without forwarding file
   content.
-- [ ] Reject an empty root and any filesystem root in the core.
-- [ ] Classify home, ancestor-of-home, outside-home, and LAN exposure for
+- [x] Reject an empty root and any filesystem root in the core.
+- [x] Classify home, ancestor-of-home, outside-home, and LAN exposure for
   confirmation.
-- [ ] Stop the server cleanly when the application actually exits.
+- [x] Stop the server cleanly when the application actually exits.
 
 ### Control surface
 
-- [ ] Replace the in-webview registry/server callbacks with a typed Tauri
+- [x] Replace the in-webview registry/server callbacks with a typed Tauri
   manager.
-- [ ] Use the native folder chooser and a focused risk-confirmation dialog.
-- [ ] Render explicit lifecycle status and action-pending states.
-- [ ] Prevent invalid or concurrent actions.
-- [ ] Reduce the layout to the one server the desktop app actually owns.
-- [ ] Remove nonfunctional and placeholder controls.
+- [x] Use the native folder chooser and a focused risk-confirmation dialog.
+- [x] Render explicit lifecycle status and action-pending states.
+- [x] Prevent invalid or concurrent actions.
+- [x] Reduce the layout to the one server the desktop app actually owns.
+- [x] Remove nonfunctional and placeholder controls.
 
 ### Validation
 
-- [ ] Unit-test config persistence/defaults, root-risk classification, invalid
+- [x] Unit-test config persistence/defaults, root-risk classification, invalid
   roots, and lifecycle idempotency.
 - [ ] Update Tauri E2E selectors and prove start, external fetch, stop, and
   restart through the Rust command path.
-- [ ] Run the repository TypeScript workflow.
-- [ ] Run the complete desktop Rust workflow.
-- [ ] Inspect the production bundle for the old desktop server entry point.
-- [ ] Build and install a production-style macOS app in `~/Applications`.
-- [ ] Confirm no Vite development server is needed by the installed app.
+- [x] Run the repository TypeScript workflow.
+- [x] Run the complete desktop Rust workflow.
+- [x] Inspect the production bundle for the old desktop server entry point.
+- [x] Build and install a production-style macOS app in `~/Applications`.
+- [x] Confirm no Vite development server is needed by the installed app.
+
+The E2E specs now configure and start the Rust command surface and type-check
+cleanly. They were not executed on this Mac because the repository's legacy
+WebdriverIO harness invokes `tauri-driver` directly, which Tauri supports on
+Windows and Linux rather than macOS. Modernizing the harness to the current
+cross-platform WebdriverIO Tauri service is follow-up test infrastructure, not
+part of this UX checkpoint.
+
+## Result
+
+Implemented as reviewable commits:
+
+- `9a01ec4` adds Rust-owned persisted state, safe-root assessment, lifecycle
+  commands/events, and the native folder dialog;
+- `2b22f3d` replaces the desktop server registry with the Rust manager and
+  simplifies the UI;
+- `c245c3a` deletes the desktop TypeScript server, primitive Tauri network/file
+  commands, and their TypeScript adapters;
+- `b69bfd1` points the existing E2E specification at the Rust commands; and
+- `6c8cd2b` removes the residual desktop/UI `@ok200/engine` package dependency.
+
+The installed app is a production-asset build at
+`~/Applications/200 OK.app`. Its webview contains the static Vite build, not a
+Vite server or hot-reload client. The app is unsigned for local review and is
+not a release candidate.
+
+## Validation evidence
+
+Completed on an Apple Silicon Mac on 2026-07-28:
+
+- `pnpm typecheck` passed;
+- `pnpm test` passed 76 engine tests with two existing skips; the CLI E2E
+  suite remained skipped by its existing environment gate;
+- the changed UI source passed Biome;
+- the standalone E2E TypeScript project passed `tsc --noEmit`;
+- `cargo fmt --all -- --check`, strict workspace Clippy, and all 36 desktop
+  workspace tests passed;
+- the 42-module production webview bundle built successfully at 207.04 kB
+  JavaScript / 64.92 kB gzip;
+- source and bundle inspection found no desktop `createTauriServer`, raw
+  TCP/filesystem commands, or `@ok200/engine` dependency; and
+- the installed app launched without a Vite process or listener on the Vite
+  development port.
+
+The only preflight worktree change, the maintainer's unrelated
+`pnpm-lock.yaml` cleanup, remains unstaged.
 
 ## Review checkpoint
 
-Stop for human review when the installed macOS app can:
+Human review should now exercise the installed macOS app:
 
 1. choose a folder without typing a path;
 2. clearly show its stopped/running state;
@@ -108,5 +154,8 @@ Stop for human review when the installed macOS app can:
 5. start once, serve a real file, stop once, and restart; and
 6. retain its configuration after a relaunch.
 
-Release signing, updater migration, cross-platform installers, and release
-publication remain gated by the parent tactical.
+The Rust tests prove root rejection, state persistence, idempotent lifecycle,
+and real-socket serving independently. The remaining checkpoint is the actual
+native-dialog and visible product workflow above. Release signing, updater
+migration, cross-platform installers, and release publication remain gated by
+the parent tactical.

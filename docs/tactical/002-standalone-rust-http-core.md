@@ -131,8 +131,8 @@ Completed on an Apple Silicon Mac on 2026-07-28:
 The unstripped release binary was 2.0 MiB on arm64. The standalone quiet process
 reported 2,944 KiB RSS at idle and 3,232 KiB after one request. These are
 directional core-only numbers, not a before/after Tauri product comparison; the
-webview remains an accepted fixed UI cost. A later cutover tactical must measure
-the whole current and candidate desktop apps on the same machine.
+webview remains an accepted fixed UI cost. A pre-release tactical must measure
+the whole released and candidate desktop apps on the same machine.
 
 The workspace-wide Clippy pass also removed unnecessary `unsafe` wrappers in
 native-host tests and formatted one pre-existing unreadable numeric fixture.
@@ -140,7 +140,7 @@ There was no production behavior change in either cleanup.
 
 ## Review gate
 
-Do not start the Tauri cutover until a human is comfortable with:
+Accepted on 2026-07-28 before Tactical 003 began. The reviewed boundary was:
 
 1. the `ServerConfig` / `RunningServer` boundary;
 2. the explicit upload and TLS deferral;
@@ -148,7 +148,7 @@ Do not start the Tauri cutover until a human is comfortable with:
 4. the bounded shutdown and log-channel behavior; and
 5. using Axum/Hyper as a conventional implementation detail.
 
-After approval, create the next numbered tactical for Rust managed state,
-commands/events, persisted DTO mapping, UI start/stop integration, and the
-same-corpus TypeScript/Rust comparison. Keep TypeScript deletion in a later
-commit after the Tauri path is proven.
+Tactical 003 then added Rust managed state, commands/events, persisted DTO
+mapping, and UI start/stop integration before deleting the TypeScript desktop
+path in a separate commit. The same executable corpus comparison remains a
+pre-release follow-up.

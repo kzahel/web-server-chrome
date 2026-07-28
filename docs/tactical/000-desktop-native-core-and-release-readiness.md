@@ -1,8 +1,8 @@
 # 000: Desktop Native Core and Release Readiness
 
 Status: **active parent plan.** Documentation baseline, Phase A1
-implementation, and standalone Rust core completed 2026-07-28. Native control
-surface integration is active in
+implementation, standalone Rust core, and native desktop control surface
+implementation completed 2026-07-28. Human product smoke is active in
 [`003-native-desktop-control-surface.md`](003-native-desktop-control-surface.md);
 tagged release proof remains pending.
 
@@ -232,7 +232,9 @@ The initial inventory and native-core corpus are recorded in
 The Rust corpus is real-socket black-box coverage derived from the existing
 TypeScript tests. It is not yet one shared executable corpus against both
 runtimes; request timeout and interrupted-transfer cases are also still
-missing. Those remain required before deleting the TypeScript path.
+missing. The desktop path was deleted only after the derived Rust corpus and
+new command/state tests passed; the old implementation remains recoverable
+from history. The shared comparison remains required before release promotion.
 
 ### Phase B1 — standalone `ok200-core`
 
@@ -250,24 +252,24 @@ Exit: complete in `f0559cf`; the core passes its test corpus without Tauri.
 
 - Active child:
   [`003-native-desktop-control-surface.md`](003-native-desktop-control-surface.md)
-- [ ] Own server instances in Rust application state.
-- [ ] Expose narrow commands for list/configure/start/stop/status.
-- [ ] Emit request/status/error events to the webview.
-- [ ] Keep file selection in Tauri, pass authorized paths to the core.
-- [ ] Preserve background/tray/window lifecycle.
-- [ ] Preserve native messaging host behavior and application identity.
+- [x] Own server instances in Rust application state.
+- [x] Expose narrow commands for get/configure/start/stop/status.
+- [x] Emit request/status/error events to the webview.
+- [x] Keep file selection in Tauri, pass authorized paths to the core.
+- [x] Preserve background/tray/window lifecycle.
+- [x] Preserve native messaging host behavior and application identity.
 - [ ] Add/repair Tauri E2E that starts through the UI and fetches externally.
 
 No HTTP request body or served file byte stream should cross Tauri IPC.
 
 ### Phase B3 — desktop TypeScript retirement
 
-- [ ] Switch the desktop UI to Rust commands/events.
-- [ ] Remove `@ok200/engine` from the desktop app runtime dependency graph.
-- [ ] Delete desktop-only Tauri TCP/filesystem TypeScript adapters and Rust
+- [x] Switch the desktop UI to Rust commands/events.
+- [x] Remove `@ok200/engine` from the desktop app runtime dependency graph.
+- [x] Delete desktop-only Tauri TCP/filesystem TypeScript adapters and Rust
   primitive IPC commands after no retained consumer uses them.
-- [ ] Keep `packages/engine` for Android and CLI.
-- [ ] Update diagrams, comments, changelog, and developer commands.
+- [x] Keep `packages/engine` for Android and CLI.
+- [x] Update diagrams, comments, changelog, and developer commands.
 - [ ] Rerun compatibility corpus and memory/startup measurements.
 
 Exit: inspecting the desktop bundle and source shows no TypeScript HTTP server
@@ -335,3 +337,6 @@ This parent closes only when:
 - **2026-07-28:** The aggressive migration implementation is an unshipped
   candidate. Install-time plus weekly reminders are the conservative
   recommendation; final cadence remains undecided.
+- **2026-07-28:** Desktop main now owns HTTP execution and lifecycle in Rust;
+  the React webview is only the control surface. Android and CLI remain on the
+  TypeScript engine.

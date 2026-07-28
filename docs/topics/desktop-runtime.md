@@ -6,16 +6,18 @@
 
 Topic: desktop-native-core
 
-Status: **standalone Rust core implemented; Tauri cutover not started.** The
-released desktop `v0.1.3` and current Tauri UI still run the TypeScript HTTP
-engine in the webview.
+Status: **Rust-native desktop cutover implemented on `main`; human product
+smoke and release proof pending.** The already-published desktop `v0.1.3`
+still runs the older TypeScript HTTP engine in the webview.
 
 Last reconciled: **2026-07-28**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
 the standalone core boundary and compatibility baseline are recorded in
-[Tactical 002](../tactical/002-standalone-rust-http-core.md).
+[Tactical 002](../tactical/002-standalone-rust-http-core.md), and the desktop
+cutover is recorded in
+[Tactical 003](../tactical/003-native-desktop-control-surface.md).
 
 ## Scope
 
@@ -63,18 +65,20 @@ not requirements for this migration.
 
 ## Current implementation
 
-| Surface | Current runtime | Current role | Direction |
+| Surface | Runtime | Current role | Direction |
 |---|---|---|---|
-| Desktop `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Working desktop server and UI | Replace only the desktop HTTP execution path with Rust |
+| Desktop `main` | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | Unsigned local review build | Complete human smoke, compatibility/resource comparison, signing, and release gates |
+| Desktop release `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Previously published partial release | Update in place to the Rust-native build after its release gate |
 | Android `v0.1.2` | QuickJS runs the TypeScript engine; Kotlin/Java provides native I/O and Compose UI | Published app | Defer changes while it works |
 | CLI `v0.1.1` | Node.js runs the TypeScript engine and Node adapters | Published developer CLI | Keep independent; do not make it block desktop |
 | Chrome extension `v0.1.3` | MV3 service worker and popup | Launcher/status surface | Desktop launches Tauri through native messaging; ChromeOS launches Android |
 | Legacy Chrome App `v0.5.x` | Chrome packaged-app APIs | Existing user migration channel | Preserve only long enough to route users to replacements |
 
-The current desktop TypeScript path is visible in
-`desktop/tauri-app/src/server.ts`, while the Rust adapter commands live under
-`desktop/tauri-app/src-tauri/src/`. The native messaging sidecar is a distinct
-responsibility and should be retained.
+The desktop command/state boundary lives in
+`desktop/tauri-app/src-tauri/src/server_control.rs`; the Tauri-independent HTTP
+implementation lives in `desktop/core`. The old desktop `server.ts`, raw
+TCP/filesystem commands, and Tauri TypeScript adapters have been deleted.
+Native messaging remains a distinct retained responsibility.
 
 ## Rust core boundary
 
@@ -117,9 +121,10 @@ exposed by the desktop UI. Classify them explicitly as release-required or
 deferred during the compatibility-corpus phase; do not assume hidden engine
 capability is a shipped desktop contract.
 
-Before deleting the TypeScript desktop path, run the same black-box HTTP corpus
-against the released TypeScript server and the Rust candidate. Intentional
-differences need explicit expected results, not silent test edits.
+The Rust core now passes the derived black-box HTTP corpus, but the same
+executable harness has not yet been run against both the released TypeScript
+server and Rust candidate. Intentional differences need explicit expected
+results, not silent test edits, before a release candidate is promoted.
 
 An in-place updater migration is required: a signed current desktop release
 must be able to update to the Rust-core release without reinstalling or changing
@@ -149,7 +154,7 @@ The Rust cutover is acceptable only when:
 5. A signed release candidate passes the artifact gate in
    [`desktop-release-readiness.md`](desktop-release-readiness.md).
 
-## Implemented standalone boundary
+## Implemented Rust-native desktop
 
 Tactical 002 fixes the first crate boundary at `desktop/core`, package
 `ok200-core`. It uses Tokio plus Axum/Hyper, canonical native filesystem
@@ -159,7 +164,17 @@ without Tauri.
 
 This selection is intentionally reversible at the HTTP-library level: Tauri
 will depend on the core's configuration/lifecycle/event API, not Axum types.
-The TypeScript desktop path remains active until a later integration tactical.
+The Tauri layer now owns one persisted server configuration, native folder
+selection, start-risk assessment, serialized start/stop operations, and
+bounded status/request events. The React UI uses narrow Tauri commands and
+shows one server with explicit lifecycle state. Empty roots and filesystem
+roots are rejected; home, ancestor-of-home, outside-home, and LAN exposure
+require confirmation as appropriate.
+
+The desktop TypeScript HTTP server and primitive socket/filesystem IPC have
+been removed. `packages/engine` remains for Android, the Node CLI, and the
+extension where currently used; neither the desktop app nor shared desktop UI
+declares it as a dependency.
 
 The core passes its real-socket HTTP/security corpus and the full desktop Rust
 workspace passes formatting, strict Clippy, and tests. Its Apple Silicon
@@ -168,10 +183,17 @@ after a request, with a 2.0 MiB unstripped binary. This demonstrates that the
 server execution path itself is small; it does not measure the complete Tauri
 application or eliminate the webview's fixed UI cost.
 
+The production webview remains a conventional static Vite bundle. Vite's
+development server and hot reload are used only by `tauri dev`; the installed
+application does not run or require them.
+
 ## Known gaps
 
-- It is not yet proven whether the webview-to-Rust command surface can replace
-  every current option without a compatibility shim.
+- Native folder selection and the full visible start/serve/stop/relaunch flow
+  still need human product smoke in the installed macOS review app.
+- The existing WebdriverIO E2E specification targets the Rust command path and
+  type-checks, but its direct `tauri-driver` runner is Windows/Linux-only and
+  was not executed on macOS.
 - The derived Rust compatibility corpus has not yet been made into one shared
   harness run against both the TypeScript and Rust servers.
 - Current-vs-candidate whole-app memory, startup, and first-request

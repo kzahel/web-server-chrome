@@ -24,7 +24,8 @@ As of 2026-07-28:
 | Surface | Runtime | Released state |
 |---|---|---|
 | CLI | TypeScript engine on Node.js | `v0.1.1` |
-| Desktop | Tauri; TypeScript engine in webview; Rust TCP/filesystem adapters | `v0.1.3`, partial release |
+| Desktop release | Tauri; TypeScript engine in webview; Rust TCP/filesystem adapters | `v0.1.3`, partial release |
+| Desktop `main` | Tauri/React controls; Rust server state and HTTP core | Unsigned local review build |
 | Android / ChromeOS | Compose UI; TypeScript engine in QuickJS; Kotlin native I/O | `v0.1.2`, published |
 | Chrome extension | MV3 launcher/status UI | `v0.1.3`, published |
 | Legacy Chrome App | Chrome packaged-app APIs | Migration channel approaching end of life |
@@ -44,7 +45,7 @@ Desktop keeps Tauri and the React webview for:
 - request/status display;
 - tray, autostart, window, updater, and native messaging behavior.
 
-The HTTP server moves into a small Tauri-independent Rust core shared by the
+The HTTP server now lives in a small Tauri-independent Rust core shared by the
 Windows, macOS, and Linux builds. Rust owns sockets, filesystem access, HTTP
 behavior, configuration validation, lifecycle, and request events. Served file
 bytes and HTTP connections do not cross webview IPC.
@@ -117,10 +118,10 @@ This is a scoped correction, not a mandate to unify every platform immediately.
 ### 2. Rust-native desktop core
 
 - Freeze a black-box compatibility corpus and resource baseline.
-- Implement the minimum static server in a standalone Rust crate.
-- Integrate it through narrow Tauri commands and events.
-- Remove the desktop TypeScript HTTP runtime and primitive socket/filesystem
-  IPC once no longer used.
+- Complete product smoke of the standalone Rust server and its narrow Tauri
+  commands/events.
+- Measure whole-app resource use and run the compatibility corpus against the
+  released and candidate runtimes.
 - Ship through the already-proven signed updater path.
 
 ### 3. Legacy parity

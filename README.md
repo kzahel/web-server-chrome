@@ -28,14 +28,15 @@ all shipped. Their runtimes are not currently unified:
   native I/O; and
 - the extension is a launcher/status surface, not the HTTP server.
 
-The standalone Rust core for the next desktop execution path now exists and is
-tested independently of Tauri. The current Tauri UI is not wired to it yet, so
-the released desktop behavior remains unchanged. Android and the published
-Node CLI are deliberately deferred while they work.
+Desktop `main` now uses the standalone Rust core for HTTP, filesystem, and
+server lifecycle work; its Tauri webview is only a static React control
+surface. This cutover is an unsigned local-review candidate, not a published
+release, so the released desktop behavior remains unchanged. Android and the
+published Node CLI are deliberately deferred while they work.
 
 See the living
 [desktop runtime decision](docs/topics/desktop-runtime.md) and
-[Tactical 002](docs/tactical/002-standalone-rust-http-core.md).
+[Tactical 003](docs/tactical/003-native-desktop-control-surface.md).
 
 ## Install
 
@@ -81,7 +82,7 @@ npx ok200 ./dist --upload          # enable PUT/POST file uploads
 
 ### Coming Soon
 - Hardened signed desktop releases for Mac, Windows, and Linux
-- Wire the tested Rust-native HTTP core into the existing Tauri control UI
+- Complete product smoke and release the Rust-native desktop app
 - Expanded Chrome Extension + desktop helper integration
 - HTTPS with self-signed cert generation
 - HTTP Basic Auth
@@ -104,15 +105,15 @@ platform applications that use or launch it:
 packages/engine/     Platform-agnostic HTTP server (no platform deps)
 packages/cli/        CLI wrapper (Node.js adapters)
 extension/           Chrome Extension
-desktop/             Tauri app: current JS server, target Rust server
-desktop/core/        Standalone Rust HTTP core and development CLI
+desktop/             Tauri/React controls plus Rust application state
+desktop/core/        Rust HTTP core and development CLI
 android/             Android app (QuickJS + Kotlin/Compose)
 ```
 
 The TypeScript native-I/O adapter pattern is retained for Android and the CLI.
-It is superseded as the desktop target. The Tauri webview remains for
-configuration and control, while native Rust will own sockets, filesystem
-access, HTTP behavior, and server lifecycle. The authoritative current/target
+It is superseded on desktop. The Tauri webview remains for configuration and
+control, while native Rust owns sockets, filesystem access, HTTP behavior, and
+server lifecycle. The authoritative current/target
 boundary is [`docs/topics/desktop-runtime.md`](docs/topics/desktop-runtime.md).
 
 ## Migration from Chrome App
@@ -139,7 +140,7 @@ pnpm typecheck   # type check
 pnpm lint        # lint with Biome
 ```
 
-For the standalone desktop Rust core:
+For the Rust-native desktop workspace:
 
 ```sh
 cd desktop

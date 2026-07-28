@@ -6,9 +6,23 @@ black-box cases, but the Rust-core migration and current E2E acceptance are
 owned by
 [Tactical 000](tactical/000-desktop-native-core-and-release-readiness.md).
 
-## Context
+## Current note
 
-The engine is fully wired as the HTTP server in the Tauri desktop app, but there are no E2E tests verifying it works end-to-end. The CLI has comprehensive E2E tests (`packages/cli/src/e2e/cli.test.ts`) covering file serving, directory listing, 404s, path traversal, CORS, etc. We need equivalent coverage for the Tauri app.
+The E2E cases now configure the Rust-owned desktop server commands, use the
+visible Start/Stop controls, and fetch from the external test process. The
+standalone TypeScript project passes `tsc --noEmit`.
+
+The original harness below invokes `tauri-driver` directly. That remains usable
+on Windows/Linux but cannot be executed directly on macOS. A follow-up should
+migrate it to Tauri's current cross-platform WebdriverIO service and test-only
+plugins; until then, Tactical 003 records macOS E2E execution as pending.
+
+## Historical context
+
+The TypeScript engine was originally wired as the HTTP server in the Tauri
+desktop app, but there were no E2E tests verifying it end-to-end. The CLI had
+comprehensive E2E tests (`packages/cli/src/e2e/cli.test.ts`) covering file
+serving, directory listing, 404s, path traversal, CORS, and related behavior.
 
 **Approach**: WebdriverIO + `tauri-driver` on Linux. WebdriverIO drives the app UI (type directory, click Start), then Node.js `fetch()` from the test process verifies the HTTP server responds correctly. Local testing first, CI later.
 
@@ -59,14 +73,14 @@ Keeps WebdriverIO deps isolated from the main project. Uses `npm install` indepe
 
 | Test | What it does |
 |------|-------------|
-| Shows error when no directory | Click Start with empty input, assert error message |
+| Prevents start when no directory | Clear the root through the native command, assert Start is disabled |
 | Starts server and displays URL | Enter dir + port 0, click Start, assert URL appears |
 | Serves file with correct content-type | `fetch(url/hello.txt)` → 200, text/plain, correct body |
 | Serves index.html for directory | `fetch(url/)` → 200, contains `<h1>Home</h1>` |
 | Returns 404 for missing file | `fetch(url/nonexistent)` → 404 |
 | Blocks path traversal | `fetch(url/../../etc/passwd)` → no sensitive data leaked |
 | Shows directory listing | Start server on no-index dir, `fetch(url/)` → lists filenames |
-| CORS headers present | `fetch(url/)` → `access-control-allow-origin: *` (cors defaults to true in server.ts) |
+| CORS headers present | Enable CORS, then `fetch(url/)` → `access-control-allow-origin: *` |
 | Stop makes server unavailable | Click Stop, assert URL disappears, fetch rejects |
 
 **Not testing** (not exposed in current UI): SPA mode, upload mode, SIGTERM shutdown.

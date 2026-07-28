@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Move desktop HTTP execution and lifecycle from the webview into the
+  standalone Rust core.
+- Replace typed path entry with a native folder chooser and persist the server
+  configuration.
+- Simplify the control surface to one server with explicit lifecycle status,
+  guarded roots, and idempotent Start/Stop actions.
+
+### Removed
+
+- Remove the desktop TypeScript server, primitive Tauri TCP/filesystem IPC, and
+  the desktop/UI dependency on `@ok200/engine`.
+
 ## [0.1.3]
 
 ### Added

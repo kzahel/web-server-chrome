@@ -15,6 +15,8 @@
   native URL opening.
 - Restore browser-like Rust directory listings with inline file/folder icons,
   human-readable metadata, responsive layout, and automatic light/dark mode.
+- Add persistent Feedback & support and Source · MIT links that open outside
+  the control webview.
 
 ### Removed
 

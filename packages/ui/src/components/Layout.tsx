@@ -1,9 +1,10 @@
 import logoUrl from "../../../../images/200ok-256.png";
+import { ProductLinks } from "./ProductLinks";
 import { ServerPage } from "./ServerPage";
 
 export function Layout() {
   return (
-    <div className="h-screen overflow-y-auto bg-[#f5f5f3] text-gray-900 dark:bg-[#0d0d0d] dark:text-gray-100">
+    <div className="flex h-screen flex-col overflow-y-auto bg-[#f5f5f3] text-gray-900 dark:bg-[#0d0d0d] dark:text-gray-100">
       <header className="border-b border-gray-300/80 bg-white/95 px-3 py-2.5 backdrop-blur dark:border-[#333] dark:bg-[#1a1a1a]/95">
         <div className="mx-auto flex max-w-md items-center gap-2.5">
           <img
@@ -22,9 +23,10 @@ export function Layout() {
           </div>
         </div>
       </header>
-      <main>
+      <main className="flex-1">
         <ServerPage serverId="default" />
       </main>
+      <ProductLinks />
     </div>
   );
 }

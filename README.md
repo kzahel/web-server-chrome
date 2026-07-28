@@ -17,6 +17,10 @@ Same author. Same mission. Modern architecture.
 
 > Looking for the original Chrome App source code? See the [`legacy` branch](https://github.com/kzahel/web-server-chrome/tree/legacy).
 
+**[Feedback, suggestions, and support](https://ok200.app/feedback)** ·
+**[Source code](https://github.com/kzahel/web-server-chrome)** ·
+**[MIT License](LICENSE)**
+
 ## Current Status
 
 The CLI server, Chrome extension, Android app, and an early desktop build have

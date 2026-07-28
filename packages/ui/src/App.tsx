@@ -1,5 +1,10 @@
+import type { ReactNode } from "react";
 import { Layout } from "./components/Layout";
 
-export function App() {
-  return <Layout />;
+interface AppProps {
+  notification?: ReactNode;
+}
+
+export function App({ notification }: AppProps = {}) {
+  return <Layout notification={notification} />;
 }

@@ -17,6 +17,8 @@
   human-readable metadata, responsive layout, and automatic light/dark mode.
 - Add persistent Feedback & support and Source · MIT links that open outside
   the control webview.
+- Add manual and once-daily update checks with in-app current/error/available
+  status, signed download progress, and an Update and restart action.
 
 ### Removed
 

@@ -1,6 +1,7 @@
 import { App as SharedApp } from "@ok200/ui/App";
 import { ServerManagerProvider } from "@ok200/ui/lib/server-manager-context";
 import { useMemo } from "react";
+import { DesktopUpdater } from "./DesktopUpdater";
 import { TauriServerManager } from "./tauri-server-manager";
 
 function App() {
@@ -8,7 +9,7 @@ function App() {
 
   return (
     <ServerManagerProvider manager={manager}>
-      <SharedApp />
+      <SharedApp notification={<DesktopUpdater />} />
     </ServerManagerProvider>
   );
 }

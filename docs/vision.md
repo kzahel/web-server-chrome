@@ -27,8 +27,8 @@ As of 2026-07-28:
 | Surface | Runtime | Released state |
 |---|---|---|
 | CLI | TypeScript engine on Node.js | `v0.1.1` |
-| Desktop release | Tauri; TypeScript engine in webview; Rust TCP/filesystem adapters | `v0.1.3`, partial release |
-| Desktop `main` | Tauri/React controls; Rust server state and HTTP core | Unsigned local review build |
+| Desktop release | Tauri/React controls; Rust server state and HTTP core | `v0.1.4`, complete signed artifact release; clean-system acceptance continuing |
+| Desktop `main` | Same Rust-native desktop runtime, plus subsequent work | Published baseline is `v0.1.4` |
 | Android / ChromeOS | Compose UI; TypeScript engine in QuickJS; Kotlin native I/O | `v0.1.2`, published |
 | Chrome extension | MV3 launcher/status UI | `v0.1.3`, published |
 | Legacy Chrome App | Chrome packaged-app APIs | Migration channel approaching end of life |
@@ -111,9 +111,9 @@ This is a scoped correction, not a mandate to unify every platform immediately.
 
 ### 1. Release integrity and migration readiness
 
-- Make desktop release publication fail closed.
-- Verify macOS and Windows signatures on released artifacts.
-- Validate updater metadata and complete artifact coverage.
+- Keep desktop release publication fail closed; `v0.1.4` proved the mechanism.
+- Complete clean-system acceptance of the exact published Windows installers.
+- Keep updater metadata and artifact coverage complete across releases.
 - Fix extension links and platform-aware migration copy.
 - Submit the final restrained legacy notification update before the
   maintainer's 2026-08-31 deadline.

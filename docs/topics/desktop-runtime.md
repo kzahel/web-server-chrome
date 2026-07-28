@@ -6,11 +6,10 @@
 
 Topic: desktop-native-core
 
-Status: **Rust-native desktop cutover implemented on `main`; installed macOS
-and Windows product smoke accepted; native Linux and signed-release proof
-pending.** The
-already-published desktop `v0.1.3` still runs the older TypeScript HTTP engine
-in the webview.
+Status: **Rust-native desktop `v0.1.4` is published with complete signed
+artifacts; installed macOS and Windows pre-release product smoke is accepted.
+Native Linux smoke, exact published Windows install/signature inspection, and
+the installed `0.1.3` → `0.1.4` update remain pending.**
 
 Last reconciled: **2026-07-28**.
 
@@ -76,8 +75,9 @@ not requirements for this migration.
 
 | Surface | Runtime | Current role | Direction |
 |---|---|---|---|
-| Desktop `main` | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | Unsigned local review build | Complete human smoke, compatibility/resource comparison, signing, and release gates |
-| Desktop release `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Previously published partial release | Update in place to the Rust-native build after its release gate |
+| Desktop `main` | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | Same runtime shipped in `v0.1.4` | Continue compatibility/resource measurements and remaining product smoke |
+| Desktop release `v0.1.4` | Tauri/React controls with the Rust server state and HTTP core | Complete signed release for macOS, Windows, and Linux | Verify exact Windows clean install, installed update, and native Linux behavior |
+| Previous desktop `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Partial legacy release and updater source | Must update in place to `v0.1.4` without identity or settings loss |
 | Android `v0.1.2` | QuickJS runs the TypeScript engine; Kotlin/Java provides native I/O and Compose UI | Published app | Defer changes while it works |
 | CLI `v0.1.1` | Node.js runs the TypeScript engine and Node adapters | Published developer CLI | Keep independent; do not make it block desktop |
 | Chrome extension `v0.1.3` | MV3 service worker and popup | Launcher/status surface | Desktop launches Tauri through native messaging; ChromeOS launches Android |
@@ -228,8 +228,8 @@ plugin, then relaunches through the process plugin.
   persistence, background single-instance lifecycle, headless updater service
   flow, native-host registration/framing/launch, real unpacked-extension
   invocation, and uninstall of installed binaries, registration, and per-user
-  state. Tray-only controls, MSI installation, and signed artifacts remain
-  pending in
+  state. Tray-only controls, MSI installation, and inspection of the exact
+  published `v0.1.4` Windows artifacts remain pending in
   [Tactical 006](../tactical/006-windows-desktop-validation.md). Linux remains
   pending.
 - The existing WebdriverIO E2E specification targets the Rust command path and
@@ -239,8 +239,8 @@ plugin, then relaunches through the process plugin.
   harness run against both the TypeScript and Rust servers.
 - Current-vs-candidate whole-app memory, startup, and first-request
   measurements are still missing.
-- No tagged Rust-core release candidate exists.
-- The in-app updater has installed and relaunched the signed public macOS
-  `0.1.3` artifact from a controlled `0.1.2` review build, but the required
-  direction—public `0.1.3` to a signed Rust-core candidate—remains unproven,
-  as do Windows and Linux updater flows.
+- Signed Rust-core `v0.1.4` is public and its deployed metadata is offered to
+  `0.1.3` clients. The in-app updater previously installed and relaunched the
+  signed public macOS `0.1.3` artifact from a controlled `0.1.2` review build,
+  but an actual installed `0.1.3` → `0.1.4` transition remains unproven, as do
+  Windows and Linux updater flows.

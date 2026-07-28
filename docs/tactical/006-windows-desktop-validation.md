@@ -2,7 +2,8 @@
 
 Status: **executed and remediated on native Windows; unsigned runtime,
 per-user NSIS, uninstall cleanup, and browser-extension launch validation
-pass, while signed-release, tray, and MSI-install proof remain pending.**
+pass. Signed `v0.1.4` artifacts are published, while exact downloaded-installer
+inspection, tray, and MSI-install proof remain pending.**
 
 Topics:
 
@@ -799,13 +800,15 @@ was removed.
 - Tray Show App, checkmarks, Quit, Start at Login, and the tray-triggered
   updater UI remain blocked because the approved automation surface cannot
   target the Windows tray menu.
-- Untagged CI now proves that its newly built EXE and MSI report
-  Authenticode status `Valid` with publisher `CN=Kyle Graehl`. Inspection of
-  the exact downloadable candidate on this Windows system remains blocked
-  until a tagged draft retains those assets. These local artifacts are
+- Tagged CI for `desktop-v0.1.4` now proves that its EXE and MSI report
+  Authenticode status `Valid` with publisher `CN=Kyle Graehl`; the canonical
+  assets are published and their post-download hashes match the release
+  checksums. Windows-side signature inspection and clean install of those exact
+  downloads remain pending. The local artifacts tested in this tactical are
   intentionally `NotSigned`.
-- CI asset renaming and the complete fail-closed gate still require a tagged
-  draft run; no release or tag was created here.
+- CI asset renaming, NSIS updater selection, and the complete fail-closed gate
+  passed in tagged run
+  [`30381126333`](https://github.com/kzahel/web-server-chrome/actions/runs/30381126333).
 
 ## Exit criteria
 

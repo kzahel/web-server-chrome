@@ -57,8 +57,11 @@ those are linked below.
   version or describing current reach.
 - The new extension and Android app are published. The extension is a launcher,
   not a replacement HTTP engine.
-- The desktop `v0.1.3` release is partial and fails the current release gate;
-  see [`desktop-release-readiness.md`](desktop-release-readiness.md).
+- Desktop `v0.1.4` is a complete signed Rust-core artifact release and passed
+  the fail-closed publication gate. Exact published Windows install/signature
+  inspection, the installed `0.1.3` → `0.1.4` transition, and native Linux
+  smoke remain before broad migration promotion; see
+  [`desktop-release-readiness.md`](desktop-release-readiness.md).
 
 The old detailed plan in `docs/legacy-migration.md` described the unpublished
 maximum-nag candidate currently present in `legacy/`. Its cadence remains an
@@ -146,7 +149,7 @@ communication channel. The updater can deliver the Rust core later.
   recommendation, or a bounded hybrid?
 - How long is Chrome Web Store review taking for legacy Chrome App updates in
   August 2026?
-- Does the final blast advertise desktop immediately, or initially route
-  ChromeOS users to Android while desktop completes its release gate?
+- Does the final blast advertise desktop immediately after the remaining
+  `v0.1.4` product acceptance, or initially route ChromeOS users to Android?
 - What is the minimum useful telemetry needed to decide whether a corrective
   `0.5.5` is warranted?

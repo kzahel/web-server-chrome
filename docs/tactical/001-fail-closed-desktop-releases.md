@@ -1,6 +1,7 @@
 # 001: Fail-Closed Desktop Releases
 
-Status: **implementation complete; tagged release proof pending.**
+Status: **complete; `desktop-v0.1.4` passed the tagged fail-closed release
+gate.**
 
 Topic: `desktop-release-readiness`
 
@@ -98,29 +99,37 @@ known-good JSTorrent workflow. Yep Anywhere was not treated as authoritative;
 its key state was uncertain. The updater key is correctly 200 OK-specific and
 must not be copied from JSTorrent.
 
-## Tagged validation still required
+## Tagged validation result
 
-This implementation does not create or push a public tag. Before calling the
-release lane proven:
+Commit `2b7f416` and tag `desktop-v0.1.4` triggered
+[Tauri App CI run 30381126333](https://github.com/kzahel/web-server-chrome/actions/runs/30381126333).
+Every test and platform job passed:
 
-1. prepare a release-candidate version and changelog;
-2. push its `desktop-v*` tag;
-3. observe that every matrix leg succeeds and the release becomes public only
-   after final validation;
-4. inspect signatures/notarization on clean macOS and Windows systems; and
-5. record the run, tag, hashes, inspection evidence, and any retained release
-   in the release-readiness topic.
+- the tag-only secret checks accepted the updater, Apple, and Azure
+  credentials;
+- macOS arm64 and x64 apps passed Developer ID/notarization checks, and both
+  PKGs passed signing, notarization, stapling, `pkgutil`, and `spctl`;
+- the Windows NSIS EXE and MSI both reported Authenticode `Valid` with
+  publisher `CN=Kyle Graehl`;
+- Linux produced AppImage, DEB, and RPM assets;
+- the matrix staged 19 assets into a private draft with canonical names; and
+- the finalizer validated release `0.1.4`, wrote `SHA256SUMS` and exact
+  download links, removed detached updater signatures, and alone published
+  the 13 retained assets.
 
-If a leg fails, confirm that the release is absent or remains a draft. Do not
-manually publish a release that has failed the completeness gate.
+The resulting
+[200 OK v0.1.4 release](https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.4)
+was published at 2026-07-28 17:11 UTC. A post-publication download of every
+asset matched `SHA256SUMS`. Both downloaded PKGs were accepted as Notarized
+Developer ID installers and validated their stapled tickets; both DMGs passed
+`codesign`.
 
-The tag is still necessary because an untagged run cannot prove:
+The deployed update service offers signed `0.1.4` metadata to `0.1.3` on
+macOS arm64/x64, Windows x64, and Linux x64, selects NSIS for Windows, and
+returns HTTP `204` for current `0.1.4` clients.
 
-- the tag-only required-secret gate and macOS PKG build/sign/notarize/staple
-  path;
-- concurrent asset staging into one draft release;
-- the canonical uploaded filenames produced by `assetNamePattern`;
-- complete `latest.json` NSIS target selection, signatures, and URLs;
-- finalizer validation, checksums, release-body links, detached-signature
-  cleanup, and single-point publication; or
-- download and clean-system inspection of the exact retained candidate.
+This tactical's release-mechanics objective is complete. Independent
+clean-system inspection of the exact Windows downloads, the installed
+`0.1.3` → `0.1.4` transition, and native Linux product smoke continue in the
+release-readiness topic; they do not reopen the proven fail-closed publication
+mechanism.

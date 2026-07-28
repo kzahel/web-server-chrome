@@ -6,15 +6,16 @@
 
 Topic: desktop-release-readiness
 
-Status: **the fail-closed pipeline is implemented, but the latest public
-desktop release is still partial and a tagged run has not yet proven the new
-gate.**
+Status: **`desktop-v0.1.4` is a complete signed Rust-core release and proves
+the fail-closed artifact/publication gate. Clean-system acceptance of the exact
+published Windows installers and the `0.1.3` → `0.1.4` updater transition
+remain pending before broad migration promotion.**
 
 Last reconciled: **2026-07-28**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
-the release-pipeline implementation and remaining tagged proof are recorded in
+the release-pipeline implementation and tagged proof are recorded in
 [Tactical 001](../tactical/001-fail-closed-desktop-releases.md).
 
 ## Source of truth
@@ -63,8 +64,8 @@ Repository configuration currently preserves:
 - a Tauri updater public key that matches the local 200 OK key material named
   by the runbook.
 
-The Rust-core migration must keep the identifier, updater key, and endpoint so
-installed desktop apps can update in place.
+The shipped Rust-core release keeps the identifier, updater key, and endpoint
+so installed desktop apps can update in place.
 
 The desktop control surface now performs manual checks with
 `X-Check-Reason: manual`, successful launch checks at most once per 24 hours
@@ -74,7 +75,49 @@ the Tauri plugins. Implementation and local proof are recorded in
 
 ## Latest release evidence
 
-Public desktop release: **`desktop-v0.1.3`**, created 2026-02-27.
+Public desktop release: **`desktop-v0.1.4`**, published 2026-07-28 from commit
+`2b7f416`.
+
+- [Public release](https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.4)
+- [Successful tagged workflow run](https://github.com/kzahel/web-server-chrome/actions/runs/30381126333)
+- [Published SHA-256 checksums](https://github.com/kzahel/web-server-chrome/releases/download/desktop-v0.1.4/SHA256SUMS)
+
+All test and macOS arm64, macOS x64, Windows x64, and Linux x64 jobs passed.
+The release stayed private while the matrix staged 19 assets. The finalizer
+validated the exact installer set, GitHub digests, updater version/platform
+coverage, signatures, and URLs; generated checksums and exact download links;
+removed detached signatures only after metadata validation; and then published
+13 retained assets from one job.
+
+| Platform/artifact | Evidence | Historical conclusion |
+|---|---|---|
+| macOS app bundles, arm64 and x64 | CI `codesign`, `spctl`, and stapler checks passed for both apps | App payloads are Developer ID signed and notarized |
+| macOS PKG, arm64 and x64 | CI and an independent post-publication download passed `pkgutil --check-signature`, `spctl --type install`, and stapler validation | PKG is the accepted recommended macOS installer |
+| macOS DMG, arm64 and x64 | Downloaded containers pass `codesign --verify` | Signed alternative; PKG remains recommended because the DMG container is not held to the same stapled-ticket claim |
+| Windows NSIS EXE and MSI | CI reported Authenticode `Valid`, publisher `CN=Kyle Graehl`, for both build outputs; canonical uploaded names and published digests/checksums passed the finalizer | Signed Windows artifacts are published; independent Windows inspection of the exact downloads remains |
+| Linux AppImage/DEB/RPM | All three canonical assets are published and their downloaded hashes match `SHA256SUMS` | Build availability and updater coverage proven; native Linux product smoke remains |
+| Tauri updater metadata | `latest.json` is version `0.1.4`, covers macOS arm64/x64, Windows x64, and Linux x64 with non-empty signatures and on-release URLs; Windows defaults to NSIS | Complete signed updater metadata published |
+
+Every retained release asset was downloaded after publication and matched
+`SHA256SUMS`. GitHub's latest-release API resolves to `desktop-v0.1.4`.
+The deployed updater endpoint returns `0.1.4` with a signature and the expected
+platform artifact to clients reporting `0.1.3`, including the NSIS EXE on
+Windows, and returns HTTP `204` to clients already reporting `0.1.4`.
+
+This proves artifact completeness, signing/notarization in CI, checksum
+integrity after download, publication ordering, and deployed metadata routing.
+It does not replace clean-system product acceptance. Still required:
+
+- run `Get-AuthenticodeSignature` against the exact downloaded EXE and MSI on
+  Windows, then clean-install/serve/uninstall the recommended NSIS build;
+- perform an actual installed `0.1.3` → `0.1.4` signed update and verify
+  settings, identity, native messaging, and serving afterward; and
+- complete native Linux install/serve/update smoke. Tray-only Windows checks
+  and the secondary elevated MSI flow remain separate known gaps.
+
+## Historical `v0.1.3` baseline
+
+Previous public desktop release: **`desktop-v0.1.3`**, created 2026-02-27.
 
 - [Public release](https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.3)
 - [Tagged release workflow run](https://github.com/kzahel/web-server-chrome/actions/runs/22505197089)
@@ -85,12 +128,12 @@ Public desktop release: **`desktop-v0.1.3`**, created 2026-02-27.
 | macOS app bundles, arm64 and x64 | Extracted app is Developer ID signed with hardened runtime and timestamp; `codesign`, `spctl`, and stapler validation passed; bundled sidecar validates | App payload is signed and notarized |
 | macOS DMG, arm64 and x64 | DMG is signed, but the downloaded container has no stapled ticket and fails the strict container acceptance check | Do not call the DMG artifact fully verified |
 | macOS PKG | No package is present; workflow searches below `desktop/tauri-app/src-tauri/target/`, while the Cargo workspace emits under `desktop/target/` | Workflow path bug blocks the advertised PKG |
-| Windows EXE/MSI | No Windows artifact exists in `v0.1.3`; that tagged run used the wrong Azure certificate profile | Latest public release has no Windows installer |
-| Windows post-fix CI | Commit `3b02f9c` changed the profile to `jstorrent-profile`; the 2026-07-28 untagged audit inspected the newly built EXE and MSI with `Get-AuthenticodeSignature` | Current CI credentials and signed output are proven, but there is still no released Windows installer |
+| Windows EXE/MSI | No Windows artifact exists in `v0.1.3`; that tagged run used the wrong Azure certificate profile | That release has no Windows installer; closed by `v0.1.4` |
+| Windows post-fix CI | Commit `3b02f9c` changed the profile to `jstorrent-profile`; the 2026-07-28 untagged audit inspected the newly built EXE and MSI with `Get-AuthenticodeSignature` | Credentials and signed output were proven before the complete `v0.1.4` release |
 | Linux AppImage/DEB/RPM | Artifacts are present | Build availability proven; Linux has no equivalent platform signing claim |
 | Tauri updater metadata | `latest.json` and per-artifact updater signatures exist, but the platform list follows the partial release and omits Windows | Updater metadata is signed but incomplete |
 
-The release body also generates download URLs using filenames such as
+The `v0.1.3` release body also generates download URLs using filenames such as
 `200+OK_...` and `200-ok_...`, while the uploaded Tauri artifacts use
 `200.OK_...`. Advertised links can therefore 404 even when an artifact exists.
 
@@ -104,10 +147,10 @@ check rendered the expected in-app `0.1.3` current result.
 A controlled build reporting `0.1.2` then discovered, downloaded, verified,
 installed, and relaunched the signed public `0.1.3` macOS updater artifact
 through the new “Update and restart” action. This proves the UI/plugin/server
-control path and the existing macOS updater key. It does not prove the next
-candidate: the release gate still requires the actual public `0.1.3` build to
-update to a complete signed Rust-core release, with post-update behavior and
-Windows/Linux coverage.
+control path and the existing macOS updater key. The signed Rust-core
+`v0.1.4` candidate and deployed metadata now exist, but the actual installed
+public `0.1.3` → `0.1.4` transition and its post-update behavior still need to
+be exercised, as do Windows/Linux updater flows.
 
 ## `v0.1.3` CI and publication defects
 
@@ -126,15 +169,13 @@ Windows/Linux coverage.
 8. The workflow's generic “flaky DMG” failure annotation can mask unrelated
    macOS failures; the underlying step log must remain authoritative.
 
-The current workflow addresses defects 1–5 and 8: tag builds now require
-release credentials, stage into a draft, hard-fail a missing PKG, validate the
-complete asset/updater set, generate exact download links and checksums, and
-publish only from one final job. Detached updater signatures are retained until
-after `latest.json` validation.
-
-This is implementation evidence, not release evidence. Defects 6 and 7, plus
-the real-world behavior of the new gate, remain open until the tagged validation
-and clean-system inspection in Tactical 001/Phase A2.
+The `v0.1.4` tagged run proves the workflow fixes defects 1–5 and 8: release
+credentials were required, all assets staged privately, both PKGs were
+required and notarized, the complete asset/updater set passed validation,
+exact links and checksums were generated, and only one final job published.
+The preferred PKG satisfies the macOS installer gate despite the narrower DMG
+container claim. CI inspected both Windows signatures; independent inspection
+of the exact downloaded Windows files remains part of clean-system acceptance.
 
 ## Current CI signing proof
 
@@ -169,10 +210,9 @@ The audit also corrected two release-only configuration hazards:
 - `updaterJsonPreferNsis: true` now makes the Windows updater metadata select
   the recommended NSIS installer instead of MSI.
 
-Because this was an untagged run, it did not upload a draft release or execute
-the tag-only PKG/finalizer path. The corrected asset-name pattern and NSIS
-metadata choice therefore still need one tagged draft candidate before they
-count as release evidence.
+That untagged run did not exercise release-only behavior. The later
+`desktop-v0.1.4` tagged run did: it proved the PKG/finalizer path, canonical
+asset naming, and NSIS updater selection described above.
 
 ## Required release gate
 
@@ -231,9 +271,9 @@ A desktop tag may be made public only after all of these pass.
 6. Promote update-server metadata only after the public artifact set is
    immutable and verified.
 
-The workflow now follows this shape. A small signed release candidate using the
-current runtime still needs to prove distribution independently; a later
-Rust-core candidate then changes one risk axis at a time.
+The `desktop-v0.1.4` run proves this pipeline shape for the Rust-core runtime.
+Clean-system installation and update acceptance remain product gates rather
+than artifact-publication uncertainties.
 
 ## Windows local post-fix evidence
 
@@ -268,10 +308,9 @@ only exact product process trees as a fallback, and removes installed binaries,
 native-messaging state, saved server configuration, and WebView data even when
 the desktop and helper began resident in the background.
 
-Windows CI is now configured to give uploaded artifacts canonical
-no-whitespace names using Tauri Action's release asset pattern. The local Tauri
-bundle still uses product-name-derived whitespace filenames. A real tagged
-draft run must prove the upload names, complete asset gate, and update metadata.
-Azure signing itself is now proven in untagged CI, but the exact downloadable
-release assets must still be inspected before this evidence can satisfy the
-release gate.
+The `desktop-v0.1.4` release proves the canonical uploaded Windows names,
+complete asset gate, NSIS update metadata, and Azure signing lane. The local
+Tauri bundle still uses product-name-derived whitespace filenames. The exact
+downloaded EXE and MSI now need independent Windows-side signature inspection
+and the recommended NSIS package needs clean-system install/serve/uninstall
+acceptance.

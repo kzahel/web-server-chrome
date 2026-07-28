@@ -1,6 +1,6 @@
 # 004: Portrait Desktop Polish and Directory Listing
 
-Status: **active; implementation in progress.**
+Status: **implementation complete; human product smoke pending.**
 
 Topic: `desktop-native-core`
 
@@ -71,30 +71,66 @@ features, change Android or the CLI, or create a signed release.
 
 ### Portrait control surface
 
-- [ ] Set and migrate the portrait window defaults.
-- [ ] Replace lifecycle button semantics with a status switch.
-- [ ] Add local disabled-control tooltips and correct cursor behavior.
-- [ ] Open URLs through Tauri's native opener and retain Copy.
-- [ ] Tighten spacing, typography, radii, and responsive behavior.
-- [ ] Replace generic desktop branding and regenerate application icons.
+- [x] Set and migrate the portrait window defaults.
+- [x] Replace lifecycle button semantics with a status switch.
+- [x] Add local disabled-control tooltips and correct cursor behavior.
+- [x] Open URLs through Tauri's native opener and retain Copy.
+- [x] Tighten spacing, typography, radii, and responsive behavior.
+- [x] Replace generic desktop branding and regenerate application icons.
 
 ### Rust directory listing
 
-- [ ] Add modified metadata and human-readable sizes.
-- [ ] Add parent, folder, and file icons.
-- [ ] Add responsive automatic light/dark presentation.
-- [ ] Add focused output tests for escaping, encoding, ordering, metadata, and
+- [x] Add modified metadata and human-readable sizes.
+- [x] Add parent, folder, and file icons.
+- [x] Add responsive automatic light/dark presentation.
+- [x] Add focused output tests for escaping, encoding, ordering, metadata, and
   theme markup.
 
 ### Validation
 
-- [ ] Run the repository TypeScript workflow.
-- [ ] Run the complete desktop Rust workflow.
-- [ ] Build the production webview assets and Tauri application.
-- [ ] Inspect the production app for canonical branding and portrait bounds.
-- [ ] Start the installed app, serve a real directory listing, and inspect both
-  light and dark renderings.
-- [ ] Confirm the installed app has no Vite development listener.
+- [x] Run the repository TypeScript workflow.
+- [x] Run the complete desktop Rust workflow.
+- [x] Build the production webview assets and Tauri application.
+- [x] Inspect the production app for canonical branding and portrait bounds.
+- [x] Start the installed app; separately serve a real directory listing from
+  the same core and inspect both light and dark renderings.
+- [x] Confirm the installed app has no Vite development listener.
+
+## Result
+
+Implemented as reviewable commits:
+
+- `d64d9df` restores the `410x700` portrait window, canonical branding and
+  icons, compact layout, lifecycle switch, locked-setting affordances, and
+  native URL opening; and
+- `7d9e03d` restores the browser-like Rust directory listing with inline icons,
+  human-readable metadata, responsive layout, deterministic ordering, and
+  automatic light/dark presentation.
+
+The installed production-asset app is at `~/Applications/200 OK.app`. It uses
+the static Vite build and is unsigned for local review; it is not a release
+candidate.
+
+## Validation evidence
+
+Completed on an Apple Silicon Mac on 2026-07-28:
+
+- `pnpm typecheck` passed;
+- `pnpm test` passed 76 engine tests with two existing skips; the CLI E2E
+  suite remained skipped by its existing environment gate;
+- the UI source passed Biome and the standalone desktop E2E TypeScript project
+  passed `tsc --noEmit`;
+- `cargo fmt --all -- --check`, strict workspace Clippy, and all 37 desktop
+  workspace tests passed;
+- the 44-module production webview bundle built successfully at 210.29 kB
+  JavaScript / 65.77 kB gzip and 20.71 kB CSS / 4.39 kB gzip;
+- the installed app was visually inspected with the complete workflow visible
+  at the portrait default and with the canonical application icon, logo, and
+  wordmark;
+- a real directory was served by `ok200-core`, and its generated listing was
+  inspected in forced light and dark browser modes; and
+- the installed app launched without a Vite process or listener on the Vite
+  development port.
 
 ## Review checkpoint
 
@@ -110,3 +146,8 @@ Stop for human review when the installed macOS app:
 
 Signing, updater migration, cross-platform installer proof, and release
 publication remain owned by the parent tactical.
+
+The implementation has reached this checkpoint. Human review still needs to
+exercise the native folder picker, lifecycle switch, locked-setting tooltip
+and cursor, default-browser URL action, Copy action, and actual start/serve/
+stop flow in the installed app.

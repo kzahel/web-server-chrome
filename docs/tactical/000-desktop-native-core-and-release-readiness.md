@@ -3,7 +3,7 @@
 Status: **active parent plan.** Documentation baseline, Phase A1
 implementation, standalone Rust core, and native desktop control surface
 implementation completed 2026-07-28. Human product smoke is active in
-[`003-native-desktop-control-surface.md`](003-native-desktop-control-surface.md);
+[`004-portrait-desktop-polish-and-directory-listing.md`](004-portrait-desktop-polish-and-directory-listing.md);
 tagged release proof remains pending.
 
 Topics:
@@ -340,3 +340,7 @@ This parent closes only when:
 - **2026-07-28:** Desktop main now owns HTTP execution and lifecycle in Rust;
   the React webview is only the control surface. Android and CLI remain on the
   TypeScript engine.
+- **2026-07-28:** The desktop control surface returns to the legacy app's
+  compact `410x700` portrait shape and canonical branding. Rust owns a
+  browser-like self-contained directory listing; human product smoke precedes
+  release work.

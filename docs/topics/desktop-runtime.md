@@ -17,7 +17,10 @@ Implementation sequencing lives in
 the standalone core boundary and compatibility baseline are recorded in
 [Tactical 002](../tactical/002-standalone-rust-http-core.md), and the desktop
 cutover is recorded in
-[Tactical 003](../tactical/003-native-desktop-control-surface.md).
+[Tactical 003](../tactical/003-native-desktop-control-surface.md). The compact
+portrait review surface and browser-like Rust directory listing are recorded
+in
+[Tactical 004](../tactical/004-portrait-desktop-polish-and-directory-listing.md).
 
 ## Scope
 
@@ -187,10 +190,26 @@ The production webview remains a conventional static Vite bundle. Vite's
 development server and hot reload are used only by `tauri dev`; the installed
 application does not run or require them.
 
+The review app now defaults to the legacy Chrome App's `410x700` portrait
+shape, with the canonical logo, wordmark, and yellow accent. Its compact
+control surface uses a lifecycle switch with explicit status, point-of-use
+explanations for locked settings, a native folder chooser, and distinct
+default-browser and Copy actions for the running URL. Window-state storage was
+migrated so stale wide-window state does not defeat the new default while
+future user resizing remains persistent.
+
+Directory indexes are generated entirely by the Rust core as self-contained
+HTML. They show parent, folder, and file icons, human-readable size and
+modified metadata, deterministic folder-first ordering, a responsive table,
+and automatic browser light/dark presentation. They add no webview or
+JavaScript server dependency.
+
 ## Known gaps
 
 - Native folder selection and the full visible start/serve/stop/relaunch flow
-  still need human product smoke in the installed macOS review app.
+  still need human product smoke in the installed macOS review app. That
+  review should also cover the lifecycle switch, locked-setting tooltip and
+  cursor, default-browser URL action, and persisted portrait window state.
 - The existing WebdriverIO E2E specification targets the Rust command path and
   type-checks, but its direct `tauri-driver` runner is Windows/Linux-only and
   was not executed on macOS.

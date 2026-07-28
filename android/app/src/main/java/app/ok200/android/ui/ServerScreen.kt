@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -43,10 +44,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import app.ok200.android.settings.WakeLockMode
 import app.ok200.android.viewmodel.ServerViewModel
+
+private const val FEEDBACK_URL = "https://ok200.app/feedback"
+private const val SOURCE_URL = "https://github.com/kzahel/web-server-chrome"
 
 @Composable
 fun ServerScreen(
@@ -69,6 +74,7 @@ fun ServerScreen(
     val shutdownBatteryThreshold by viewModel.shutdownBatteryThreshold.collectAsState()
     val notificationPermissionGranted by viewModel.notificationPermissionGranted.collectAsState()
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
 
     var portText by remember(port) { mutableStateOf(port.toString()) }
     var showFolderPicker by remember { mutableStateOf(false) }
@@ -408,6 +414,27 @@ fun ServerScreen(
                         steps = 8
                     )
                 }
+            }
+
+            HorizontalDivider()
+
+            Text(
+                text = "Help & project",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            OutlinedButton(
+                onClick = { uriHandler.openUri(FEEDBACK_URL) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Feedback & support")
+            }
+            OutlinedButton(
+                onClick = { uriHandler.openUri(SOURCE_URL) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Source · MIT")
             }
         }
     }

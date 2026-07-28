@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- Add stable Feedback & support and Source · MIT links to the main screen.
+
 ## [0.1.2]
 
 ### Fixed

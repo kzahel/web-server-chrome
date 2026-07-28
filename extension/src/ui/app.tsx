@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 
 const PRODUCT_URL = "https://ok200.app/#platforms";
+const FEEDBACK_URL = "https://ok200.app/feedback";
+const SOURCE_URL = "https://github.com/kzahel/web-server-chrome";
 const PLAY_STORE_URL =
   "https://play.google.com/store/apps/details?id=app.ok200.android";
 const CHROMEOS_INTENT_URL =
@@ -220,18 +222,45 @@ function App() {
           paddingTop: 12,
           borderTop: "1px solid #eee",
           fontSize: 11,
-          color: "#999",
         }}
       >
-        Successor to{" "}
-        <a
-          href="https://chromewebstore.google.com/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "#999" }}
+        <div
+          style={{
+            display: "flex",
+            gap: 12,
+            marginBottom: 10,
+            fontSize: 12,
+            fontWeight: 500,
+          }}
         >
-          Web Server for Chrome
-        </a>
+          <a
+            href={FEEDBACK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#665700" }}
+          >
+            Feedback &amp; support
+          </a>
+          <a
+            href={SOURCE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#665700" }}
+          >
+            Source · MIT
+          </a>
+        </div>
+        <div style={{ color: "#999" }}>
+          Successor to{" "}
+          <a
+            href="https://chromewebstore.google.com/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#999" }}
+          >
+            Web Server for Chrome
+          </a>
+        </div>
       </div>
     </div>
   );

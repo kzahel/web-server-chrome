@@ -6,6 +6,7 @@
 - Adopt the 200 OK Web Server product name and explain the extension's launcher
   role while retaining the legacy name in successor copy.
 - Replace the stale desktop-app destination with the canonical product site.
+- Add stable Feedback & support and Source · MIT links to the popup.
 
 ## [0.1.3]
 

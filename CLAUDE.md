@@ -12,14 +12,14 @@ maintainer/device checks, read
 
 Lightweight web server app for every platform. Successor to "Web Server for
 Chrome" (200k+ users). The CLI, Android app, extension, and signed Rust-native
-Tauri desktop `v0.1.4` have shipped.
+Tauri desktop `v0.1.5` have shipped.
 
 The old Transistor proof is not the current desktop architecture. Desktop
 keeps Tauri and its webview for control/configuration while a small Rust core
-owns HTTP execution on Windows, macOS, and Linux. The source candidate after
-`v0.1.4` adds AppImage-first integration, Linux ARM64 artifacts, AppImage
-native-host repair, and macOS Dock activation repair. Android QuickJS and the
-Node/TypeScript CLI remain independent.
+owns HTTP execution on Windows, macOS, and Linux. Desktop `v0.1.5` includes
+AppImage-first integration, Linux ARM64 artifacts, AppImage native-host repair,
+macOS Dock activation repair, and the package-aware updater policy. Android
+QuickJS and the Node/TypeScript CLI remain independent.
 
 ## Architecture
 

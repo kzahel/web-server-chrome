@@ -12,7 +12,7 @@ set -euo pipefail
 # No administrator privileges are required. Downloaded release assets are
 # verified against the SHA256SUMS file published with the same GitHub release.
 
-FALLBACK_TAG="desktop-v0.1.4"
+FALLBACK_TAG="desktop-v0.1.5"
 RELEASES_API_URL="https://api.github.com/repos/kzahel/web-server-chrome/releases?per_page=100"
 MANIFEST_NAME="app.ok200.native"
 MANIFEST_FILENAME="${MANIFEST_NAME}.json"

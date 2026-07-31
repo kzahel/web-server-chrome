@@ -6,13 +6,13 @@
 
 Topic: desktop-native-core
 
-Status: **Rust-native desktop `v0.1.4` is published with complete signed
-artifacts; installed macOS and Windows pre-release product smoke is accepted.
-Published Linux DEB and AppImage server smoke and DEB extension launch are
-accepted. The current source candidate implements the AppImage-only
-native-host repair, AppImage-first installation path, and macOS Dock activation
-repair; a signed follow-up artifact, exact published Windows install/signature
-inspection, and an installed update remain pending.**
+Status: **Rust-native desktop `v0.1.5` is published with complete signed
+macOS arm64/x64, Windows x64, and Linux arm64/x64 artifacts. Exact signed
+update, server, native-host, and production-extension paths pass on the
+recommended macOS app, Windows NSIS, and Linux AppImage installations. The
+package-aware updater refuses MSI/DEB/RPM cross-package replacement. Remaining
+desktop work is limited to subjective UI checks and secondary-package or
+physical-ARM64 claims.**
 
 Last reconciled: **2026-07-31**.
 
@@ -84,9 +84,9 @@ not requirements for this migration.
 
 | Surface | Runtime | Current role | Direction |
 |---|---|---|---|
-| Desktop source candidate | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | `v0.1.4` runtime plus AppImage-first integration, relaunch repair, and macOS Dock create-or-focus handling | Publish and accept the signed follow-up, then continue compatibility/resource measurements |
-| Desktop release `v0.1.4` | Tauri/React controls with the Rust server state and HTTP core | Complete signed release; published Linux DEB/AppImage server path accepted | Verify exact Windows clean install, installed update, AppImage-only native-host relaunch, and RPM-native installation |
-| Previous desktop `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Partial legacy release and updater source | Must update in place to `v0.1.4` without identity or settings loss |
+| Desktop source and release `v0.1.5` | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | Complete signed release with AppImage-first integration, relaunch repair, macOS Dock create-or-focus handling, Linux ARM64, and package-aware updates | Continue compatibility/resource measurements; keep secondary package/hardware claims explicit |
+| Previous desktop `v0.1.4` | Same Rust-native runtime before the AppImage/Dock/package-awareness repairs | Public updater source used in the accepted `0.1.4` → `0.1.5` macOS, Windows, and Linux transitions | Retain only as immutable update evidence |
+| Historical desktop `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Partial legacy release | Historical baseline only |
 | Android `v0.1.2` | QuickJS runs the TypeScript engine; Kotlin/Java provides native I/O and Compose UI | Published app | Defer changes while it works |
 | CLI `v0.1.1` | Node.js runs the TypeScript engine and Node adapters | Published developer CLI | Keep independent; do not make it block desktop |
 | Chrome extension `v0.1.3` | MV3 service worker and popup | Launcher/status surface | Desktop launches Tauri through native messaging; ChromeOS launches Android |
@@ -261,26 +261,21 @@ Implementation and release sequencing are recorded in
 
 ## Known gaps
 
-- Native folder selection and the full visible start/serve/stop/relaunch flow
-  have been accepted in installed macOS and Windows review apps and in the
-  exact published Linux DEB. The Windows
-  run also passed per-user NSIS installation, external HTTP behavior,
-  persistence, background single-instance lifecycle, headless updater service
-  flow, native-host registration/framing/launch, real unpacked-extension
-  invocation, and uninstall of installed binaries, registration, and per-user
-  state. Tray-only controls, MSI installation, and inspection of the exact
-  published `v0.1.4` Windows artifacts remain pending in
-  [Tactical 006](../tactical/006-windows-desktop-validation.md).
-- The exact published Linux AppImage also passes launch, visible
-  start/serve/stop, and current updater-check smoke. Its copied stable native
-  host cannot relaunch or focus an AppImage-only installation because it falls
-  back to the nonexistent desktop ID `200-ok`. The source candidate repairs
-  this by recording the AppImage path and installing that identity, but the
-  change is not yet in a signed public artifact. The DEB's real
-  extension-to-host path passes. RPM install/launch remains untested on a
-  native RPM-family system; see
-  [Tactical 007](../tactical/007-linux-desktop-validation.md) and
-  [Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
+- Exact public `v0.1.5` Windows NSIS update and clean-install paths pass
+  Authenticode inspection, external start/serve/stop, configuration retention,
+  native-host framing, production-extension launch/focus with one process, and
+  complete session-1 silent uninstall. Tray-only controls and elevated MSI
+  installation remain manual/secondary checks.
+- Exact public `v0.1.5` direct and verified-installer AppImages pass signed
+  `0.1.4` → `0.1.5` update, stable-path/desktop/native-host retention,
+  start/serve/stop, and production-extension launch/focus. The exact DEB
+  separately refuses cross-package auto-install and passes the same extension
+  identity path. RPM metadata/payload are accepted, but native RPM-family
+  install/launch remains untested; physical Linux ARM64 product smoke remains
+  a claim-only gap. See
+  [Tactical 007](../tactical/007-linux-desktop-validation.md),
+  [Tactical 008](../tactical/008-appimage-first-linux-distribution.md), and
+  [Tactical 009](../tactical/009-release-confidence-closeout.md).
 - The existing WebdriverIO E2E specification targets the Rust command path and
   type-checks, but its direct `tauri-driver` runner is Windows/Linux-only and
   was not executed on macOS.
@@ -288,17 +283,13 @@ Implementation and release sequencing are recorded in
   harness run against both the TypeScript and Rust servers.
 - Current-vs-candidate whole-app memory, startup, and first-request
   measurements are still missing.
-- Signed Rust-core `v0.1.4` is public and its deployed metadata is offered to
-  `0.1.3` clients. The in-app updater previously installed and relaunched the
-  signed public macOS `0.1.3` artifact from a controlled `0.1.2` review build,
-  but an actual installed `0.1.3` → `0.1.4` transition remains unproven, as do
-  Windows and Linux update transitions. Linux `0.1.4` current-version
-  detection itself passes.
-- On 2026-07-31 the maintainer accepted JSTorrent's updater policy: a quiet
-  app check five seconds after launch, a 24-hour periodic check while open,
-  manual results that are always visible, and the native host's independent
-  at-most-daily check. The source still needs that cadence reconciliation, and
-  secondary MSI/DEB/RPM installations can encounter updater metadata for the
-  recommended NSIS/AppImage package type. Tactical 009 requires the accepted
-  cadence and bundle-aware behavior before the next signed release is
-  accepted.
+- Signed Rust-core `v0.1.5` is public. Exact prior-public `0.1.4` builds
+  installed and relaunched it on macOS app, Windows NSIS, and Linux AppImage
+  paths while retaining configuration and product identity. A controlled
+  tampered-payload test reached the runtime verifier, which rejected the
+  mismatched signature and left the executable unchanged.
+- JSTorrent's accepted policy is implemented: a quiet app check five seconds
+  after launch, a 24-hour periodic check while open, manual results that are
+  always visible, and the native host's independent at-most-daily check.
+  MSI/DEB/RPM installations use explicit manual package updates and cannot
+  silently cross into NSIS/AppImage ownership.

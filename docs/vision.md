@@ -22,13 +22,13 @@ The extension is not itself the HTTP server.
 
 ## Current state
 
-As of 2026-07-28:
+As of 2026-07-31:
 
 | Surface | Runtime | Released state |
 |---|---|---|
 | CLI | TypeScript engine on Node.js | `v0.1.1` |
-| Desktop release | Tauri/React controls; Rust server state and HTTP core | `v0.1.4`, complete signed artifact release; Linux DEB/AppImage server smoke accepted, remaining package/platform acceptance continuing |
-| Desktop source candidate | Same Rust-native desktop runtime, plus AppImage-first Linux integration and native-host repair | Published baseline is `v0.1.4`; signed follow-up pending |
+| Desktop release | Tauri/React controls; Rust server state and HTTP core | `v0.1.5`, complete signed release; recommended macOS app, Windows NSIS, and Linux AppImage update/server/extension paths accepted |
+| Desktop source | Same Rust-native runtime with AppImage-first Linux integration, Linux ARM64 artifacts, and package-aware updates | Published baseline is `v0.1.5`; RPM-native, MSI-elevated, and physical ARM64 product smoke remain claim-only gaps |
 | Android / ChromeOS | Compose UI; TypeScript engine in QuickJS; Kotlin native I/O | `v0.1.2`, published |
 | Chrome extension | MV3 launcher/status UI | `v0.1.3`, published |
 | Legacy Chrome App | Chrome packaged-app APIs | Migration channel approaching end of life |
@@ -111,12 +111,11 @@ This is a scoped correction, not a mandate to unify every platform immediately.
 
 ### 1. Release integrity and migration readiness
 
-- Keep desktop release publication fail closed; `v0.1.4` proved the mechanism.
-- Complete clean-system acceptance of the exact published Windows installers.
-- Repair and retest AppImage-only native-host relaunch; the published Linux
-  DEB extension path already passes. AppImage is the accepted recommended
-  Linux package; publish and accept the implemented per-user repair and
-  installer before public promotion.
+- Keep desktop release publication fail closed; `v0.1.5` passed the complete
+  five-leg matrix, checksum/metadata finalizer, and post-publication audit.
+- Treat the accepted macOS app, Windows NSIS, and Linux AppImage paths as the
+  desktop migration destination; retain PKG-auth/tray spot checks and the
+  MSI/RPM/physical-ARM64 paths as explicit manual or claim-only follow-up.
 - Keep updater metadata and artifact coverage complete across releases.
 - Fix extension links and platform-aware migration copy.
 - Submit the final restrained legacy notification update before the

@@ -16,7 +16,9 @@ The accepted AppImage-first distribution repair is implemented in
 The final evidence gates and agent-versus-maintainer ownership split are
 recorded in
 [`009-release-confidence-closeout.md`](009-release-confidence-closeout.md).
-The complete `desktop-v0.1.4` tagged release proof is accepted.
+The complete `desktop-v0.1.5` tagged release and exact recommended-path
+acceptance are recorded in Tactical 009. This parent remains active only for
+the store-delivered ChromeOS/Android and final legacy migration lane.
 
 Topics:
 
@@ -182,18 +184,16 @@ mark any non-production test release after inspection.
 
 ### Phase A2 — prove a signed current-runtime release
 
-- [ ] Tag a small release candidate without the Rust-core change.
-- [ ] Verify macOS app and preferred installer with `codesign`, `spctl`, and
+- [x] Publish the complete Rust-core follow-up as `desktop-v0.1.5`.
+- [x] Verify macOS app and preferred installer with `codesign`, `spctl`, and
   `stapler`.
-- [ ] Verify Windows EXE/MSI with `Get-AuthenticodeSignature` and a clean VM
+- [x] Verify Windows EXE/MSI with `Get-AuthenticodeSignature` and a clean VM
   install/serve/uninstall smoke.
-- [ ] Verify Linux install/launch/serve for the published package set. Exact
-  DEB and AppImage server smoke passes; AppImage-only native-host relaunch and
-  RPM-native install remain open in Tactical 007. The source repair and
-  AppImage-first package policy are implemented in Tactical 008 and require a
-  signed follow-up artifact.
-- [ ] Verify updater metadata and update from `v0.1.3`.
-- [ ] Record artifact names, hashes, CI run, and inspection results in the
+- [x] Verify Linux install/launch/serve for the published AppImage and DEB
+  paths; inspect RPM metadata/payload and retain native RPM installation as a
+  claim-only gap.
+- [x] Verify updater metadata and exact prior-public `v0.1.4` transitions.
+- [x] Record artifact names, hashes, CI run, and inspection results in the
   release-readiness topic.
 
 Exit: the repository has one complete, publicly inspectable desktop release

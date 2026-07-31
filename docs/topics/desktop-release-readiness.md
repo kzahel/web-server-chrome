@@ -6,15 +6,14 @@
 
 Topic: desktop-release-readiness
 
-Status: **`desktop-v0.1.4` is a complete signed Rust-core release and proves
-the fail-closed artifact/publication gate. Published Linux DEB/AppImage server
-smoke and DEB extension launch pass; the AppImage-only launcher defect, exact
-published Windows acceptance, and the `0.1.3` → `0.1.4` updater transition
-remain in the public `v0.1.4` baseline before broad migration promotion.
-The current source candidate implements the AppImage-first repair, Linux ARM64
-artifacts, macOS Dock repair, accepted updater cadence, and package-aware
-install policy. The download page is live and accepted; signed follow-up
-acceptance is pending.**
+Status: **`desktop-v0.1.5` is the accepted complete signed Rust-core release.
+The five-platform build matrix and one-job finalizer passed; all public assets,
+checksums, signatures, updater metadata, and live routes were independently
+verified. Exact prior-public updates, server behavior, native messaging, and
+the production extension pass on the recommended macOS app, Windows NSIS, and
+Linux AppImage paths. MSI/DEB/RPM updates remain package-managed, and the
+remaining desktop checks are subjective UI or secondary-package/physical-ARM64
+claims rather than release blockers.**
 
 Last reconciled: **2026-07-31**.
 
@@ -101,60 +100,60 @@ retains its independent once-per-24-hours `host` check. Implementation and
 local proof began in [Tactical 005](../tactical/005-in-app-desktop-updater.md);
 the policy reconciliation and final validation are owned by Tactical 009.
 
-The closeout source candidate now implements the accepted cadence and prevents
+The shipped release implements the accepted cadence and prevents
 in-app update from crossing installer/package ownership boundaries. Tauri app,
 NSIS, and AppImage bundles may offer signed in-app install. MSI, DEB, RPM, and
 unknown bundle types receive an explicit manual-download path; the headless
 updater also refuses those package types. Schedule, UI state, bundle policy,
 Tauri configuration, release-validator, and native-host cadence tests passed
 locally and in the green workflows recorded in Tactical 009. Exact signed
-candidate transitions and runtime wrong-signature rejection remain release
-acceptance gates rather than source implementation gaps.
+transitions passed on all recommended paths. A packaged runtime downloaded a
+deliberately tampered payload bearing a syntactically valid release signature,
+rejected it with `The signature verification failed`, and left its executable
+hash unchanged.
 
 ## Latest release evidence
 
-Public desktop release: **`desktop-v0.1.4`**, published 2026-07-28 from commit
-`2b7f416`.
+Public desktop release: **`desktop-v0.1.5`**, published 2026-07-31 from commit
+`6502cdccfbb2980e250b46fb12fc064a8ea60157`.
 
-- [Public release](https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.4)
-- [Successful tagged workflow run](https://github.com/kzahel/web-server-chrome/actions/runs/30381126333)
-- [Published SHA-256 checksums](https://github.com/kzahel/web-server-chrome/releases/download/desktop-v0.1.4/SHA256SUMS)
+- [Public release](https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.5)
+- [Successful tagged workflow run](https://github.com/kzahel/web-server-chrome/actions/runs/30648571816)
+- [Successful general CI run](https://github.com/kzahel/web-server-chrome/actions/runs/30648572832)
+- [Published SHA-256 checksums](https://github.com/kzahel/web-server-chrome/releases/download/desktop-v0.1.5/SHA256SUMS)
 
-All test and macOS arm64, macOS x64, Windows x64, and Linux x64 jobs passed.
-The release stayed private while the matrix staged 19 assets. The finalizer
-validated the exact installer set, GitHub digests, updater version/platform
-coverage, signatures, and URLs; generated checksums and exact download links;
-removed detached signatures only after metadata validation; and then published
-13 retained assets from one job.
+All tests and macOS arm64, macOS x64, Windows x64, Linux x64, and Linux ARM64
+jobs passed. The first tagged attempt exposed a shared `latest.json` upload
+race between parallel Tauri Action legs; its private failed draft and tag were
+removed without becoming public. Commit `6502cdc` serialized those metadata
+uploads. The corrected tag stayed private while the matrix staged its assets,
+then the finalizer published exactly 16 retained files at
+`2026-07-31T17:15:01Z`.
 
-| Platform/artifact | Evidence | Historical conclusion |
+| Platform/artifact | Exact `v0.1.5` evidence | Conclusion |
 |---|---|---|
-| macOS app bundles, arm64 and x64 | CI `codesign`, `spctl`, and stapler checks passed for both apps | App payloads are Developer ID signed and notarized |
-| macOS PKG, arm64 and x64 | CI and an independent post-publication download passed `pkgutil --check-signature`, `spctl --type install`, and stapler validation | PKG is the accepted recommended macOS installer |
-| macOS DMG, arm64 and x64 | Downloaded containers pass `codesign --verify` | Signed alternative; PKG remains recommended because the DMG container is not held to the same stapled-ticket claim |
-| Windows NSIS EXE and MSI | CI reported Authenticode `Valid`, publisher `CN=Kyle Graehl`, for both build outputs; canonical uploaded names and published digests/checksums passed the finalizer | Signed Windows artifacts are published; independent Windows inspection of the exact downloads remains |
-| Linux AppImage/DEB/RPM | All three canonical assets independently match `SHA256SUMS`; exact DEB and AppImage visible start/serve/stop pass on Ubuntu; DEB extension launch passes; RPM metadata/payload inspection passes | Native server path accepted for DEB/AppImage; AppImage-only native-host relaunch is defective and RPM-native install remains |
-| Tauri updater metadata | `latest.json` is version `0.1.4`, covers macOS arm64/x64, Windows x64, and Linux x64 with non-empty signatures and on-release URLs; Windows defaults to NSIS | Complete signed updater metadata published |
+| macOS app/PKG, arm64 and x64 | Public PKGs pass Installer signature, Gatekeeper, and stapler validation. Public app payloads pass deep/strict code signing, Gatekeeper Notarized Developer ID, and stapler checks. Exact `0.1.4` app updated to `0.1.5`, matched the independent public binary hash, served/stopped, retained settings, and passed Dock plus extension single-instance launch | Recommended signed app path accepted; an attended `/Applications` PKG click/install remains an authorization/UX spot-check |
+| macOS DMG, arm64 and x64 | Public containers pass code-sign verification but strict container Gatekeeper reports no notarization | Signed alternative only; PKG remains recommended |
+| Windows NSIS EXE and MSI | Both exact downloads report Authenticode `Valid` for Kyle Graehl. Exact `0.1.4` NSIS updated to signed `0.1.5`; clean NSIS install/serve/stop and session-1 uninstall passed; production extension launch twice retained one process. MSI metadata is product `200 OK`, version `0.1.5`, `ALLUSERS=1` | Recommended current-user NSIS accepted; elevated MSI UI remains secondary |
+| Linux AppImage x64 | Exact `0.1.4` AppImage updated in place to the independently verified `0.1.5` hash; WebDriver serve/stop, stable path/desktop/native-host retention, extension launch/focus, and checksum-verifying `install.sh` all passed | Recommended x86_64 path accepted |
+| Linux DEB/RPM x64 | DEB metadata/install, package-aware manual-update refusal, and production-extension launch passed; RPM metadata/payload inspection reports `200-ok` `0.1.5-1` x86_64 and the expected desktop/host files | Secondary package contract accepted; native RPM-family install remains a claim gap |
+| Linux ARM64 packages | Finalizer, checksums, and updater target/URL/signature coverage pass for AppImage, DEB, and RPM | Build/distribution accepted; no physical ARM64 GUI product claim |
+| Tauri updater metadata | `latest.json` is version `0.1.5`, has non-empty signatures for every supported package variant, uses app/NSIS/AppImage defaults, and every one of its ten distinct URLs returns an asset from the exact release | Signed metadata and package selection accepted |
 
-Every retained release asset was downloaded after publication and matched
-`SHA256SUMS`. GitHub's latest-release API resolves to `desktop-v0.1.4`.
-The deployed updater endpoint returns `0.1.4` with a signature and the expected
-platform artifact to clients reporting `0.1.3`, including the NSIS EXE on
-Windows, and returns HTTP `204` to clients already reporting `0.1.4`.
+Every one of the 15 files named by `SHA256SUMS` was downloaded after
+publication and verified; the manifest itself has SHA-256
+`1535de2dee80550eb1fa88b1aeb3ba8716bb3667feeb3be94e21324198c7138e`.
+GitHub's latest-release API and the live download page resolve to
+`desktop-v0.1.5`. After a short post-publication cache warmup, the deployed
+updater endpoint returned signed `0.1.5` app, NSIS, and AppImage metadata for
+Darwin arm64/x64, Windows x64, and Linux arm64/x64 prior clients. Current
+`0.1.5`, future `9.0.0`, and unsupported targets returned HTTP `204`.
 
-This proves artifact completeness, signing/notarization in CI, checksum
-integrity after download, publication ordering, and deployed metadata routing.
-It does not replace clean-system product acceptance. Still required:
-
-- run `Get-AuthenticodeSignature` against the exact downloaded EXE and MSI on
-  Windows, then clean-install/serve/uninstall the recommended NSIS build;
-- perform an actual installed `0.1.3` → `0.1.4` signed update and verify
-  settings, identity, native messaging, and serving afterward; and
-- fix and retest AppImage-only native-host relaunch and install/launch the RPM
-  on an RPM-family system. Linux DEB/AppImage server smoke and current-version
-  updater detection are complete; no Linux update transition was performed.
-  Tray-only Windows checks and the secondary elevated MSI flow remain separate
-  known gaps.
+This closes the agent-owned desktop release gate. Remaining work is explicitly
+outside the recommended unattended path: an attended macOS PKG installation,
+subjective tray/autostart review, elevated MSI flow, native RPM installation,
+and physical ARM64 product smoke. Store-delivered ChromeOS/Android/extension
+and legacy migration decisions remain separate promotion gates in Tactical 009.
 
 ## Historical `v0.1.3` baseline
 
@@ -188,11 +187,10 @@ check rendered the expected in-app `0.1.3` current result.
 A controlled build reporting `0.1.2` then discovered, downloaded, verified,
 installed, and relaunched the signed public `0.1.3` macOS updater artifact
 through the new “Update and restart” action. This proves the UI/plugin/server
-control path and the existing macOS updater key. The signed Rust-core
-`v0.1.4` candidate and deployed metadata now exist, but the actual installed
-public `0.1.3` → `0.1.4` transition and its post-update behavior still need to
-be exercised, as do Windows/Linux update transitions. The exact public Linux
-AppImage now separately passes `0.1.4` current-version detection.
+control path and the existing macOS updater key. This was the historical
+control-flow proof before `v0.1.4`; the current exact prior-public acceptance
+is the later `0.1.4` → `0.1.5` transition on macOS, Windows, and Linux recorded
+above and in Tactical 009.
 
 ## `v0.1.3` CI and publication defects
 
@@ -319,9 +317,9 @@ A desktop tag may be made public only after all of these pass.
 6. Promote update-server metadata only after the public artifact set is
    immutable and verified.
 
-The `desktop-v0.1.4` run proves this pipeline shape for the Rust-core runtime.
-Clean-system installation and update acceptance remain product gates rather
-than artifact-publication uncertainties.
+The `desktop-v0.1.4` run first proved this pipeline shape for the Rust-core
+runtime. The corrected `desktop-v0.1.5` run repeated it with Linux ARM64 and
+then passed the clean/update product gates on every recommended path.
 
 ## Linux post-publication evidence
 
@@ -342,12 +340,14 @@ current `0.1.4`. The RPM independently matched the public checksum and its
 metadata, payload, and dependencies were inspected; it was not installed on
 the Debian-family host.
 
-One package-specific correctness defect remains: the AppImage copies its
+The `v0.1.4` evidence exposed one package-specific correctness defect: the
+AppImage copied its
 helper to `~/.local/lib/ok200/ok200-host`, but that stable helper no longer
 knows the AppImage path and falls back to `gtk-launch 200-ok`. No such desktop
 ID exists, so AppImage-only extension launch returns
-`{"action":"launch","ok":false}`. The DEB extension path is accepted; a blanket
-all-Linux-package native-messaging claim is not.
+`{"action":"launch","ok":false}`. Public `v0.1.5` closes that defect: direct
+and installer-managed AppImages retain the stable path and desktop identity,
+and the production extension launches/focuses exactly one AppImage process.
 
 ## Accepted Linux package policy
 
@@ -370,12 +370,10 @@ been run**. Do not claim ARM64 as an accepted platform until an ARM64 host
 installs the published AppImage, serves an external request, and completes an
 extension-to-native-host launch.
 
-The source repair records the real AppImage path, installs a stable
+The shipped `v0.1.5` repair records the real AppImage path, installs a stable
 `200-ok.desktop` identity and icon, and teaches the copied native host to launch
-the recorded file. The public `v0.1.4` binary does not contain that repair. A
-signed follow-up release must pass direct-download and verified-installer
-extension-launch smoke before the live download surface is used for broad
-migration promotion.
+the recorded file. Both the direct-download and checksum-verified installer
+paths passed update, server, and extension-launch smoke.
 
 ## Windows local post-fix evidence
 
@@ -410,9 +408,9 @@ only exact product process trees as a fallback, and removes installed binaries,
 native-messaging state, saved server configuration, and WebView data even when
 the desktop and helper began resident in the background.
 
-The `desktop-v0.1.4` release proves the canonical uploaded Windows names,
-complete asset gate, NSIS update metadata, and Azure signing lane. The local
-Tauri bundle still uses product-name-derived whitespace filenames. The exact
-downloaded EXE and MSI now need independent Windows-side signature inspection
-and the recommended NSIS package needs clean-system install/serve/uninstall
-acceptance.
+The `desktop-v0.1.5` exact downloaded EXE and MSI pass independent
+Authenticode inspection. Its recommended NSIS also passes prior-public signed
+update, clean install, serve/stop, native host plus production-extension
+single-instance launch, and complete session-1 silent uninstall. The local
+Tauri bundle still uses product-name-derived whitespace filenames; canonical
+release names remain the external contract.

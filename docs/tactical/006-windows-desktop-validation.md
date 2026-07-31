@@ -1,9 +1,10 @@
 # 006: Windows Desktop Validation
 
-Status: **executed and remediated on native Windows; unsigned runtime,
-per-user NSIS, uninstall cleanup, and browser-extension launch validation
-pass. Signed `v0.1.4` artifacts are published, while exact downloaded-installer
-inspection, tray, and MSI-install proof remain pending.**
+Status: **executed and remediated on native Windows. This document records the
+original unsigned validation; exact signed `v0.1.5` update, NSIS clean
+install/serve/uninstall, Authenticode, native messaging, and production
+extension acceptance are now closed in Tactical 009. Tray and elevated MSI UI
+remain manual/secondary checks.**
 
 Topics:
 

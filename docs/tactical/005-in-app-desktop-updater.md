@@ -1,8 +1,9 @@
 # 005: In-App Desktop Updater
 
-Status: **implementation complete; signed `v0.1.4` metadata is public, while
-the installed `0.1.3` → `0.1.4` transition and remaining cross-platform update
-proof are pending.**
+Status: **complete. Signed `v0.1.5` metadata is public; exact prior-public
+updates pass on the recommended macOS app, Windows NSIS, and Linux AppImage
+paths; package-aware MSI/DEB/RPM refusal and runtime signature rejection are
+recorded in Tactical 009.**
 
 Topic: `desktop-release-readiness`
 

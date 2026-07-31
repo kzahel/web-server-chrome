@@ -1,8 +1,8 @@
 # 008: AppImage-First Linux Distribution
 
-Status: **source candidate and local Linux validation complete; the public
-download page is live and accepted, while the signed follow-up release and
-exact public AppImage acceptance remain pending.**
+Status: **complete. Signed public `v0.1.5` direct and checksum-verified
+AppImages pass prior-public update, server, stable native-host/desktop identity,
+and production-extension acceptance; evidence is recorded in Tactical 009.**
 
 Topics:
 
@@ -89,7 +89,7 @@ the already-published `v0.1.4` native host.
 ### Download and release surfaces
 
 The static site now has `/download`, resolves the latest public `desktop-v*`
-release through the GitHub Releases API, and retains pinned `v0.1.4` fallback
+release through the GitHub Releases API, and retains pinned `v0.1.5` fallback
 links if discovery fails. Linux presents the verified AppImage installer and
 direct AppImage first; DEB/RPM are grouped as administrator-requiring
 alternatives. macOS continues to recommend PKG and Windows continues to
@@ -127,8 +127,8 @@ On Ubuntu 24.04 x86_64:
 - relaunch atomically refreshed the copied host rather than failing with
   `ETXTBSY` while the old helper was executing.
 
-This validates the source repair and installer behavior but does not substitute
-for testing the exact signed follow-up artifact or a real signed update.
+This was the pre-release source proof. The exact signed `v0.1.5` direct and
+installer-managed paths later passed the full contract below; see Tactical 009.
 
 ## Validation contract
 
@@ -150,16 +150,14 @@ desktop app:
 - the exact follow-up AppImage passes visible start/serve/stop smoke before
   the page is used for broad migration promotion.
 
-## Release order
+## Completed release order
 
 1. The runtime, release policy, download surface, and documentation changes
-   landed. The site deployed before the signed follow-up; that ordering was
-   accepted on 2026-07-31 because it still points at signed `v0.1.4` and
-   current traffic is low.
-2. From a clean tree, run `./scripts/release-desktop.sh 0.1.5` to publish the
-   signed desktop follow-up through the existing fail-closed gate.
-3. Test the exact public AppImage as a clean install and signed update.
-4. Update the already-live website and installer's pinned fallback tag to the
-   accepted release, then let the existing Pages workflow deploy them.
-5. Update the living topics and this tactical with the release tag, hashes,
-   CI run, and public deployment evidence.
+   landed before the signed follow-up, with the accepted `v0.1.4` fallback.
+2. `./scripts/release-desktop.sh 0.1.5` and corrected tagged run
+   `30648571816` published the signed follow-up through the fail-closed gate.
+3. The exact public AppImage passed clean verified install and signed
+   `0.1.4` → `0.1.5` update, including server and production-extension smoke.
+4. The website and installer's pinned fallback moved to `desktop-v0.1.5`.
+5. Immutable hashes, host evidence, and remaining claim-only gaps are recorded
+   in Tactical 009 and the living topics.

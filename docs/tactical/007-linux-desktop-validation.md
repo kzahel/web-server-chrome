@@ -1,7 +1,9 @@
 # 007: Linux Desktop Validation
 
-Status: **published DEB and AppImage server smoke accepted; DEB native
-messaging accepted; AppImage native-host relaunch defect recorded.**
+Status: **historical `v0.1.4` DEB/AppImage evidence. Signed `v0.1.5` closes the
+AppImage relaunch defect and passes exact AppImage/DEB updater and production
+extension acceptance in Tactical 009. Native RPM and physical ARM64 product
+smoke remain claim-only gaps.**
 
 Topics:
 

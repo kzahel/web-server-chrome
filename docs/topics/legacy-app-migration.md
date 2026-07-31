@@ -60,19 +60,18 @@ those are linked below.
   version or describing current reach.
 - The new extension and Android app are published. The extension is a launcher,
   not a replacement HTTP engine.
-- Desktop `v0.1.4` is a complete signed Rust-core artifact release and passed
-  the fail-closed publication gate. Published Linux DEB/AppImage server smoke
-  and DEB extension launch pass. Exact published Windows install/signature
-  inspection, the installed `0.1.3` → `0.1.4` transition, and repair of the
-  AppImage-only native-host relaunch defect remain before broad migration
-  promotion; see
-  [`desktop-release-readiness.md`](desktop-release-readiness.md).
-- The current source candidate implements an AppImage-first, per-user Linux
-  installer and the corresponding native-host repair. The public download page
-  is live and accepted because current traffic is low and it resolves to the
-  existing signed release. Linux remains a candidate migration destination
-  until the exact signed follow-up AppImage passes the acceptance in
-  [Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
+- Desktop `v0.1.5` is the complete signed Rust-core release. Its five build
+  legs and finalizer passed; every public asset matched `SHA256SUMS`; and exact
+  signed update, server, native-host, and production-extension paths passed on
+  the recommended macOS app, Windows NSIS, and Linux AppImage installations.
+  The download page resolves to this release. See
+  [`desktop-release-readiness.md`](desktop-release-readiness.md) and
+  [Tactical 009](../tactical/009-release-confidence-closeout.md).
+- Desktop is therefore an accepted migration destination on macOS, Windows,
+  and Linux. Physical ChromeOS plus store-delivered extension/Android behavior
+  remains a separate promotion gate; MSI, RPM-native, physical ARM64, and
+  subjective tray/install UI checks limit secondary claims rather than the
+  recommended desktop paths.
 
 The old detailed plan in `docs/legacy-migration.md` described the unpublished
 maximum-nag candidate currently present in `legacy/`. Its cadence remains an

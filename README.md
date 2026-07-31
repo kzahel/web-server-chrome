@@ -28,16 +28,16 @@ all shipped. Their runtimes are not currently unified:
 
 - the CLI uses the TypeScript engine on Node.js;
 - Android uses the TypeScript engine in QuickJS with Kotlin native I/O;
-- desktop `v0.1.3` uses the TypeScript engine in the Tauri webview with Rust
-  native I/O; and
+- desktop `v0.1.5` uses the standalone Rust HTTP core behind the Tauri/React
+  control surface; and
 - the extension is a launcher/status surface, not the HTTP server.
 
-Desktop `main` now uses the standalone Rust core for HTTP, filesystem, and
-server lifecycle work; its Tauri webview is only a static React control
-surface. That runtime shipped in signed desktop `v0.1.4`; the current source
-candidate additionally contains the AppImage-first Linux installation and
-native-host relaunch repair. Android and the published Node CLI are
-deliberately deferred while they work.
+Desktop `main` uses the standalone Rust core for HTTP, filesystem, and server
+lifecycle work; its Tauri webview is only a static React control surface.
+Signed desktop `v0.1.5` includes the AppImage-first Linux installation,
+native-host relaunch repair, Linux ARM64 packages, and package-aware signed
+updates. Android and the published Node CLI remain deliberately independent
+while they work.
 
 See the living
 [product branding decision](docs/topics/product-branding.md),

@@ -1,9 +1,11 @@
 # 009: Release Confidence Closeout
 
-Status: **active release-closeout plan.** The download page is live and
-accepted. Source and release evidence can now be closed in one agent-owned
-lane, followed by a small maintainer/device sign-off lane before broad legacy
-migration promotion.
+Status: **desktop release lane complete; maintainer/store migration lane
+active.** Signed `desktop-v0.1.5` is public and the exact recommended macOS
+app, Windows NSIS, and Linux AppImage update/server/extension paths are
+accepted. The remaining work is store-delivered ChromeOS/Android/extension,
+subjective desktop UI spot-checks, and the final legacy migration decision and
+submission.
 
 Topics:
 
@@ -67,16 +69,16 @@ subjective product approval.
 
 | Surface | Accepted evidence | Remaining confidence gap |
 |---|---|---|
-| Desktop release pipeline | Signed `desktop-v0.1.4` proved private staging, complete artifact validation, signing/notarization, checksums, and one-job publication | The current AppImage, ARM64, and macOS Dock repairs need an exact signed follow-up |
-| General CI | Typecheck, lint, and build passed at `3df02a4`; Tauri App CI passed | General CI failed on a randomly malformed Node-generated X.509 certificate |
-| Updater UI | Manual and daily-check control flow passed on macOS; a controlled `0.1.2` build installed public `0.1.3`; JSTorrent's shipped cadence and interaction semantics were accepted as the 200 OK reference on 2026-07-31 | The source does not yet implement that accepted cadence, and no actual installed previous-public to current-candidate transition has passed on all recommended desktop paths |
-| Updater safety | Tauri signatures and fail-closed release metadata are in place | Secondary MSI/DEB/RPM installs can currently encounter metadata for a different package type |
-| Windows extension launch | Installed same-source NSIS plus published extension identity passed popup → host → single desktop instance | Repeat with the exact signed public NSIS and candidate updater transition |
-| Linux extension launch | Exact public DEB path passed; source AppImage repair passed locally | Exact public `v0.1.4` AppImage is broken; repeat with the signed follow-up through direct and verified-installer paths |
-| macOS extension launch | Native host and app components build; Dock recreate-or-focus has mock-runtime coverage | No recorded browser extension → installed signed app proof, and packaged Dock behavior needs product smoke |
+| Desktop release pipeline | Corrected `desktop-v0.1.5` five-leg matrix, finalizer, 16-asset publication, independent checksums/signatures, and live routes pass | None for the signed release; the initial private metadata-upload race is recorded below |
+| General CI | Deterministic DER repair and all source/release workflows passed at the release revision | None |
+| Updater UI | JSTorrent cadence/UX is implemented and unit-tested; exact `0.1.4` → `0.1.5` transitions pass on every recommended path | Optional subjective presentation spot-check only |
+| Updater safety | Package-aware policy, negative validators, live no-downgrade routes, and runtime tampered-payload signature rejection pass | None for recommended packages; managed secondary packages remain manual by design |
+| Windows extension launch | Exact signed updated and clean-installed NSIS plus production extension identity pass popup → host → one desktop instance | Tray-only subjective review |
+| Linux extension launch | Exact updated AppImage, verified installer, and installed DEB all pass production extension identity → host → one process | Native RPM-family and physical ARM64 claims only |
+| macOS extension launch | Exact signed updated app passes native framing, production extension launch, one process, Dock recreation, serving, and stop | Attended `/Applications` PKG install and subjective tray review |
 | Android / ChromeOS | Android `v0.1.2` and extension `v0.1.3` are public | The `ok200://launch` intent and Play fallback landed after both tags and have not been store-delivered or tested on ChromeOS |
-| Live update service | `updates.ok200.app/health` returned `{"ok":true}` and current `0.1.4` returned HTTP 204 on 2026-07-31 | Route matrix, deployed config equivalence, reason/CFU accounting, and Control Room aggregates need one reconciled proof |
-| Documentation | Repository topics and signing runbook are strong | `CLAUDE.md` had stale pre-Rust-release context; private analytics guidance is JSTorrent-centric and Control Room still labels desktop unreleased |
+| Live update service | Deployed config/hash, health, reason/CFU accounting, Control Room aggregates, and final `0.1.5` route/asset matrix agree | None; keep normal operational monitoring |
+| Documentation | Repository topics, tactical evidence, quick context, and private operational pointers now describe `v0.1.5` and the remaining manual lane | Continue updating store/legacy state as it changes |
 
 The certificate failure is a real low-probability encoder defect, not a Dock
 regression. `derInteger` does not remove redundant leading zero bytes from the
@@ -154,7 +156,7 @@ Implementation/audit work:
       unless a real MSI-preserving updater is implemented.
 - [x] Ensure DEB/RPM users are not offered installation of an AppImage over
       their package-managed app. Show a manual package/download path instead.
-- [ ] Verify direct and installer-managed AppImages remain writable and retain
+- [x] Verify direct and installer-managed AppImages remain writable and retain
       their stable path, desktop identity, native host, settings, and server
       behavior after update.
 - [x] Verify the configured updater public key against the private-key source
@@ -162,7 +164,7 @@ Implementation/audit work:
 - [x] Add negative validator tests for malformed metadata, off-release URLs,
       wrong package selections, incomplete target coverage, and missing
       updater signatures.
-- [ ] Exercise the runtime verifier against an incorrectly signed candidate
+- [x] Exercise the runtime verifier against an incorrectly signed candidate
       and record the rejection. Current/future versions and unsupported
       target/arch inputs already fail safe at the live route.
 
@@ -233,13 +235,13 @@ Unattended host access accepted on 2026-07-31:
 
 Also:
 
-- [ ] Regression-check the already accepted exact DEB extension path after
+- [x] Regression-check the already accepted exact DEB extension path after
       updater bundle-awareness changes.
-- [ ] Inspect MSI, DEB, and RPM metadata and their manual-update presentation.
+- [x] Inspect MSI, DEB, and RPM metadata and their manual-update presentation.
 - [ ] If a native RPM or ARM64 GUI host is available, run the corresponding
       product smoke; otherwise label those paths unaccepted rather than
       delaying the recommended x86_64 paths.
-- [ ] Record exact tag, workflow, filenames, sizes, SHA-256 values, host/OS,
+- [x] Record exact tag, workflow, filenames, sizes, SHA-256 values, host/OS,
       install source, extension identity, updater source version, and result.
 
 ### A5 — prove the Android and extension candidates without store claims
@@ -269,20 +271,20 @@ Gate: **release**. External publication requires explicit maintainer
 authorization.
 
 - [x] Prepare the `0.1.5` desktop changelog from the accepted source revision.
-- [ ] Synchronize version fields in the release commit from a clean accepted
+- [x] Synchronize version fields in the release commit from a clean accepted
       revision; the release script intentionally performs this immediately
       before tagging.
-- [ ] Run the release script and push the single intended desktop tag.
-- [ ] Require all test, macOS, Windows, Linux x86_64, and Linux ARM64 matrix
+- [x] Run the release script and push the single intended desktop tag.
+- [x] Require all test, macOS, Windows, Linux x86_64, and Linux ARM64 matrix
       jobs plus the finalizer to pass.
-- [ ] Confirm the release remains non-public until completeness validation and
+- [x] Confirm the release remains non-public until completeness validation and
       that a failed leg cannot leave a production-looking partial release.
-- [ ] Download every retained asset, verify `SHA256SUMS`, inspect signatures,
+- [x] Download every retained asset, verify `SHA256SUMS`, inspect signatures,
       and verify `latest.json` version, targets, signatures, package choices,
       and URLs.
-- [ ] Run A3 and A4 against the public candidate before calling it accepted.
-- [ ] Update the owning topics and completed tacticals with immutable evidence.
-- [ ] Recheck the already-live download page's resolved links; no redesign is
+- [x] Run A3 and A4 against the public candidate before calling it accepted.
+- [x] Update the owning topics and completed tacticals with immutable evidence.
+- [x] Recheck the already-live download page's resolved links; no redesign is
       part of this step.
 
 ## Interim execution evidence — 2026-07-31 source candidate
@@ -371,7 +373,7 @@ both sides have SHA-256
 The service checkout revision was `5634050`; its only dirty state was the
 expected untracked runtime `products.d/` directory.
 
-The 2026-07-31 public route audit produced:
+The 2026-07-31 pre-release baseline route audit produced:
 
 | Request | Result | Accepted interpretation |
 |---|---:|---|
@@ -402,16 +404,111 @@ in dotfiles commit `ec99450`; the laptop service was rebuilt, restarted, and
 health-checked at that revision. Store audience data remains explicitly out of
 scope for these updater estimates.
 
+## Desktop `v0.1.5` release execution — 2026-07-31
+
+The maintainer explicitly authorized desktop publication. The release script
+created version commit `53c76c6`, but the first tagged run
+[30648013341](https://github.com/kzahel/web-server-chrome/actions/runs/30648013341)
+exposed a race: parallel Tauri Action legs uploaded the shared `latest.json`
+asset concurrently. The failed draft never became public. The exact failed
+draft/tag were removed, commit `6502cdc` added `max-parallel: 1` for release
+metadata uploads, and `desktop-v0.1.5` was recreated at
+`6502cdccfbb2980e250b46fb12fc064a8ea60157`.
+
+The corrected [tagged Tauri run
+30648571816](https://github.com/kzahel/web-server-chrome/actions/runs/30648571816),
+[general CI run
+30648572832](https://github.com/kzahel/web-server-chrome/actions/runs/30648572832),
+and [untagged Tauri audit
+30648572171](https://github.com/kzahel/web-server-chrome/actions/runs/30648572171)
+all passed. The finalizer published the [public
+release](https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.5)
+at `2026-07-31T17:15:01Z` only after all test, macOS arm64/x64, Windows x64,
+Linux x64, and Linux ARM64 legs completed.
+
+### Immutable public artifact inventory
+
+Every file named in the public `SHA256SUMS` was downloaded independently and
+passed `shasum -a 256 -c`. The checksum manifest itself is 1,347 bytes with
+SHA-256 `1535de2dee80550eb1fa88b1aeb3ba8716bb3667feeb3be94e21324198c7138e`.
+
+| Artifact | Bytes | SHA-256 |
+|---|---:|---|
+| `200.OK-0.1.5-1.aarch64.rpm` | 9,444,175 | `67a5886413b52af03cacc5352a0f7f5e3bc89c932eccb487f753e499222e22cc` |
+| `200.OK-0.1.5-1.x86_64.rpm` | 9,253,090 | `13f426c4905a3d2434e2809d855bacd4ae78e4022e04b80230c933684b736be9` |
+| `200.OK_0.1.5_aarch64.AppImage` | 84,593,160 | `d19bd9de573112912f1f6010f485f358e284e74b2a69ee3305720a887cfe782b` |
+| `200.OK_0.1.5_aarch64.dmg` | 8,477,437 | `5f8ee5d22196ffca762ef691eb436db28e5e1cb22c5fc948a7719e34239a0209` |
+| `200.OK_0.1.5_amd64.AppImage` | 86,239,736 | `e1ca3c735b5914d3d55b155bf615d4c9505cd98fbef8343677f10baa61b9c2ac` |
+| `200.OK_0.1.5_amd64.deb` | 9,253,638 | `088a9789a5a9b79daff6eba5e782b3edc3d366f412598f19cf5142d421c64f01` |
+| `200.OK_0.1.5_arm64.deb` | 9,442,656 | `a6d014e2ad098c8963b304e667154949b2e46f3f43e0b780a2c61b2286a2e9ae` |
+| `200.OK_0.1.5_x64-setup.exe` | 6,404,640 | `6cf857e6c99b52f71ca008ac184dd5f73d3837afaf858bb5c866c85b40954b55` |
+| `200.OK_0.1.5_x64.dmg` | 9,026,111 | `0374d11769caf381c044841cb2524fd276b73b50de3c790d5537d4669db08229` |
+| `200.OK_0.1.5_x64.msi` | 9,015,296 | `f912f57f38aa18b69989c9042018d0650fb744bacd7d3aaedd8e1a46d6bf71cf` |
+| `200.OK_aarch64.app.tar.gz` | 8,091,891 | `5aeef0bf0c6d94878932115c9394d732dad449c6518d2ba65b293b3c1c0ffaf7` |
+| `200.OK_x64.app.tar.gz` | 8,572,069 | `48d364ecbf59bf6ec57b36e2a55448bc45fbd715596a9f44d08221b7f744a8be` |
+| `200_OK_0.1.5_aarch64.pkg` | 7,858,882 | `1699fa6d9a7360a342cb84e522c748fbb8b681d635a1e247d598f5e707dd54c0` |
+| `200_OK_0.1.5_x64.pkg` | 8,421,280 | `cf3ec54baff35e40521070697189b744ea0602402eb94c2a87962e4f1df912cd` |
+| `latest.json` | 10,035 | `f4af71034176752601131cb5ceaf68d95e7c8c8d543b232ee16d4c8843961255` |
+
+`latest.json` reports version `0.1.5`, contains non-empty signatures, and
+selects app tarballs for macOS, current-user NSIS for Windows, and AppImage for
+Linux while retaining package-specific variants. All ten distinct updater
+URLs return assets from the exact public release. After a brief
+post-publication cache warmup, live routes returned signed `0.1.5` metadata for
+Darwin arm64/x64, Windows x64, and Linux arm64/x64 prior clients. Current
+`0.1.5`, future `9.0.0`, Windows arm64, and FreeBSD returned HTTP `204`.
+
+### Exact product acceptance
+
+- **macOS arm64, macOS 26.5.2:** both PKGs pass Installer signature,
+  Gatekeeper, and stapler validation. The exact signed public app passes
+  deep/strict signing, Notarized Developer ID Gatekeeper, and stapler checks.
+  An exact public `0.1.4` app performed the live signed update to `0.1.5`; its
+  installed executable hash exactly matched the independently extracted
+  public `0.1.5` binary. The updated app retained configuration, served and
+  stopped an exact-hash fixture, recreated/focused its Dock window, passed
+  native framing, and passed production extension ID
+  `lpkjdhnmgkhaabhimpdinmdgejoaejic` launch with one process. Installing the
+  PKG into `/Applications` itself requires attended administrator
+  authentication and remains a manual spot-check.
+- **Windows 11 x64 (`~/code/winvm-testbed`):** the exact NSIS and MSI downloads
+  report Authenticode `Valid` for Kyle Graehl. An installed exact public
+  `0.1.4` NSIS updated through the logged-in session to signed `0.1.5`, retained
+  the controlled server configuration, served/stopped an exact-hash fixture,
+  passed host handshake/ping/launch, and passed two production-extension
+  launches with one desktop process. A fresh exact public NSIS then repeated
+  serve/stop and session-1 silent uninstall removed all product binaries,
+  state, native-host registry keys, and processes. MSI metadata reports product
+  `200 OK`, version `0.1.5`, and `ALLUSERS=1`; its elevated UI remains
+  secondary.
+- **Ubuntu 24.04 x86_64 (`ssh laptop`, host `zblinux`):** an exact public
+  `0.1.4` AppImage updated in place to the independent public `0.1.5` hash and
+  then reported current. The updated AppImage passed WebDriver
+  start/serve/stop, retained configuration, stable AppImage path, desktop
+  identity, and copied native host, and passed the production extension twice
+  with one process. The checksum-verifying `install.sh` installed the same
+  public AppImage and host into an isolated home; a forced API failure selected
+  its pinned `desktop-v0.1.5` fallback and still verified the exact public
+  AppImage hash. The exact DEB reports package
+  `200-ok`, version `0.1.5`, architecture `amd64`; it refused in-app replacement
+  with the explicit manual-package message and passed the production extension
+  path through `/usr/bin/ok200-host`. RPM inspection reports `200-ok`,
+  `0.1.5-1`, `x86_64`, and the expected app/host payload. The test DEB was
+  removed afterward.
+- **Runtime signature safety:** a disposable unsigned packaged app used the
+  production updater public key and a local endpoint that served a 60-byte
+  tampered payload with the valid signature of a different public artifact.
+  The runtime downloaded it, returned `Install failed: The signature
+  verification failed`, and left the executable SHA-256 unchanged. Production
+  endpoint configuration was restored immediately after building the fixture.
+
 ### Remaining unattended work boundary
 
-The `0.1.5` changelog is prepared and the source candidate is ready for the
-release script's version synchronization and signed follow-up lane. Creating
-and pushing that desktop tag is intentionally not performed without explicit
-publication authorization. Exact candidate install/update,
-runtime wrong-signature rejection, and recommended-path extension smoke all
-depend on the retained signed artifacts from that run and therefore remain
-open in A2, A4, and A6. Store publishing and physical ChromeOS delivery remain
-in Lane B.
+There is no open unattended desktop release blocker. Store publishing and
+physical ChromeOS delivery remain in Lane B, as do the maintainer's subjective
+tray/installer spot-checks and secondary MSI/RPM/physical-ARM64 claims. The
+Android emulator is shut down; future Android device work should use the
+attached physical device as requested.
 
 ## Lane B — maintainer/device sign-off
 

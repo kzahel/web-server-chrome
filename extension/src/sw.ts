@@ -10,6 +10,7 @@ self.addEventListener("activate", () => {
 });
 
 import { getNativeConnection } from "./lib/native-connection";
+import { isChromeOs, shouldUseNativeMessaging } from "./lib/platform-routing";
 
 // ============================================================================
 // Native Host Connection
@@ -19,9 +20,9 @@ const nativeConnection = getNativeConnection();
 let hostVersion: string | null = null;
 let isChromeOS = false;
 
-async function detectChromeOS(): Promise<boolean> {
+async function detectPlatformOs(): Promise<string> {
   return new Promise((resolve) => {
-    chrome.runtime.getPlatformInfo((info) => resolve(info.os === "cros"));
+    chrome.runtime.getPlatformInfo((info) => resolve(info.os));
   });
 }
 
@@ -135,7 +136,9 @@ chrome.runtime.onMessageExternal.addListener(
 );
 
 // Auto-connect on startup (skip on ChromeOS where native messaging is unsupported)
-detectChromeOS().then((cros) => {
-  isChromeOS = cros;
-  if (!cros) connectToNativeHost();
+detectPlatformOs().then((os) => {
+  isChromeOS = isChromeOs(os);
+  if (shouldUseNativeMessaging(os)) {
+    connectToNativeHost();
+  }
 });

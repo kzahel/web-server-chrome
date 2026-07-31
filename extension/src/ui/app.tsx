@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
+import {
+  CHROMEOS_INTENT_URL,
+  isChromeOs,
+  PLAY_STORE_URL,
+} from "../lib/platform-routing";
 
 const PRODUCT_URL = "https://ok200.app/#platforms";
 const FEEDBACK_URL = "https://ok200.app/feedback";
 const SOURCE_URL = "https://github.com/kzahel/web-server-chrome";
-const PLAY_STORE_URL =
-  "https://play.google.com/store/apps/details?id=app.ok200.android";
-const CHROMEOS_INTENT_URL =
-  "intent://launch#Intent;scheme=ok200;package=app.ok200.android;" +
-  `S.browser_fallback_url=${encodeURIComponent(PLAY_STORE_URL)};end`;
 
 type AppState =
   | "loading"
@@ -36,7 +36,7 @@ function App() {
     async function init() {
       const os = await getPlatformOS();
 
-      if (os === "cros") {
+      if (isChromeOs(os)) {
         if (!cancelled) setState("chromeos");
         return;
       }

@@ -8,6 +8,7 @@ import { defineConfig } from "vite";
 const DEV_HOST = "local.ok200.app";
 const EXTENSION_ID = "lpkjdhnmgkhaabhimpdinmdgejoaejic";
 const CHROME_ID_ALPHABET = "abcdefghijklmnop";
+const isChromeWebStoreBuild = process.env.SKIP_INJECT_KEY === "1";
 
 function extensionIdFromPublicKey(base64Key: string): string {
   const digest = crypto
@@ -88,16 +89,24 @@ function sourcemapIgnoreLogger() {
   };
 }
 
-function injectPublicKey() {
+function emitManifest() {
   return {
-    name: "inject-public-key",
+    name: "emit-manifest",
     generateBundle() {
       const manifestPath = resolve(__dirname, "public/manifest.json");
       const manifestContent = fs.readFileSync(manifestPath, "utf-8");
       const manifestJson = JSON.parse(manifestContent);
 
-      manifestJson.key = DEVELOPMENT_PUBLIC_KEY;
-      console.log(`Injected public key for ${developmentExtensionId}`);
+      if (isChromeWebStoreBuild) {
+        delete manifestJson.key;
+        manifestJson.externally_connectable.matches =
+          manifestJson.externally_connectable.matches.filter(
+            (match: string) => !match.startsWith("http://local.ok200.app"),
+          );
+      } else {
+        manifestJson.key = DEVELOPMENT_PUBLIC_KEY;
+        console.log(`Injected public key for ${developmentExtensionId}`);
+      }
 
       this.emitFile({
         type: "asset",
@@ -130,8 +139,7 @@ export default defineConfig({
   plugins: [
     react(),
     printDevUrls(),
-    // Skip public key injection for CWS builds (set SKIP_INJECT_KEY=1)
-    !process.env.SKIP_INJECT_KEY && injectPublicKey(),
+    emitManifest(),
     sourcemapIgnoreLogger(),
   ].filter(Boolean),
   server: {
@@ -147,7 +155,7 @@ export default defineConfig({
     },
   },
   build: {
-    sourcemap: true,
+    sourcemap: !isChromeWebStoreBuild,
     minify: false,
     sourcemapIgnoreList: false,
     rollupOptions: {

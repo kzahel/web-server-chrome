@@ -39,8 +39,11 @@ removing DEB or RPM alternatives:
 - **DEB and RPM remain published secondary system packages.** Their
   installation requires administrator privileges and their updates are
   manual unless a future bundle-aware package update policy is accepted.
-- The current supported Linux architecture remains x86_64. The download
-  surface must not imply that an ARM64 AppImage exists.
+- **Linux ships x86_64 and ARM64.** ARM64 packages are built natively on
+  GitHub's `ubuntu-22.04-arm` runners, which are free for this public
+  repository. The download surface reveals ARM64 links only when the resolved
+  release actually publishes them, so pre-`0.1.5` releases still present
+  x86_64 alone.
 
 This follows the already-shipped JSTorrent policy while retaining native
 packages for users who deliberately prefer system installation.
@@ -91,9 +94,19 @@ direct AppImage first; DEB/RPM are grouped as administrator-requiring
 alternatives. macOS continues to recommend PKG and Windows continues to
 recommend the current-user NSIS EXE.
 
+The page also detects the visitor's platform and moves that card first with a
+"Detected on this device" badge. Detection is a separate synchronous pass from
+release discovery, so it still works when the GitHub API is unreachable, and it
+declines to claim a desktop build on Android or ChromeOS. ARM64 links are
+hidden only after a *successful* lookup proves the asset absent; a failed
+lookup leaves the pinned fallbacks in place.
+
+The homepage hero now leads with a Download call to action. The email signup
+remains, demoted to a secondary action beneath it.
+
 Future GitHub release bodies label AppImage as the recommended Linux artifact.
 The release validator also rejects Linux updater metadata that does not point
-to the release's x86_64 AppImage.
+to the release's AppImage, for both `linux-x86_64` and `linux-aarch64`.
 
 ## Local validation evidence
 

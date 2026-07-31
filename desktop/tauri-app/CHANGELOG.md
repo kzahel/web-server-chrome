@@ -4,6 +4,11 @@
 
 ## [0.1.5]
 
+### Added
+
+- Publish Linux ARM64 packages: AppImage, DEB, and RPM, with `linux-aarch64`
+  updater metadata. The install script now detects `aarch64` automatically.
+
 ### Changed
 
 - Make AppImage the recommended Linux package and support a checksum-verified

@@ -52,6 +52,9 @@ export function validateDesktopRelease({ release, latest, tag, repository }) {
     `200.OK_${version}_amd64.AppImage`,
     `200.OK_${version}_amd64.deb`,
     `200.OK-${version}-1.x86_64.rpm`,
+    `200.OK_${version}_aarch64.AppImage`,
+    `200.OK_${version}_arm64.deb`,
+    `200.OK-${version}-1.aarch64.rpm`,
     "latest.json",
   ];
   for (const name of requiredInstallers) {
@@ -66,6 +69,7 @@ export function validateDesktopRelease({ release, latest, tag, repository }) {
     "darwin-aarch64",
     "darwin-x86_64",
     "linux-x86_64",
+    "linux-aarch64",
     "windows-x86_64",
   ];
   if (!latest.platforms || typeof latest.platforms !== "object") {
@@ -101,14 +105,19 @@ export function validateDesktopRelease({ release, latest, tag, repository }) {
     requireAsset(assetNames, `${assetName}.sig`);
   }
 
-  const linuxUpdaterName = decodeURIComponent(
-    latest.platforms["linux-x86_64"].url.slice(expectedUrlPrefix.length),
-  );
-  const expectedLinuxUpdater = `200.OK_${version}_amd64.AppImage`;
-  if (linuxUpdaterName !== expectedLinuxUpdater) {
-    fail(
-      `Linux updater must use the recommended AppImage: ${linuxUpdaterName}`,
+  const expectedLinuxUpdaters = {
+    "linux-x86_64": `200.OK_${version}_amd64.AppImage`,
+    "linux-aarch64": `200.OK_${version}_aarch64.AppImage`,
+  };
+  for (const [platform, expected] of Object.entries(expectedLinuxUpdaters)) {
+    const actual = decodeURIComponent(
+      latest.platforms[platform].url.slice(expectedUrlPrefix.length),
     );
+    if (actual !== expected) {
+      fail(
+        `Linux updater for ${platform} must use the recommended AppImage: ${actual}`,
+      );
+    }
   }
 
   return { version, requiredInstallers };

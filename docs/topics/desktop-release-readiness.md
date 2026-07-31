@@ -231,7 +231,8 @@ A desktop tag may be made public only after all of these pass.
 
 ### Build and completeness
 
-- All four matrix legs succeed: macOS arm64, macOS x64, Windows x64, Linux x64.
+- All five matrix legs succeed: macOS arm64, macOS x64, Windows x64, Linux x64,
+  Linux arm64.
 - Expected installer and updater artifacts are present exactly once.
 - Release-table links are generated from or checked against actual asset names.
 - `latest.json` version equals the tag and includes every supported updater
@@ -322,8 +323,16 @@ and `ok200.app/download` present AppImage first.
 DEB and RPM remain required release assets but are secondary system packages.
 They require administrator privileges to install and are documented as manual
 update paths until a bundle-aware package updater is deliberately accepted.
-The release validator now also requires the Linux Tauri updater target to be
-the x86_64 AppImage.
+The release validator now also requires each Linux Tauri updater target,
+`linux-x86_64` and `linux-aarch64`, to be that architecture's AppImage.
+
+Linux ARM64 packages are built natively on GitHub's `ubuntu-22.04-arm` runners
+and are required release assets: `200.OK_{version}_aarch64.AppImage`,
+`200.OK_{version}_arm64.deb`, and `200.OK-{version}-1.aarch64.rpm`. Artifact
+production and validation are gated in CI, but **no ARM64 product smoke has
+been run**. Do not claim ARM64 as an accepted platform until an ARM64 host
+installs the published AppImage, serves an external request, and completes an
+extension-to-native-host launch.
 
 The source repair records the real AppImage path, installs a stable
 `200-ok.desktop` identity and icon, and teaches the copied native host to launch

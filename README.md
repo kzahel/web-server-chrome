@@ -50,7 +50,8 @@ See the living
 - Android / ChromeOS: [200 OK on Google Play](https://play.google.com/store/apps/details?id=app.ok200.android)
 - Desktop app: [download the latest signed release](https://ok200.app/download).
   AppImage is recommended on Linux because it installs and updates without an
-  administrator password; DEB and RPM remain secondary system packages.
+  administrator password; DEB and RPM remain secondary system packages. Linux
+  packages are published for x86_64 and ARM64.
 
 ### CLI Usage
 

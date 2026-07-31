@@ -77,6 +77,12 @@ jobs:
           - platform: ubuntu-22.04
             args: ''
             rust_target: ''
+          # GitHub's ARM64 Linux runners are free for public repositories. Keep
+          # the 22.04 image so both Linux legs link against the same glibc
+          # baseline.
+          - platform: ubuntu-22.04-arm
+            args: ''
+            rust_target: ''
           - platform: windows-latest
             args: ''
             rust_target: ''
@@ -481,7 +487,8 @@ jobs:
             echo "| macOS (Apple Silicon) | [PKG](${BASE}/200_OK_${VERSION}_aarch64.pkg) (recommended) · [DMG](${BASE}/200.OK_${VERSION}_aarch64.dmg) |"
             echo "| macOS (Intel) | [PKG](${BASE}/200_OK_${VERSION}_x64.pkg) (recommended) · [DMG](${BASE}/200.OK_${VERSION}_x64.dmg) |"
             echo "| Windows | [EXE](${BASE}/200.OK_${VERSION}_x64-setup.exe) (recommended) · [MSI](${BASE}/200.OK_${VERSION}_x64.msi) (system-wide) |"
-            echo "| Linux | [AppImage](${BASE}/200.OK_${VERSION}_amd64.AppImage) (recommended, no admin) · [DEB](${BASE}/200.OK_${VERSION}_amd64.deb) (system package) · [RPM](${BASE}/200.OK-${VERSION}-1.x86_64.rpm) (system package) |"
+            echo "| Linux (x86_64) | [AppImage](${BASE}/200.OK_${VERSION}_amd64.AppImage) (recommended, no admin) · [DEB](${BASE}/200.OK_${VERSION}_amd64.deb) (system package) · [RPM](${BASE}/200.OK-${VERSION}-1.x86_64.rpm) (system package) |"
+            echo "| Linux (ARM64) | [AppImage](${BASE}/200.OK_${VERSION}_aarch64.AppImage) (recommended, no admin) · [DEB](${BASE}/200.OK_${VERSION}_arm64.deb) (system package) · [RPM](${BASE}/200.OK-${VERSION}-1.aarch64.rpm) (system package) |"
             echo ""
             echo "[SHA-256 checksums](${BASE}/SHA256SUMS)"
           } > /tmp/release-body.md

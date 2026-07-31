@@ -40,9 +40,10 @@ fi
 
 case "$(uname -m)" in
     x86_64|amd64) ASSET_ARCH="amd64" ;;
+    aarch64|arm64) ASSET_ARCH="aarch64" ;;
     *)
         error "Unsupported architecture: $(uname -m)"
-        echo "The current Linux desktop release supports x86_64."
+        echo "The Linux desktop release supports x86_64 and aarch64."
         exit 1
         ;;
 esac
@@ -89,6 +90,10 @@ EXPECTED=$(
 )
 if [[ ! "$EXPECTED" =~ ^[[:xdigit:]]{64}$ ]]; then
     error "No valid checksum was published for ${ASSET_NAME}."
+    if [ "$ASSET_ARCH" != "amd64" ]; then
+        echo "Release ${TAG} may predate ${ASSET_ARCH} Linux packages."
+        echo "See https://ok200.app/download for available builds."
+    fi
     exit 1
 fi
 

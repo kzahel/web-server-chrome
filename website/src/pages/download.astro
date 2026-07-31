@@ -27,9 +27,12 @@ const fallbackRelease =
 
     <section class="downloads">
       <div class="container platform-list">
-        <article class="download-card recommended" id="linux">
+        <article class="download-card recommended" id="linux" data-platform="linux">
+          <p class="detected-badge" data-detected-badge hidden>
+            Detected on this device
+          </p>
           <div>
-            <p class="platform-label">Linux · x86_64</p>
+            <p class="platform-label">Linux · x86_64 and ARM64</p>
             <h2>AppImage</h2>
             <p>
               Recommended. Installs for your user, needs no administrator
@@ -39,12 +42,22 @@ const fallbackRelease =
           </div>
           <div class="install-command">
             <code>curl -fsSL https://ok200.app/install.sh | bash</code>
+            <p class="install-command-note">
+              Detects your architecture and verifies the download against the
+              published checksums.
+            </p>
           </div>
           <div class="actions">
             <a
               class="btn btn-primary"
               data-asset="appimage"
-              href={fallbackRelease}>Download AppImage</a
+              href={fallbackRelease}>AppImage · x86_64</a
+            >
+            <a
+              class="btn btn-secondary"
+              data-asset="appimage-arm64"
+              data-asset-group="linux-arm64"
+              href={fallbackRelease}>AppImage · ARM64</a
             >
             <a class="text-link" data-release-link href={fallbackRelease}
               >Release notes and checksums</a
@@ -57,13 +70,26 @@ const fallbackRelease =
               privileges. Update those packages manually.
             </p>
             <div class="alternate-links">
-              <a data-asset="deb" href={fallbackRelease}>Download DEB</a>
-              <a data-asset="rpm" href={fallbackRelease}>Download RPM</a>
+              <a data-asset="deb" href={fallbackRelease}>DEB · x86_64</a>
+              <a data-asset="rpm" href={fallbackRelease}>RPM · x86_64</a>
+              <a
+                data-asset="deb-arm64"
+                data-asset-group="linux-arm64"
+                href={fallbackRelease}>DEB · ARM64</a
+              >
+              <a
+                data-asset="rpm-arm64"
+                data-asset-group="linux-arm64"
+                href={fallbackRelease}>RPM · ARM64</a
+              >
             </div>
           </details>
         </article>
 
-        <article class="download-card" id="mac">
+        <article class="download-card" id="mac" data-platform="mac">
+          <p class="detected-badge" data-detected-badge hidden>
+            Detected on this device
+          </p>
           <div>
             <p class="platform-label">macOS</p>
             <h2>Signed PKG</h2>
@@ -82,7 +108,10 @@ const fallbackRelease =
           </div>
         </article>
 
-        <article class="download-card" id="windows">
+        <article class="download-card" id="windows" data-platform="windows">
+          <p class="detected-badge" data-detected-badge hidden>
+            Detected on this device
+          </p>
           <div>
             <p class="platform-label">Windows · x86_64</p>
             <h2>Current-user EXE</h2>
@@ -113,6 +142,63 @@ const fallbackRelease =
 </BaseLayout>
 
 <script is:inline>
+  // Highlight the visitor's platform. This runs independently of release
+  // discovery so it still works when the GitHub API is unreachable.
+  (function () {
+    function detectPlatform() {
+      var agentData = navigator.userAgentData;
+      var probe = (
+        (agentData && agentData.platform ? agentData.platform : '') +
+        ' ' +
+        (navigator.platform || '') +
+        ' ' +
+        (navigator.userAgent || '')
+      ).toLowerCase();
+      // Android and ChromeOS have their own apps; do not claim a desktop build.
+      if (probe.indexOf('android') !== -1 || probe.indexOf('cros') !== -1) {
+        return null;
+      }
+      if (probe.indexOf('win') !== -1) return 'windows';
+      if (probe.indexOf('mac') !== -1) return 'mac';
+      if (probe.indexOf('linux') !== -1 || probe.indexOf('x11') !== -1) {
+        return 'linux';
+      }
+      return null;
+    }
+
+    function markArm64() {
+      var linux = document.querySelector('[data-platform="linux"]');
+      if (!linux) return;
+      var arm = linux.querySelector('[data-asset="appimage-arm64"]');
+      var intel = linux.querySelector('[data-asset="appimage"]');
+      if (!arm || !intel) return;
+      arm.classList.remove('btn-secondary');
+      arm.classList.add('btn-primary');
+      intel.classList.remove('btn-primary');
+      intel.classList.add('btn-secondary');
+    }
+
+    var platform = detectPlatform();
+    if (!platform) return;
+
+    var card = document.querySelector('[data-platform="' + platform + '"]');
+    if (!card) return;
+
+    card.classList.add('detected');
+    var badge = card.querySelector('[data-detected-badge]');
+    if (badge) {
+      badge.hidden = false;
+    }
+    if (card.parentNode) {
+      card.parentNode.prepend(card);
+    }
+
+    var ua = (navigator.userAgent || '') + ' ' + (navigator.platform || '');
+    if (platform === 'linux' && /aarch64|arm64|armv8/i.test(ua)) {
+      markArm64();
+    }
+  })();
+
   (async function () {
     var response = await fetch(
       'https://api.github.com/repos/kzahel/web-server-chrome/releases?per_page=100',
@@ -133,6 +219,9 @@ const fallbackRelease =
       appimage: '200.OK_' + version + '_amd64.AppImage',
       deb: '200.OK_' + version + '_amd64.deb',
       rpm: '200.OK-' + version + '-1.x86_64.rpm',
+      'appimage-arm64': '200.OK_' + version + '_aarch64.AppImage',
+      'deb-arm64': '200.OK_' + version + '_arm64.deb',
+      'rpm-arm64': '200.OK-' + version + '-1.aarch64.rpm',
       'mac-arm': '200_OK_' + version + '_aarch64.pkg',
       'mac-intel': '200_OK_' + version + '_x64.pkg',
       'windows-exe': '200.OK_' + version + '_x64-setup.exe',
@@ -148,11 +237,26 @@ const fallbackRelease =
     document.querySelectorAll('[data-release-link]').forEach(function (link) {
       link.href = release.html_url;
     });
+
+    // Only a successful lookup proves an asset is absent, so links are hidden
+    // here rather than defaulting to hidden in the markup.
+    var missingGroups = new Set();
     document.querySelectorAll('[data-asset]').forEach(function (link) {
       var name = expected[link.dataset.asset];
       if (name && assets.has(name)) {
         link.href = assets.get(name);
+        return;
       }
+      if (link.dataset.assetGroup) {
+        missingGroups.add(link.dataset.assetGroup);
+      }
+    });
+    missingGroups.forEach(function (group) {
+      document
+        .querySelectorAll('[data-asset-group="' + group + '"]')
+        .forEach(function (link) {
+          link.hidden = true;
+        });
     });
   })().catch(function () {
     // The pinned release links remain usable if GitHub API discovery fails.
@@ -209,6 +313,24 @@ const fallbackRelease =
     border-color: var(--accent);
   }
 
+  .download-card.detected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .download-card p.detected-badge {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .detected-badge[hidden] {
+    display: none;
+  }
+
   .download-card h2 {
     font-size: 26px;
     margin: 2px 0 6px;
@@ -231,6 +353,15 @@ const fallbackRelease =
     font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
     font-size: 13px;
     white-space: nowrap;
+  }
+
+  .install-command-note {
+    font-size: 13px;
+    margin: 10px 0 0;
+  }
+
+  [data-asset][hidden] {
+    display: none;
   }
 
   .actions,

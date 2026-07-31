@@ -58,6 +58,12 @@ jobs:
   build-tauri:
     strategy:
       fail-fast: false
+      # tauri-action updates the shared draft release and latest.json from each
+      # platform leg. Its existing-assets snapshot is not safe for concurrent
+      # replacement: parallel tagged jobs can both decide to upload latest.json
+      # and one fails with ReleaseAsset already_exists. Serialize the matrix so
+      # every platform merges and replaces updater metadata deterministically.
+      max-parallel: 1
       matrix:
         include:
           # macos-latest is mid-migration to macOS 26 (runner-images#14167, rolling

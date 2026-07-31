@@ -47,14 +47,28 @@ function derSet(...items: Uint8Array[]): Uint8Array {
   return derTag(0x31, ...items);
 }
 
-function derInteger(value: Uint8Array): Uint8Array {
-  // Ensure positive by prepending 0x00 if high bit set
-  if (value.length > 0 && value[0] & 0x80) {
-    const padded = new Uint8Array(value.length + 1);
-    padded.set(value, 1);
+// Exported from this module for deterministic DER regression coverage. It is
+// not part of the package's public entry-point exports.
+export function encodeDerInteger(value: Uint8Array): Uint8Array {
+  // DER INTEGERs must use the shortest possible encoding. Preserve one
+  // leading zero only when it is required to keep a positive value positive.
+  let start = 0;
+  while (
+    start < value.length - 1 &&
+    value[start] === 0 &&
+    (value[start + 1] & 0x80) === 0
+  ) {
+    start += 1;
+  }
+
+  const normalized =
+    value.length === 0 ? new Uint8Array([0]) : value.subarray(start);
+  if (normalized[0] & 0x80) {
+    const padded = new Uint8Array(normalized.length + 1);
+    padded.set(normalized, 1);
     return derTag(0x02, padded);
   }
-  return derTag(0x02, value);
+  return derTag(0x02, normalized);
 }
 
 function derBitString(data: Uint8Array): Uint8Array {
@@ -162,9 +176,9 @@ function buildTbsCertificate(params: {
 }): Uint8Array {
   return derSequence(
     // version [0] EXPLICIT INTEGER 2 (v3)
-    derExplicit(0, derInteger(new Uint8Array([2]))),
+    derExplicit(0, encodeDerInteger(new Uint8Array([2]))),
     // serial number
-    derInteger(params.serialNumber),
+    encodeDerInteger(params.serialNumber),
     // signature algorithm
     SHA256_RSA_ALGORITHM,
     // issuer

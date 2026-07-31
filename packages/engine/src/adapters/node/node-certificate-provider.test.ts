@@ -1,6 +1,23 @@
 import * as crypto from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { NodeCertificateProvider } from "./node-certificate-provider.js";
+import {
+  encodeDerInteger,
+  NodeCertificateProvider,
+} from "./node-certificate-provider.js";
+
+describe("DER INTEGER encoding", () => {
+  it.each([
+    ["an empty value as zero", [], "020100"],
+    ["a redundant leading zero", [0x00, 0x01], "020101"],
+    ["multiple redundant leading zeros", [0x00, 0x00, 0x7f], "02017f"],
+    ["a required positive padding byte", [0x00, 0x80], "02020080"],
+    ["padding for a high-bit first byte", [0x80], "02020080"],
+  ])("encodes %s canonically", (_description, input, expected) => {
+    expect(
+      Buffer.from(encodeDerInteger(new Uint8Array(input))).toString("hex"),
+    ).toBe(expected);
+  });
+});
 
 describe("NodeCertificateProvider", () => {
   it("generates a valid self-signed certificate", async () => {

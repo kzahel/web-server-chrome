@@ -105,17 +105,18 @@ export function validateDesktopRelease({ release, latest, tag, repository }) {
     requireAsset(assetNames, `${assetName}.sig`);
   }
 
-  const expectedLinuxUpdaters = {
+  const expectedPrimaryUpdaters = {
     "linux-x86_64": `200.OK_${version}_amd64.AppImage`,
     "linux-aarch64": `200.OK_${version}_aarch64.AppImage`,
+    "windows-x86_64": `200.OK_${version}_x64-setup.exe`,
   };
-  for (const [platform, expected] of Object.entries(expectedLinuxUpdaters)) {
+  for (const [platform, expected] of Object.entries(expectedPrimaryUpdaters)) {
     const actual = decodeURIComponent(
       latest.platforms[platform].url.slice(expectedUrlPrefix.length),
     );
     if (actual !== expected) {
       fail(
-        `Linux updater for ${platform} must use the recommended AppImage: ${actual}`,
+        `Updater for ${platform} must use the recommended primary package ${expected}: ${actual}`,
       );
     }
   }

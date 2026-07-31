@@ -1,34 +1,36 @@
-export const LAST_SUCCESSFUL_CHECK_KEY =
-  "ok200.desktop.last-successful-update-check";
-export const UPDATE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
+export const STARTUP_CHECK_DELAY_MS = 5_000;
+export const PERIODIC_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
 
-type UpdateCheckStorage = Pick<Storage, "getItem" | "setItem">;
+export type AutomaticCheckReason = "startup" | "periodic";
 
-export function shouldCheckForUpdate(
-  storage: UpdateCheckStorage,
-  now = Date.now(),
-): boolean {
-  try {
-    const stored = storage.getItem(LAST_SUCCESSFUL_CHECK_KEY);
-    if (!stored) return true;
-    const lastCheck = Number(stored);
-    return (
-      !Number.isFinite(lastCheck) ||
-      lastCheck > now ||
-      now - lastCheck >= UPDATE_CHECK_INTERVAL_MS
-    );
-  } catch {
-    return true;
-  }
+type TimerHandle = ReturnType<typeof globalThis.setTimeout>;
+
+interface UpdateCheckTimers {
+  setTimeout(callback: () => void, delay: number): TimerHandle;
+  clearTimeout(handle: TimerHandle): void;
+  setInterval(callback: () => void, delay: number): TimerHandle;
+  clearInterval(handle: TimerHandle): void;
 }
 
-export function recordSuccessfulCheck(
-  storage: UpdateCheckStorage,
-  now = Date.now(),
-): void {
-  try {
-    storage.setItem(LAST_SUCCESSFUL_CHECK_KEY, String(now));
-  } catch {
-    // Update checks should still work if web storage is unavailable.
-  }
+/**
+ * Mirror JSTorrent's shipped app cadence: check shortly after every launch,
+ * then once per day for as long as this app instance remains open.
+ */
+export function scheduleAutomaticUpdateChecks(
+  check: (reason: AutomaticCheckReason) => void,
+  timers: UpdateCheckTimers = globalThis,
+): () => void {
+  const startupTimer = timers.setTimeout(
+    () => check("startup"),
+    STARTUP_CHECK_DELAY_MS,
+  );
+  const periodicTimer = timers.setInterval(
+    () => check("periodic"),
+    PERIODIC_CHECK_INTERVAL_MS,
+  );
+
+  return () => {
+    timers.clearTimeout(startupTimer);
+    timers.clearInterval(periodicTimer);
+  };
 }

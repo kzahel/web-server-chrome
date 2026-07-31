@@ -36,6 +36,7 @@ tauri-plugin-window-state = "2"
 winreg = "0.52"
 
 [dev-dependencies]
+base64 = "0.22"
 tauri = { version = "2", features = ["test"] }
 tempfile = "3"
 

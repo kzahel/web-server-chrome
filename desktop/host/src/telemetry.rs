@@ -3,6 +3,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 const CHECK_INTERVAL_SECS: u64 = 24 * 60 * 60;
 const LAST_CHECK_FILENAME: &str = "last-host-check";
+const CHECK_REASON: &str = "host";
 
 /// Tauri-compatible target string ("darwin", "linux", "windows").
 fn tauri_target() -> &'static str {
@@ -77,7 +78,7 @@ pub fn maybe_check_for_update() {
     std::thread::spawn(move || {
         if let Err(e) = ureq::get(&url)
             .set("X-CFU-Id", &cfu_id)
-            .set("X-Check-Reason", "host-interval")
+            .set("X-Check-Reason", CHECK_REASON)
             .call()
         {
             eprintln!("ok200-host: telemetry check failed: {e}");
@@ -151,5 +152,10 @@ mod tests {
             arch == "x86_64" || arch == "aarch64",
             "unexpected arch: {arch}"
         );
+    }
+
+    #[test]
+    fn test_check_reason_matches_the_shared_updater_convention() {
+        assert_eq!(CHECK_REASON, "host");
     }
 }

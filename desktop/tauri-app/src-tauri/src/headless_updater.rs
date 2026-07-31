@@ -22,6 +22,22 @@ const RESULT_FILENAME: &str = "update-check-result.json";
 /// Builds a minimal Tauri app with only the updater plugin,
 /// performs the check, writes the result to a JSON file, then exits.
 pub fn run(auto_update: bool, context: tauri::Context) {
+    if auto_update && !crate::update_policy::current_bundle_supports_in_app_install() {
+        let result = UpdateCheckResult {
+            available: false,
+            version: None,
+            current_version: None,
+            body: None,
+            error: Some(
+                "Automatic installation is unavailable for this package type; install the matching package from https://ok200.app/download"
+                    .to_string(),
+            ),
+        };
+        write_result_to_shared_dir(&result);
+        eprintln!("headless-updater: automatic installation refused for this package type");
+        return;
+    }
+
     let app = tauri::Builder::default()
         .setup(move |app| {
             #[cfg(desktop)]

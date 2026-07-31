@@ -15,6 +15,7 @@ use tauri::menu::MenuItemKind;
 mod headless_updater;
 mod native_host;
 mod server_control;
+mod update_policy;
 
 const MAIN_WINDOW_LABEL: &str = "main";
 
@@ -531,6 +532,11 @@ pub fn run() {
 mod tests {
     use super::*;
 
+    fn load_tauri_conf() -> serde_json::Value {
+        serde_json::from_str(include_str!("../tauri.conf.json"))
+            .expect("tauri.conf.json must be valid JSON")
+    }
+
     #[test]
     fn test_settings_defaults() {
         let s = Settings::default();
@@ -581,5 +587,57 @@ mod tests {
 
         restore_main_window(app.handle()).unwrap();
         assert!(app.get_webview_window(MAIN_WINDOW_LABEL).is_some());
+    }
+
+    #[test]
+    fn test_updater_config_endpoint_valid() {
+        let conf = load_tauri_conf();
+        let endpoint = conf["plugins"]["updater"]["endpoints"][0]
+            .as_str()
+            .expect("updater endpoint must be a string");
+
+        assert!(
+            endpoint.starts_with("https://"),
+            "updater endpoint must use HTTPS: {endpoint}"
+        );
+        assert!(
+            endpoint.starts_with("https://updates.ok200.app/tauri/"),
+            "updater endpoint must stay on the 200 OK update service: {endpoint}"
+        );
+        for placeholder in ["{{target}}", "{{arch}}", "{{current_version}}"] {
+            assert!(
+                endpoint.contains(placeholder),
+                "updater endpoint missing {placeholder}: {endpoint}"
+            );
+        }
+    }
+
+    #[test]
+    fn test_updater_config_pubkey_valid() {
+        use base64::Engine;
+
+        let conf = load_tauri_conf();
+        let pubkey = conf["plugins"]["updater"]["pubkey"]
+            .as_str()
+            .expect("updater pubkey must be a string");
+        let decoded = base64::engine::general_purpose::STANDARD
+            .decode(pubkey)
+            .expect("updater pubkey must be valid base64");
+
+        assert!(
+            decoded.len() > 32,
+            "updater pubkey suspiciously short ({} bytes)",
+            decoded.len()
+        );
+    }
+
+    #[test]
+    fn test_updater_artifacts_enabled() {
+        let conf = load_tauri_conf();
+        let value = &conf["bundle"]["createUpdaterArtifacts"];
+        let enabled = value.as_bool().unwrap_or(false)
+            || value.as_str().is_some_and(|s| s == "true" || s == "v2");
+
+        assert!(enabled, "bundle.createUpdaterArtifacts must remain enabled");
     }
 }

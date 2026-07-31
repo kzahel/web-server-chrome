@@ -11,10 +11,11 @@ the fail-closed artifact/publication gate. Published Linux DEB/AppImage server
 smoke and DEB extension launch pass; the AppImage-only launcher defect, exact
 published Windows acceptance, and the `0.1.3` → `0.1.4` updater transition
 remain in the public `v0.1.4` baseline before broad migration promotion.
-The current source candidate implements the AppImage-first repair and download
-path; signed follow-up acceptance is pending.**
+The current source candidate implements the AppImage-first repair, Linux ARM64
+artifacts, and macOS Dock repair. The download page is live and accepted;
+signed follow-up acceptance and package-aware updater closeout are pending.**
 
-Last reconciled: **2026-07-28**.
+Last reconciled: **2026-07-31**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
@@ -23,7 +24,9 @@ the release-pipeline implementation and tagged proof are recorded in
 Linux product evidence is recorded in
 [Tactical 007](../tactical/007-linux-desktop-validation.md).
 The AppImage-first Linux package decision and source repair are recorded in
-[Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
+[Tactical 008](../tactical/008-appimage-first-linux-distribution.md). The final
+agent-owned and maintainer/device confidence gates are recorded in
+[Tactical 009](../tactical/009-release-confidence-closeout.md).
 
 ## Source of truth
 
@@ -41,6 +44,19 @@ references, but this repository must keep its own release gate current.
 The runbook's stale 200 OK tag pattern and unsigned-release wording were
 corrected on 2026-07-28. This repository uses `desktop-v*`, as declared by
 `.github/workflows/tauri-app-ci.yml` and the release script.
+
+Private deployment and aggregate-statistics context lives in:
+
+- `~/code/dotfiles/machines/pi/README.md` for the Remy service and product
+  configuration wiring;
+- `~/code/dotfiles/runbooks/update-server-analytics.md` for the shared update
+  analytics workflow; and
+- `~/code/dotfiles/control-room/README.md` plus
+  `~/code/dotfiles/control-room/config/projects.yaml` for sanitized 200 OK
+  aggregates and endpoint health.
+
+These are operational pointers, not release evidence by themselves. Raw
+events, IPs, CFU IDs, and credentials must not be copied into this repository.
 
 ## Configured credentials and identity
 
@@ -74,11 +90,24 @@ Repository configuration currently preserves:
 The shipped Rust-core release keeps the identifier, updater key, and endpoint
 so installed desktop apps can update in place.
 
-The desktop control surface now performs manual checks with
-`X-Check-Reason: manual`, successful launch checks at most once per 24 hours
-with `X-Check-Reason: app-launch`, and signed download/install/relaunch through
-the Tauri plugins. Implementation and local proof are recorded in
-[Tactical 005](../tactical/005-in-app-desktop-updater.md).
+The desktop control surface performs signed update discovery and
+download/install/relaunch through the Tauri plugins. On 2026-07-31 the
+maintainer accepted JSTorrent's shipped cadence and interaction decisions as
+the 200 OK policy: a quiet `startup` check five seconds after every app launch,
+a quiet `periodic` check every 24 hours while open, always-visible manual
+results, and explicit **Install & Restart** / **Later** actions. The native host
+retains its independent once-per-24-hours `host` check. Implementation and
+local proof began in [Tactical 005](../tactical/005-in-app-desktop-updater.md);
+the policy reconciliation and final validation are owned by Tactical 009.
+
+The closeout audit found two implementation gaps that must be resolved before
+the next release is accepted. The app still uses its older persisted
+`app-launch` schedule rather than the accepted JSTorrent startup/periodic
+cadence. Also, updater metadata intentionally selects NSIS on Windows and
+AppImage on Linux even when the running app came from secondary MSI, DEB, or
+RPM packages. The final contract must implement the accepted per-producer
+cadence and prevent in-app update from crossing installer/package ownership
+boundaries; see Tactical 009.
 
 ## Latest release evidence
 
@@ -265,6 +294,11 @@ A desktop tag may be made public only after all of these pass.
 - Application identity, settings, native messaging registration, and server
   workflow survive the update.
 - A malformed or incorrectly signed test manifest is rejected.
+- Automatic checks never download, install, or restart without an explicit
+  user action, and their cross-component cadence is documented and tested.
+- Windows MSI and Linux DEB/RPM installations cannot be replaced through an
+  updater artifact belonging to NSIS or AppImage; they use an explicit
+  managed/manual path unless a bundle-preserving updater is implemented.
 
 ### Product smoke
 
@@ -338,7 +372,8 @@ The source repair records the real AppImage path, installs a stable
 `200-ok.desktop` identity and icon, and teaches the copied native host to launch
 the recorded file. The public `v0.1.4` binary does not contain that repair. A
 signed follow-up release must pass direct-download and verified-installer
-extension-launch smoke before the new download surface is deployed.
+extension-launch smoke before the live download surface is used for broad
+migration promotion.
 
 ## Windows local post-fix evidence
 

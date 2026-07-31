@@ -120,7 +120,7 @@ test("rejects a non-AppImage Linux updater", () => {
     `https://github.com/${repository}/releases/download/${tag}/200.OK_${version}_amd64.deb`;
   assert.throws(
     () => validateDesktopRelease({ ...data, tag, repository }),
-    /Linux updater for linux-x86_64 must use the recommended AppImage/,
+    /Updater for linux-x86_64 must use the recommended primary package/,
   );
 });
 
@@ -134,7 +134,21 @@ test("rejects a non-AppImage Linux ARM64 updater", () => {
     `https://github.com/${repository}/releases/download/${tag}/200.OK_${version}_arm64.deb`;
   assert.throws(
     () => validateDesktopRelease({ ...data, tag, repository }),
-    /Linux updater for linux-aarch64 must use the recommended AppImage/,
+    /Updater for linux-aarch64 must use the recommended primary package/,
+  );
+});
+
+test("rejects a non-NSIS Windows updater", () => {
+  const data = fixture();
+  data.release.assets.push({
+    name: `200.OK_${version}_x64.msi.sig`,
+    digest,
+  });
+  data.latest.platforms["windows-x86_64"].url =
+    `https://github.com/${repository}/releases/download/${tag}/200.OK_${version}_x64.msi`;
+  assert.throws(
+    () => validateDesktopRelease({ ...data, tag, repository }),
+    /Updater for windows-x86_64 must use the recommended primary package/,
   );
 });
 

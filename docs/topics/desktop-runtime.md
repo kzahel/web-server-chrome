@@ -31,6 +31,8 @@ Published Linux package smoke and the AppImage launcher defect are recorded in
 [Tactical 007](../tactical/007-linux-desktop-validation.md).
 The accepted AppImage-first repair and distribution path are recorded in
 [Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
+The final release-confidence gates and manual sign-off boundary are recorded
+in [Tactical 009](../tactical/009-release-confidence-closeout.md).
 Current product naming is governed by
 [`product-branding.md`](product-branding.md).
 
@@ -221,11 +223,14 @@ The Tauri webview now also owns a compact in-app updater notification. The
 native menu focuses the existing window and requests a manual check; the
 webview invokes Tauri's signed updater with `X-Check-Reason: manual` and shows
 checking, current, available, progress, installation, and failure state
-without opening a separate dialog. Successful checks persist a timestamp so
-ordinary launches check at most once per 24 hours with reason `app-launch`.
-Automatic checks are quiet unless an update is available. “Update and
-restart” delegates signature verification and installation to the Tauri
-plugin, then relaunches through the process plugin.
+without opening a separate dialog. It checks quietly five seconds after every
+launch with reason `startup`, then every 24 hours while open with reason
+`periodic`. Automatic current/error results are quiet unless an update is
+available. Available updates provide explicit **Install & Restart** and
+**Later** actions. Tauri's embedded bundle identity restricts installation to
+macOS app bundles, NSIS, and AppImage; MSI, DEB, and RPM users are directed to
+the matching manual download. Signature verification and installation remain
+delegated to the Tauri plugin before relaunch through the process plugin.
 
 Window activation uses one create-or-focus path. On macOS, the application
 handles Tauri's Dock `Reopen` event by restoring and focusing the configured
@@ -289,3 +294,11 @@ Implementation and release sequencing are recorded in
   but an actual installed `0.1.3` → `0.1.4` transition remains unproven, as do
   Windows and Linux update transitions. Linux `0.1.4` current-version
   detection itself passes.
+- On 2026-07-31 the maintainer accepted JSTorrent's updater policy: a quiet
+  app check five seconds after launch, a 24-hour periodic check while open,
+  manual results that are always visible, and the native host's independent
+  at-most-daily check. The source still needs that cadence reconciliation, and
+  secondary MSI/DEB/RPM installations can encounter updater metadata for the
+  recommended NSIS/AppImage package type. Tactical 009 requires the accepted
+  cadence and bundle-aware behavior before the next signed release is
+  accepted.

@@ -7,14 +7,17 @@
 
 Topic: legacy-app-migration
 
-Status: **urgent planning.** The maintainer's operational deadline is
+Status: **urgent execution.** The maintainer's operational deadline is
 **2026-08-31**, after which the legacy packaged app must be treated as unable
 to receive another useful update.
 
-Last reconciled: **2026-07-28**.
+Last reconciled: **2026-07-31**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md).
+The final destination confidence gates and agent-versus-maintainer ownership
+split live in
+[Tactical 009](../tactical/009-release-confidence-closeout.md).
 Current-product and legacy-name usage is governed by
 [`product-branding.md`](product-branding.md).
 Google's current Chrome App support policy is documented in
@@ -65,9 +68,10 @@ those are linked below.
   promotion; see
   [`desktop-release-readiness.md`](desktop-release-readiness.md).
 - The current source candidate implements an AppImage-first, per-user Linux
-  installer and the corresponding native-host repair. It remains a candidate
-  destination until the signed follow-up AppImage and public download
-  deployment pass the acceptance in
+  installer and the corresponding native-host repair. The public download page
+  is live and accepted because current traffic is low and it resolves to the
+  existing signed release. Linux remains a candidate migration destination
+  until the exact signed follow-up AppImage passes the acceptance in
   [Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
 
 The old detailed plan in `docs/legacy-migration.md` described the unpublished

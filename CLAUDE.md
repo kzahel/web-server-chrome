@@ -4,29 +4,34 @@ Read [docs/vision.md](docs/vision.md) first for product intent. For current
 architecture and implementation direction, read
 [docs/topics/desktop-runtime.md](docs/topics/desktop-runtime.md) and
 [docs/tactical/000-desktop-native-core-and-release-readiness.md](docs/tactical/000-desktop-native-core-and-release-readiness.md).
+For the active final release gate and the split between agent-owned and
+maintainer/device checks, read
+[docs/tactical/009-release-confidence-closeout.md](docs/tactical/009-release-confidence-closeout.md).
 
 ## Quick Context
 
 Lightweight web server app for every platform. Successor to "Web Server for
-Chrome" (200k+ users). The CLI, Android app, extension, and an early Tauri
-desktop app have shipped.
+Chrome" (200k+ users). The CLI, Android app, extension, and signed Rust-native
+Tauri desktop `v0.1.4` have shipped.
 
-The old Transistor proof is not the current desktop goal. Desktop keeps Tauri
-and its webview for control/configuration, but moves HTTP execution into a
-small Rust core shared by Windows, macOS, and Linux. Android QuickJS and the
-Node/TypeScript CLI are deferred.
+The old Transistor proof is not the current desktop architecture. Desktop
+keeps Tauri and its webview for control/configuration while a small Rust core
+owns HTTP execution on Windows, macOS, and Linux. The source candidate after
+`v0.1.4` adds AppImage-first integration, Linux ARM64 artifacts, AppImage
+native-host repair, and macOS Dock activation repair. Android QuickJS and the
+Node/TypeScript CLI remain independent.
 
 ## Architecture
 
 Current repository shape:
 
-- `packages/engine` — TypeScript HTTP engine currently used by CLI, Android,
-  and the released desktop app.
+- `packages/engine` — TypeScript HTTP engine currently used by CLI and
+  Android, but not the Rust-native desktop release.
 - `packages/cli` — CLI wrapper using the engine with Node.js adapters.
 - `android` — Published Compose app running the engine in QuickJS with Kotlin
   I/O.
-- `desktop` — Tauri app. Current release runs the engine in the webview; target
-  is a Tauri-independent Rust HTTP core plus a thin Tauri command/event layer.
+- `desktop` — Tauri app with a Tauri-independent Rust HTTP core and a thin
+  React/Tauri command/event control layer.
 - `extension` — Published launcher/status surface.
 
 Do not extend the generic TypeScript native-I/O architecture for desktop.
@@ -43,6 +48,15 @@ This project is part of a larger ecosystem. See `~/code/dotfiles/projects/README
   (`~/code/dotfiles/runbooks/desktop-code-signing.md`) — Credential names,
   source material, setup, and verification. Release truth for this repository
   lives in `docs/topics/desktop-release-readiness.md`.
+- **Update service host** (`~/code/dotfiles/machines/pi/README.md`) — Private
+  Remy service location, product-config wiring, and health commands.
+- **Private aggregate analytics** (`~/code/dotfiles/control-room/README.md`
+  and `~/code/dotfiles/control-room/config/projects.yaml`) — Sanitized 200 OK
+  update-check aggregates and endpoint health. Raw events and identifiers stay
+  on Remy.
+- **Update analytics runbook**
+  (`~/code/dotfiles/runbooks/update-server-analytics.md`) — Shared-server
+  analytics workflow. Its 200 OK-specific closeout is tracked in Tactical 009.
 
 ## Environment Setup
 
@@ -174,9 +188,12 @@ All components follow the same release pattern:
 ### Desktop Releases
 
 ```bash
+./scripts/release-desktop.sh <version> --check
 ./scripts/release-desktop.sh <version>
 ```
 
+- `--check` verifies a clean tree, changelog entry, and absent local/remote tag
+  without changing versions, committing, pushing, or tagging.
 - Updates `desktop/tauri-app/src-tauri/tauri.conf.json`, `desktop/tauri-app/package.json`, and `desktop/Cargo.toml`
 - Creates tag: `desktop-v{version}`
 - CI targets signed/notarized installers for macOS and Windows plus Linux

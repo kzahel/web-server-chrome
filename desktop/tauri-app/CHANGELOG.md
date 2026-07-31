@@ -13,12 +13,20 @@
 
 - Make AppImage the recommended Linux package and support a checksum-verified
   per-user installation that does not require administrator privileges.
+- Check quietly for updates five seconds after launch and every 24 hours while
+  the app remains open, while keeping manual results and installation actions
+  explicit.
+- Offer signed in-app installation only for app, NSIS, and AppImage bundles.
+  MSI, DEB, and RPM installs now use an explicit manual download path so an
+  update cannot silently cross package ownership or install scope.
 
 ### Fixed
 
 - Persist the real AppImage path and install a stable desktop identity so the
   Chrome extension's copied native host can launch AppImage-only installs.
 - Refresh the copied Linux native host atomically when the AppImage starts.
+- Restore and focus the existing app window when 200 OK is reopened from the
+  macOS Dock instead of creating a duplicate or appearing unresponsive.
 
 ## [0.1.4]
 

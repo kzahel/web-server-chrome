@@ -1,35 +1,59 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-VERSION="$1"
+VERSION="${1:-}"
+MODE="${2:-}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$REPO_ROOT"
 
 if [ -z "$VERSION" ]; then
-  echo "Usage: $0 <version>"
+  echo "Usage: $0 <version> [--check]"
   exit 1
 fi
 
-if [[ ! "$VERSION" =~ ^[0-9] ]]; then
-  echo "Error: Version must start with a number (e.g., 1.0.0, not v1.0.0)"
+if [ -n "$MODE" ] && [ "$MODE" != "--check" ]; then
+  echo "Error: Unknown option $MODE"
+  echo "Usage: $0 <version> [--check]"
   exit 1
 fi
 
-# Fail if working tree is dirty (avoid releasing with uncommitted changes)
-if ! git diff-index --quiet HEAD --; then
+if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([+-][0-9A-Za-z.-]+)?$ ]]; then
+  echo "Error: Version must be a semantic version without a v prefix (e.g., 1.0.0)"
+  exit 1
+fi
+
+# Fail if tracked or untracked files would be omitted from the release.
+if [ -n "$(git status --porcelain --untracked-files=normal)" ]; then
   echo "Error: Working tree has uncommitted changes. Please commit or stash first."
-  git diff --stat
+  git status --short
   exit 1
 fi
 
 TAG="desktop-v${VERSION}"
 CHANGELOG="$REPO_ROOT/desktop/tauri-app/CHANGELOG.md"
 
+if git rev-parse --quiet --verify "refs/tags/$TAG" >/dev/null; then
+  echo "Error: Local tag $TAG already exists"
+  exit 1
+fi
+
+REMOTE_TAG="$(git ls-remote --tags origin "refs/tags/$TAG")"
+if [ -n "$REMOTE_TAG" ]; then
+  echo "Error: Remote tag $TAG already exists"
+  exit 1
+fi
+
 # Check that changelog has been updated (hard fail)
 if ! grep -q "## \[${VERSION}\]" "$CHANGELOG" 2>/dev/null; then
   echo "Error: $CHANGELOG doesn't have an entry for version ${VERSION}"
   echo "Please add a '## [${VERSION}]' section before releasing."
   exit 1
+fi
+
+if [ "$MODE" = "--check" ]; then
+  echo "Release preflight passed for $TAG"
+  exit 0
 fi
 
 # Update version in all files
@@ -51,4 +75,4 @@ git tag "$TAG"
 git push origin "$TAG"
 
 echo "Created and pushed tag $TAG"
-echo "CI will build and create GitHub release: https://github.com/kzahel/web-server/actions"
+echo "CI will build and create GitHub release: https://github.com/kzahel/web-server-chrome/actions"

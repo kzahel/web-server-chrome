@@ -12,8 +12,9 @@ smoke and DEB extension launch pass; the AppImage-only launcher defect, exact
 published Windows acceptance, and the `0.1.3` → `0.1.4` updater transition
 remain in the public `v0.1.4` baseline before broad migration promotion.
 The current source candidate implements the AppImage-first repair, Linux ARM64
-artifacts, and macOS Dock repair. The download page is live and accepted;
-signed follow-up acceptance and package-aware updater closeout are pending.**
+artifacts, macOS Dock repair, accepted updater cadence, and package-aware
+install policy. The download page is live and accepted; signed follow-up
+acceptance is pending.**
 
 Last reconciled: **2026-07-31**.
 
@@ -100,14 +101,15 @@ retains its independent once-per-24-hours `host` check. Implementation and
 local proof began in [Tactical 005](../tactical/005-in-app-desktop-updater.md);
 the policy reconciliation and final validation are owned by Tactical 009.
 
-The closeout audit found two implementation gaps that must be resolved before
-the next release is accepted. The app still uses its older persisted
-`app-launch` schedule rather than the accepted JSTorrent startup/periodic
-cadence. Also, updater metadata intentionally selects NSIS on Windows and
-AppImage on Linux even when the running app came from secondary MSI, DEB, or
-RPM packages. The final contract must implement the accepted per-producer
-cadence and prevent in-app update from crossing installer/package ownership
-boundaries; see Tactical 009.
+The closeout source candidate now implements the accepted cadence and prevents
+in-app update from crossing installer/package ownership boundaries. Tauri app,
+NSIS, and AppImage bundles may offer signed in-app install. MSI, DEB, RPM, and
+unknown bundle types receive an explicit manual-download path; the headless
+updater also refuses those package types. Schedule, UI state, bundle policy,
+Tauri configuration, release-validator, and native-host cadence tests passed
+locally and in the green workflows recorded in Tactical 009. Exact signed
+candidate transitions and runtime wrong-signature rejection remain release
+acceptance gates rather than source implementation gaps.
 
 ## Latest release evidence
 

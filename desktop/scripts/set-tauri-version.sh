@@ -11,9 +11,9 @@
 #   - desktop/tauri-app/package.json
 #   - desktop/Cargo.lock              (via cargo check)
 #
-set -e
+set -euo pipefail
 
-VERSION="$1"
+VERSION="${1:-}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
@@ -26,8 +26,8 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
-if [[ ! "$VERSION" =~ ^[0-9] ]]; then
-  echo "Error: Version must start with a number (e.g., 1.0.0, not v1.0.0)"
+if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([+-][0-9A-Za-z.-]+)?$ ]]; then
+  echo "Error: Version must be a semantic version without a v prefix (e.g., 1.0.0)"
   exit 1
 fi
 
@@ -55,8 +55,8 @@ else
   sed -i "s/^version = \".*\"/version = \"${VERSION}\"/" "$WORKSPACE_TOML"
 fi
 
-# Update Cargo.lock
-(cd "$REPO_ROOT/desktop" && cargo check --quiet 2>/dev/null) || true
+# Update Cargo.lock and fail before release if the workspace no longer checks.
+(cd "$REPO_ROOT/desktop" && cargo check --quiet)
 
 echo "Updated:"
 echo "  $WORKSPACE_TOML"

@@ -33,3 +33,5 @@ the root [`topics.md`](topics.md) log before reusing them across a series.
   [`docs/topics/legacy-app-migration.md`](docs/topics/legacy-app-migration.md)
 - Current implementation sequence:
   [`docs/tactical/000-desktop-native-core-and-release-readiness.md`](docs/tactical/000-desktop-native-core-and-release-readiness.md)
+- Active release confidence closeout:
+  [`docs/tactical/009-release-confidence-closeout.md`](docs/tactical/009-release-confidence-closeout.md)

@@ -13,6 +13,9 @@ recorded in
 [`007-linux-desktop-validation.md`](007-linux-desktop-validation.md).
 The accepted AppImage-first distribution repair is implemented in
 [`008-appimage-first-linux-distribution.md`](008-appimage-first-linux-distribution.md).
+The final evidence gates and agent-versus-maintainer ownership split are
+recorded in
+[`009-release-confidence-closeout.md`](009-release-confidence-closeout.md).
 The complete `desktop-v0.1.4` tagged release proof is accepted.
 
 Topics:
@@ -296,6 +299,8 @@ runtime path.
 
 ### Phase B4 — signed Rust-core release candidate
 
+- Final closeout ledger:
+  [`009-release-confidence-closeout.md`](009-release-confidence-closeout.md)
 - [ ] Build through the hardened pipeline.
 - [ ] Run the complete platform release gate.
 - [ ] Exercise update from the previous public desktop build.

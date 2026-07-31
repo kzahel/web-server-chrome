@@ -1,7 +1,8 @@
 # 008: AppImage-First Linux Distribution
 
-Status: **source candidate and local Linux validation complete; signed
-follow-up release and public download deployment pending.**
+Status: **source candidate and local Linux validation complete; the public
+download page is live and accepted, while the signed follow-up release and
+exact public AppImage acceptance remain pending.**
 
 Topics:
 
@@ -131,7 +132,10 @@ for testing the exact signed follow-up artifact or a real signed update.
 
 ## Validation contract
 
-Before deploying the download page or broadly promoting the desktop app:
+The download page was deployed before the signed follow-up and accepted by the
+maintainer on 2026-07-31 because current traffic is low and its fallback points
+to the already accepted public `v0.1.4` release. Before broadly promoting the
+desktop app:
 
 - Rust formatting, strict Clippy, and workspace tests pass;
 - release-validation tests and the Astro production build pass;
@@ -144,18 +148,18 @@ Before deploying the download page or broadly promoting the desktop app:
 - a signed AppImage updates from the previous public version and retains
   settings, native messaging, and serving behavior; and
 - the exact follow-up AppImage passes visible start/serve/stop smoke before
-  `ok200.app/download` is deployed.
+  the page is used for broad migration promotion.
 
 ## Release order
 
-1. Land the runtime, `v0.1.5` changelog, release-policy, and documentation
-   changes. Hold the `website/` changes, the README download-link edit, and the
-   Pages-workflow edit separately because any `website/**` push to `main`
-   automatically deploys GitHub Pages.
+1. The runtime, release policy, download surface, and documentation changes
+   landed. The site deployed before the signed follow-up; that ordering was
+   accepted on 2026-07-31 because it still points at signed `v0.1.4` and
+   current traffic is low.
 2. From a clean tree, run `./scripts/release-desktop.sh 0.1.5` to publish the
    signed desktop follow-up through the existing fail-closed gate.
 3. Test the exact public AppImage as a clean install and signed update.
-4. Update the website and installer's pinned fallback tag to the accepted
-   release, then land those changes; the existing Pages workflow deploys them.
+4. Update the already-live website and installer's pinned fallback tag to the
+   accepted release, then let the existing Pages workflow deploy them.
 5. Update the living topics and this tactical with the release tag, hashes,
    CI run, and public deployment evidence.

@@ -12,6 +12,7 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "200 OK Web Server",
         "width": 410,
         "height": 700,

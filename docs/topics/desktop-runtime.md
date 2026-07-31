@@ -10,11 +10,11 @@ Status: **Rust-native desktop `v0.1.4` is published with complete signed
 artifacts; installed macOS and Windows pre-release product smoke is accepted.
 Published Linux DEB and AppImage server smoke and DEB extension launch are
 accepted. The current source candidate implements the AppImage-only
-native-host repair and AppImage-first installation path; a signed follow-up
-artifact, exact published Windows install/signature inspection, and an
-installed update remain pending.**
+native-host repair, AppImage-first installation path, and macOS Dock activation
+repair; a signed follow-up artifact, exact published Windows install/signature
+inspection, and an installed update remain pending.**
 
-Last reconciled: **2026-07-28**.
+Last reconciled: **2026-07-31**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
@@ -82,7 +82,7 @@ not requirements for this migration.
 
 | Surface | Runtime | Current role | Direction |
 |---|---|---|---|
-| Desktop source candidate | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | `v0.1.4` runtime plus AppImage-first integration and relaunch repair | Publish and accept the signed AppImage follow-up, then continue compatibility/resource measurements |
+| Desktop source candidate | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | `v0.1.4` runtime plus AppImage-first integration, relaunch repair, and macOS Dock create-or-focus handling | Publish and accept the signed follow-up, then continue compatibility/resource measurements |
 | Desktop release `v0.1.4` | Tauri/React controls with the Rust server state and HTTP core | Complete signed release; published Linux DEB/AppImage server path accepted | Verify exact Windows clean install, installed update, AppImage-only native-host relaunch, and RPM-native installation |
 | Previous desktop `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Partial legacy release and updater source | Must update in place to `v0.1.4` without identity or settings loss |
 | Android `v0.1.2` | QuickJS runs the TypeScript engine; Kotlin/Java provides native I/O and Compose UI | Published app | Defer changes while it works |
@@ -226,6 +226,14 @@ ordinary launches check at most once per 24 hours with reason `app-launch`.
 Automatic checks are quiet unless an update is available. “Update and
 restart” delegates signature verification and installation to the Tauri
 plugin, then relaunches through the process plugin.
+
+Window activation uses one create-or-focus path. On macOS, the application
+handles Tauri's Dock `Reopen` event by restoring and focusing the configured
+main webview, recreating it when the previous window was destroyed. The same
+helper backs menu, tray, and single-instance activation. A mock-runtime
+regression test exercises creation from the real Tauri window configuration
+when no main window exists; packaged Dock activation remains part of macOS
+product smoke for the next signed candidate.
 
 ## Linux distribution decision
 

@@ -3,7 +3,7 @@ use std::sync::Mutex;
 use tauri::{
     menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem, SubmenuBuilder},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    Emitter, Manager,
+    Emitter, Manager, WebviewWindowBuilder,
 };
 use tauri_plugin_autostart::ManagerExt as AutostartManagerExt;
 
@@ -15,6 +15,8 @@ use tauri::menu::MenuItemKind;
 mod headless_updater;
 mod native_host;
 mod server_control;
+
+const MAIN_WINDOW_LABEL: &str = "main";
 
 /// Strip the `\\?\` extended-length path prefix that Windows APIs produce.
 /// Chrome's native messaging launcher doesn't understand this prefix.
@@ -125,11 +127,38 @@ pub(crate) fn resolve_sidecar(app: &tauri::AppHandle, name: &str) -> Result<Path
 
 // -- Window helpers --
 
-fn show_main_window(app: &tauri::AppHandle) {
-    if let Some(window) = app.get_webview_window("main") {
-        let _ = window.show();
-        let _ = window.unminimize();
-        let _ = window.set_focus();
+fn restore_main_window<R: tauri::Runtime>(app: &tauri::AppHandle<R>) -> Result<(), String> {
+    let window = if let Some(window) = app.get_webview_window(MAIN_WINDOW_LABEL) {
+        window
+    } else {
+        let config = app
+            .config()
+            .app
+            .windows
+            .iter()
+            .find(|config| config.label == MAIN_WINDOW_LABEL)
+            .cloned()
+            .ok_or_else(|| "main webview window configuration is missing".to_owned())?;
+        WebviewWindowBuilder::from_config(app, &config)
+            .map_err(|error| format!("configure main webview window: {error}"))?
+            .build()
+            .map_err(|error| format!("recreate main webview window: {error}"))?
+    };
+
+    window
+        .unminimize()
+        .map_err(|error| format!("restore main webview window: {error}"))?;
+    window
+        .show()
+        .map_err(|error| format!("show main webview window: {error}"))?;
+    window
+        .set_focus()
+        .map_err(|error| format!("focus main webview window: {error}"))
+}
+
+fn show_main_window<R: tauri::Runtime>(app: &tauri::AppHandle<R>) {
+    if let Err(error) = restore_main_window(app) {
+        eprintln!("failed to restore main window: {error}");
     }
 }
 
@@ -490,6 +519,10 @@ pub fn run() {
                 tauri::async_runtime::block_on(state.shutdown());
             }
         }
+        #[cfg(target_os = "macos")]
+        tauri::RunEvent::Reopen { .. } => {
+            show_main_window(app_handle);
+        }
         _ => {}
     });
 }
@@ -537,5 +570,16 @@ mod tests {
         assert!(!s.autostart);
         assert!(s.run_in_background);
         assert!(s.show_in_menu_bar);
+    }
+
+    #[test]
+    fn test_main_window_is_created_from_configuration_when_missing() {
+        let mut context = tauri::test::mock_context(tauri::test::noop_assets());
+        *context.config_mut() = serde_json::from_str(include_str!("../tauri.conf.json")).unwrap();
+        let app = tauri::test::mock_builder().build(context).unwrap();
+        assert!(app.get_webview_window(MAIN_WINDOW_LABEL).is_none());
+
+        restore_main_window(app.handle()).unwrap();
+        assert!(app.get_webview_window(MAIN_WINDOW_LABEL).is_some());
     }
 }

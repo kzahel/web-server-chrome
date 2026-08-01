@@ -473,6 +473,24 @@ This tactical is complete only when all of the following are true:
   historical records remain intelligible.
 - No legacy migration or store release has been smuggled into the scope.
 
+## Execution record
+
+### 2026-08-01: Kotlin core introduced before cutover
+
+- Added a protocol-only `KotlinHttpServer` using bounded JVM sockets and
+  `Dispatchers.IO`, with ephemeral ports, deterministic close, capped concurrent
+  clients, keep-alive, streaming bodies, and request summaries.
+- Added containment-checked filesystem and SAF `ReadOnlyFileTree` adapters in the
+  app module. The existing QuickJS production route remains untouched for this
+  intermediate buildable boundary.
+- Added socket-level JVM coverage for file/HEAD/cache/range behavior,
+  index/listing/CORS/SPA configuration, method rejection, malformed/traversal and
+  oversized requests, keep-alive, concurrency, idempotent stop, and symlink
+  escape containment.
+- Evidence: `./gradlew :app:compileDebugKotlin` and
+  `./gradlew :app:testDebugUnitTest` pass. Gradle still reports the pre-existing
+  stale `sdk.dir` warning and still builds the old native bundle at this phase.
+
 ## Intended change boundaries
 
 If implementation is approved, keep the history reviewable at approximately

@@ -631,6 +631,24 @@ This tactical is complete only when all of the following are true:
   Node/pnpm setup and `packages/engine` path coupling have been removed from all
   Android jobs.
 
+### 2026-08-01: Android launcher search and physical debug install
+
+- Changed Android application/launcher metadata to **200 OK Web Server**, so
+  launcher search can match `web server`, while the Compose header remains the
+  compact **200 OK** plus **Web Server** descriptor. Split metadata and Compose
+  instrumentation so the resolved installed label has a direct regression
+  assertion independent of UI input injection.
+- With explicit approval, uninstalled the release-signed app from the attached
+  Pixel 9, clearing its settings and SAF grants, then installed and launched the
+  new debug build. Both metadata tests pass on that Android 17 device.
+- The full three-test connected suite passes on the local Android 14 phone AVD.
+  Compose/Espresso 3.6.1 cannot inject input on the Android 17 device because
+  that preview OS has removed the `InputManager.getInstance()` method it uses;
+  this is a test-harness compatibility gap, not an observed app failure.
+- Fixed `emu-start.sh` to resolve and address the emulator serial explicitly for
+  boot checks and port forwarding. An attached, already-booted physical phone
+  can no longer be mistaken for the AVD.
+
 ## Intended change boundaries
 
 If implementation is approved, keep the history reviewable at approximately

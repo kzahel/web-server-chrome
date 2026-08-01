@@ -16,10 +16,15 @@ GPU_MODE="${GPU_MODE:-off}"
 # Ensure tools are in PATH
 export PATH="$SDK_ROOT/cmdline-tools/latest/bin:$SDK_ROOT/platform-tools:$SDK_ROOT/emulator:$PATH"
 
-# Check if emulator is already running
-if adb devices 2>/dev/null | grep -q "emulator-"; then
+get_emulator_serial() {
+    adb devices 2>/dev/null | awk '$1 ~ /^emulator-/ && $2 == "device" { print $1; exit }'
+}
+
+# Check if emulator is already running. Always target its serial explicitly so
+# an attached physical device cannot satisfy boot checks or receive forwards.
+DEVICE="$(get_emulator_serial)"
+if [[ -n "$DEVICE" ]]; then
     echo "Emulator already running"
-    DEVICE=$(adb devices | grep "emulator-" | head -1 | cut -f1)
     echo "Device: $DEVICE"
 else
     echo ">>> Starting emulator '$AVD_NAME'..."
@@ -49,7 +54,8 @@ else
     TIMEOUT=120
     ELAPSED=0
     while [[ $ELAPSED -lt $TIMEOUT ]]; do
-        if adb shell getprop sys.boot_completed 2>/dev/null | grep -q "1"; then
+        DEVICE="$(get_emulator_serial)"
+        if [[ -n "$DEVICE" ]] && adb -s "$DEVICE" shell getprop sys.boot_completed 2>/dev/null | grep -q "1"; then
             break
         fi
         sleep 2
@@ -70,11 +76,11 @@ fi
 # Set up port forwarding
 echo ""
 echo ">>> Setting up port forwarding (host:$DAEMON_PORT -> device:$DAEMON_PORT)..."
-adb forward tcp:$DAEMON_PORT tcp:$DAEMON_PORT
+adb -s "$DEVICE" forward tcp:$DAEMON_PORT tcp:$DAEMON_PORT
 
 # Also forward common alternative ports
 for ALT_PORT in 7805 7814 7827; do
-    adb forward tcp:$ALT_PORT tcp:$ALT_PORT 2>/dev/null || true
+    adb -s "$DEVICE" forward tcp:$ALT_PORT tcp:$ALT_PORT 2>/dev/null || true
 done
 
 echo ""

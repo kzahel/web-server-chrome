@@ -2,15 +2,12 @@ package app.ok200.android.debug
 
 import android.content.ContentProvider
 import android.content.ContentValues
-import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import app.ok200.android.Ok200Application
-import app.ok200.android.service.WebServerService
+import app.ok200.android.server.ServerPhase
 import app.ok200.android.settings.WakeLockMode
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -30,8 +27,6 @@ class DebugRpcProvider : ContentProvider() {
     private val settings
         get() = app.settingsStore
 
-    private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
-
     override fun call(method: String, arg: String?, extras: Bundle?): Bundle {
         Log.i(TAG, "RPC call: method=$method arg=$arg")
         val result = try {
@@ -46,6 +41,19 @@ class DebugRpcProvider : ContentProvider() {
                 "getSettings" -> handleGetSettings()
                 "setWakeLockMode" -> handleSetWakeLockMode(arg)
                 "setBackgroundEnabled" -> handleSetBackgroundEnabled(arg)
+                "setLanEnabled" -> handleBooleanSetting(arg, "lanEnabled") { settings.lanEnabled = it }
+                "setDirectoryListing" -> handleBooleanSetting(arg, "directoryListing") { settings.directoryListing = it }
+                "setCorsEnabled" -> handleBooleanSetting(arg, "corsEnabled") { settings.corsEnabled = it }
+                "setSpaEnabled" -> handleBooleanSetting(arg, "spaEnabled") { settings.spaEnabled = it }
+                "setStartOnBoot" -> handleBooleanSetting(arg, "startOnBoot") {
+                    settings.startOnBoot = it
+                    if (it) app.serverController.onBackgroundSettingChanged(true)
+                }
+                "setShutdownOnLowBattery" -> handleBooleanSetting(arg, "shutdownOnLowBattery") {
+                    settings.shutdownOnLowBattery = it
+                    app.serverController.onPowerSettingsChanged()
+                }
+                "setShutdownBatteryThreshold" -> handleBatteryThreshold(arg)
                 else -> errorJson("Unknown method: $method")
             }
         } catch (e: Exception) {
@@ -60,25 +68,25 @@ class DebugRpcProvider : ContentProvider() {
     }
 
     private fun handleGetState(): String {
-        val controller = app.engineController
-        val state = controller?.state?.value
+        val state = app.serverController.state.value
 
         return buildJsonObject {
-            put("running", state?.running ?: false)
-            put("port", state?.port ?: settings.port)
-            put("host", state?.host ?: "")
-            put("error", state?.error?.let { JsonPrimitive(it) } ?: JsonNull)
+            put("running", state.running)
+            put("phase", state.phase.name.lowercase())
+            put("port", if (state.port > 0) state.port else settings.port)
+            put("host", state.host)
+            put("error", state.error?.let { JsonPrimitive(it) } ?: JsonNull)
             put("rootUri", settings.rootUri?.let { JsonPrimitive(it) } ?: JsonNull)
             put("rootDisplayName", settings.rootDisplayName?.let { JsonPrimitive(it) } ?: JsonNull)
             put("configuredPort", settings.port)
-            put("engineInitialized", controller != null)
+            put("controllerInitialized", true)
         }.toString()
     }
 
     private fun handleSetPort(arg: String?): String {
         val port = arg?.toIntOrNull()
             ?: return errorJson("Invalid port: $arg")
-        if (port !in 1..65535)
+        if (port !in 0..65535)
             return errorJson("Port out of range: $port")
         settings.port = port
         return """{"ok":true,"port":$port}"""
@@ -89,7 +97,6 @@ class DebugRpcProvider : ContentProvider() {
             return errorJson("Path required")
         val uri = Uri.parse("file://$arg")
         val displayName = arg.substringAfterLast('/')
-        app.servingRootUri = uri
         settings.rootUri = uri.toString()
         settings.rootDisplayName = displayName
         return buildJsonObject {
@@ -103,22 +110,13 @@ class DebugRpcProvider : ContentProvider() {
         val rootUri = settings.rootUri
             ?: return errorJson("No root URI configured. Call setRootPath first.")
 
-        app.servingRootUri = Uri.parse(rootUri)
-        val port = settings.port
+        Uri.parse(rootUri)
+        val controller = app.serverController
+        controller.requestStart()
 
-        val controller = app.initializeEngine()
-        controller.startServer(port, "0.0.0.0")
-
-        // Start foreground service on main thread
-        mainHandler.post {
-            val intent = Intent(context, WebServerService::class.java)
-            context!!.startForegroundService(intent)
-        }
-
-        // Wait briefly for state to reflect "running"
         val finalState = runBlocking {
-            withTimeoutOrNull(3000L) {
-                controller.state.first { it.running || it.error != null }
+            withTimeoutOrNull(5_000L) {
+                controller.state.first { it.running || it.phase == ServerPhase.FAILED }
             }
         } ?: controller.state.value
 
@@ -132,15 +130,18 @@ class DebugRpcProvider : ContentProvider() {
     }
 
     private fun handleStopServer(): String {
-        app.engineController?.stopServer()
-
-        // Stop foreground service on main thread
-        mainHandler.post {
-            val intent = Intent(context, WebServerService::class.java)
-            context!!.stopService(intent)
-        }
-
-        return """{"ok":true}"""
+        val controller = app.serverController
+        controller.requestStop()
+        val finalState = runBlocking {
+            withTimeoutOrNull(5_000L) {
+                controller.state.first { it.phase == ServerPhase.STOPPED }
+            }
+        } ?: controller.state.value
+        return buildJsonObject {
+            put("ok", !finalState.running)
+            put("running", finalState.running)
+            put("phase", finalState.phase.name.lowercase())
+        }.toString()
     }
 
     private fun handleGetPowerState(): String {
@@ -152,7 +153,7 @@ class DebugRpcProvider : ContentProvider() {
             put("isDozing", app.dozeMonitor.isDozing.value)
             put("isScreenOn", app.dozeMonitor.isScreenOn.value)
             put("batteryLevel", app.dozeMonitor.batteryLevel.value)
-            put("isUiVisible", app.dozeMonitor.isUiVisible.value)
+            put("isPowerSave", app.dozeMonitor.isPowerSave.value)
             put("ignoringBatteryOptimizations", app.dozeMonitor.isIgnoringBatteryOptimizations())
         }.toString()
     }
@@ -164,6 +165,10 @@ class DebugRpcProvider : ContentProvider() {
             put("rootUri", settings.rootUri?.let { JsonPrimitive(it) } ?: JsonNull)
             put("rootDisplayName", settings.rootDisplayName?.let { JsonPrimitive(it) } ?: JsonNull)
             put("allFilesAccess", settings.allFilesAccess)
+            put("lanEnabled", settings.lanEnabled)
+            put("directoryListing", settings.directoryListing)
+            put("corsEnabled", settings.corsEnabled)
+            put("spaEnabled", settings.spaEnabled)
             put("backgroundEnabled", settings.backgroundEnabled)
             put("wakeLockMode", settings.wakeLockMode.key)
             put("startOnBoot", settings.startOnBoot)
@@ -176,8 +181,7 @@ class DebugRpcProvider : ContentProvider() {
         if (arg.isNullOrBlank())
             return errorJson("Mode required (none, wifi_only, full)")
         val mode = WakeLockMode.fromString(arg)
-        settings.wakeLockMode = mode
-        WebServerService.instance?.updateWakeLockMode(mode)
+        app.serverController.updateWakeLockMode(mode)
         return buildJsonObject {
             put("ok", true)
             put("wakeLockMode", mode.key)
@@ -190,11 +194,38 @@ class DebugRpcProvider : ContentProvider() {
             "false", "0", "no" -> false
             else -> return errorJson("Boolean required: $arg")
         }
-        settings.backgroundEnabled = enabled
+        app.serverController.onBackgroundSettingChanged(enabled)
         return buildJsonObject {
             put("ok", true)
             put("backgroundEnabled", enabled)
         }.toString()
+    }
+
+    private fun handleBooleanSetting(
+        arg: String?,
+        name: String,
+        update: (Boolean) -> Unit
+    ): String {
+        val enabled = parseBoolean(arg) ?: return errorJson("Boolean required: $arg")
+        update(enabled)
+        return buildJsonObject {
+            put("ok", true)
+            put(name, enabled)
+        }.toString()
+    }
+
+    private fun handleBatteryThreshold(arg: String?): String {
+        val threshold = arg?.toIntOrNull()?.takeIf { it in 5..50 }
+            ?: return errorJson("Threshold must be 5..50")
+        settings.shutdownBatteryThreshold = threshold
+        app.serverController.onPowerSettingsChanged()
+        return """{"ok":true,"shutdownBatteryThreshold":$threshold}"""
+    }
+
+    private fun parseBoolean(value: String?): Boolean? = when (value?.lowercase()) {
+        "true", "1", "yes" -> true
+        "false", "0", "no" -> false
+        else -> null
     }
 
     private fun errorJson(message: String): String {

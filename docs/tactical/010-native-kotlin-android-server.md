@@ -491,6 +491,24 @@ This tactical is complete only when all of the following are true:
   `./gradlew :app:testDebugUnitTest` pass. Gradle still reports the pre-existing
   stale `sdk.dir` warning and still builds the old native bundle at this phase.
 
+### 2026-08-01: Android runtime cut over to one controller
+
+- `Ok200Application` now owns one `AndroidServerController`; the view model
+  observes its state directly and no longer creates a collector per start.
+- Foreground service, boot, notification Stop, process backgrounding, debug RPC,
+  wake locks, and low-battery shutdown now issue commands through that
+  controller. Foreground-only mode uses `ProcessLifecycleOwner`, so activity
+  recreation cannot masquerade as the app being backgrounded.
+- The service owns one notification for the complete background run and has a
+  guarded sticky restart using the persisted desired-running flag. Boot start
+  uses the same service/controller route.
+- Simplified the old app-wide `DozeMonitor` activity bookkeeping into focused
+  battery, charging, screen, power-save, Doze, and optimization observation.
+- Debug RPC now accepts port `0` and exposes every new server behavior setting.
+- Evidence: `./gradlew :app:compileDebugKotlin :app:testDebugUnitTest` passes on
+  the Kotlin production route. QuickJS remains compiled but unused until the AVD
+  cutover gate.
+
 ## Intended change boundaries
 
 If implementation is approved, keep the history reviewable at approximately

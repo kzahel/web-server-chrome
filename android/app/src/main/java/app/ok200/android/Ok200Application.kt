@@ -3,17 +3,12 @@ package app.ok200.android
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.net.Uri
-import android.util.Log
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import app.ok200.android.power.DozeMonitor
-import app.ok200.android.service.ServiceLifecycleManager
+import app.ok200.android.server.AndroidServerController
 import app.ok200.android.settings.SettingsStore
-import app.ok200.quickjs.EngineController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-
-private const val TAG = "Ok200Application"
 
 class Ok200Application : Application() {
 
@@ -27,35 +22,21 @@ class Ok200Application : Application() {
     lateinit var dozeMonitor: DozeMonitor
         private set
 
-    lateinit var serviceLifecycleManager: ServiceLifecycleManager
+    lateinit var serverController: AndroidServerController
         private set
-
-    private val engineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-    @Volatile
-    private var _engineController: EngineController? = null
-    private val engineLock = Any()
-
-    val engineController: EngineController?
-        get() = _engineController
-
-    // Root URI for file serving (set by UI when user picks a folder)
-    @Volatile
-    var servingRootUri: Uri? = null
 
     override fun onCreate() {
         super.onCreate()
-
         settingsStore = SettingsStore(this)
-
-        dozeMonitor = DozeMonitor(this)
-        dozeMonitor.start()
-
-        serviceLifecycleManager = ServiceLifecycleManager(
-            context = this,
-            settingsStore = settingsStore
+        dozeMonitor = DozeMonitor(this).also { it.start() }
+        serverController = AndroidServerController(this, settingsStore, dozeMonitor)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(
+            object : DefaultLifecycleObserver {
+                override fun onStop(owner: LifecycleOwner) {
+                    serverController.onAppBackgrounded()
+                }
+            }
         )
-
         createNotificationChannels()
     }
 
@@ -71,31 +52,5 @@ class Ok200Application : Application() {
                 setShowBadge(false)
             }
         )
-    }
-
-    fun initializeEngine(): EngineController {
-        _engineController?.let { return it }
-
-        synchronized(engineLock) {
-            _engineController?.let { return it }
-
-            Log.i(TAG, "Initializing engine...")
-            val controller = EngineController(
-                context = this,
-                scope = engineScope,
-                rootUriProvider = { servingRootUri }
-            )
-            controller.loadEngine()
-            _engineController = controller
-            Log.i(TAG, "Engine initialized")
-            return controller
-        }
-    }
-
-    fun shutdownEngine() {
-        synchronized(engineLock) {
-            _engineController?.close()
-            _engineController = null
-        }
     }
 }

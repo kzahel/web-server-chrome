@@ -2,55 +2,53 @@ package app.ok200.android.viewmodel
 
 import android.Manifest
 import android.app.Application
-import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.net.wifi.WifiManager
 import android.os.Build
-import android.util.Log
+import android.os.Environment
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import app.ok200.android.Ok200Application
-import app.ok200.android.service.WebServerService
 import app.ok200.android.settings.WakeLockMode
-import app.ok200.quickjs.ServerState
-import kotlinx.coroutines.Dispatchers
+import java.net.Inet4Address
+import java.net.NetworkInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-
-private const val TAG = "ServerViewModel"
 
 class ServerViewModel(application: Application) : AndroidViewModel(application) {
-
     private val app = application as Ok200Application
     private val settings = app.settingsStore
-
-    // --- Server settings ---
+    private val controller = app.serverController
 
     private val _port = MutableStateFlow(settings.port)
     val port: StateFlow<Int> = _port.asStateFlow()
 
-    private val _rootUri = MutableStateFlow<Uri?>(
-        settings.rootUri?.let { Uri.parse(it) }
-    )
+    private val _rootUri = MutableStateFlow(settings.rootUri?.let(Uri::parse))
     val rootUri: StateFlow<Uri?> = _rootUri.asStateFlow()
 
-    private val _rootDisplayName = MutableStateFlow(settings.rootDisplayName ?: "")
+    private val _rootDisplayName = MutableStateFlow(settings.rootDisplayName.orEmpty())
     val rootDisplayName: StateFlow<String> = _rootDisplayName.asStateFlow()
 
-    private val _allFilesAccess = MutableStateFlow(settings.allFilesAccess)
+    private val _allFilesAccess = MutableStateFlow(hasAllFilesAccess())
     val allFilesAccess: StateFlow<Boolean> = _allFilesAccess.asStateFlow()
 
-    private val _serverState = MutableStateFlow(ServerState())
-    val serverState: StateFlow<ServerState> = _serverState.asStateFlow()
+    private val _lanEnabled = MutableStateFlow(settings.lanEnabled)
+    val lanEnabled: StateFlow<Boolean> = _lanEnabled.asStateFlow()
 
-    private val _localIpAddress = MutableStateFlow("")
+    private val _directoryListing = MutableStateFlow(settings.directoryListing)
+    val directoryListing: StateFlow<Boolean> = _directoryListing.asStateFlow()
+
+    private val _corsEnabled = MutableStateFlow(settings.corsEnabled)
+    val corsEnabled: StateFlow<Boolean> = _corsEnabled.asStateFlow()
+
+    private val _spaEnabled = MutableStateFlow(settings.spaEnabled)
+    val spaEnabled: StateFlow<Boolean> = _spaEnabled.asStateFlow()
+
+    val serverState = controller.state
+
+    private val _localIpAddress = MutableStateFlow(findLocalIp())
     val localIpAddress: StateFlow<String> = _localIpAddress.asStateFlow()
-
-    // --- Power settings ---
 
     private val _backgroundEnabled = MutableStateFlow(settings.backgroundEnabled)
     val backgroundEnabled: StateFlow<Boolean> = _backgroundEnabled.asStateFlow()
@@ -67,152 +65,123 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
     private val _shutdownBatteryThreshold = MutableStateFlow(settings.shutdownBatteryThreshold)
     val shutdownBatteryThreshold: StateFlow<Int> = _shutdownBatteryThreshold.asStateFlow()
 
-    // --- Notification permission ---
+    val powerState = app.dozeMonitor.powerState
+    val batteryLevel = app.dozeMonitor.batteryLevel
+    val isCharging = app.dozeMonitor.isCharging
+    val isDozing = app.dozeMonitor.isDozing
 
     private val _notificationPermissionGranted = MutableStateFlow(checkNotificationPermission())
     val notificationPermissionGranted: StateFlow<Boolean> = _notificationPermissionGranted.asStateFlow()
 
+    fun setPort(port: Int) {
+        if (port !in 0..65_535) return
+        _port.value = port
+        settings.port = port
+    }
+
+    fun setRootUri(uri: Uri, displayName: String) {
+        _rootUri.value = uri
+        _rootDisplayName.value = displayName
+        settings.rootUri = uri.toString()
+        settings.rootDisplayName = displayName
+    }
+
+    fun refreshAllFilesAccess() {
+        _allFilesAccess.value = hasAllFilesAccess()
+        settings.allFilesAccess = _allFilesAccess.value
+    }
+
+    fun setAllFilesAccess(@Suppress("UNUSED_PARAMETER") enabled: Boolean) = refreshAllFilesAccess()
+
+    fun setLanEnabled(enabled: Boolean) {
+        _lanEnabled.value = enabled
+        settings.lanEnabled = enabled
+    }
+
+    fun setDirectoryListing(enabled: Boolean) {
+        _directoryListing.value = enabled
+        settings.directoryListing = enabled
+    }
+
+    fun setCorsEnabled(enabled: Boolean) {
+        _corsEnabled.value = enabled
+        settings.corsEnabled = enabled
+    }
+
+    fun setSpaEnabled(enabled: Boolean) {
+        _spaEnabled.value = enabled
+        settings.spaEnabled = enabled
+    }
+
+    fun setBackgroundEnabled(enabled: Boolean) {
+        _backgroundEnabled.value = enabled
+        controller.onBackgroundSettingChanged(enabled)
+        if (!enabled && _startOnBoot.value) _startOnBoot.value = false
+    }
+
+    fun setWakeLockMode(mode: WakeLockMode) {
+        _wakeLockMode.value = mode
+        controller.updateWakeLockMode(mode)
+    }
+
+    fun setStartOnBoot(enabled: Boolean) {
+        _startOnBoot.value = enabled
+        settings.startOnBoot = enabled
+        if (enabled && !_backgroundEnabled.value) {
+            _backgroundEnabled.value = true
+            controller.onBackgroundSettingChanged(true)
+        }
+    }
+
+    fun setShutdownOnLowBattery(enabled: Boolean) {
+        _shutdownOnLowBattery.value = enabled
+        settings.shutdownOnLowBattery = enabled
+        controller.onPowerSettingsChanged()
+    }
+
+    fun setShutdownBatteryThreshold(threshold: Int) {
+        val bounded = threshold.coerceIn(5, 50)
+        _shutdownBatteryThreshold.value = bounded
+        settings.shutdownBatteryThreshold = bounded
+        controller.onPowerSettingsChanged()
+    }
+
+    fun startServer() = controller.requestStart()
+
+    fun stopServer() = controller.requestStop()
+
     fun updateNotificationPermission(granted: Boolean) {
         _notificationPermissionGranted.value = granted
+    }
+
+    fun refreshSystemState() {
+        refreshAllFilesAccess()
+        refreshNotificationPermission()
+        _localIpAddress.value = findLocalIp()
     }
 
     fun refreshNotificationPermission() {
         _notificationPermissionGranted.value = checkNotificationPermission()
     }
 
-    private fun checkNotificationPermission(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ContextCompat.checkSelfPermission(
-                app, Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-        } else {
-            true // Pre-Android 13: notifications always show
-        }
-    }
+    fun isIgnoringBatteryOptimizations(): Boolean = app.dozeMonitor.isIgnoringBatteryOptimizations()
 
-    init {
-        refreshLocalIp()
-    }
+    private fun checkNotificationPermission(): Boolean =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(app, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
 
-    // --- Server setting setters ---
+    private fun hasAllFilesAccess(): Boolean =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager()
 
-    fun setPort(port: Int) {
-        _port.value = port
-        settings.port = port
-    }
-
-    fun setAllFilesAccess(enabled: Boolean) {
-        _allFilesAccess.value = enabled
-        settings.allFilesAccess = enabled
-    }
-
-    fun setRootUri(uri: Uri, displayName: String) {
-        _rootUri.value = uri
-        _rootDisplayName.value = displayName
-        app.servingRootUri = uri
-        settings.rootUri = uri.toString()
-        settings.rootDisplayName = displayName
-    }
-
-    // --- Power setting setters ---
-
-    fun setBackgroundEnabled(enabled: Boolean) {
-        _backgroundEnabled.value = enabled
-        settings.backgroundEnabled = enabled
-    }
-
-    fun setWakeLockMode(mode: WakeLockMode) {
-        _wakeLockMode.value = mode
-        settings.wakeLockMode = mode
-        // Update running service immediately
-        WebServerService.instance?.updateWakeLockMode(mode)
-    }
-
-    fun setStartOnBoot(enabled: Boolean) {
-        _startOnBoot.value = enabled
-        settings.startOnBoot = enabled
-    }
-
-    fun setShutdownOnLowBattery(enabled: Boolean) {
-        _shutdownOnLowBattery.value = enabled
-        settings.shutdownOnLowBattery = enabled
-    }
-
-    fun setShutdownBatteryThreshold(threshold: Int) {
-        _shutdownBatteryThreshold.value = threshold
-        settings.shutdownBatteryThreshold = threshold
-    }
-
-    // --- Server control ---
-
-    fun startServer() {
-        val uri = _rootUri.value
-        if (uri == null) {
-            _serverState.value = ServerState(error = "No folder selected")
-            return
-        }
-
-        app.servingRootUri = uri
-
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val controller = app.initializeEngine()
-
-                // Observe state updates and forward to lifecycle manager
-                launch {
-                    controller.state.collect { state ->
-                        _serverState.value = state
-                        app.serviceLifecycleManager.onServerStateChanged(state.running)
-                    }
-                }
-
-                controller.startServer(_port.value, "0.0.0.0")
-
-                // Start foreground service directly (lifecycle manager handles background transitions)
-                val intent = android.content.Intent(app, WebServerService::class.java)
-                app.startForegroundService(intent)
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to start server", e)
-                _serverState.value = ServerState(error = e.message)
-            }
-        }
-    }
-
-    fun stopServer() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                app.engineController?.stopServer()
-                // Service stop is handled by ServiceLifecycleManager reacting to running=false
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to stop server", e)
-            }
-        }
-    }
-
-    @Suppress("DEPRECATION")
-    private fun refreshLocalIp() {
-        try {
-            val wifiManager = app.getSystemService(Context.WIFI_SERVICE) as WifiManager
-            val ipInt = wifiManager.connectionInfo.ipAddress
-            if (ipInt != 0) {
-                val ip = String.format(
-                    "%d.%d.%d.%d",
-                    ipInt and 0xff,
-                    ipInt shr 8 and 0xff,
-                    ipInt shr 16 and 0xff,
-                    ipInt shr 24 and 0xff
-                )
-                _localIpAddress.value = ip
-            } else {
-                _localIpAddress.value = "127.0.0.1"
-            }
-        } catch (e: Exception) {
-            _localIpAddress.value = "127.0.0.1"
-        }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        // Don't stop the server when ViewModel is cleared — service keeps it alive
-    }
+    private fun findLocalIp(): String = runCatching {
+        NetworkInterface.getNetworkInterfaces().toList()
+            .asSequence()
+            .filter { it.isUp && !it.isLoopback }
+            .flatMap { it.inetAddresses.toList().asSequence() }
+            .filterIsInstance<Inet4Address>()
+            .firstOrNull { !it.isLoopbackAddress }
+            ?.hostAddress
+            ?: "127.0.0.1"
+    }.getOrDefault("127.0.0.1")
 }

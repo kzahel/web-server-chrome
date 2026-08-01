@@ -33,6 +33,27 @@ class SettingsStore(context: Context) {
         get() = prefs.getBoolean(KEY_ALL_FILES_ACCESS, false)
         set(value) = prefs.edit { putBoolean(KEY_ALL_FILES_ACCESS, value) }
 
+    var lanEnabled: Boolean
+        get() = prefs.getBoolean(KEY_LAN_ENABLED, true)
+        set(value) = prefs.edit { putBoolean(KEY_LAN_ENABLED, value) }
+
+    var directoryListing: Boolean
+        get() = prefs.getBoolean(KEY_DIRECTORY_LISTING, true)
+        set(value) = prefs.edit { putBoolean(KEY_DIRECTORY_LISTING, value) }
+
+    var corsEnabled: Boolean
+        get() = prefs.getBoolean(KEY_CORS_ENABLED, true)
+        set(value) = prefs.edit { putBoolean(KEY_CORS_ENABLED, value) }
+
+    var spaEnabled: Boolean
+        get() = prefs.getBoolean(KEY_SPA_ENABLED, false)
+        set(value) = prefs.edit { putBoolean(KEY_SPA_ENABLED, value) }
+
+    /** True only for a background-service run that Android may recreate. */
+    var desiredRunning: Boolean
+        get() = prefs.getBoolean(KEY_DESIRED_RUNNING, false)
+        set(value) = prefs.edit { putBoolean(KEY_DESIRED_RUNNING, value) }
+
     // --- Power management settings (new) ---
 
     /**
@@ -83,6 +104,11 @@ class SettingsStore(context: Context) {
         const val KEY_ROOT_URI = "root_uri"
         const val KEY_ROOT_DISPLAY = "root_display"
         const val KEY_ALL_FILES_ACCESS = "all_files_access"
+        private const val KEY_LAN_ENABLED = "lan_enabled"
+        private const val KEY_DIRECTORY_LISTING = "directory_listing"
+        private const val KEY_CORS_ENABLED = "cors_enabled"
+        private const val KEY_SPA_ENABLED = "spa_enabled"
+        private const val KEY_DESIRED_RUNNING = "desired_running"
 
         // New power management keys
         private const val KEY_BACKGROUND_ENABLED = "background_enabled"

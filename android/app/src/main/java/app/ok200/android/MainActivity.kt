@@ -70,15 +70,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        (application as Ok200Application).serviceLifecycleManager.onActivityStart()
-        viewModel.refreshNotificationPermission()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (application as Ok200Application).serviceLifecycleManager.onActivityStop()
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshSystemState()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,8 +116,12 @@ class MainActivity : AppCompatActivity() {
     private fun requestAllFilesAccess() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
-                // Already granted — just toggle off
-                viewModel.setAllFilesAccess(false)
+                // Android owns revocation; open the same settings page.
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                    Uri.parse("package:$packageName")
+                )
+                allFilesAccessLauncher.launch(intent)
             } else {
                 val intent = Intent(
                     Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,

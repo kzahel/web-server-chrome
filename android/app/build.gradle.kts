@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "app.ok200.android"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "app.ok200.android"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 4
         versionName = "0.1.2"
 

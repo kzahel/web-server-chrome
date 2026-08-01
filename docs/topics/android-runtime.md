@@ -124,6 +124,12 @@ same rules rather than relying on Compose alone.
   from resource folders, and debug builds include `en-XA`/`ar-XB` pseudo-locales
   for expansion and right-to-left checks. A source-level unit guard rejects the
   common hard-coded-copy patterns on these surfaces.
+- The application compiles against and targets Android 16 (API level 36). It
+  already uses edge-to-edge Compose layout and has no legacy back interception,
+  so the target-SDK behavior changes require no compatibility opt-outs. Apps
+  targeting 36 retain implicit LAN access through `INTERNET`, including when
+  running on Android 17; do not add or request `ACCESS_LOCAL_NETWORK` until the
+  eventual target-37 migration implements its runtime permission flow.
 
 ## HTTP and storage contract
 
@@ -201,6 +207,15 @@ They require explicit product decisions rather than accidental parity work.
   background to create foreground notification ID 1 and the selected Wi-Fi
   lock; revoking permission stopped the listener and service, released the
   reliable run, disabled boot start, and persisted the next-launch notice.
+- With compile and target SDK 36, Kotlin compilation, the JVM suite, Android
+  lint, the minified release APK, and the release AAB all build successfully.
+  All five instrumentation tests pass on both the Android 14 phone AVD and the
+  attached Pixel 9 running Android 17. AndroidX JUnit 1.3.0 and Espresso 3.7.0
+  replace the older test stack whose reflective `InputManager` access is not
+  compatible with API 37. The target-36 debug build also bound
+  `0.0.0.0:8080` on the Pixel and served a test file to the Mac over Wi-Fi;
+  afterward the temporary root was removed and the app was restored to fresh
+  conservative settings.
 - A temporary sparse 3 GiB file in the Pixel's SAF root reported the full
   64-bit content length, and a range beginning at byte 3,221,225,450 returned
   the correct `206`, `Content-Range`, and marker bytes. The file was removed
@@ -212,6 +227,9 @@ They require explicit product decisions rather than accidental parity work.
 - Before a Play release, repeat the storage/settings and notification paths on
   the Play-enabled AVD and at least one physical device; review current all-files
   and foreground-service policy.
+- Before targeting Android 17/API 37, add and test the
+  `ACCESS_LOCAL_NETWORK` runtime-permission flow. Target-36 apps must not
+  request that permission and retain implicit LAN access through `INTERNET`.
 - Treat preservation of existing preferences and SAF grants as best effort.
   There is no migration-release or recovery requirement; invalid access asks
   the user to select a folder again.

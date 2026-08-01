@@ -6,6 +6,7 @@
 - Add stable Feedback & support and Source · MIT links to the main screen.
 
 ### Changed
+- Target Android 16 (API level 36) for current Google Play compatibility.
 - Extract Android UI, accessibility, notification, lifecycle, and storage copy
   into locale resources, with generated app-language metadata and debug
   pseudo-locales for translation testing.

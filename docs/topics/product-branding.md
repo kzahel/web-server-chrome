@@ -9,7 +9,7 @@ Topic: product-branding
 Status: **accepted product identity; active source surfaces reconciled,
 publication pending.**
 
-Last reconciled: **2026-07-28**.
+Last reconciled: **2026-08-01**.
 
 ## Scope
 
@@ -44,10 +44,15 @@ is: websites, page and window titles, store listings, README headings,
 directory listings, and first-run or migration copy.
 
 Use **200 OK** where the category is already clear or space is constrained:
-application filenames, operating-system launcher labels, mobile home-screen
-labels, menu items, buttons, tray labels, and compact headers. A nearby
-**Web Server** descriptor may visually form the full name without forcing a
-long mobile label.
+application filenames, desktop operating-system launcher labels, menu items,
+buttons, tray labels, and compact headers. A nearby **Web Server** descriptor
+may visually form the full name.
+
+Android is an intentional exception for searchability: its application and
+launcher metadata use **200 OK Web Server**, so launcher search can match both
+the distinctive name and the product category. The compact in-app header stays
+**200 OK** with a nearby **Web Server** descriptor, and a home-screen launcher
+may truncate the longer metadata label visually.
 
 The logo artwork may retain its handwritten `200 OK!` treatment. Normal prose
 and accessible labels omit the exclamation mark.
@@ -79,7 +84,8 @@ relationship explained in description and migration copy.
 |---|---|
 | Desktop bundle/launcher | **200 OK** |
 | Desktop window and primary header | **200 OK Web Server** |
-| Android launcher and compact UI | **200 OK**, with **Web Server** descriptor |
+| Android launcher/system metadata | **200 OK Web Server** for launcher search |
+| Android compact UI | **200 OK**, with **Web Server** descriptor |
 | Chrome extension listing and popup | **200 OK Web Server**; describe it as the launcher for the desktop or Android app |
 | Website site name/header | **200 OK Web Server** |
 | Website SEO | Lead with **200 OK Web Server** and explicitly include **successor to Web Server for Chrome** |
@@ -105,17 +111,19 @@ The stable technical identities already align with this decision:
 - `app.ok200.desktop` and `app.ok200.android`;
 - the `ok200` CLI and `@ok200/*` packages;
 - `ok200.app`;
-- the **200 OK** application icon and mobile label; and
+- the **200 OK** application icon and searchable **200 OK Web Server** Android
+  system label; and
 - native host descriptions that use **200 OK Web Server**.
 
 Current reconciliation should update active product surfaces while preserving
 accurate historical references in `legacy/`, research documents, changelogs,
 and migration history.
 
-As of 2026-07-28, current source now uses the accepted identity in the desktop
+As of 2026-08-01, current source now uses the accepted identity in the desktop
 window and control header, Rust directory listings, website header and
 metadata, README, and Chrome extension manifest and popup. Android already
-uses the compact **200 OK** label with a **Web Server** descriptor.
+uses the searchable **200 OK Web Server** system label while retaining the
+compact **200 OK** header with a **Web Server** descriptor.
 
 This source state is ahead of distribution. The locally installed desktop
 review app has been rebuilt and visually checked with the changed window and
@@ -151,7 +159,8 @@ Validation on 2026-07-28:
 - No current desktop window, application header, website header, extension
   manifest, or generated directory listing uses **Web Server for Chrome** as
   the current product name.
-- Desktop and Android compact system labels remain readable.
+- Desktop's compact system label remains readable, and Android launcher search
+  matches **Web Server** while its compact in-app header remains readable.
 - Website and migration metadata still contain the exact legacy name in
   explicit successor/migration context.
 - Extension copy states that the desktop or Android application serves files.

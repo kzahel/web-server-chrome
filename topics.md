@@ -18,3 +18,6 @@ Keep each string exact across its commit series so
 - `android-native-kotlin` — replace Android's embedded QuickJS/TypeScript HTTP
   runtime with a native Kotlin server while maintaining a tested, broadly
   compatible feature contract with desktop.
+- `product-branding` — keep the 200 OK Web Server identity consistent and
+  searchable across application metadata, compact UI, stores, migration copy,
+  and public product surfaces.

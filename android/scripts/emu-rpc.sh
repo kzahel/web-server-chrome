@@ -33,6 +33,7 @@ if [[ -z "$METHOD" ]]; then
     echo "Methods:"
     echo "  ping                    - Check if app is responsive"
     echo "  getState                - Get server state and config"
+    echo "  getNetworkAddresses     - Get active IPv4/IPv6 presentation records"
     echo "  setPort <port>          - Set server port"
     echo "  setRootPath <path>      - Set serving root (file path on device)"
     echo "  setLifetimeMode <mode>  - app_open, background, or reliable"

@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Resolve URLs from Android’s active Wi-Fi/Ethernet network instead of the
+  first enumerated interface, and refresh them when network links change.
+- On ChromeOS, suppress ARC-private IPv4 addresses and show honest Chromebook
+  IPv4 instructions with the active port.
+- Show reachable IPv4 and IPv6 HTTP URLs together on dual-stack networks, with
+  bracketed IPv6 formatting; keep loopback available for on-device access.
+- Avoid presenting cellular or VPN interface addresses as peer-facing LAN
+  URLs.
+
 ## [0.2.0]
 
 ### Added

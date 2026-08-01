@@ -24,6 +24,9 @@ status. Do not create a topic for every small standalone change.
 - [`android-runtime.md`](android-runtime.md) — native Kotlin HTTP/storage
   implementation, Android lifecycle and Advanced controls, compatibility
   contract, evidence, and release gaps.
+- [`internet-exposure-and-port-mapping.md`](internet-exposure-and-port-mapping.md)
+  — accepted future UPnP roadmap, public-exposure safety contract, native
+  runtime ownership, and ChromeOS multi-NAT constraints.
 - [`desktop-release-readiness.md`](desktop-release-readiness.md) — desktop
   signing evidence, known release defects, and the artifact acceptance gate.
 - [`legacy-app-migration.md`](legacy-app-migration.md) — August 31 migration

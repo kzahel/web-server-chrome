@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import app.ok200.android.Ok200Application
+import app.ok200.android.network.NetworkAddressResolver
 import app.ok200.android.server.ServerPhase
 import app.ok200.android.settings.ServerLifetimeMode
 import app.ok200.android.settings.WakeLockMode
@@ -17,6 +18,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
@@ -36,6 +38,7 @@ class DebugRpcProvider : ContentProvider() {
             when (method) {
                 "ping" -> handlePing()
                 "getState" -> handleGetState()
+                "getNetworkAddresses" -> handleGetNetworkAddresses()
                 "setPort" -> handleSetPort(arg)
                 "setRootPath" -> handleSetRootPath(arg)
                 "setRootUri" -> handleSetRootUri(arg)
@@ -83,6 +86,38 @@ class DebugRpcProvider : ContentProvider() {
             put("rootDisplayName", settings.rootDisplayName?.let { JsonPrimitive(it) } ?: JsonNull)
             put("configuredPort", settings.port)
             put("controllerInitialized", true)
+        }.toString()
+    }
+
+    private fun handleGetNetworkAddresses(): String {
+        val resolver = NetworkAddressResolver(context!!)
+        val state = app.serverController.state.value
+        val port = state.port.takeIf { it > 0 } ?: settings.port
+        return buildJsonObject {
+            put("ok", true)
+            put("isChromeOs", resolver.isChromeOs)
+            put("chromeOsIpv4Instructions", resolver.isChromeOs && settings.lanEnabled)
+            put(
+                "addresses",
+                buildJsonArray {
+                    resolver.currentAddresses().forEach { address ->
+                        add(
+                            buildJsonObject {
+                                put("interface", address.interfaceName ?: "")
+                                put("address", address.address)
+                                put("prefixLength", address.prefixLength)
+                                put("family", address.family.name.lowercase())
+                                put("scope", address.scope.name.lowercase())
+                                put("availability", address.availability.name.lowercase())
+                                put("usableFromAnotherDevice", address.usableFromAnotherDevice)
+                                if (address.usableFromAnotherDevice) {
+                                    put("url", address.httpUrl(port))
+                                }
+                            }
+                        )
+                    }
+                }
+            )
         }.toString()
     }
 

@@ -29,8 +29,8 @@ As of 2026-08-01:
 | CLI | TypeScript engine on Node.js | `v0.1.1` |
 | Desktop release | Tauri/React controls; Rust server state and HTTP core | `v0.1.5`, complete signed release; recommended macOS app, Windows NSIS, and Linux AppImage update/server/extension paths accepted |
 | Desktop source | Same Rust-native runtime with AppImage-first Linux integration, Linux ARM64 artifacts, and package-aware updates | Published baseline is `v0.1.5`; RPM-native, MSI-elevated, and physical ARM64 product smoke remain claim-only gaps |
-| Android / ChromeOS source | Compose UI and native Kotlin HTTP/storage core | Kotlin cutover complete and AVD-validated; not published by this refactor |
-| Android / ChromeOS Play artifact | Compose UI with the earlier embedded JavaScript runtime | `v0.1.2`, published pre-cutover artifact |
+| Android / ChromeOS source | Compose UI and native Kotlin HTTP/storage core | Kotlin cutover complete; signed APK/AAB published in GitHub release `android-v0.2.0`; follow-up ChromeOS LAN-address fix physically accepted in source |
+| Android / ChromeOS Play artifact | Submitted native Kotlin build; production may still serve the earlier artifact during review | `v0.2.0` submitted; the follow-up address fix requires the next candidate before ChromeOS promotion |
 | Chrome extension | MV3 launcher/status UI | `v0.1.3`, published |
 | Legacy Chrome App | Chrome packaged-app APIs | Migration channel approaching end of life |
 
@@ -86,13 +86,14 @@ Android app. Its product copy must explain this launcher role honestly.
 
 ## Why the desktop direction changed
 
-The earlier TypeScript engine plus native-I/O adapters successfully shipped on
-Android and proved that an embedded JavaScript runtime could host the server.
-It also placed the desktop HTTP engine, parser, filesystem orchestration, and
-socket event flow in the Tauri webview. That architecture added
-JavaScript/webview runtime work to a product whose main promise is a tiny local
-server, without delivering a current product requirement. Both desktop and
-Android source have since moved to their platform-native server cores.
+The earlier TypeScript engine plus native-I/O adapters shipped in the old
+Android `v0.1.2` artifact and proved that an embedded JavaScript runtime could
+host the server. It also placed the desktop HTTP engine, parser, filesystem
+orchestration, and socket event flow in the Tauri webview. That architecture
+added JavaScript/webview runtime work to a product whose main promise is a tiny
+local server, without delivering a current product requirement. The embedded
+Android runtime and its JNI/native-I/O modules are fully deleted from current
+source; both desktop and Android now use their platform-native server cores.
 
 The desktop application already includes Rust through Tauri. A direct Rust
 server provides a simpler ownership boundary and should materially reduce
@@ -176,6 +177,7 @@ After the replacement and release path are dependable:
 
 - [Desktop runtime topic](topics/desktop-runtime.md)
 - [Android runtime topic](topics/android-runtime.md)
+- [Internet exposure and port mapping topic](topics/internet-exposure-and-port-mapping.md)
 - [Desktop release/signing topic](topics/desktop-release-readiness.md)
 - [Legacy migration topic](topics/legacy-app-migration.md)
 - [Tactical 000: implementation sequence](tactical/000-desktop-native-core-and-release-readiness.md)

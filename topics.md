@@ -21,3 +21,6 @@ Keep each string exact across its commit series so
 - `product-branding` — keep the 200 OK Web Server identity consistent and
   searchable across application metadata, compact UI, stores, migration copy,
   and public product surfaces.
+- `internet-exposure-and-port-mapping` — restore an explicit, safe, and
+  independently verified public-listening option through UPnP and potentially
+  NAT-PMP/PCP across the native desktop and Android runtimes.

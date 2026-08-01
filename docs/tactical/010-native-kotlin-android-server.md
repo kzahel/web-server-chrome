@@ -6,6 +6,11 @@
 **Scope:** Android application only, plus shared-repository cleanup made necessary by
 removing the Android JavaScript runtime
 
+> Historical wording note: “current Android” in the baseline and staged
+> execution sections means the pre-cutover `v0.1.2` state at that step. The
+> completed end state has no QuickJS, JNI bridge, native-I/O modules, bundled
+> JavaScript server, or dormant fallback path.
+
 ## Objective
 
 Replace the Android app's TypeScript-in-QuickJS execution path with a small,

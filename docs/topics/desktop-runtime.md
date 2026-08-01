@@ -33,6 +33,8 @@ The accepted AppImage-first repair and distribution path are recorded in
 [Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
 The final release-confidence gates and manual sign-off boundary are recorded
 in [Tactical 009](../tactical/009-release-confidence-closeout.md).
+Future UPnP/public-listening work is owned by
+[`internet-exposure-and-port-mapping.md`](internet-exposure-and-port-mapping.md).
 Current product naming is governed by
 [`product-branding.md`](product-branding.md).
 
@@ -89,7 +91,8 @@ either would need a separate product decision.
 | Previous desktop `v0.1.4` | Same Rust-native runtime before the AppImage/Dock/package-awareness repairs | Public updater source used in the accepted `0.1.4` → `0.1.5` macOS, Windows, and Linux transitions | Retain only as immutable update evidence |
 | Historical desktop `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Partial legacy release | Historical baseline only |
 | Android source | Compose UI; Kotlin owns HTTP, storage adapters, and Android lifecycle policy | Native cutover complete and AVD-validated | Keep broadly compatible through the cross-runtime contract in `android-runtime.md` |
-| Android Play `v0.1.2` | Earlier Compose/embedded-JavaScript implementation | Published pre-cutover artifact | Retain until a separate Android release is approved |
+| Android GitHub release `v0.2.0` | Compose UI and native Kotlin implementation | Signed APK/AAB published; Play submission in review | Follow-up source corrects the ChromeOS LAN URL; ship that correction before destination promotion |
+| Android Play production | May still serve the earlier `v0.1.2` artifact during review | `v0.2.0` submitted but not yet accepted as store-delivered | Maintainer owns Play review and rollout; prove the final served build separately |
 | CLI `v0.1.1` | Node.js runs the TypeScript engine and Node adapters | Published developer CLI | Keep independent; do not make it block desktop |
 | Chrome extension `v0.1.3` | MV3 service worker and popup | Launcher/status surface | Desktop launches Tauri through native messaging; ChromeOS launches Android |
 | Legacy Chrome App `v0.5.x` | Chrome packaged-app APIs | Existing user migration channel | Preserve only long enough to route users to replacements |
@@ -192,9 +195,9 @@ roots are rejected; home, ancestor-of-home, outside-home, and LAN exposure
 require confirmation as appropriate.
 
 The desktop TypeScript HTTP server and primitive socket/filesystem IPC have
-been removed. `packages/engine` remains for Android, the Node CLI, and the
-extension where currently used; neither the desktop app nor shared desktop UI
-declares it as a dependency.
+been removed. `packages/engine` remains the Node CLI implementation; Android
+has no dependency on it. Neither the desktop app nor shared desktop UI declares
+it as a dependency.
 
 The core passes its real-socket HTTP/security corpus and the full desktop Rust
 workspace passes formatting, strict Clippy, and tests. Its Apple Silicon

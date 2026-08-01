@@ -18,6 +18,7 @@ The app process does NOT need to be open — Android auto-starts it when the Con
 |---|---|---|
 | `ping` | — | `{"ok":true}` |
 | `getState` | — | Authoritative controller phase, listener address, error, and configured root/port |
+| `getNetworkAddresses` | — | Active-network IPv4/IPv6 records, scope, ChromeOS suppression, and usable debug URLs |
 | `setPort` | port number | `{"ok":true,"port":N}` |
 | `setRootPath` | device path | `{"ok":true,"rootUri":"...","rootDisplayName":"..."}` |
 | `setRootUri` | persisted SAF tree URI | Select an already-granted SAF root |

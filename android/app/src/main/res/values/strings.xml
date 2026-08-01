@@ -95,12 +95,19 @@
     <string name="server_control_title">Web server</string>
     <string name="accessibility_start_web_server">Start web server</string>
     <string name="accessibility_stop_web_server">Stop web server</string>
-    <string name="url_lan_http_only">LAN address · HTTP only</string>
+    <string name="url_network_http_only">Network addresses · HTTP only</string>
     <string name="url_device_http_only">This device · HTTP only</string>
+    <string name="url_ipv4_label" translatable="false">IPv4</string>
+    <string name="url_ipv6_label" translatable="false">IPv6</string>
+    <string name="url_device_label">On this device</string>
     <string name="accessibility_open_url">Open URL</string>
     <string name="accessibility_copy_url">Copy URL</string>
     <string name="url_http_only_help">Use this exact http:// address. HTTPS is not supported.</string>
     <string name="url_on_this_device">On this device: %1$s</string>
+    <string name="url_chromeos_ipv4_title">IPv4 on other devices</string>
+    <string name="url_chromeos_ipv4_help">Use this Chromebook’s IPv4 address with port %1$d. Find it in ChromeOS Settings › Network › your connected network › Network.</string>
+    <string name="url_chromeos_ipv4_example" translatable="false">http://&lt;Chromebook IPv4&gt;:%1$d</string>
+    <string name="url_ipv4_unavailable">No usable IPv4 address was detected. Check this device’s network settings.</string>
     <string name="clipboard_server_url_label">Server URL</string>
     <string name="toast_http_url_copied">HTTP URL copied</string>
 

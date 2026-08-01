@@ -7,11 +7,11 @@ import android.os.Environment
 import androidx.lifecycle.AndroidViewModel
 import app.ok200.android.Ok200Application
 import app.ok200.android.R
+import app.ok200.android.network.NetworkAddressResolver
+import app.ok200.android.network.ServerNetworkAddress
 import app.ok200.android.service.ServiceNotificationPolicy
 import app.ok200.android.settings.ServerLifetimeMode
 import app.ok200.android.settings.WakeLockMode
-import java.net.Inet4Address
-import java.net.NetworkInterface
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,6 +20,7 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
     private val app = application as Ok200Application
     private val settings = app.settingsStore
     private val controller = app.serverController
+    private val networkAddressResolver = NetworkAddressResolver(app)
 
     private val _port = MutableStateFlow(settings.port)
     val port: StateFlow<Int> = _port.asStateFlow()
@@ -47,8 +48,10 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
 
     val serverState = controller.state
 
-    private val _localIpAddress = MutableStateFlow(findLocalIp())
-    val localIpAddress: StateFlow<String> = _localIpAddress.asStateFlow()
+    private val _networkAddresses = MutableStateFlow(networkAddressResolver.currentAddresses())
+    val networkAddresses: StateFlow<List<ServerNetworkAddress>> = _networkAddresses.asStateFlow()
+    val isChromeOs: Boolean = networkAddressResolver.isChromeOs
+    private val networkCallback = networkAddressResolver.registerCallback(::refreshNetworkAddresses)
 
     private val _lifetimeMode = MutableStateFlow(settings.lifetimeMode)
     val lifetimeMode: StateFlow<ServerLifetimeMode> = _lifetimeMode.asStateFlow()
@@ -190,7 +193,7 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
     fun refreshSystemState() {
         refreshAllFilesAccess()
         refreshNotificationPermission()
-        _localIpAddress.value = findLocalIp()
+        refreshNetworkAddresses()
     }
 
     fun refreshNotificationPermission() {
@@ -247,16 +250,14 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
     private fun hasAllFilesAccess(): Boolean =
         Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager()
 
-    private fun findLocalIp(): String = runCatching {
-        NetworkInterface.getNetworkInterfaces().toList()
-            .asSequence()
-            .filter { it.isUp && !it.isLoopback }
-            .flatMap { it.inetAddresses.toList().asSequence() }
-            .filterIsInstance<Inet4Address>()
-            .firstOrNull { !it.isLoopbackAddress }
-            ?.hostAddress
-            ?: "127.0.0.1"
-    }.getOrDefault("127.0.0.1")
+    private fun refreshNetworkAddresses() {
+        _networkAddresses.value = networkAddressResolver.currentAddresses()
+    }
+
+    override fun onCleared() {
+        networkAddressResolver.unregisterCallback(networkCallback)
+        super.onCleared()
+    }
 
     private enum class PendingNotificationAction {
         RELIABLE,

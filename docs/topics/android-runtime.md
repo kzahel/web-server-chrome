@@ -6,14 +6,20 @@ Status: **Android source uses one native Kotlin HTTP server, one
 application-scoped controller, and a Compose control surface. GitHub release
 `android-v0.2.0` publishes the signed native-Kotlin APK and AAB. Google Play
 production still serves `v0.1.2` until the `v0.2.0` AAB and declarations finish
-Play Console review.**
+Play Console review. Source after `v0.2.0` contains the physically accepted
+ChromeOS LAN-address correction and requires a new Android candidate before
+ChromeOS promotion.**
 
 Last reconciled: **2026-08-01**.
 
 The accepted plan, implementation sequence, and detailed emulator evidence are
 recorded in
 [Tactical 010](../tactical/010-native-kotlin-android-server.md). This topic owns
-continuing Android runtime truth after that bounded tactical.
+continuing Android runtime truth after that bounded tactical. Extension-launcher
+cleanup and the active ChromeOS address/discovery work are sequenced in
+[Tactical 011](../tactical/011-extension-launcher-and-chromeos-network-readiness.md).
+Future UPnP/public-listening work is owned separately by
+[`internet-exposure-and-port-mapping.md`](internet-exposure-and-port-mapping.md).
 
 ## Product decision
 
@@ -36,8 +42,9 @@ Compose UI / debug RPC / boot / notification
 
 The desktop and Android servers deliberately have separate implementations.
 Desktop owns its HTTP runtime in Rust; Android owns its runtime in Kotlin. The
-CLI continues to use the TypeScript engine with Node adapters. The deleted
-QuickJS/JNI/native-I/O experiment is not an extension point.
+CLI continues to use the TypeScript engine with Node adapters. Android's former
+QuickJS/JNI/native-I/O path is fully deleted and is historical evidence only,
+not a dormant implementation or extension point.
 
 Broad compatibility comes from an explicit behavior contract, socket-level
 tests, and black-box product checks. When a cross-platform server feature is
@@ -227,16 +234,46 @@ They require explicit product decisions rather than accidental parity work.
   the correct `206`, `Content-Range`, and marker bytes. The file was removed
   after the probe. File bodies remain fixed-buffer streams; multipart ranges
   remain intentionally unsupported.
+- On physical ChromeOS 150, the public `v0.2.0` app bound `0.0.0.0:8080` and an
+  external Mac fetched the exact file through the Chromebook's physical LAN
+  IPv4 and port. The app incorrectly displayed ARC's private
+  `100.115.92.2:8080`, which was not reachable from that client. A repeatable
+  debug probe confirmed that ChromeOS auto-DNATs inbound TCP/UDP to Android's
+  active ARC Wi-Fi address, while Android sees neither the Chromebook host's
+  physical IPv4 nor a route-derived substitute for it. The Android global IPv6
+  was directly reachable from the external client.
+- The follow-up source correction replaces interface enumeration with the
+  active Android `Network` and `LinkProperties`, returns structured IPv4/IPv6
+  records, refreshes through a default-network callback, and withholds
+  cellular/VPN addresses from LAN presentation. On ChromeOS it suppresses all
+  Android-owned IPv4 addresses, retains a same-port Chromebook IPv4
+  instruction, adds the directly reachable bracketed IPv6 URL, and retains
+  loopback. On the same physical Chromebook, the UI exposed no ARC address and
+  an external Mac fetched the exact fixture over both the Chromebook IPv4 and
+  Android IPv6. LAN-off allowed loopback and refused both external families.
+  All five Compose/metadata/lifecycle instrumentation tests also passed on the
+  Chromebook. Tactical 011 owns delivery of this accepted source fix.
 
 ## Known gaps and next direction
 
-- Before completing the Play production release, repeat the storage/settings
-  and notification paths on the Play-enabled AVD, upload the signed `v0.2.0`
-  AAB, and complete the current all-files and foreground-service declarations.
-  Physical-device runtime and LAN checks already pass on the Pixel 9.
+- Play upload, review, declarations, and rollout are maintainer-owned. Before
+  the next Android tag is requested, retain the accepted Pixel storage/runtime
+  evidence and include the ChromeOS address correction in the exact candidate;
+  store-delivered validation remains separate from source/debug proof.
 - Before targeting Android 17/API 37, add and test the
   `ACCESS_LOCAL_NETWORK` runtime-permission flow. Target-36 apps must not
   request that permission and retain implicit LAN access through `INTERNET`.
+- The first-interface ChromeOS defect is fixed and physically accepted in
+  source. Do not promote the destination until an exact tagged/release-signed
+  candidate containing the fix is validated and the maintainer advances it
+  through Play. mDNS is deferred; the accepted next-release behavior is the
+  honest manual Chromebook IPv4 instruction plus each directly reachable IPv6
+  URL. UPnP WAN mapping is not part of this fix.
+- A user-facing IPv6 listener toggle is a possible future feature. It is not
+  part of the immediate ChromeOS address correction; until its listener and
+  lifecycle semantics are designed, URL discovery must report actual reachable
+  IPv4 and IPv6 addresses without treating either family as a substitute for
+  the other.
 - Treat preservation of existing preferences and SAF grants as best effort.
   There is no migration-release or recovery requirement; invalid access asks
   the user to select a folder again.

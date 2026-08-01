@@ -84,6 +84,7 @@ import androidx.core.text.BidiFormatter
 import androidx.core.text.TextDirectionHeuristicsCompat
 import app.ok200.android.BuildConfig
 import app.ok200.android.R
+import app.ok200.android.network.NetworkAddressFamily
 import app.ok200.android.power.DozeMonitor.PowerState
 import app.ok200.android.server.ServerPhase
 import app.ok200.android.settings.ServerLifetimeMode
@@ -109,7 +110,7 @@ fun ServerScreen(
     val rootUri by viewModel.rootUri.collectAsState()
     val rootDisplayName by viewModel.rootDisplayName.collectAsState()
     val allFilesAccess by viewModel.allFilesAccess.collectAsState()
-    val localIp by viewModel.localIpAddress.collectAsState()
+    val networkAddresses by viewModel.networkAddresses.collectAsState()
     val lanEnabled by viewModel.lanEnabled.collectAsState()
     val directoryListing by viewModel.directoryListing.collectAsState()
     val corsEnabled by viewModel.corsEnabled.collectAsState()
@@ -229,14 +230,25 @@ fun ServerScreen(
                 )
 
                 if (state.running && state.port > 0) {
-                    val primaryHost = if (lanEnabled) localIp else "127.0.0.1"
-                    val primaryUrl = "http://$primaryHost:${state.port}"
+                    val loopbackUrl = "http://127.0.0.1:${state.port}"
+                    val runningUrls = if (lanEnabled) {
+                        networkAddresses
+                            .filter { it.usableFromAnotherDevice }
+                            .map { address ->
+                                RunningUrl(address.httpUrl(state.port), address.family)
+                            }
+                    } else {
+                        listOf(RunningUrl(loopbackUrl, family = null))
+                    }
                     RunningUrls(
-                        primaryUrl = primaryUrl,
-                        isLanAddress = lanEnabled && primaryHost != "127.0.0.1",
-                        showLoopback = lanEnabled && primaryHost != "127.0.0.1",
-                        onOpen = { uriHandler.openUri(primaryUrl) },
-                        onCopy = { copyUrl(context, primaryUrl) }
+                        urls = runningUrls,
+                        lanEnabled = lanEnabled,
+                        chromeOsIpv4Port = state.port.takeIf { lanEnabled && viewModel.isChromeOs },
+                        showIpv4Unavailable = lanEnabled && !viewModel.isChromeOs &&
+                            runningUrls.none { it.family == NetworkAddressFamily.IPV4 },
+                        loopbackUrl = loopbackUrl.takeIf { lanEnabled },
+                        onOpen = uriHandler::openUri,
+                        onCopy = { url -> copyUrl(context, url) }
                     )
                 }
 
@@ -576,13 +588,20 @@ private fun ServerControl(
     }
 }
 
+private data class RunningUrl(
+    val value: String,
+    val family: NetworkAddressFamily?
+)
+
 @Composable
 private fun RunningUrls(
-    primaryUrl: String,
-    isLanAddress: Boolean,
-    showLoopback: Boolean,
-    onOpen: () -> Unit,
-    onCopy: () -> Unit
+    urls: List<RunningUrl>,
+    lanEnabled: Boolean,
+    chromeOsIpv4Port: Int?,
+    showIpv4Unavailable: Boolean,
+    loopbackUrl: String?,
+    onOpen: (String) -> Unit,
+    onCopy: (String) -> Unit
 ) {
     ElevatedCard(modifier = Modifier.fillMaxWidth().testTag("running-url")) {
         Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -591,43 +610,98 @@ private fun RunningUrls(
                 Spacer(Modifier.width(10.dp))
                 Text(
                     stringResource(
-                        if (isLanAddress) R.string.url_lan_http_only else R.string.url_device_http_only
+                        if (lanEnabled) R.string.url_network_http_only else R.string.url_device_http_only
                     ),
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.weight(1f)
                 )
-                IconButton(onClick = onOpen) {
-                    Icon(
-                        Icons.Default.OpenInBrowser,
-                        stringResource(R.string.accessibility_open_url)
-                    )
+            }
+
+            urls.forEachIndexed { index, url ->
+                if (index > 0) HorizontalDivider()
+                val addressLabel = when (url.family) {
+                    NetworkAddressFamily.IPV4 -> stringResource(R.string.url_ipv4_label)
+                    NetworkAddressFamily.IPV6 -> stringResource(R.string.url_ipv6_label)
+                    null -> stringResource(R.string.url_device_label)
                 }
-                IconButton(onClick = onCopy) {
-                    Icon(
-                        Icons.Default.ContentCopy,
-                        stringResource(R.string.accessibility_copy_url)
+                val addressTag = when (url.family) {
+                    NetworkAddressFamily.IPV4 -> "server-url-ipv4"
+                    NetworkAddressFamily.IPV6 -> "server-url-ipv6"
+                    null -> "server-url-device"
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        addressLabel,
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(onClick = { onOpen(url.value) }) {
+                        Icon(
+                            Icons.Default.OpenInBrowser,
+                            stringResource(R.string.accessibility_open_url)
+                        )
+                    }
+                    IconButton(onClick = { onCopy(url.value) }) {
+                        Icon(
+                            Icons.Default.ContentCopy,
+                            stringResource(R.string.accessibility_copy_url)
+                        )
+                    }
+                }
+                Text(
+                    url.value,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onOpen(url.value) }
+                        .testTag(addressTag)
+                )
+            }
+
+            if (urls.isNotEmpty()) {
+                Text(
+                    stringResource(R.string.url_http_only_help),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            chromeOsIpv4Port?.let { port ->
+                HorizontalDivider()
+                Column(
+                    modifier = Modifier.testTag("chromeos-ipv4-help"),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        stringResource(R.string.url_chromeos_ipv4_title),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    Text(
+                        stringResource(R.string.url_chromeos_ipv4_help, port),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        stringResource(R.string.url_chromeos_ipv4_example, port),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace)
                     )
                 }
             }
-            Text(
-                primaryUrl,
-                style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.fillMaxWidth().clickable(onClick = onOpen).testTag("server-url")
-            )
-            Text(
-                stringResource(R.string.url_http_only_help),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            if (showLoopback) {
-                val loopbackUrl = primaryUrl.replaceAfter(
-                    "//",
-                    "127.0.0.1:" + primaryUrl.substringAfterLast(':')
-                )
+
+            if (showIpv4Unavailable) {
                 Text(
-                    stringResource(R.string.url_on_this_device, loopbackUrl),
+                    stringResource(R.string.url_ipv4_unavailable),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.testTag("ipv4-unavailable")
+                )
+            }
+
+            loopbackUrl?.let { url ->
+                Text(
+                    stringResource(R.string.url_on_this_device, url),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

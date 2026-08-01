@@ -76,7 +76,7 @@ subjective product approval.
 | Windows extension launch | Exact signed updated and clean-installed NSIS plus production extension identity pass popup → host → one desktop instance | Tray-only subjective review |
 | Linux extension launch | Exact updated AppImage, verified installer, and installed DEB all pass production extension identity → host → one process | Native RPM-family and physical ARM64 claims only |
 | macOS extension launch | Exact signed updated app passes native framing, production extension launch, one process, Dock recreation, serving, and stop | Attended `/Applications` PKG install and subjective tray review |
-| Android / ChromeOS | Android `v0.1.2` and extension `v0.1.3` are public | The `ok200://launch` intent and Play fallback landed after both tags and have not been store-delivered or tested on ChromeOS |
+| Android / ChromeOS | Native-Kotlin `v0.2.0` APK/AAB is on GitHub and submitted to Play; production may still serve pre-cutover `v0.1.2`; extension `v0.1.3` is public | The fixed ChromeOS launcher source is not store-delivered, and the submitted Android app displays an ARC-private URL on ChromeOS; Tactical 011 owns both corrections |
 | Live update service | Deployed config/hash, health, reason/CFU accounting, Control Room aggregates, and final `0.1.5` route/asset matrix agree | None; keep normal operational monitoring |
 | Documentation | Repository topics, tactical evidence, quick context, and private operational pointers now describe `v0.1.5` and the remaining manual lane | Continue updating store/legacy state as it changes |
 
@@ -539,6 +539,16 @@ Gate: **promotion** for the recommended app; otherwise **claim**.
 ### B3 — physical ChromeOS and store-delivered Android proof
 
 Gate: **promotion to ChromeOS users**.
+
+The 2026-08-01 unpacked-extension/public-APK probe passed installed-app launch
+and external serving through the Chromebook's LAN IPv4, but exposed two
+blockers: the app displayed an unreachable ARC-private IPv4, and the missing-app
+primary intent left Play on its generic home surface. Detailed evidence and the
+cleanup sequence live in
+[Tactical 011](011-extension-launcher-and-chromeos-network-readiness.md). These
+source/sideload results do not close the store-delivery gate below. The Android
+address defect is now fixed and physically accepted in source; the missing-app
+extension route and exact store-delivered Android candidate remain open.
 
 - [ ] From an existing store-installed extension, verify the updated extension
       arrives through Chrome Web Store delivery.

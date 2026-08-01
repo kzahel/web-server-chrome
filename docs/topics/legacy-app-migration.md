@@ -18,6 +18,8 @@ Implementation sequencing lives in
 The final destination confidence gates and agent-versus-maintainer ownership
 split live in
 [Tactical 009](../tactical/009-release-confidence-closeout.md).
+Extension-launcher cleanup and the ChromeOS Android address/discovery gate live
+in [Tactical 011](../tactical/011-extension-launcher-and-chromeos-network-readiness.md).
 Current-product and legacy-name usage is governed by
 [`product-branding.md`](product-branding.md).
 Google's current Chrome App support policy is documented in
@@ -139,8 +141,12 @@ communication channel. The updater can deliver the Rust core later.
 ## Pre-send acceptance
 
 - `ok200.app/migrate` gives correct platform-specific instructions.
-- ChromeOS extension behavior launches `ok200://launch` with a Google Play
-  fallback.
+- ChromeOS extension behavior launches `ok200://launch`; with the app absent,
+  its primary fallback visibly reaches the exact Google Play listing rather
+  than only opening the Play home surface.
+- The Android app does not present an ARC-private address as a LAN URL; its
+  advertised or documented ChromeOS address fetches a known file from a second
+  device.
 - Desktop extension native messaging launches each supported installed app.
 - Every advertised desktop download link resolves to a release that passes the
   release gate.

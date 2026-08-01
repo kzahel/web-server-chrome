@@ -94,12 +94,12 @@ Vue 3, TypeScript, Vite, Pinia (state), Vue Router. Key features:
 
 | Filebrowser | 200 OK |
 |---|---|
-| Go monolith | Desktop target is Rust core + Tauri control UI; Android/CLI retain their current runtimes |
+| Go monolith | Desktop uses Rust + Tauri controls, Android uses Kotlin, and the CLI retains its TypeScript runtime |
 | Server-side rendering decisions | Desktop Rust core owns HTTP behavior; platform UI owns control |
 | Single embedded DB (BoltDB) | No DB needed (Phase 0) |
 | Multi-user with RBAC | Single-user initially |
 | Gorilla Mux routing | Rust HTTP library is not yet selected |
-| Afero for FS abstraction | Native desktop filesystem boundary; existing `IFileSystem` remains in Android/CLI engine |
+| Afero for FS abstraction | Native filesystem boundaries on desktop/Android; `IFileSystem` remains in the CLI engine |
 
 ## Lessons for Us
 

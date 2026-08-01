@@ -649,6 +649,24 @@ This tactical is complete only when all of the following are true:
   boot checks and port forwarding. An attached, already-booted physical phone
   can no longer be mistaken for the AVD.
 
+### 2026-08-01: Primary control and physical LAN follow-up
+
+- Replaced the Android header's synthetic `200` badge with the actual 200 OK
+  artwork. Moved the Web server status/control directly below that header and
+  changed Start/Stop from a button below all options to the same switch model
+  used by desktop. Live URLs now follow the primary switch before configuration.
+- Labeled the reachable address **LAN address · HTTP only**, made the exact
+  `http://` URL directly openable/copyable, and explicitly states that HTTPS is
+  unsupported. The server remains intentionally plain HTTP; no TLS feature was
+  added by implication.
+- Physical Pixel 9 evidence: the switch stopped and restarted the listener,
+  state reported `0.0.0.0:8080`, Android reported `*:8080`, and a Mac on the
+  same `192.168.1.0/24` Wi-Fi received `200 OK` plus the selected SAF directory
+  body from `http://192.168.1.101:8080/`. The reported failure used `https://`.
+- Added a JVM contract test for wildcard LAN binding and an instrumentation
+  regression for actual logo presence, switch prominence above folder/options,
+  and retained Advanced controls.
+
 ## Intended change boundaries
 
 If implementation is approved, keep the history reviewable at approximately

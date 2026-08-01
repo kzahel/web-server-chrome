@@ -63,8 +63,10 @@ record why the behavior is intentionally platform-specific.
   boot; low-battery shutdown and threshold; notification/storage actions; and
   battery, charging, screen, Doze, power-save, and optimization diagnostics.
 - The Compose screen exposes SAF selection, optional all-files selection,
-  localhost/LAN binding, port `0`, directory listing, CORS, SPA fallback,
-  authoritative status/URLs, and the collapsed Android-only Advanced section.
+  a prominent desktop-consistent start/stop switch, localhost/LAN binding,
+  port `0`, directory listing, CORS, SPA fallback, authoritative plain-HTTP
+  URLs, and the collapsed Android-only Advanced section. The header uses the
+  actual 200 OK artwork rather than a text approximation.
 
 ## HTTP and storage contract
 
@@ -80,6 +82,10 @@ tested contract includes:
 - bounded request lines/headers, client concurrency, keep-alive, streaming, and
   port `0`; and
 - SAF grant validation and real all-files permission checks before serving.
+
+The listener serves plain HTTP. Every Android open/copy surface preserves the
+full `http://` URL and labels LAN addresses as **HTTP only**; HTTPS/TLS is not
+implemented. Clients must use the displayed scheme exactly.
 
 Android-specific storage and lifecycle policy is intentional. SAF remains
 available without broad storage access. `MANAGE_EXTERNAL_STORAGE` remains an
@@ -116,6 +122,10 @@ They require explicit product decisions rather than accidental parity work.
 - Post-removal Gradle builds only `:app`; compile, JVM tests, lint, and Compose
   instrumentation pass. The clean debug APK contains no bundled JavaScript,
   QuickJS/JNI, or C++ runtime.
+- On the attached Pixel 9, the top switch completed a stop/start cycle, the
+  listener bound `0.0.0.0:8080`, and a separate Mac on the same Wi-Fi fetched
+  `http://192.168.1.101:8080/` with `200 OK`. The corresponding HTTPS address
+  is intentionally unsupported.
 
 ## Known gaps and next direction
 

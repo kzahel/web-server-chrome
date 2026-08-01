@@ -109,6 +109,15 @@ class KotlinHttpServerTest {
     }
 
     @Test
+    fun lanModeBindsAllInterfacesAndServesHttp() {
+        val root = rootWithFiles("index.html" to "lan")
+        val server = start(root, HttpServerConfig(host = "0.0.0.0", port = 0))
+
+        assertEquals("0.0.0.0", requireNotNull(server.currentInfo()).host)
+        assertEquals("lan", request(server, "GET", "/").text())
+    }
+
+    @Test
     fun rejectsMalformedTraversalAndOversizedRequests() {
         val root = rootWithFiles("safe.txt" to "safe")
         val server = start(root, HttpServerConfig(port = 0, maxHeaderBytes = 1024))

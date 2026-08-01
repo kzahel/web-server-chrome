@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Environment
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -57,14 +59,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.ok200.android.BuildConfig
+import app.ok200.android.R
 import app.ok200.android.server.ServerPhase
 import app.ok200.android.settings.WakeLockMode
 import app.ok200.android.viewmodel.ServerViewModel
@@ -166,6 +174,26 @@ fun ServerScreen(
             ) {
                 Header()
 
+                ServerControl(
+                    phase = state.phase,
+                    error = state.error,
+                    canStart = rootUri != null && portValid,
+                    onStart = viewModel::startServer,
+                    onStop = viewModel::stopServer
+                )
+
+                if (state.running && state.port > 0) {
+                    val primaryHost = if (lanEnabled) localIp else "127.0.0.1"
+                    val primaryUrl = "http://$primaryHost:${state.port}"
+                    RunningUrls(
+                        primaryUrl = primaryUrl,
+                        isLanAddress = lanEnabled && primaryHost != "127.0.0.1",
+                        showLoopback = lanEnabled && primaryHost != "127.0.0.1",
+                        onOpen = { uriHandler.openUri(primaryUrl) },
+                        onCopy = { copyUrl(context, primaryUrl) }
+                    )
+                }
+
                 SectionLabel("Serving folder")
                 ElevatedCard(modifier = Modifier.fillMaxWidth().testTag("root-card")) {
                     Row(
@@ -238,25 +266,6 @@ fun ServerScreen(
                     }
                 }
 
-                ServerControl(
-                    phase = state.phase,
-                    error = state.error,
-                    canStart = rootUri != null && portValid,
-                    onStart = viewModel::startServer,
-                    onStop = viewModel::stopServer
-                )
-
-                if (state.running && state.port > 0) {
-                    val primaryHost = if (lanEnabled) localIp else "127.0.0.1"
-                    val primaryUrl = "http://$primaryHost:${state.port}"
-                    RunningUrls(
-                        primaryUrl = primaryUrl,
-                        showLoopback = lanEnabled && primaryHost != "127.0.0.1",
-                        onOpen = { uriHandler.openUri(primaryUrl) },
-                        onCopy = { copyUrl(context, primaryUrl) }
-                    )
-                }
-
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Row(
                         modifier = Modifier
@@ -314,14 +323,11 @@ fun ServerScreen(
 @Composable
 private fun Header() {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Surface(shape = MaterialTheme.shapes.extraLarge, color = MaterialTheme.colorScheme.primary) {
-            Text(
-                "200",
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-                color = MaterialTheme.colorScheme.onPrimary,
-                fontWeight = FontWeight.Black
-            )
-        }
+        Image(
+            painter = painterResource(R.mipmap.ic_launcher_foreground),
+            contentDescription = null,
+            modifier = Modifier.size(56.dp).clip(CircleShape).testTag("app-logo")
+        )
         Spacer(Modifier.width(12.dp))
         Column {
             Text("200 OK", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
@@ -345,7 +351,21 @@ private fun ServerControl(
 ) {
     val running = phase == ServerPhase.RUNNING
     val busy = phase == ServerPhase.STARTING || phase == ServerPhase.STOPPING
-    Card(
+    val switchOn = running || phase == ServerPhase.STARTING
+    val status = when (phase) {
+        ServerPhase.STOPPED -> "Stopped"
+        ServerPhase.STARTING -> "Starting…"
+        ServerPhase.RUNNING -> "Running"
+        ServerPhase.STOPPING -> "Stopping…"
+        ServerPhase.FAILED -> "Error"
+    }
+    val detail = error ?: when {
+        running -> "Ready for HTTP requests"
+        busy -> "Please wait"
+        !canStart -> "Choose a folder and valid port to enable"
+        else -> "Ready to start"
+    }
+    ElevatedCard(
         modifier = Modifier.fillMaxWidth().testTag("server-status"),
         colors = CardDefaults.cardColors(
             containerColor = if (running) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
@@ -358,27 +378,24 @@ private fun ServerControl(
             Icon(Icons.Default.PowerSettingsNew, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
+                Text("Web server", style = MaterialTheme.typography.titleMedium)
+                Text(status, style = MaterialTheme.typography.labelLarge)
                 Text(
-                    when (phase) {
-                        ServerPhase.STOPPED -> "Server stopped"
-                        ServerPhase.STARTING -> "Starting server…"
-                        ServerPhase.RUNNING -> "Server running"
-                        ServerPhase.STOPPING -> "Stopping server…"
-                        ServerPhase.FAILED -> "Server could not start"
-                    },
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    error ?: if (running) "Ready for requests" else "Choose a folder and start serving",
+                    detail,
                     style = MaterialTheme.typography.bodySmall,
                     color = if (error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            Button(
-                onClick = if (running) onStop else onStart,
+            Switch(
+                checked = switchOn,
+                onCheckedChange = { enabled -> if (enabled) onStart() else onStop() },
                 enabled = !busy && (running || canStart),
-                modifier = Modifier.testTag("server-toggle")
-            ) { Text(if (running) "Stop" else "Start") }
+                modifier = Modifier
+                    .testTag("server-toggle")
+                    .semantics {
+                        contentDescription = if (running) "Stop web server" else "Start web server"
+                    }
+            )
         }
     }
 }
@@ -386,6 +403,7 @@ private fun ServerControl(
 @Composable
 private fun RunningUrls(
     primaryUrl: String,
+    isLanAddress: Boolean,
     showLoopback: Boolean,
     onOpen: () -> Unit,
     onCopy: () -> Unit
@@ -395,13 +413,26 @@ private fun RunningUrls(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Language, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                 Spacer(Modifier.width(10.dp))
-                Column(Modifier.weight(1f)) {
-                    Text("Server URL", style = MaterialTheme.typography.labelMedium)
-                    Text(primaryUrl, style = MaterialTheme.typography.bodyLarge)
-                }
+                Text(
+                    if (isLanAddress) "LAN address · HTTP only" else "This device · HTTP only",
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.weight(1f)
+                )
                 IconButton(onClick = onOpen) { Icon(Icons.Default.OpenInBrowser, "Open URL") }
                 IconButton(onClick = onCopy) { Icon(Icons.Default.ContentCopy, "Copy URL") }
             }
+            Text(
+                primaryUrl,
+                style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth().clickable(onClick = onOpen).testTag("server-url")
+            )
+            Text(
+                "Use this exact http:// address. HTTPS is not supported.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             if (showLoopback) {
                 Text(
                     "On this device: ${primaryUrl.replaceAfter("//", "127.0.0.1:" + primaryUrl.substringAfterLast(':'))}",
@@ -573,5 +604,5 @@ private fun isBroadStorageRoot(file: File): Boolean {
 private fun copyUrl(context: Context, url: String) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     clipboard.setPrimaryClip(ClipData.newPlainText("Server URL", url))
-    Toast.makeText(context, "URL copied", Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, "HTTP URL copied", Toast.LENGTH_SHORT).show()
 }

@@ -626,6 +626,10 @@ This tactical is complete only when all of the following are true:
   AVD, physical-device, and current store-policy checks remain explicit
   prerequisites for a future Android release rather than gaps in this source
   cutover.
+- Android CI now runs `lintDebug` alongside the debug build and JVM tests. Its
+  emulator gate remains on the Android 11/API 30 baseline, while obsolete
+  Node/pnpm setup and `packages/engine` path coupling have been removed from all
+  Android jobs.
 
 ## Intended change boundaries
 

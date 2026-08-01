@@ -22,6 +22,7 @@ class MainScreenInstrumentedTest {
         composeRule.onNodeWithText("200 OK").assertIsDisplayed()
         composeRule.onNodeWithTag("app-logo").assertIsDisplayed()
         composeRule.onNodeWithTag("server-toggle").assertIsDisplayed()
+        composeRule.onNodeWithText("Server settings").assertIsDisplayed()
         composeRule.onNodeWithText("Serving folder").assertIsDisplayed()
         composeRule.onNodeWithTag("server-status").assertIsDisplayed()
 
@@ -30,7 +31,10 @@ class MainScreenInstrumentedTest {
         assertTrue("Server control should appear above folder and serving options", serverTop < rootTop)
 
         composeRule.onNodeWithText("Advanced").performScrollTo().performClick()
-        composeRule.onNodeWithText("Run in background").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("Serving lifetime").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("While app is open").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("Keep serving in background").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("Availability & battery").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("Keep awake").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("Start on boot").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithText("Stop on low battery").performScrollTo().assertIsDisplayed()

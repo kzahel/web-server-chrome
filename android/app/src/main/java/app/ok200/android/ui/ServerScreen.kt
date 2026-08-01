@@ -10,6 +10,8 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,7 +48,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -56,6 +62,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,6 +72,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -77,6 +85,7 @@ import app.ok200.android.server.ServerPhase
 import app.ok200.android.settings.WakeLockMode
 import app.ok200.android.viewmodel.ServerViewModel
 import java.io.File
+import kotlinx.coroutines.launch
 
 private const val FEEDBACK_URL = "https://ok200.app/feedback"
 private const val SOURCE_URL = "https://github.com/kzahel/web-server-chrome"
@@ -112,6 +121,8 @@ fun ServerScreen(
     val dozing by viewModel.isDozing.collectAsState()
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     var portText by remember(configuredPort) { mutableStateOf(configuredPort.toString()) }
     var showFilePicker by remember { mutableStateOf(false) }
@@ -121,6 +132,18 @@ fun ServerScreen(
     val portValid = portValue != null && portValue in 0..65_535
     val busy = state.phase == ServerPhase.STARTING || state.phase == ServerPhase.STOPPING
     val settingsEnabled = !state.running && !busy
+    val onLockedSettingsTap: () -> Unit = {
+        coroutineScope.launch {
+            val result = snackbarHostState.showSnackbar(
+                message = "Stop the web server before changing settings.",
+                actionLabel = "Stop server",
+                withDismissAction = true
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                viewModel.stopServer()
+            }
+        }
+    }
 
     if (showFilePicker) {
         FolderPickerDialog(
@@ -194,75 +217,83 @@ fun ServerScreen(
                     )
                 }
 
-                SectionLabel("Serving folder")
-                ElevatedCard(modifier = Modifier.fillMaxWidth().testTag("root-card")) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.Folder, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                        Spacer(Modifier.width(12.dp))
-                        Column(Modifier.weight(1f)) {
-                            Text(
-                                if (rootUri == null) "No folder selected" else rootDisplayName,
-                                style = MaterialTheme.typography.titleMedium,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Text(
-                                if (rootUri?.scheme == "file") "Filesystem access" else "Android folder access (SAF)",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Button(onClick = onPickFolder, enabled = settingsEnabled) {
-                                Text(if (rootUri == null) "Select" else "Change")
-                            }
-                            if (allFilesAccess) {
-                                TextButton(onClick = { showFilePicker = true }, enabled = settingsEnabled) {
-                                    Text("Filesystem")
+                ServerSettingsHeader(locked = !settingsEnabled)
+                LockedSettingsContainer(
+                    locked = !settingsEnabled,
+                    onLockedClick = onLockedSettingsTap
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        SectionLabel("Serving folder")
+                        ElevatedCard(modifier = Modifier.fillMaxWidth().testTag("root-card")) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(Icons.Default.Folder, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                                Spacer(Modifier.width(12.dp))
+                                Column(Modifier.weight(1f)) {
+                                    Text(
+                                        if (rootUri == null) "No folder selected" else rootDisplayName,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        if (rootUri?.scheme == "file") "Filesystem access" else "Android folder access (SAF)",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                    Button(onClick = onPickFolder, enabled = settingsEnabled) {
+                                        Text(if (rootUri == null) "Select" else "Change")
+                                    }
+                                    if (allFilesAccess) {
+                                        TextButton(onClick = { showFilePicker = true }, enabled = settingsEnabled) {
+                                            Text("Filesystem")
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
-                }
 
-                SectionLabel("Network")
-                OutlinedTextField(
-                    value = portText,
-                    onValueChange = { value ->
-                        if (value.length <= 5 && value.all(Char::isDigit)) {
-                            portText = value
-                            value.toIntOrNull()?.takeIf { it in 0..65_535 }?.let(viewModel::setPort)
+                        SectionLabel("Network")
+                        OutlinedTextField(
+                            value = portText,
+                            onValueChange = { value ->
+                                if (value.length <= 5 && value.all(Char::isDigit)) {
+                                    portText = value
+                                    value.toIntOrNull()?.takeIf { it in 0..65_535 }?.let(viewModel::setPort)
+                                }
+                            },
+                            label = { Text("Port") },
+                            supportingText = {
+                                Text(if (configuredPort == 0) "0 chooses a free port when started" else "1–65535, or 0 for automatic")
+                            },
+                            isError = !portValid,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            singleLine = true,
+                            enabled = settingsEnabled,
+                            modifier = Modifier.fillMaxWidth().testTag("port-input")
+                        )
+                        SettingToggle(
+                            title = "Available on local network",
+                            description = if (lanEnabled) "Other devices on this network can connect" else "Only this Android device can connect",
+                            checked = lanEnabled,
+                            onCheckedChange = viewModel::setLanEnabled,
+                            enabled = settingsEnabled
+                        )
+
+                        SectionLabel("Serving behavior")
+                        Card(modifier = Modifier.fillMaxWidth()) {
+                            Column {
+                                CompactToggle("Directory listing", "Show folder contents when no index.html exists", directoryListing, viewModel::setDirectoryListing, settingsEnabled)
+                                HorizontalDivider()
+                                CompactToggle("CORS", "Allow browser requests from other origins", corsEnabled, viewModel::setCorsEnabled, settingsEnabled)
+                                HorizontalDivider()
+                                CompactToggle("Single-page app fallback", "Serve the root index.html for missing routes", spaEnabled, viewModel::setSpaEnabled, settingsEnabled)
+                            }
                         }
-                    },
-                    label = { Text("Port") },
-                    supportingText = {
-                        Text(if (configuredPort == 0) "0 chooses a free port when started" else "1–65535, or 0 for automatic")
-                    },
-                    isError = !portValid,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    enabled = settingsEnabled,
-                    modifier = Modifier.fillMaxWidth().testTag("port-input")
-                )
-                SettingToggle(
-                    title = "Available on local network",
-                    description = if (lanEnabled) "Other devices on this network can connect" else "Only this Android device can connect",
-                    checked = lanEnabled,
-                    onCheckedChange = viewModel::setLanEnabled,
-                    enabled = settingsEnabled
-                )
-
-                SectionLabel("Serving behavior")
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    Column {
-                        CompactToggle("Directory listing", "Show folder contents when no index.html exists", directoryListing, viewModel::setDirectoryListing, settingsEnabled)
-                        HorizontalDivider()
-                        CompactToggle("CORS", "Allow browser requests from other origins", corsEnabled, viewModel::setCorsEnabled, settingsEnabled)
-                        HorizontalDivider()
-                        CompactToggle("Single-page app fallback", "Serve the root index.html for missing routes", spaEnabled, viewModel::setSpaEnabled, settingsEnabled)
                     }
                 }
 
@@ -277,7 +308,7 @@ fun ServerScreen(
                         Column(Modifier.weight(1f)) {
                             Text("Advanced", style = MaterialTheme.typography.titleMedium)
                             Text(
-                                "Storage access, background, power, and boot",
+                                "Storage access, serving lifetime, power, and boot",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -316,6 +347,10 @@ fun ServerScreen(
                 ProjectLinks(onOpen = uriHandler::openUri)
                 Spacer(Modifier.height(12.dp))
             }
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp)
+            )
         }
     }
 }
@@ -339,6 +374,52 @@ private fun Header() {
 @Composable
 private fun SectionLabel(value: String) {
     Text(value, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+}
+
+@Composable
+private fun ServerSettingsHeader(locked: Boolean) {
+    Column(
+        modifier = Modifier.fillMaxWidth().testTag("server-settings-header"),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        Text("Server settings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Text(
+            if (locked) {
+                "Locked while the server is running. Stop the server to change folder, network, or serving behavior."
+            } else {
+                "Folder, network, and serving behavior"
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = if (locked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+internal fun LockedSettingsContainer(
+    locked: Boolean,
+    onLockedClick: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Box(Modifier.fillMaxWidth()) {
+        content()
+        if (locked) {
+            val interactionSource = remember { MutableInteractionSource() }
+            Box(
+                Modifier
+                    .matchParentSize()
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        onClick = onLockedClick
+                    )
+                    .testTag("locked-settings-overlay")
+                    .semantics {
+                        contentDescription = "Server settings locked while the server is running"
+                    }
+            )
+        }
+    }
 }
 
 @Composable
@@ -475,16 +556,54 @@ private fun AdvancedSettings(
             action = "Manage",
             onClick = onManageAllFiles
         )
-        CompactToggle("Run in background", "Use a foreground service after the app is minimized", backgroundEnabled, onBackgroundChanged)
-        if (backgroundEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            PermissionRow(
-                title = "Status notification",
-                description = if (notificationGranted) "Notification permission granted" else "Permission not granted; Android still shows foreground-service status",
-                action = if (notificationGranted) "Settings" else "Allow",
-                onClick = onNotificationAction
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text("Serving lifetime", style = MaterialTheme.typography.titleSmall)
+            Text(
+                "Choose when the server should remain active",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            LifetimeOption(
+                title = "While app is open",
+                description = "Stops when 200 OK leaves the foreground. No background service.",
+                selected = !backgroundEnabled,
+                onClick = { onBackgroundChanged(false) }
+            )
+            HorizontalDivider()
+            LifetimeOption(
+                title = "Keep serving in background",
+                description = "Continues after you leave 200 OK. Uses an Android foreground service.",
+                selected = backgroundEnabled,
+                onClick = { onBackgroundChanged(true) }
             )
         }
+        if (backgroundEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (notificationGranted) {
+                PermissionRow(
+                    title = "Background service notice",
+                    description = "Visible in the notification drawer and Android Active apps",
+                    action = "Settings",
+                    onClick = onNotificationAction
+                )
+            } else {
+                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+                    PermissionRow(
+                        title = "Background service notice hidden",
+                        description = "Android is hiding the drawer notification because notifications are off. The service remains visible under Active apps.",
+                        action = "Allow",
+                        onClick = onNotificationAction,
+                        modifier = Modifier.padding(12.dp)
+                    )
+                }
+            }
+        }
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text("Availability & battery", style = MaterialTheme.typography.titleSmall)
+            Text(
+                "Wake locks affect reachability with the screen off, not how long the service runs",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             Text("Keep awake", style = MaterialTheme.typography.titleSmall)
             Text("Stronger locks improve availability but use more battery", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -497,7 +616,12 @@ private fun AdvancedSettings(
                 }
             }
         }
-        CompactToggle("Start on boot", "Also enables background mode", startOnBoot, onStartOnBootChanged)
+        CompactToggle(
+            "Start on boot",
+            "Requires Keep serving in background and enables it automatically",
+            startOnBoot,
+            onStartOnBootChanged
+        )
         CompactToggle(
             "Stop on low battery",
             if (shutdownOnLowBattery) "Stop at or below $shutdownBatteryThreshold% when unplugged" else "Protect battery during unattended serving",
@@ -534,8 +658,37 @@ private fun AdvancedSettings(
 }
 
 @Composable
-private fun PermissionRow(title: String, description: String, action: String, onClick: () -> Unit) {
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+private fun LifetimeOption(
+    title: String,
+    description: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .selectable(selected = selected, onClick = onClick, role = Role.RadioButton)
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(selected = selected, onClick = null)
+        Spacer(Modifier.width(8.dp))
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.titleSmall)
+            Text(description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+@Composable
+private fun PermissionRow(
+    title: String,
+    description: String,
+    action: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.weight(1f)) {
             Text(title, style = MaterialTheme.typography.titleSmall)
             Text(description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

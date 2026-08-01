@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 
 private const val PREFS_NAME = "ok200_prefs"
+internal const val DEFAULT_CORS_ENABLED = false
 
 /**
  * Centralized settings backed by SharedPreferences.
@@ -42,7 +43,7 @@ class SettingsStore(context: Context) {
         set(value) = prefs.edit { putBoolean(KEY_DIRECTORY_LISTING, value) }
 
     var corsEnabled: Boolean
-        get() = prefs.getBoolean(KEY_CORS_ENABLED, true)
+        get() = prefs.getBoolean(KEY_CORS_ENABLED, DEFAULT_CORS_ENABLED)
         set(value) = prefs.edit { putBoolean(KEY_CORS_ENABLED, value) }
 
     var spaEnabled: Boolean
@@ -75,11 +76,11 @@ class SettingsStore(context: Context) {
 
     /**
      * How aggressively to keep the device awake while serving.
-     * Default WIFI_ONLY — keeps LAN reachability without burning CPU.
+     * Default NONE — screen-off availability is an explicit opt-in.
      */
     var wakeLockMode: WakeLockMode
         get() = WakeLockMode.fromString(
-            prefs.getString(KEY_WAKE_LOCK_MODE, WakeLockMode.WIFI_ONLY.key) ?: WakeLockMode.WIFI_ONLY.key
+            prefs.getString(KEY_WAKE_LOCK_MODE, WakeLockMode.DEFAULT.key) ?: WakeLockMode.DEFAULT.key
         )
         set(value) = prefs.edit { putString(KEY_WAKE_LOCK_MODE, value.key) }
 
@@ -167,7 +168,7 @@ object ServerLifetimePolicy {
  */
 enum class WakeLockMode(val key: String, val label: String) {
     /** No locks — battery priority. Server may become unreachable when screen off. */
-    NONE("none", "None"),
+    NONE("none", "Off"),
 
     /** WiFi lock only — keeps network alive, allows CPU to sleep between requests. */
     WIFI_ONLY("wifi_only", "WiFi only"),
@@ -176,7 +177,9 @@ enum class WakeLockMode(val key: String, val label: String) {
     FULL("full", "CPU + WiFi");
 
     companion object {
+        val DEFAULT = NONE
+
         fun fromString(key: String): WakeLockMode =
-            entries.firstOrNull { it.key == key } ?: WIFI_ONLY
+            entries.firstOrNull { it.key == key } ?: DEFAULT
     }
 }

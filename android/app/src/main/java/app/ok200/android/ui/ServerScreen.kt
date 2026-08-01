@@ -254,7 +254,7 @@ fun ServerScreen(
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
-                                        if (rootUri?.scheme == "file") "Filesystem access" else "Android folder access (SAF)",
+                                        if (rootUri?.scheme == "file") "Direct folder access" else "Android folder access",
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )

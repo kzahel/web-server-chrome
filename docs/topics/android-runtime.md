@@ -65,9 +65,10 @@ action belong directly to the Reliable background choice.
 The remainder of Advanced uses explicit peer sections rather than accidental
 indentation:
 
-- **Screen-off availability** owns None, Wi-Fi-only, and CPU+Wi-Fi wake policy.
+- **Screen-off availability** owns Off, Wi-Fi-only, and CPU+Wi-Fi wake policy.
   Wake locks are available only with Reliable background so a hidden
-  best-effort process cannot consume persistent CPU or Wi-Fi power.
+  best-effort process cannot consume persistent CPU or Wi-Fi power. It defaults
+  to Off; keeping the radio or CPU awake is always an explicit opt-in.
 - **Automation & safety** owns start on boot, low-battery shutdown, and its
   threshold. Start on boot requires Reliable background; low-battery protection
   remains useful for any running server.
@@ -114,7 +115,8 @@ same rules rather than relying on Compose alone.
   serving-behavior settings form a visible **Server settings** group. While
   running, its lock explanation is visible and tapping any disabled control
   offers a direct **Stop server** action. The header uses the actual 200 OK
-  artwork rather than a text approximation.
+  artwork rather than a text approximation. CORS defaults to Off, and
+  user-facing folder copy avoids Android implementation acronyms such as SAF.
 
 ## HTTP and storage contract
 
@@ -176,7 +178,9 @@ They require explicit product decisions rather than accidental parity work.
   is intentionally unsupported.
 - The Android 14 `jstorrent-dev` AVD passes five Compose/metadata/settings tests
   after the three-mode revision, including persistence of every lifetime mode
-  and direct locked-settings interception coverage.
+  and direct locked-settings interception coverage. After clearing app data,
+  the debug settings probe reports CORS disabled and screen-off availability
+  Off, confirming both fresh defaults at the persistence boundary.
 - On the attached Pixel 9, Continue in background served successfully over LAN
   after Home with no `WebServerService`; While app is open stopped on Home.
   With notifications denied, reliable lifetime, wake-lock, and boot-start debug
@@ -198,5 +202,9 @@ They require explicit product decisions rather than accidental parity work.
 - Treat preservation of existing preferences and SAF grants as best effort.
   There is no migration-release or recovery requirement; invalid access asks
   the user to select a folder again.
+- The Compose interface is currently English-only: almost all user-facing copy
+  is hard-coded Kotlin rather than Android string resources. Localization needs
+  a deliberate resource-extraction pass and translated `values-<locale>` sets;
+  there is no translation pipeline yet.
 - Keep Android and desktop feature work synchronized through their contract and
   black-box tests, not shared runtime source.

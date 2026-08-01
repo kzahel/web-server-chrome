@@ -714,6 +714,12 @@ This tactical is complete only when all of the following are true:
   Continue mode, Home-triggered stop in app-open mode, notification/wake/boot
   refusal while permission was denied, foreground-service plus Wi-Fi-lock
   acquisition after permission, and automatic stop after permission revocation.
+- Follow-up: changed fresh/default **Screen-off availability** from Wi-Fi-only
+  to Off and fresh/default CORS from On to Off. Existing persisted choices
+  remain unchanged. User-facing folder copy also no longer exposes the Android
+  SAF implementation acronym. Compile, JVM tests, lint, and all five targeted
+  AVD instrumentation tests pass; a clean-data debug RPC probe reports
+  `wakeLockMode=none` and `corsEnabled=false`.
 
 ## Intended change boundaries
 

@@ -13,11 +13,11 @@ class SafFileTree(
 ) : ReadOnlyFileTree {
     private val resolver = context.applicationContext.contentResolver
     private val root = requireNotNull(DocumentFile.fromTreeUri(context.applicationContext, rootUri)) {
-        "Invalid SAF tree URI"
+        "Selected folder is invalid"
     }
 
     init {
-        require(root.isDirectory) { "SAF root is not a readable directory" }
+        require(root.isDirectory) { "Selected folder is not readable" }
     }
 
     override fun metadata(path: List<String>): TreeEntry? = find(path)?.toTreeEntry()

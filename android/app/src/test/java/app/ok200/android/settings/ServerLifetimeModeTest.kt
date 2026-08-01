@@ -14,6 +14,17 @@ class ServerLifetimeModeTest {
     }
 
     @Test
+    fun defaultsScreenOffAvailabilityToNone() {
+        assertEquals(WakeLockMode.NONE, WakeLockMode.DEFAULT)
+        assertEquals(WakeLockMode.NONE, WakeLockMode.fromString("unknown"))
+    }
+
+    @Test
+    fun defaultsCorsToOff() {
+        assertEquals(false, DEFAULT_CORS_ENABLED)
+    }
+
+    @Test
     fun enforcesReliableNotificationWakeAndBootDependencies() {
         assertEquals(true, ServerLifetimePolicy.modeAvailable(ServerLifetimeMode.APP_OPEN, false))
         assertEquals(true, ServerLifetimePolicy.modeAvailable(ServerLifetimeMode.BACKGROUND, false))

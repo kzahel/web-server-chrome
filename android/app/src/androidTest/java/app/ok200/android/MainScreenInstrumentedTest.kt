@@ -2,6 +2,7 @@ package app.ok200.android
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -24,6 +25,10 @@ class MainScreenInstrumentedTest {
         composeRule.onNodeWithTag("server-toggle").assertIsDisplayed()
         composeRule.onNodeWithText("Server settings").assertIsDisplayed()
         composeRule.onNodeWithText("Serving folder").assertIsDisplayed()
+        assertTrue(
+            "Storage copy should not expose the SAF acronym",
+            composeRule.onAllNodesWithText("SAF", substring = true).fetchSemanticsNodes().isEmpty()
+        )
         composeRule.onNodeWithTag("server-status").assertIsDisplayed()
 
         val serverTop = composeRule.onNodeWithTag("server-status").fetchSemanticsNode().boundsInRoot.top

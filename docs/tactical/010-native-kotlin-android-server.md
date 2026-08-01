@@ -667,6 +667,29 @@ This tactical is complete only when all of the following are true:
   regression for actual logo presence, switch prominence above folder/options,
   and retained Advanced controls.
 
+### 2026-08-01: Settings lock and serving lifetime clarified
+
+- Grouped folder, network, and serving-behavior controls under a visible
+  **Server settings** heading. While serving, the heading explains why the
+  group is locked; tapping anywhere in the disabled group shows a concise
+  explanation with a direct **Stop server** action.
+- Replaced the ambiguous background toggle with exactly two lifetime choices:
+  **While app is open** and **Keep serving in background**. The latter maps to
+  the existing foreground service; no best-effort or momentary background mode
+  was added.
+- Separated lifetime from **Availability & battery**, retaining all three wake
+  policies, boot start, low-battery shutdown, and power/Doze diagnostics.
+- On Android 13 and newer, Advanced now distinguishes notification permission
+  from service state: denied permission is described as hiding the drawer
+  notification while the foreground service remains visible under Active apps.
+- Evidence: debug Kotlin compilation, JVM tests, Android lint, and all four
+  `connectedDebugAndroidTest` tests pass on the Android 14 `jstorrent-dev` AVD.
+  The debug APK was also installed on the attached Pixel 9. With notification
+  app-op denied, Android reported the server service as foreground and the UI
+  displayed the hidden-notice explanation; both lifetime choices persisted,
+  and the locked-settings snackbar action stopped the running server and
+  foreground service.
+
 ## Intended change boundaries
 
 If implementation is approved, keep the history reviewable at approximately

@@ -56,17 +56,25 @@ record why the behavior is intentionally platform-specific.
 - `Ok200Application` owns one `AndroidServerController`. The activity/view
   model, foreground service, boot receiver, notification Stop action,
   low-battery monitor, and debug RPC all command that same controller.
-- Background mode uses one foreground service and notification for the complete
-  run. Foreground-only mode stops when the application process is backgrounded,
-  but not during activity recreation.
-- Advanced retains no-lock, Wi-Fi-lock, and CPU+Wi-Fi-lock policies; start on
-  boot; low-battery shutdown and threshold; notification/storage actions; and
-  battery, charging, screen, Doze, power-save, and optimization diagnostics.
+- Serving lifetime has exactly two modes. **While app is open** stops when the
+  application process is backgrounded, but not during activity recreation.
+  **Keep serving in background** uses one foreground service for the complete
+  run. There is no best-effort or momentary background mode.
+- Advanced separates serving lifetime from availability and battery policy. It
+  retains no-lock, Wi-Fi-lock, and CPU+Wi-Fi-lock policies; start on boot;
+  low-battery shutdown and threshold; storage actions; and battery, charging,
+  screen, Doze, power-save, and optimization diagnostics. On Android 13 and
+  newer it accurately distinguishes a visible notification from a running
+  foreground service whose drawer notification Android hides after notification
+  permission is denied; the latter remains visible under Active apps.
 - The Compose screen exposes SAF selection, optional all-files selection,
   a prominent desktop-consistent start/stop switch, localhost/LAN binding,
   port `0`, directory listing, CORS, SPA fallback, authoritative plain-HTTP
-  URLs, and the collapsed Android-only Advanced section. The header uses the
-  actual 200 OK artwork rather than a text approximation.
+  URLs, and the collapsed Android-only Advanced section. Folder, network, and
+  serving-behavior settings form a visible **Server settings** group. While
+  running, its lock explanation is visible and tapping any disabled control
+  offers a direct **Stop server** action. The header uses the actual 200 OK
+  artwork rather than a text approximation.
 
 ## HTTP and storage contract
 
@@ -126,6 +134,14 @@ They require explicit product decisions rather than accidental parity work.
   listener bound `0.0.0.0:8080`, and a separate Mac on the same Wi-Fi fetched
   `http://192.168.1.101:8080/` with `200 OK`. The corresponding HTTPS address
   is intentionally unsupported.
+- The Android 14 `jstorrent-dev` AVD passes four Compose/metadata tests after
+  the settings-lock and serving-lifetime revision, including a direct assertion
+  that the locked-settings interception invokes its explanation action.
+- On the attached Pixel 9, notification app-op state was denied while Android
+  still reported `WebServerService` as foreground with notification ID 1. The
+  revised Advanced screen rendered the hidden-drawer/Active-apps explanation,
+  both lifetime choices updated the persisted policy, and the locked-settings
+  snackbar's **Stop server** action stopped the listener and service.
 
 ## Known gaps and next direction
 

@@ -3,10 +3,10 @@
 Topic: android-native-kotlin
 
 Status: **Android source uses one native Kotlin HTTP server, one
-application-scoped controller, and a Compose control surface. The phone AVD
-cutover and post-deletion instrumentation gates pass. No Play Store release was
-made by this refactor; the currently published `v0.1.2` artifact remains the
-pre-refactor build until a separate release is approved.**
+application-scoped controller, and a Compose control surface. GitHub release
+`android-v0.2.0` publishes the signed native-Kotlin APK and AAB. Google Play
+production still serves `v0.1.2` until the `v0.2.0` AAB and declarations finish
+Play Console review.**
 
 Last reconciled: **2026-08-01**.
 
@@ -216,6 +216,12 @@ They require explicit product decisions rather than accidental parity work.
   `0.0.0.0:8080` on the Pixel and served a test file to the Mac over Wi-Fi;
   afterward the temporary root was removed and the app was restored to fresh
   conservative settings.
+- GitHub Actions run `30708830098` passed the debug build, JVM tests, lint,
+  API-30 instrumentation, upload-key release build, and GitHub Release jobs for
+  `android-v0.2.0`. The public release contains a 2,155,127-byte APK, a
+  4,146,396-byte AAB, and the compressed R8 mapping. The APK reports version
+  `0.2.0`, version code 5, and target SDK 36; its verified signing-certificate
+  SHA-256 digest matches `v0.1.2`.
 - A temporary sparse 3 GiB file in the Pixel's SAF root reported the full
   64-bit content length, and a range beginning at byte 3,221,225,450 returned
   the correct `206`, `Content-Range`, and marker bytes. The file was removed
@@ -224,9 +230,10 @@ They require explicit product decisions rather than accidental parity work.
 
 ## Known gaps and next direction
 
-- Before a Play release, repeat the storage/settings and notification paths on
-  the Play-enabled AVD and at least one physical device; review current all-files
-  and foreground-service policy.
+- Before completing the Play production release, repeat the storage/settings
+  and notification paths on the Play-enabled AVD, upload the signed `v0.2.0`
+  AAB, and complete the current all-files and foreground-service declarations.
+  Physical-device runtime and LAN checks already pass on the Pixel 9.
 - Before targeting Android 17/API 37, add and test the
   `ACCESS_LOCAL_NETWORK` runtime-permission flow. Target-36 apps must not
   request that permission and retain implicit LAN access through `INTERNET`.

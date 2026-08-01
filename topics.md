@@ -15,3 +15,6 @@ Keep each string exact across its commit series so
 - `legacy-app-migration` — use the final Chrome App update window to route
   legacy users to a working platform-specific replacement without abusive
   reminder behavior or misleading product claims.
+- `android-native-kotlin` — replace Android's embedded QuickJS/TypeScript HTTP
+  runtime with a native Kotlin server while maintaining a tested, broadly
+  compatible feature contract with desktop.

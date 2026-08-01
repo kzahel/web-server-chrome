@@ -2,7 +2,8 @@
 
 Read [docs/vision.md](docs/vision.md) first for product intent. For current
 architecture and implementation direction, read
-[docs/topics/desktop-runtime.md](docs/topics/desktop-runtime.md) and
+[docs/topics/desktop-runtime.md](docs/topics/desktop-runtime.md),
+[docs/topics/android-runtime.md](docs/topics/android-runtime.md), and
 [docs/tactical/000-desktop-native-core-and-release-readiness.md](docs/tactical/000-desktop-native-core-and-release-readiness.md).
 For the active final release gate and the split between agent-owned and
 maintainer/device checks, read
@@ -19,31 +20,34 @@ keeps Tauri and its webview for control/configuration while a small Rust core
 owns HTTP execution on Windows, macOS, and Linux. Desktop `v0.1.5` includes
 AppImage-first integration, Linux ARM64 artifacts, AppImage native-host repair,
 macOS Dock activation repair, and the package-aware updater policy. Android
-QuickJS and the Node/TypeScript CLI remain independent.
+source uses a native Kotlin HTTP server; the Node/TypeScript CLI remains an
+independent implementation. The published Android `v0.1.2` predates the Kotlin
+cutover until a separate Play release is approved.
 
 ## Architecture
 
 Current repository shape:
 
-- `packages/engine` — TypeScript HTTP engine currently used by CLI and
-  Android, but not the Rust-native desktop release.
+- `packages/engine` — TypeScript HTTP engine used by the CLI, but not Android
+  or the Rust-native desktop release.
 - `packages/cli` — CLI wrapper using the engine with Node.js adapters.
-- `android` — Published Compose app running the engine in QuickJS with Kotlin
-  I/O.
+- `android` — Compose app with a Kotlin HTTP/storage core and native Android
+  lifecycle, permission, background, wake, boot, and battery policy.
 - `desktop` — Tauri app with a Tauri-independent Rust HTTP core and a thin
   React/Tauri command/event control layer.
 - `extension` — Published launcher/status surface.
 
-Do not extend the generic TypeScript native-I/O architecture for desktop.
-Changes needed only by Android/CLI may still use `packages/engine`; keep Node
-imports within its Node adapter.
+Do not recreate the deleted generic TypeScript native-I/O architecture.
+Android and desktop own their Kotlin and Rust implementations respectively;
+keep Node imports in `packages/engine` within its Node adapter.
 
 ## Cross-Project Context
 
 This project is part of a larger ecosystem. See `~/code/dotfiles/projects/README.md` for the full map. Key relationships:
 
 - **JSTorrent** (`~/code/jstorrent`) — Reference for Tauri signing/release
-  mechanics and the already-shipped QuickJS/JNI Android pattern.
+  mechanics and native mobile lifecycle behavior; its JavaScript-runtime
+  experiment is historical here.
 - **Desktop signing runbook**
   (`~/code/dotfiles/runbooks/desktop-code-signing.md`) — Credential names,
   source material, setup, and verification. Release truth for this repository
@@ -101,8 +105,9 @@ After editing Rust files in `desktop/`, run from the `desktop/` directory:
 After editing Kotlin/Java files in `android/`:
 
 1. `./gradlew :app:compileDebugKotlin` - Compile Kotlin
-2. `./gradlew testDebugUnitTest` - Run unit tests
-3. `./gradlew lint` - Run Android lint
+2. `./gradlew :app:testDebugUnitTest` - Run JVM tests
+3. `./gradlew :app:lintDebug` - Run Android lint
+4. `./gradlew connectedDebugAndroidTest` - Run device UI tests when an AVD is available
 
 ## Android Emulator Management
 
@@ -121,7 +126,7 @@ emu start
 emu status      # Show connected devices and port forwards
 emu stop        # Stop the emulator
 emu install     # Build and install the APK
-emu logs        # Filtered logcat (use --js for QuickJS logs only)
+emu logs        # Filtered Kotlin server/lifecycle logcat
 emu reset       # Clear app data
 ```
 
@@ -140,7 +145,7 @@ emu rpc ping                      # Health check
 emu rpc getState                  # Full server state + config
 emu rpc setPort 9090              # Set port
 emu rpc setRootPath /sdcard/www   # Set root directory (bypasses SAF)
-emu rpc startServer               # Init engine + start serving
+emu rpc startServer               # Start through the Kotlin controller
 emu rpc stopServer                # Stop server + foreground service
 ```
 

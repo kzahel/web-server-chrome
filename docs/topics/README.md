@@ -21,6 +21,9 @@ status. Do not create a topic for every small standalone change.
   and public source/license presentation.
 - [`desktop-runtime.md`](desktop-runtime.md) — released runtime matrix, the
   Rust-native desktop implementation on main, and its remaining release gates.
+- [`android-runtime.md`](android-runtime.md) — native Kotlin HTTP/storage
+  implementation, Android lifecycle and Advanced controls, compatibility
+  contract, evidence, and release gaps.
 - [`desktop-release-readiness.md`](desktop-release-readiness.md) — desktop
   signing evidence, known release defects, and the artifact acceptance gate.
 - [`legacy-app-migration.md`](legacy-app-migration.md) — August 31 migration

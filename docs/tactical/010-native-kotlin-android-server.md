@@ -1,6 +1,6 @@
 # Tactical 010: Native Kotlin Android Server
 
-**Status:** active; maintainer review accepted 2026-08-01  
+**Status:** complete 2026-08-01; maintainer review accepted 2026-08-01
 **Topic:** `android-native-kotlin`  
 **Baseline:** `830fcd4`  
 **Scope:** Android application only, plus shared-repository cleanup made necessary by
@@ -585,6 +585,47 @@ This tactical is complete only when all of the following are true:
   `:app:assembleDebug`, JVM tests, lint, and all three `connectedDebugAndroidTest`
   app tests pass. Repository `pnpm typecheck`, `pnpm test` (96 passing and 11
   intentionally skipped across current suites), and `pnpm check` pass.
+
+### 2026-08-01: Tablet AVD and responsive closeout passed
+
+- Built and installed the post-removal APK through the simplified
+  `emu-install.sh` on `jstorrent-tablet` (Android 14, 2560x1600 at 320 dpi).
+  The first visual pass exposed that `fillMaxWidth` preceded `widthIn`, which
+  defeated the intended 720dp cap. Reversing those modifiers produced the
+  centered, bounded tablet layout while retaining phone fill behavior.
+- Visually reviewed the no-root core screen and expanded Advanced content;
+  folder/network/behavior controls, background and notification state, all
+  three wake choices, boot, low-battery, power diagnostics, and project actions
+  render without clipping or excessive line length.
+- Granted filesystem access, selected a seeded tablet root through debug RPC,
+  started on port `0`, served its known body through ADB forwarding, observed
+  one foreground service/listener, and stopped cleanly with no remaining
+  service. Forced deep idle changed the reported screen/Doze state to
+  `CHARGING_BUT_DOZING` without duplicating observers or services. All three
+  Compose instrumentation tests pass on the tablet AVD.
+- Screenshots retained for review in this work session: [tablet core
+  screen](/tmp/ok200-tablet.png) and [tablet Advanced
+  screen](/tmp/ok200-tablet-advanced.png).
+
+### 2026-08-01: Final validation and living documentation closed
+
+- Added [`../topics/android-runtime.md`](../topics/android-runtime.md) as the
+  continuing owner for Kotlin implementation shape, Android lifecycle/storage
+  policy, the cross-runtime compatibility rule, evidence, release gaps, and
+  recommended next work. Updated current architecture, developer, UI, research,
+  and public website copy; explicitly historical plans remain labeled as such.
+- A from-clean Android gate passes debug compile/JVM tests/lint/APK, minified
+  release APK, and release AAB. The release APK is 2,043,027 bytes and the AAB
+  is 4,034,299 bytes. Inspection of debug APK, release APK, and AAB finds no
+  QuickJS, bundled engine, or C++ runtime entry.
+- Final repository gates pass: `pnpm typecheck`, `pnpm test`, `pnpm check`,
+  website static build, shell syntax checks, `git diff --check`, single-project
+  Gradle inspection, empty submodule inspection, and absence of both deleted
+  module trees.
+- No Android/Play, desktop, or legacy migration release was created. Play-enabled
+  AVD, physical-device, and current store-policy checks remain explicit
+  prerequisites for a future Android release rather than gaps in this source
+  cutover.
 
 ## Intended change boundaries
 

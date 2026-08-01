@@ -27,7 +27,7 @@ The CLI server, Chrome extension, Android app, and an early desktop build have
 all shipped. Their runtimes are not currently unified:
 
 - the CLI uses the TypeScript engine on Node.js;
-- Android uses the TypeScript engine in QuickJS with Kotlin native I/O;
+- Android source uses a native Kotlin HTTP/storage core behind its Compose UI;
 - desktop `v0.1.5` uses the standalone Rust HTTP core behind the Tauri/React
   control surface; and
 - the extension is a launcher/status surface, not the HTTP server.
@@ -36,12 +36,14 @@ Desktop `main` uses the standalone Rust core for HTTP, filesystem, and server
 lifecycle work; its Tauri webview is only a static React control surface.
 Signed desktop `v0.1.5` includes the AppImage-first Linux installation,
 native-host relaunch repair, Linux ARM64 packages, and package-aware signed
-updates. Android and the published Node CLI remain deliberately independent
-while they work.
+updates. Android, desktop, and the published Node CLI remain deliberately
+independent implementations. The Play Store's Android `v0.1.2` predates the
+Kotlin cutover; this refactor does not publish a new store release.
 
 See the living
 [product branding decision](docs/topics/product-branding.md),
-[desktop runtime decision](docs/topics/desktop-runtime.md) and
+[desktop runtime decision](docs/topics/desktop-runtime.md),
+[Android runtime decision](docs/topics/android-runtime.md), and
 [Tactical 003](docs/tactical/003-native-desktop-control-surface.md).
 
 ## Install
@@ -105,23 +107,26 @@ See [docs/vision.md](docs/vision.md) for the full roadmap.
 
 ## Architecture
 
-The repository contains the currently shipped TypeScript engine and the
-platform applications that use or launch it:
+The repository contains three intentionally independent server runtimes and the
+platform applications that use or launch them:
 
 ```
-packages/engine/     Platform-agnostic HTTP server (no platform deps)
+packages/engine/     TypeScript HTTP server used by the Node CLI
 packages/cli/        CLI wrapper (Node.js adapters)
 extension/           Chrome Extension
 desktop/             Tauri/React controls plus Rust application state
 desktop/core/        Rust HTTP core and development CLI
-android/             Android app (QuickJS + Kotlin/Compose)
+android/             Compose app plus Kotlin HTTP/storage and lifecycle core
 ```
 
-The TypeScript native-I/O adapter pattern is retained for Android and the CLI.
-It is superseded on desktop. The Tauri webview remains for configuration and
-control, while native Rust owns sockets, filesystem access, HTTP behavior, and
-server lifecycle. The authoritative current/target
-boundary is [`docs/topics/desktop-runtime.md`](docs/topics/desktop-runtime.md).
+The CLI uses TypeScript with Node adapters, desktop uses native Rust, and
+Android uses native Kotlin. Their core feature contract is kept broadly
+compatible through tests rather than shared runtime source. The Tauri webview
+remains for configuration and control, while native Rust owns desktop sockets,
+filesystem access, HTTP behavior, and server lifecycle. Authoritative runtime
+boundaries live in
+[`docs/topics/desktop-runtime.md`](docs/topics/desktop-runtime.md) and
+[`docs/topics/android-runtime.md`](docs/topics/android-runtime.md).
 
 ## Migration from Chrome App
 

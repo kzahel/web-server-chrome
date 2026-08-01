@@ -3,9 +3,10 @@
 Cross-platform UI design for 200 OK. Same design language on Android (Jetpack Compose), desktop (Tauri/HTML), and eventually iOS. The layout adapts by screen width, not by platform.
 
 Architecture status: the visual design remains useful. The original
-cross-platform TypeScript engine assumptions are superseded for desktop by
-[`topics/desktop-runtime.md`](topics/desktop-runtime.md). Android remains
-Compose + QuickJS for now.
+cross-platform TypeScript engine assumptions are superseded by the independent
+Rust desktop and Kotlin Android runtimes in
+[`topics/desktop-runtime.md`](topics/desktop-runtime.md) and
+[`topics/android-runtime.md`](topics/android-runtime.md).
 
 ## Principles
 
@@ -193,7 +194,7 @@ Same React components, same state management, different transport.
 |----------|-----|----------------|
 | **CLI remote UI** | Web UI served at `/_api/ui/` | `HttpServerManager` → HTTP to `/_api/` |
 | **Desktop (Tauri)** | Same React app in webview | `TauriServerManager` → commands/events to Rust-owned servers |
-| **Android** | Jetpack Compose (native) | Kotlin control layer → QuickJS engine |
+| **Android** | Jetpack Compose (native) | Application controller → Kotlin HTTP/storage core |
 
 ### Development workflow
 
@@ -202,10 +203,11 @@ Run `ok200` on your laptop, open `http://<lan-ip>:8080/_api/ui/` on your phone. 
 ## Platform Notes
 
 ### Android (Jetpack Compose)
-- Material Design 3, dynamic theming
-- Directory picker uses SAF (Storage Access Framework) — no all-files permission needed
-- Foreground service notification when server is running
+- Material Design 3 with the product's yellow/black identity
+- SAF folder selection is always available; optional all-files access enables a separate filesystem picker
+- Foreground service notification while background serving is enabled
 - `BOOT_COMPLETED` receiver for start-on-boot
+- Background, three wake policies, low-battery shutdown, and power/Doze diagnostics live under Advanced
 - Same design language as web UI, native implementation
 
 ### Desktop (Tauri)

@@ -1,7 +1,8 @@
 # Competitive Landscape & Positioning
 
 Status: dated positioning research. Current platform/runtime truth lives in
-[`../topics/desktop-runtime.md`](../topics/desktop-runtime.md).
+[`../topics/desktop-runtime.md`](../topics/desktop-runtime.md) and
+[`../topics/android-runtime.md`](../topics/android-runtime.md).
 
 ## Direct Competitors
 
@@ -45,8 +46,8 @@ Status: dated positioning research. Current platform/runtime truth lives in
 | Windows | Tauri | P0 |
 | macOS | Tauri | P0 |
 | Linux | Tauri | P1 |
-| Android | Compose + QuickJS + Kotlin native I/O | Maintain current release |
-| ChromeOS | Android app launched by extension | Maintain current release |
+| Android | Compose + native Kotlin HTTP/storage core | Source complete; Play release is separate |
+| ChromeOS | Android app launched by extension | Validate with the next Android release |
 | iOS | Native (Swift?) or skip | P2 |
 
 ### Size Advantage

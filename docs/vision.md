@@ -22,14 +22,15 @@ The extension is not itself the HTTP server.
 
 ## Current state
 
-As of 2026-07-31:
+As of 2026-08-01:
 
 | Surface | Runtime | Released state |
 |---|---|---|
 | CLI | TypeScript engine on Node.js | `v0.1.1` |
 | Desktop release | Tauri/React controls; Rust server state and HTTP core | `v0.1.5`, complete signed release; recommended macOS app, Windows NSIS, and Linux AppImage update/server/extension paths accepted |
 | Desktop source | Same Rust-native runtime with AppImage-first Linux integration, Linux ARM64 artifacts, and package-aware updates | Published baseline is `v0.1.5`; RPM-native, MSI-elevated, and physical ARM64 product smoke remain claim-only gaps |
-| Android / ChromeOS | Compose UI; TypeScript engine in QuickJS; Kotlin native I/O | `v0.1.2`, published |
+| Android / ChromeOS source | Compose UI and native Kotlin HTTP/storage core | Kotlin cutover complete and AVD-validated; not published by this refactor |
+| Android / ChromeOS Play artifact | Compose UI with the earlier embedded JavaScript runtime | `v0.1.2`, published pre-cutover artifact |
 | Chrome extension | MV3 launcher/status UI | `v0.1.3`, published |
 | Legacy Chrome App | Chrome packaged-app APIs | Migration channel approaching end of life |
 
@@ -58,12 +59,18 @@ The living contract is
 
 ### Android / ChromeOS
 
-The published Android app keeps its working QuickJS + Kotlin implementation for
-now. ChromeOS uses the Android application as the server; the Chrome extension
-launches its custom `ok200` scheme through an Android intent with a Play Store
-fallback.
+Android source uses a native Kotlin HTTP/storage core and a Compose control
+surface. One application-scoped controller owns UI, foreground service,
+notification, boot, wake-lock, low-battery, and power-observation paths. SAF and
+optional all-files roots remain supported. ChromeOS uses the Android application
+as the server; the Chrome extension launches its custom `ok200` scheme through
+an Android intent with a Play Store fallback.
 
-This campaign does not attempt a pure-Kotlin or Rust/JNI Android rewrite.
+Desktop and Android intentionally have separate Rust and Kotlin implementations.
+Their common feature/HTTP contract is maintained through tests, not a shared
+embedded runtime. The currently published Android `v0.1.2` remains the earlier
+artifact until a separately approved Play release. See
+[`topics/android-runtime.md`](topics/android-runtime.md).
 
 ### CLI
 
@@ -79,12 +86,13 @@ Android app. Its product copy must explain this launcher role honestly.
 
 ## Why the desktop direction changed
 
-The TypeScript engine plus native-I/O adapters successfully shipped on Android
-and proved that QuickJS could host the server. It also placed the desktop HTTP
-engine, parser, filesystem orchestration, and socket event flow in the Tauri
-webview. That architecture adds JavaScript/webview runtime work to a product
-whose main promise is a tiny local server, without delivering a current product
-requirement.
+The earlier TypeScript engine plus native-I/O adapters successfully shipped on
+Android and proved that an embedded JavaScript runtime could host the server.
+It also placed the desktop HTTP engine, parser, filesystem orchestration, and
+socket event flow in the Tauri webview. That architecture added
+JavaScript/webview runtime work to a product whose main promise is a tiny local
+server, without delivering a current product requirement. Both desktop and
+Android source have since moved to their platform-native server cores.
 
 The desktop application already includes Rust through Tauri. A direct Rust
 server provides a simpler ownership boundary and should materially reduce
@@ -156,7 +164,8 @@ After the replacement and release path are dependable:
 ## Non-goals for the current campaign
 
 - Proving a reusable Transistor JavaScript socket/filesystem architecture.
-- Rewriting Android while the published app works.
+- Unifying desktop, Android, and CLI behind one runtime implementation.
+- Publishing the Kotlin Android cutover as part of the desktop/legacy campaign.
 - Rewriting the CLI solely for language uniformity.
 - Removing the Tauri webview.
 - Expanding UDP/UPnP, proxying, or other power features before the basic server
@@ -166,6 +175,7 @@ After the replacement and release path are dependable:
 ## Planning and current truth
 
 - [Desktop runtime topic](topics/desktop-runtime.md)
+- [Android runtime topic](topics/android-runtime.md)
 - [Desktop release/signing topic](topics/desktop-release-readiness.md)
 - [Legacy migration topic](topics/legacy-app-migration.md)
 - [Tactical 000: implementation sequence](tactical/000-desktop-native-core-and-release-readiness.md)

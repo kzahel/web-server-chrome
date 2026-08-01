@@ -4,7 +4,8 @@ Status: **historical research and feature inventory.** Its early Rust-core
 notes anticipated the accepted desktop direction, but its Rust CLI, Android
 JNI, iOS, sequencing, and unchecked task states are not current commitments.
 See [`../topics/desktop-runtime.md`](../topics/desktop-runtime.md) and
-[Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md).
+[`../topics/android-runtime.md`](../topics/android-runtime.md). Tactical 000
+owns the accepted desktop sequence.
 
 ## Phase 0: CLI Server (Start Here)
 
@@ -102,9 +103,9 @@ These are things SWS has that might not be worth the complexity:
 
 ## Architecture Notes
 
-The following is the original Rust-core proposal. Only the native desktop core
-has now been accepted. Android remains QuickJS and the CLI remains
-Node/TypeScript until separate decisions change them.
+The following is the original Rust-core proposal, not current architecture.
+Desktop adopted the Rust core; Android subsequently adopted a separate native
+Kotlin core rather than the proposed JNI path. The CLI remains Node/TypeScript.
 
 ### Rust Core Module
 The HTTP server should be a standalone Rust library/crate that:

@@ -14,7 +14,7 @@ package-aware updater refuses MSI/DEB/RPM cross-package replacement. Remaining
 desktop work is limited to subjective UI checks and secondary-package or
 physical-ARM64 claims.**
 
-Last reconciled: **2026-07-31**.
+Last reconciled: **2026-08-01**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
@@ -47,9 +47,10 @@ This topic owns:
 - the relationship between desktop, Android, the CLI, and the extension.
 
 It does not require one runtime implementation across every product. In
-particular, it does not reopen the Transistor/QuickJS architecture experiment.
-Android and the CLI keep their currently shipped implementations until a
-separate decision changes them.
+particular, it does not reopen the Transistor/embedded-JavaScript architecture
+experiment. Android has separately adopted a Kotlin core under
+[`android-runtime.md`](android-runtime.md); the CLI keeps its Node/TypeScript
+implementation.
 
 ## Product decision
 
@@ -76,9 +77,9 @@ stream file bytes, or keep the server alive. Closing or reloading the webview
 must not accidentally stop a server that is configured to remain in the
 background.
 
-“Shared Rust core” currently means one native core reused across macOS,
-Windows, and Linux. Android JNI and a Rust CLI are possible future consumers,
-not requirements for this migration.
+“Shared Rust core” means one native core reused across macOS, Windows, and
+Linux. Android JNI and a Rust CLI are not requirements or current directions;
+either would need a separate product decision.
 
 ## Current implementation
 
@@ -87,7 +88,8 @@ not requirements for this migration.
 | Desktop source and release `v0.1.5` | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | Complete signed release with AppImage-first integration, relaunch repair, macOS Dock create-or-focus handling, Linux ARM64, and package-aware updates | Continue compatibility/resource measurements; keep secondary package/hardware claims explicit |
 | Previous desktop `v0.1.4` | Same Rust-native runtime before the AppImage/Dock/package-awareness repairs | Public updater source used in the accepted `0.1.4` → `0.1.5` macOS, Windows, and Linux transitions | Retain only as immutable update evidence |
 | Historical desktop `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Partial legacy release | Historical baseline only |
-| Android `v0.1.2` | QuickJS runs the TypeScript engine; Kotlin/Java provides native I/O and Compose UI | Published app | Defer changes while it works |
+| Android source | Compose UI; Kotlin owns HTTP, storage adapters, and Android lifecycle policy | Native cutover complete and AVD-validated | Keep broadly compatible through the cross-runtime contract in `android-runtime.md` |
+| Android Play `v0.1.2` | Earlier Compose/embedded-JavaScript implementation | Published pre-cutover artifact | Retain until a separate Android release is approved |
 | CLI `v0.1.1` | Node.js runs the TypeScript engine and Node adapters | Published developer CLI | Keep independent; do not make it block desktop |
 | Chrome extension `v0.1.3` | MV3 service worker and popup | Launcher/status surface | Desktop launches Tauri through native messaging; ChromeOS launches Android |
 | Legacy Chrome App `v0.5.x` | Chrome packaged-app APIs | Existing user migration channel | Preserve only long enough to route users to replacements |

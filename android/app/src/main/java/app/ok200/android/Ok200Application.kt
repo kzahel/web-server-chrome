@@ -16,20 +16,23 @@ class Ok200Application : Application() {
         const val SERVICE = "ok200_service"
     }
 
-    lateinit var settingsStore: SettingsStore
-        private set
+    val settingsStore: SettingsStore by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+        SettingsStore(this)
+    }
 
-    lateinit var dozeMonitor: DozeMonitor
-        private set
+    val dozeMonitor: DozeMonitor by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+        DozeMonitor(this).also { it.start() }
+    }
 
-    lateinit var serverController: AndroidServerController
-        private set
+    val serverController: AndroidServerController by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+        AndroidServerController(this, settingsStore, dozeMonitor)
+    }
 
     override fun onCreate() {
         super.onCreate()
-        settingsStore = SettingsStore(this)
-        dozeMonitor = DozeMonitor(this).also { it.start() }
-        serverController = AndroidServerController(this, settingsStore, dozeMonitor)
+        // Eager during normal startup, while remaining safe if a debug provider
+        // is Android's first component and accesses these before onCreate().
+        serverController
         ProcessLifecycleOwner.get().lifecycle.addObserver(
             object : DefaultLifecycleObserver {
                 override fun onStop(owner: LifecycleOwner) {

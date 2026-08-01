@@ -232,7 +232,15 @@ class AndroidServerController(
             require(root.path != File.separator) { "The Android OS root cannot be served" }
             FilesystemFileTree(root)
         }
-        "content" -> SafFileTree(appContext, uri)
+        "content" -> {
+            val hasPersistedReadAccess = appContext.contentResolver.persistedUriPermissions.any {
+                it.uri == uri && it.isReadPermission
+            }
+            check(hasPersistedReadAccess) {
+                "Folder access was revoked. Select the folder again"
+            }
+            SafFileTree(appContext, uri)
+        }
         else -> error("Unsupported folder URI")
     }
 

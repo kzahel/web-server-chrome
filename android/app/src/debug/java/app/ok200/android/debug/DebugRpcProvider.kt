@@ -2,9 +2,11 @@ package app.ok200.android.debug
 
 import android.content.ContentProvider
 import android.content.ContentValues
+import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import app.ok200.android.Ok200Application
 import app.ok200.android.server.ServerPhase
@@ -35,6 +37,8 @@ class DebugRpcProvider : ContentProvider() {
                 "getState" -> handleGetState()
                 "setPort" -> handleSetPort(arg)
                 "setRootPath" -> handleSetRootPath(arg)
+                "setRootUri" -> handleSetRootUri(arg)
+                "releaseRootPermission" -> handleReleaseRootPermission()
                 "startServer" -> handleStartServer()
                 "stopServer" -> handleStopServer()
                 "getPowerState" -> handleGetPowerState()
@@ -106,6 +110,37 @@ class DebugRpcProvider : ContentProvider() {
         }.toString()
     }
 
+    private fun handleSetRootUri(arg: String?): String {
+        if (arg.isNullOrBlank()) return errorJson("URI required")
+        val uri = Uri.parse(arg)
+        if (uri.scheme != "content" && uri.scheme != "file") {
+            return errorJson("Only content and file URIs are supported")
+        }
+        val displayName = Uri.decode(uri.lastPathSegment ?: arg)
+        settings.rootUri = uri.toString()
+        settings.rootDisplayName = displayName
+        return buildJsonObject {
+            put("ok", true)
+            put("rootUri", uri.toString())
+            put("rootDisplayName", displayName)
+            put("persistedReadPermission", hasPersistedReadPermission(uri))
+        }.toString()
+    }
+
+    private fun handleReleaseRootPermission(): String {
+        val uri = settings.rootUri?.let(Uri::parse)
+            ?: return errorJson("No root URI configured")
+        if (uri.scheme != "content") return errorJson("Configured root is not a content URI")
+        val persisted = context!!.contentResolver.persistedUriPermissions
+            .firstOrNull { it.uri == uri && it.isReadPermission }
+            ?: return errorJson("No persisted read permission for configured root")
+        context!!.contentResolver.releasePersistableUriPermission(
+            persisted.uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION
+        )
+        return """{"ok":true,"persistedReadPermission":false}"""
+    }
+
     private fun handleStartServer(): String {
         val rootUri = settings.rootUri
             ?: return errorJson("No root URI configured. Call setRootPath first.")
@@ -159,12 +194,25 @@ class DebugRpcProvider : ContentProvider() {
     }
 
     private fun handleGetSettings(): String {
+        val rootUri = settings.rootUri?.let(Uri::parse)
         return buildJsonObject {
             put("ok", true)
             put("port", settings.port)
             put("rootUri", settings.rootUri?.let { JsonPrimitive(it) } ?: JsonNull)
             put("rootDisplayName", settings.rootDisplayName?.let { JsonPrimitive(it) } ?: JsonNull)
-            put("allFilesAccess", settings.allFilesAccess)
+            put(
+                "allFilesAccess",
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                    Environment.isExternalStorageManager()
+                } else {
+                    true
+                }
+            )
+            put(
+                "persistedRootReadPermission",
+                rootUri?.takeIf { it.scheme == "content" }?.let(::hasPersistedReadPermission)
+                    ?: false
+            )
             put("lanEnabled", settings.lanEnabled)
             put("directoryListing", settings.directoryListing)
             put("corsEnabled", settings.corsEnabled)
@@ -176,6 +224,11 @@ class DebugRpcProvider : ContentProvider() {
             put("shutdownBatteryThreshold", settings.shutdownBatteryThreshold)
         }.toString()
     }
+
+    private fun hasPersistedReadPermission(uri: Uri): Boolean =
+        context!!.contentResolver.persistedUriPermissions.any {
+            it.uri == uri && it.isReadPermission
+        }
 
     private fun handleSetWakeLockMode(arg: String?): String {
         if (arg.isNullOrBlank())

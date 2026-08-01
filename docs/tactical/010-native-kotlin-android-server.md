@@ -529,6 +529,41 @@ This tactical is complete only when all of the following are true:
 - Evidence: compile, JVM tests, and `:app:lintDebug` pass. Lint has no errors;
   remaining warnings are reviewed platform/version/icon/debug-tooling warnings.
 
+### 2026-08-01: Phone AVD cutover gate passed
+
+- Installed the Kotlin production route on the local `jstorrent-dev` Android 14
+  AVD and seeded known filesystem and SAF trees. Filesystem black-box checks
+  passed for GET/HEAD/OPTIONS, MIME, ETag/Last-Modified validation, byte ranges,
+  listing/index behavior, CORS, SPA fallback, traversal rejection, method
+  rejection, and ephemeral port reporting. Device-side probes proved localhost
+  binding accepted loopback traffic and refused the emulator's WLAN address.
+- Selected an SAF tree with the Android system picker, served it, force-stopped
+  and relaunched the app, and updated the APK with `adb install -r`; the selected
+  root and persisted read grant continued to work. A valid SAF root also started
+  once at boot and served its known file. Releasing the persisted grant produced
+  a stable `Folder access was revoked` failure, including at boot, with no
+  remaining foreground service.
+- Verified foreground-only mode stops on process backgrounding. Background mode
+  retained one listener, one foreground service, and one notification after
+  minimizing. Notification Stop removed all three. Runtime changes through none,
+  Wi-Fi-only, and CPU+Wi-Fi wake policies acquired only the selected locks and
+  released them at stop.
+- Drove the emulator below a configured low-battery threshold while unplugged;
+  the controller stopped the listener and released its resources. Rotation kept
+  the assigned port and listener, while repeated `ok200://launch` intents now
+  reuse one `singleTask` activity whether stopped or running.
+- Emulator startup exposed and fixed four lifecycle/access defects: debug
+  provider initialization before `Application.onCreate`, an unexported boot
+  receiver that could not receive the system broadcast, reliance on a usable
+  content URI after its persisted grant was revoked, and duplicate activities
+  from deep links.
+- Added a Compose instrumentation smoke test for the core screen and retained
+  Advanced controls. Evidence: `./gradlew connectedDebugAndroidTest` passes all
+  three app tests on `jstorrent-dev`; the pre-deletion `io-core` and
+  `quickjs-engine` instrumentation suites also passed in that run. The phone UI
+  was visually reviewed at 1080x2400 with the selected-root, status, and
+  responsive control layout rendering correctly.
+
 ## Intended change boundaries
 
 If implementation is approved, keep the history reviewable at approximately

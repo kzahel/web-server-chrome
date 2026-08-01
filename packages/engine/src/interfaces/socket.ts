@@ -2,7 +2,7 @@
  * Abstract Socket Interfaces
  *
  * Extracted from jstorrent. These interfaces decouple the server engine
- * from any specific runtime (Node, Bun, QuickJS, JSC).
+ * from any specific runtime (Node, Bun, or another JavaScript host).
  */
 
 import type { TlsOptions } from "./certificate.js";

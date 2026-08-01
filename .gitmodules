@@ -1,3 +1,0 @@
-[submodule "android/quickjs-engine/src/main/cpp/quickjs-ng"]
-	path = android/quickjs-engine/src/main/cpp/quickjs-ng
-	url = git@github.com:quickjs-ng/quickjs.git

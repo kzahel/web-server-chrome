@@ -95,9 +95,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":io-core"))
-    implementation(project(":quickjs-engine"))
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.process)

@@ -20,6 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Ok200"
-include(":io-core")
-include(":quickjs-engine")
 include(":app")

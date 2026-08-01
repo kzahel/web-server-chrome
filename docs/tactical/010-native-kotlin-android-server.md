@@ -564,6 +564,28 @@ This tactical is complete only when all of the following are true:
   was visually reviewed at 1080x2400 with the selected-root, status, and
   responsive control layout rendering correctly.
 
+### 2026-08-01: Embedded JavaScript experiment removed
+
+- Deleted the `:quickjs-engine` and `:io-core` modules, the QuickJS-ng
+  submodule, JNI/CMake sources, bundled JavaScript asset path, Kotlin bindings,
+  and the app's Gradle dependencies on both modules. The Android Gradle build
+  now contains only `:app` and executes no NDK or CMake task.
+- Deleted the TypeScript engine's Android-only native preset, entry point,
+  adapter declarations/implementations, native export, bundle script, and its
+  now-unused esbuild dependency. The Node/CLI TypeScript engine remains intact.
+- Simplified emulator/real-device install, test, and log scripts around one
+  native Compose application and Kotlin server. Removed bundle copying,
+  standalone UI modes, JavaScript log filters, and the deleted modules' obsolete
+  instrumentation/seeder paths.
+- A clean debug APK fell from 24,691,812 bytes before removal to 18,190,682
+  bytes after removal (6,501,130 bytes, 26.3%). Inspection finds no
+  `libquickjs-jni.so`, `libc++_shared.so`, `engine.bundle.js`, or other QuickJS
+  entry; its remaining native entries are AndroidX path-rendering libraries.
+- Evidence after deletion: Gradle reports only project `:app`; clean
+  `:app:assembleDebug`, JVM tests, lint, and all three `connectedDebugAndroidTest`
+  app tests pass. Repository `pnpm typecheck`, `pnpm test` (96 passing and 11
+  intentionally skipped across current suites), and `pnpm check` pass.
+
 ## Intended change boundaries
 
 If implementation is approved, keep the history reviewable at approximately

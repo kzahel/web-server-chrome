@@ -17,10 +17,23 @@ The app process does NOT need to be open — Android auto-starts it when the Con
 | Method | Arg | Returns |
 |---|---|---|
 | `ping` | — | `{"ok":true}` |
-| `getState` | — | `{"running":bool,"port":int,"host":"...","error":null,"rootUri":"...","configuredPort":int,"engineInitialized":bool}` |
+| `getState` | — | Authoritative controller phase, listener address, error, and configured root/port |
 | `setPort` | port number | `{"ok":true,"port":N}` |
 | `setRootPath` | device path | `{"ok":true,"rootUri":"...","rootDisplayName":"..."}` |
-| `startServer` | — | `{"ok":bool,"running":bool,"port":N,"host":"..."}` (waits up to 3s) |
+| `setRootUri` | persisted SAF tree URI | Select an already-granted SAF root |
+| `releaseRootPermission` | — | Release the configured SAF root's persisted read grant |
+| `getSettings` | — | Server, storage, background, wake, boot, and low-battery settings |
+| `setLanEnabled` | boolean | Update localhost/LAN binding |
+| `setDirectoryListing` | boolean | Update directory listing |
+| `setCorsEnabled` | boolean | Update CORS |
+| `setSpaEnabled` | boolean | Update SPA fallback |
+| `setBackgroundEnabled` | boolean | Update foreground-service policy |
+| `setWakeLockMode` | `none`, `wifi_only`, or `full` | Update wake policy |
+| `setStartOnBoot` | boolean | Update boot start |
+| `setShutdownOnLowBattery` | boolean | Update low-battery shutdown |
+| `setShutdownBatteryThreshold` | 5–50 | Update shutdown threshold |
+| `getPowerState` | — | Current battery, charging, display, Doze, and optimization state |
+| `startServer` | — | `{"ok":bool,"running":bool,"port":N,"host":"..."}` (waits up to 5s) |
 | `stopServer` | — | `{"ok":true}` |
 
 ## Usage
@@ -57,6 +70,6 @@ emu rpc stopServer
 
 - Only works on **debug builds** (ContentProvider excluded from release)
 - `setRootPath` uses `file://` URIs, bypassing the SAF folder picker
-- `startServer` initializes the QuickJS engine if needed and starts the foreground service
+- `startServer` uses the application-scoped Kotlin controller and starts a foreground service only when background mode is enabled
 - All methods return JSON with an `ok` field indicating success
 - Errors return `{"ok":false,"error":"message"}`

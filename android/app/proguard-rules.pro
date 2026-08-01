@@ -1,8 +1,3 @@
-# Keep QuickJS JNI native methods
--keep class app.ok200.quickjs.QuickJsContext {
-    native <methods>;
-}
-
 # Keep Kotlin serialization
 -keepattributes *Annotation*, InnerClasses
 -dontnote kotlinx.serialization.AnnotationsKt

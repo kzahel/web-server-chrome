@@ -12,7 +12,6 @@ android/.gradle/
 android/local.properties
 android/**/build/
 android/**/.cxx/
-android/quickjs-engine/src/main/assets/
 tmp/
 .yep/
 wsc-crx/

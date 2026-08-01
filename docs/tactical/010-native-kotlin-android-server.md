@@ -690,6 +690,31 @@ This tactical is complete only when all of the following are true:
   and the locked-settings snackbar action stopped the running server and
   foreground service.
 
+### 2026-08-01: Three-mode lifetime and reliable notification contract
+
+- Superseded the interim two-mode UI with the accepted **While app is open**,
+  **Continue in background**, and **Reliable background** state model. The
+  lightweight middle mode owns no Android service or wake lock and explicitly
+  allows Android to suspend or reclaim it. Reliable mode owns the foreground
+  service and requires a visible ongoing notification.
+- Centralized notification availability across runtime permission, app-level
+  notification state, and channel importance. UI, controller, service polling,
+  boot receiver, wake policy, and debug RPC all enforce the same prerequisite.
+  Reliable notification loss stops instead of silently degrading, releases
+  locks, disables boot start, and records a next-launch explanation.
+- Rebuilt Advanced into aligned **Storage access**, **Server lifetime**,
+  **Screen-off availability**, **Automation & safety**, and **Power
+  diagnostics** sections. The former hidden-notification explanation card is
+  gone; permission action is inline only when Reliable background needs it.
+- Added a pure lifetime-policy matrix test, persisted-mode instrumentation, and
+  updated Compose coverage. Debug RPC now exposes `setLifetimeMode` while
+  retaining the old Boolean method as an explicit legacy alias.
+- Evidence: Kotlin compilation, JVM tests, lint, and all five Android 14 AVD
+  instrumentation tests pass. Pixel 9 checks proved no-service LAN serving in
+  Continue mode, Home-triggered stop in app-open mode, notification/wake/boot
+  refusal while permission was denied, foreground-service plus Wi-Fi-lock
+  acquisition after permission, and automatic stop after permission revocation.
+
 ## Intended change boundaries
 
 If implementation is approved, keep the history reviewable at approximately

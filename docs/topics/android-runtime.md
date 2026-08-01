@@ -46,8 +46,8 @@ record why the behavior is intentionally platform-specific.
 
 ## Accepted lifecycle settings contract
 
-**Accepted 2026-08-01; implementation in progress.** Android exposes one
-**Server lifetime** choice with three mutually exclusive modes:
+**Accepted and implemented 2026-08-01.** Android exposes one **Server
+lifetime** choice with three mutually exclusive modes:
 
 | Mode | Contract |
 |---|---|
@@ -91,17 +91,22 @@ same rules rather than relying on Compose alone.
 - `Ok200Application` owns one `AndroidServerController`. The activity/view
   model, foreground service, boot receiver, notification Stop action,
   low-battery monitor, and debug RPC all command that same controller.
-- Serving lifetime has exactly two modes. **While app is open** stops when the
-  application process is backgrounded, but not during activity recreation.
-  **Keep serving in background** uses one foreground service for the complete
-  run. There is no best-effort or momentary background mode.
-- Advanced separates serving lifetime from availability and battery policy. It
-  retains no-lock, Wi-Fi-lock, and CPU+Wi-Fi-lock policies; start on boot;
-  low-battery shutdown and threshold; storage actions; and battery, charging,
-  screen, Doze, power-save, and optimization diagnostics. On Android 13 and
-  newer it accurately distinguishes a visible notification from a running
-  foreground service whose drawer notification Android hides after notification
-  permission is denied; the latter remains visible under Active apps.
+- **While app is open** stops when the application process is backgrounded,
+  but not during activity recreation. **Continue in background** leaves the
+  application-owned server running without an Android service or wake lock and
+  makes no survival guarantee. **Reliable background** uses one foreground
+  service with a visible ongoing notification for the complete run.
+- Reliable mode is unavailable while app notifications or the server channel
+  are disabled. Every UI, service, boot, and debug entry point enforces that
+  requirement. Notification loss stops a reliable run within the service check
+  interval, releases its wake locks, disables boot start, and records a clear
+  next-launch explanation; it never silently becomes best effort.
+- Advanced presents peer **Server lifetime**, **Screen-off availability**,
+  **Automation & safety**, and **Power diagnostics** sections. It retains
+  no-lock, Wi-Fi-lock, and CPU+Wi-Fi-lock policies; start on boot; low-battery
+  shutdown and threshold; storage actions; and battery, charging, screen,
+  Doze, power-save, and optimization diagnostics. Wake locks and boot start are
+  available only with valid Reliable background.
 - The Compose screen exposes SAF selection, optional all-files selection,
   a prominent desktop-consistent start/stop switch, localhost/LAN binding,
   port `0`, directory listing, CORS, SPA fallback, authoritative plain-HTTP
@@ -169,14 +174,21 @@ They require explicit product decisions rather than accidental parity work.
   listener bound `0.0.0.0:8080`, and a separate Mac on the same Wi-Fi fetched
   `http://192.168.1.101:8080/` with `200 OK`. The corresponding HTTPS address
   is intentionally unsupported.
-- The Android 14 `jstorrent-dev` AVD passes four Compose/metadata tests after
-  the settings-lock and serving-lifetime revision, including a direct assertion
-  that the locked-settings interception invokes its explanation action.
-- On the attached Pixel 9, notification app-op state was denied while Android
-  still reported `WebServerService` as foreground with notification ID 1. The
-  revised Advanced screen rendered the hidden-drawer/Active-apps explanation,
-  both lifetime choices updated the persisted policy, and the locked-settings
-  snackbar's **Stop server** action stopped the listener and service.
+- The Android 14 `jstorrent-dev` AVD passes five Compose/metadata/settings tests
+  after the three-mode revision, including persistence of every lifetime mode
+  and direct locked-settings interception coverage.
+- On the attached Pixel 9, Continue in background served successfully over LAN
+  after Home with no `WebServerService`; While app is open stopped on Home.
+  With notifications denied, reliable lifetime, wake-lock, and boot-start debug
+  entry points all refused configuration. Granting permission allowed Reliable
+  background to create foreground notification ID 1 and the selected Wi-Fi
+  lock; revoking permission stopped the listener and service, released the
+  reliable run, disabled boot start, and persisted the next-launch notice.
+- A temporary sparse 3 GiB file in the Pixel's SAF root reported the full
+  64-bit content length, and a range beginning at byte 3,221,225,450 returned
+  the correct `206`, `Content-Range`, and marker bytes. The file was removed
+  after the probe. File bodies remain fixed-buffer streams; multipart ranges
+  remain intentionally unsupported.
 
 ## Known gaps and next direction
 

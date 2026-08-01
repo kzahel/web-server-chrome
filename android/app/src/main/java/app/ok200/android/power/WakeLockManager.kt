@@ -1,5 +1,6 @@
 package app.ok200.android.power
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.wifi.WifiManager
 import android.os.Build
@@ -56,6 +57,7 @@ class WakeLockManager(private val context: Context) {
         acquire(newMode)
     }
 
+    @SuppressLint("WakelockTimeout") // Deliberately held for the user-controlled server lifetime.
     private fun acquireCpuWakeLock() {
         if (cpuWakeLock != null) return
         val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager

@@ -509,6 +509,26 @@ This tactical is complete only when all of the following are true:
   the Kotlin production route. QuickJS remains compiled but unused until the AVD
   cutover gate.
 
+### 2026-08-01: Compose control surface aligned and Advanced retained
+
+- Reorganized the native screen around serving folder, network, serving
+  behavior, one primary lifecycle control, reachable URLs, and a collapsed
+  Advanced section.
+- Added localhost/LAN, directory listing, CORS, SPA, and port `0` controls backed
+  by persisted Kotlin configuration. Runtime settings are locked while serving
+  so displayed state cannot diverge from the active listener.
+- Retained SAF selection at all times and added a separate filesystem picker
+  action when real all-files permission is present. The UI rejects `/`, warns
+  before selecting a whole shared-storage volume, and reports system-owned
+  permission state truthfully.
+- Retained background mode, all wake modes, boot start, low-battery threshold,
+  and battery/charging/Doze/optimization diagnostics under Advanced. Start on
+  boot and background mode enforce a coherent dependency.
+- Adopted the product yellow/black color identity instead of device-dependent
+  dynamic primary colors and constrained content width for phone/tablet use.
+- Evidence: compile, JVM tests, and `:app:lintDebug` pass. Lint has no errors;
+  remaining warnings are reviewed platform/version/icon/debug-tooling warnings.
+
 ## Intended change boundaries
 
 If implementation is approved, keep the history reviewable at approximately

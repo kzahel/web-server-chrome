@@ -87,6 +87,9 @@ class MainActivity : AppCompatActivity() {
                         onPickFolder = { folderPickerLauncher.launch(null) },
                         onRequestAllFilesAccess = { requestAllFilesAccess() },
                         onRequestNotificationPermission = { requestNotificationPermission() },
+                        onOpenBatterySettings = {
+                            startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                        },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

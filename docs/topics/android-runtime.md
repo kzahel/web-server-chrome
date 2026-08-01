@@ -44,6 +44,41 @@ tests, and black-box product checks. When a cross-platform server feature is
 added or changed, update each applicable implementation and its tests, or
 record why the behavior is intentionally platform-specific.
 
+## Accepted lifecycle settings contract
+
+**Accepted 2026-08-01; implementation in progress.** Android exposes one
+**Server lifetime** choice with three mutually exclusive modes:
+
+| Mode | Contract |
+|---|---|
+| **While app is open** | Stop when 200 OK leaves the foreground. |
+| **Continue in background** | Keep the application-owned server alive without a notification while Android permits it; Android may suspend or reclaim it at any time. |
+| **Reliable background** | Run through a foreground service with a visible ongoing notification; recommend this for long transfers and unattended serving. |
+
+Reliable background requires app notification permission and an enabled server
+notification channel. The choice is committed only after that prerequisite is
+met. If notifications are later disabled, a reliable run stops with a clear
+reason; it must never silently degrade into the best-effort mode. There is no
+separate notification-status wall of text in Advanced—the prerequisite and its
+action belong directly to the Reliable background choice.
+
+The remainder of Advanced uses explicit peer sections rather than accidental
+indentation:
+
+- **Screen-off availability** owns None, Wi-Fi-only, and CPU+Wi-Fi wake policy.
+  Wake locks are available only with Reliable background so a hidden
+  best-effort process cannot consume persistent CPU or Wi-Fi power.
+- **Automation & safety** owns start on boot, low-battery shutdown, and its
+  threshold. Start on boot requires Reliable background; low-battery protection
+  remains useful for any running server.
+- **Power diagnostics** remains a separate read-only section.
+
+Selecting Reliable background requests notification permission when needed and
+otherwise leaves the previous lifetime mode selected. Selecting start on boot
+may drive the same permission flow, but boot start is not enabled until Reliable
+background is valid. All service, boot, debug, and UI entry points enforce the
+same rules rather than relying on Compose alone.
+
 ## Current implementation
 
 - `KotlinHttpServer` owns bounded JVM sockets, request parsing, response

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import androidx.documentfile.provider.DocumentFile
+import app.ok200.android.R
 import java.io.InputStream
 
 /** A read-only Storage Access Framework document tree. */
@@ -13,11 +14,11 @@ class SafFileTree(
 ) : ReadOnlyFileTree {
     private val resolver = context.applicationContext.contentResolver
     private val root = requireNotNull(DocumentFile.fromTreeUri(context.applicationContext, rootUri)) {
-        "Selected folder is invalid"
+        context.getString(R.string.error_selected_folder_invalid)
     }
 
     init {
-        require(root.isDirectory) { "Selected folder is not readable" }
+        require(root.isDirectory) { context.getString(R.string.error_selected_folder_not_readable) }
     }
 
     override fun metadata(path: List<String>): TreeEntry? = find(path)?.toTreeEntry()

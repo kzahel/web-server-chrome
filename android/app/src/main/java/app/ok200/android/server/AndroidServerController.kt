@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Environment
 import android.util.Log
 import androidx.core.content.ContextCompat
+import app.ok200.android.R
 import app.ok200.android.power.DozeMonitor
 import app.ok200.android.power.WakeLockManager
 import app.ok200.android.server.storage.FilesystemFileTree
@@ -33,8 +34,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 private const val TAG = "AndroidServerController"
-const val RELIABLE_NOTIFICATION_REQUIRED =
-    "Enable notifications before using Reliable background"
 
 enum class ServerPhase {
     STOPPED,
@@ -78,7 +77,11 @@ class AndroidServerController(
             ServerLifetimeMode.RELIABLE -> {
                 if (!ServiceNotificationPolicy.canShowOngoingNotification(appContext)) {
                     settings.desiredRunning = false
-                    scope.launch { commandMutex.withLock { failStart(RELIABLE_NOTIFICATION_REQUIRED) } }
+                    scope.launch {
+                        commandMutex.withLock {
+                            failStart(appContext.getString(R.string.error_reliable_notifications_required))
+                        }
+                    }
                     return
                 }
                 settings.desiredRunning = true
@@ -99,7 +102,11 @@ class AndroidServerController(
             !ServiceNotificationPolicy.canShowOngoingNotification(appContext)
         ) {
             onNotificationAvailabilityChanged(false)
-            scope.launch { commandMutex.withLock { failStart(RELIABLE_NOTIFICATION_REQUIRED) } }
+            scope.launch {
+                commandMutex.withLock {
+                    failStart(appContext.getString(R.string.error_reliable_notifications_required))
+                }
+            }
             return
         }
         settings.desiredRunning = true
@@ -123,9 +130,11 @@ class AndroidServerController(
         if (current.phase == ServerPhase.STARTING) return current
 
         val rootValue = settings.rootUri
-        if (rootValue.isNullOrBlank()) return failStart("No folder selected")
+        if (rootValue.isNullOrBlank()) {
+            return failStart(appContext.getString(R.string.error_no_folder_selected))
+        }
         val rootUri = runCatching { Uri.parse(rootValue) }.getOrNull()
-            ?: return failStart("Selected folder is invalid")
+            ?: return failStart(appContext.getString(R.string.error_selected_folder_invalid))
 
         _state.value = ServerState(
             phase = ServerPhase.STARTING,
@@ -170,7 +179,7 @@ class AndroidServerController(
             return _state.value
         } catch (error: Exception) {
             Log.e(TAG, "Failed to start server", error)
-            return failStart(error.message ?: "Unable to start server")
+            return failStart(error.message ?: appContext.getString(R.string.error_unable_to_start_server))
         }
     }
 
@@ -295,23 +304,28 @@ class AndroidServerController(
     private fun createTree(uri: Uri): ReadOnlyFileTree = when (uri.scheme?.lowercase()) {
         "file" -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
-                error("All files access is required for a filesystem root")
+                error(appContext.getString(R.string.error_all_files_access_required))
             }
-            val path = uri.path ?: error("Filesystem root has no path")
+            val path = uri.path ?: error(appContext.getString(R.string.error_filesystem_root_has_no_path))
             val root = File(path).canonicalFile
-            require(root.path != File.separator) { "The Android OS root cannot be served" }
-            FilesystemFileTree(root)
+            require(root.path != File.separator) {
+                appContext.getString(R.string.error_android_root_cannot_be_served)
+            }
+            FilesystemFileTree(
+                root,
+                appContext.getString(R.string.error_serving_root_not_readable)
+            )
         }
         "content" -> {
             val hasPersistedReadAccess = appContext.contentResolver.persistedUriPermissions.any {
                 it.uri == uri && it.isReadPermission
             }
             check(hasPersistedReadAccess) {
-                "Folder access was revoked. Select the folder again"
+                appContext.getString(R.string.error_folder_access_revoked)
             }
             SafFileTree(appContext, uri)
         }
-        else -> error("Unsupported folder URI")
+        else -> error(appContext.getString(R.string.error_unsupported_folder))
     }
 
     private fun bindHost(): String = if (settings.lanEnabled) "0.0.0.0" else "127.0.0.1"

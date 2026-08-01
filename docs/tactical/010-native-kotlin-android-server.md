@@ -720,6 +720,16 @@ This tactical is complete only when all of the following are true:
   SAF implementation acronym. Compile, JVM tests, lint, and all five targeted
   AVD instrumentation tests pass; a clean-data debug RPC probe reports
   `wakeLockMode=none` and `corsEnabled=false`.
+- Follow-up localization pass extracted Compose, accessibility, notification,
+  lifecycle, storage-error, and filesystem-picker copy into Android resources.
+  The default locale is declared as `en-US`, locale configuration is generated
+  from resource folders, debug builds expose expanded and RTL pseudo-locales,
+  and a unit source guard rejects common hard-coded UI-copy patterns. HTTP wire
+  text and generated directory listings remain outside the Android control-UI
+  localization boundary to preserve the server behavior contract; logs, RPC
+  JSON, identifiers, paths, and URLs remain technical data. Compile, JVM tests,
+  lint, and all five AVD instrumentation tests pass. Expanded and RTL visual
+  checks cover layout growth, mirroring, and mixed-direction brand isolation.
 
 ## Intended change boundaries
 

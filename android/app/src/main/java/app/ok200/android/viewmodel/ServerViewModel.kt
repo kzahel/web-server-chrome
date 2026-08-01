@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Environment
 import androidx.lifecycle.AndroidViewModel
 import app.ok200.android.Ok200Application
+import app.ok200.android.R
 import app.ok200.android.service.ServiceNotificationPolicy
 import app.ok200.android.settings.ServerLifetimeMode
 import app.ok200.android.settings.WakeLockMode
@@ -198,7 +199,7 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
         if (controller.onNotificationAvailabilityChanged(available)) {
             settings.reliableNotificationBlockedNotice = false
             _startOnBoot.value = settings.startOnBoot
-            _uiMessage.value = RELIABLE_NOTIFICATION_STOPPED_MESSAGE
+            _uiMessage.value = app.getString(R.string.message_reliable_notifications_stopped)
         }
     }
 
@@ -207,7 +208,9 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
         val action = pendingNotificationAction
         pendingNotificationAction = null
         if (!_notificationPermissionGranted.value) {
-            if (action != null) _uiMessage.value = RELIABLE_NOTIFICATION_REQUIRED_MESSAGE
+            if (action != null) {
+                _uiMessage.value = app.getString(R.string.message_reliable_notifications_required)
+            }
             return
         }
         when (action) {
@@ -238,7 +241,7 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
     private fun consumeStoredLifecycleNotice(): String? {
         if (!settings.reliableNotificationBlockedNotice) return null
         settings.reliableNotificationBlockedNotice = false
-        return RELIABLE_NOTIFICATION_STOPPED_MESSAGE
+        return app.getString(R.string.message_reliable_notifications_stopped)
     }
 
     private fun hasAllFilesAccess(): Boolean =
@@ -260,10 +263,4 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
         START_ON_BOOT
     }
 
-    private companion object {
-        const val RELIABLE_NOTIFICATION_REQUIRED_MESSAGE =
-            "Enable notifications to use Reliable background."
-        const val RELIABLE_NOTIFICATION_STOPPED_MESSAGE =
-            "Notifications were disabled, so reliable background serving stopped."
-    }
 }

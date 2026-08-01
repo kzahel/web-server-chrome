@@ -1,4 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">200 OK Web Server</string>
+    <string name="brand_name" translatable="false">200 OK</string>
+    <string name="web_server">Web Server</string>
+
+    <!-- Common actions -->
+    <string name="action_cancel">Cancel</string>
+    <string name="action_change">Change</string>
+    <string name="action_create">Create</string>
+    <string name="action_enable">Enable</string>
+    <string name="action_manage">Manage</string>
+    <string name="action_select">Select</string>
+    <string name="action_stop">Stop</string>
+    <string name="action_stop_server">Stop server</string>
+    <string name="action_use_this_folder">Use this folder</string>
+    <string name="action_feedback">Feedback</string>
+    <string name="action_source">Source</string>
+
+    <!-- Notifications and foreground service -->
+    <string name="notification_channel_server_name">Web Server</string>
+    <string name="notification_channel_server_description">Shows when 200 OK is serving</string>
+    <string name="notification_serving_on_port">Serving on port %1$d%2$s</string>
+    <string name="notification_starting">Starting…</string>
+    <string name="notification_wake_lock_cpu_wifi"> · CPU+WiFi lock</string>
+    <string name="notification_wake_lock_wifi"> · WiFi lock</string>
+
+    <!-- Runtime and storage errors -->
+    <string name="error_reliable_notifications_required">Enable notifications before using Reliable background</string>
+    <string name="error_no_folder_selected">No folder selected</string>
+    <string name="error_selected_folder_invalid">Selected folder is invalid</string>
+    <string name="error_selected_folder_not_readable">Selected folder is not readable</string>
+    <string name="error_unable_to_start_server">Unable to start server</string>
+    <string name="error_all_files_access_required">All files access is required for a filesystem root</string>
+    <string name="error_filesystem_root_has_no_path">Filesystem root has no path</string>
+    <string name="error_android_root_cannot_be_served">The Android OS root cannot be served</string>
+    <string name="error_folder_access_revoked">Folder access was revoked. Select the folder again</string>
+    <string name="error_unsupported_folder">Unsupported folder</string>
+    <string name="error_serving_root_not_readable">Serving root is not a readable directory</string>
+
+    <!-- Lifecycle messages -->
+    <string name="message_reliable_notifications_required">Enable notifications to use Reliable background.</string>
+    <string name="message_reliable_notifications_stopped">Notifications were disabled, so reliable background serving stopped.</string>
+
+    <!-- Main screen -->
+    <string name="settings_locked_message">Stop the web server before changing settings.</string>
+    <string name="dialog_serve_all_storage_title">Serve all shared storage?</string>
+    <string name="dialog_serve_all_storage_message">Every readable file under %1$s may be reachable from the selected network. Choose a narrower folder unless you intend this exposure.</string>
+    <string name="server_blocked_choose_folder">Choose a folder to enable</string>
+    <string name="server_blocked_invalid_port">Enter a valid port to enable</string>
+    <string name="server_blocked_enable_notifications">Enable notifications for Reliable background</string>
+
+    <string name="section_serving_folder">Serving folder</string>
+    <string name="folder_none_selected">No folder selected</string>
+    <string name="folder_access_direct">Direct folder access</string>
+    <string name="folder_access_android">Android folder access</string>
+    <string name="folder_action_filesystem">Filesystem</string>
+
+    <string name="section_network">Network</string>
+    <string name="setting_port">Port</string>
+    <string name="setting_port_automatic_active">0 chooses a free port when started</string>
+    <string name="setting_port_help">1–65535, or 0 for automatic</string>
+    <string name="setting_lan_title">Available on local network</string>
+    <string name="setting_lan_enabled_description">Other devices on this network can connect</string>
+    <string name="setting_lan_disabled_description">Only this Android device can connect</string>
+
+    <string name="section_serving_behavior">Serving behavior</string>
+    <string name="setting_directory_listing_title">Directory listing</string>
+    <string name="setting_directory_listing_description">Show folder contents when no index.html exists</string>
+    <string name="setting_cors_title" translatable="false">CORS</string>
+    <string name="setting_cors_description">Allow browser requests from other origins</string>
+    <string name="setting_spa_title">Single-page app fallback</string>
+    <string name="setting_spa_description">Serve the root index.html for missing routes</string>
+
+    <string name="advanced_title">Advanced</string>
+    <string name="advanced_description">Storage access, serving lifetime, power, and boot</string>
+    <string name="accessibility_expand_advanced">Expand Advanced</string>
+    <string name="accessibility_collapse_advanced">Collapse Advanced</string>
+
+    <string name="server_settings_title">Server settings</string>
+    <string name="server_settings_description">Folder, network, and serving behavior</string>
+    <string name="server_settings_locked_description">Locked while the server is running. Stop the server to change folder, network, or serving behavior.</string>
+    <string name="accessibility_server_settings_locked">Server settings locked while the server is running</string>
+
+    <!-- Server status and URLs -->
+    <string name="server_status_stopped">Stopped</string>
+    <string name="server_status_starting">Starting…</string>
+    <string name="server_status_running">Running</string>
+    <string name="server_status_stopping">Stopping…</string>
+    <string name="server_status_error">Error</string>
+    <string name="server_detail_ready_for_requests">Ready for HTTP requests</string>
+    <string name="server_detail_please_wait">Please wait</string>
+    <string name="server_detail_complete_settings">Complete the required settings to enable</string>
+    <string name="server_detail_ready_to_start">Ready to start</string>
+    <string name="server_control_title">Web server</string>
+    <string name="accessibility_start_web_server">Start web server</string>
+    <string name="accessibility_stop_web_server">Stop web server</string>
+    <string name="url_lan_http_only">LAN address · HTTP only</string>
+    <string name="url_device_http_only">This device · HTTP only</string>
+    <string name="accessibility_open_url">Open URL</string>
+    <string name="accessibility_copy_url">Copy URL</string>
+    <string name="url_http_only_help">Use this exact http:// address. HTTPS is not supported.</string>
+    <string name="url_on_this_device">On this device: %1$s</string>
+    <string name="clipboard_server_url_label">Server URL</string>
+    <string name="toast_http_url_copied">HTTP URL copied</string>
+
+    <!-- Advanced settings -->
+    <string name="advanced_storage_access_title">Storage access</string>
+    <string name="setting_all_files_access_title">All files access</string>
+    <string name="setting_all_files_access_granted">Granted — filesystem picker available</string>
+    <string name="setting_all_files_access_optional">Optional: serve folders outside the Android picker</string>
+
+    <string name="advanced_server_lifetime_title">Server lifetime</string>
+    <string name="advanced_server_lifetime_description">Choose what happens after you leave 200 OK</string>
+    <string name="lifetime_app_open_title">While app is open</string>
+    <string name="lifetime_app_open_description">Stops when you leave 200 OK.</string>
+    <string name="lifetime_background_title">Continue in background</string>
+    <string name="lifetime_background_description">No notification. Android may suspend or stop it.</string>
+    <string name="lifetime_reliable_title">Reliable background</string>
+    <string name="lifetime_reliable_description">Ongoing notification; best for long transfers and unattended serving.</string>
+    <string name="notifications_required">Notifications required</string>
+
+    <string name="advanced_screen_off_title">Screen-off availability</string>
+    <string name="advanced_screen_off_ready_description">Keep awake improves reachability but uses more battery</string>
+    <string name="advanced_screen_off_unavailable_description">Available with Reliable background</string>
+    <string name="wake_lock_off_title">Off</string>
+    <string name="wake_lock_wifi_title">WiFi only</string>
+    <string name="wake_lock_full_title">CPU + WiFi</string>
+    <string name="wake_lock_inactive_description">No wake lock is active.</string>
+    <string name="wake_lock_off_description">Allows CPU and Wi-Fi to sleep.</string>
+    <string name="wake_lock_wifi_description">Keeps Wi-Fi available; CPU may sleep.</string>
+    <string name="wake_lock_full_description">Keeps CPU and Wi-Fi awake; highest battery use.</string>
+
+    <string name="advanced_automation_title">Automation &amp; safety</string>
+    <string name="setting_start_on_boot_title">Start on boot</string>
+    <string name="setting_start_on_boot_ready_description">Start automatically after reboot</string>
+    <string name="setting_start_on_boot_unavailable_description">Enables Reliable background and requires notifications</string>
+    <string name="setting_low_battery_title">Stop on low battery</string>
+    <string name="setting_low_battery_enabled_description">Stop at or below %1$d%% when unplugged</string>
+    <string name="setting_low_battery_description">Protect battery during unattended serving</string>
+    <string name="setting_battery_threshold">Battery threshold: %1$d%%</string>
+
+    <string name="advanced_power_diagnostics_title">Power diagnostics</string>
+    <string name="battery_level_percent">%1$d%%</string>
+    <string name="battery_unknown">Battery unknown</string>
+    <string name="battery_charging">Charging</string>
+    <string name="battery_on_battery">On battery</string>
+    <string name="power_state_active">Active</string>
+    <string name="power_state_screen_off">Screen off</string>
+    <string name="power_state_dozing">Dozing</string>
+    <string name="power_state_charging">Charging</string>
+    <string name="power_state_charging_dozing">Charging, dozing</string>
+    <string name="power_diagnostics_summary">%1$s · %2$s · %3$s</string>
+    <string name="doze_active">active</string>
+    <string name="doze_inactive">inactive</string>
+    <string name="optimization_unrestricted">unrestricted</string>
+    <string name="optimization_managed">managed by Android</string>
+    <string name="power_diagnostics_details">Doze: %1$s · Optimization: %2$s</string>
+    <string name="action_battery_optimization_settings">Battery optimization settings</string>
+
+    <string name="project_version">200 OK for Android %1$s</string>
+
+    <!-- Direct filesystem folder picker -->
+    <string name="folder_picker_create_folder">Create folder</string>
+    <string name="folder_picker_folder_name">Folder name</string>
+    <string name="folder_picker_shortcuts">Shortcuts</string>
+    <string name="folder_picker_hidden">Hidden</string>
+    <string name="folder_picker_empty_folder">Empty folder</string>
+    <string name="folder_picker_counts">%1$s, %2$s</string>
+    <plurals name="folder_picker_folder_count">
+        <item quantity="one">%1$d folder</item>
+        <item quantity="other">%1$d folders</item>
+    </plurals>
+    <plurals name="folder_picker_file_count">
+        <item quantity="one">%1$d file</item>
+        <item quantity="other">%1$d files</item>
+    </plurals>
+    <string name="folder_shortcut_external_storage">External storage</string>
+    <string name="folder_shortcut_downloads">Downloads</string>
+    <string name="folder_shortcut_dcim" translatable="false">DCIM</string>
+    <string name="folder_shortcut_documents">Documents</string>
+    <string name="folder_shortcut_filesystem_root">File system root</string>
+
+    <!-- Root-directory descriptions shown by the direct filesystem picker -->
+    <string name="root_dir_sdcard_description">Primary shared storage (/storage/emulated/0)</string>
+    <string name="root_dir_storage_description">Internal and external storage volumes</string>
+    <string name="root_dir_mnt_description">Mount points for media, USB, and OBB</string>
+    <string name="root_dir_data_description">App installs, user data, and databases</string>
+    <string name="root_dir_cache_description">Temporary cached data (absent on A/B devices)</string>
+    <string name="root_dir_metadata_description">Metadata encryption partition</string>
+    <string name="root_dir_system_description">Core Android OS and pre-installed apps</string>
+    <string name="root_dir_system_ext_description">Extensions to the system partition</string>
+    <string name="root_dir_vendor_description">Hardware-specific binaries (Project Treble)</string>
+    <string name="root_dir_product_description">Product/SKU-specific customizations</string>
+    <string name="root_dir_odm_description">Original Device Manufacturer partition</string>
+    <string name="root_dir_oem_description">OEM-specific customizations (legacy)</string>
+    <string name="root_dir_apex_description">Updatable system modules (Project Mainline)</string>
+    <string name="root_dir_config_description">Kernel configfs</string>
+    <string name="root_dir_etc_description">Configuration files (symlink to /system/etc)</string>
+    <string name="root_dir_linkerconfig_description">Dynamic linker namespace configuration</string>
+    <string name="root_dir_dev_description">Device nodes (tmpfs)</string>
+    <string name="root_dir_proc_description">Kernel and process information (procfs)</string>
+    <string name="root_dir_sys_description">Kernel device/driver model (sysfs)</string>
+    <string name="root_dir_acct_description">Process accounting (cgroup)</string>
+    <string name="root_dir_bin_description">Essential command binaries</string>
+    <string name="root_dir_sbin_description">System binaries (restricted)</string>
+    <string name="root_dir_init_description">Init process binary and configs</string>
+    <string name="root_dir_d_description">Symlink to /sys/kernel/debug (debugfs)</string>
+    <string name="root_dir_bugreports_description">Symlink for bug report generation</string>
+    <string name="root_dir_charger_description">Off-mode charging resources</string>
+    <string name="root_dir_debug_ramdisk_description">Debug-mode ramdisk</string>
+    <string name="root_dir_postinstall_description">OTA post-install staging</string>
+    <string name="root_dir_tmp_description">Temporary files (tmpfs)</string>
 </resources>

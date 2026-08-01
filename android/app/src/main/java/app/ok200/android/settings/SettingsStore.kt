@@ -2,7 +2,9 @@ package app.ok200.android.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.annotation.StringRes
 import androidx.core.content.edit
+import app.ok200.android.R
 
 private const val PREFS_NAME = "ok200_prefs"
 internal const val DEFAULT_CORS_ENABLED = false
@@ -131,15 +133,15 @@ class SettingsStore(context: Context) {
 }
 
 /** Server ownership after the application leaves the foreground. */
-enum class ServerLifetimeMode(val key: String, val label: String) {
+enum class ServerLifetimeMode(val key: String, @StringRes val labelRes: Int) {
     /** Deterministic activity-scoped serving. */
-    APP_OPEN("app_open", "While app is open"),
+    APP_OPEN("app_open", R.string.lifetime_app_open_title),
 
     /** Application-owned serving with no Android component keeping the process important. */
-    BACKGROUND("background", "Continue in background"),
+    BACKGROUND("background", R.string.lifetime_background_title),
 
     /** Foreground-service serving with a visible ongoing notification. */
-    RELIABLE("reliable", "Reliable background");
+    RELIABLE("reliable", R.string.lifetime_reliable_title);
 
     companion object {
         fun fromString(key: String): ServerLifetimeMode =
@@ -166,15 +168,15 @@ object ServerLifetimePolicy {
 /**
  * Three-tier wake lock aggressiveness.
  */
-enum class WakeLockMode(val key: String, val label: String) {
+enum class WakeLockMode(val key: String, @StringRes val labelRes: Int) {
     /** No locks — battery priority. Server may become unreachable when screen off. */
-    NONE("none", "Off"),
+    NONE("none", R.string.wake_lock_off_title),
 
     /** WiFi lock only — keeps network alive, allows CPU to sleep between requests. */
-    WIFI_ONLY("wifi_only", "WiFi only"),
+    WIFI_ONLY("wifi_only", R.string.wake_lock_wifi_title),
 
     /** CPU + WiFi locks — maximum reliability, highest battery usage. */
-    FULL("full", "CPU + WiFi");
+    FULL("full", R.string.wake_lock_full_title);
 
     companion object {
         val DEFAULT = NONE

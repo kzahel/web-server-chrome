@@ -5,12 +5,15 @@ import java.io.FileInputStream
 import java.io.InputStream
 
 /** A canonical, containment-checked filesystem serving root. */
-class FilesystemFileTree(root: File) : ReadOnlyFileTree {
+class FilesystemFileTree(
+    root: File,
+    unreadableRootMessage: String
+) : ReadOnlyFileTree {
     private val canonicalRoot = root.canonicalFile
     private val rootPrefix = canonicalRoot.path.trimEnd(File.separatorChar) + File.separator
 
     init {
-        require(canonicalRoot.isDirectory) { "Serving root is not a readable directory" }
+        require(canonicalRoot.isDirectory) { unreadableRootMessage }
     }
 
     override fun metadata(path: List<String>): TreeEntry? {

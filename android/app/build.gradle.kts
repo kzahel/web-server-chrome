@@ -56,6 +56,7 @@ android {
     buildTypes {
         debug {
             signingConfig = signingConfigs.getByName("debug")
+            isPseudoLocalesEnabled = true
         }
         release {
             signingConfig = signingConfigs.getByName("release")
@@ -80,6 +81,9 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+    androidResources {
+        generateLocaleConfig = true
     }
     packaging {
         resources {

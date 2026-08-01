@@ -45,10 +45,10 @@ class Ok200Application : Application() {
         manager.createNotificationChannel(
             NotificationChannel(
                 SERVICE_NOTIFICATION_CHANNEL_ID,
-                "Web Server",
+                getString(R.string.notification_channel_server_name),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Shows when 200 OK is serving"
+                description = getString(R.string.notification_channel_server_description)
                 setShowBadge(false)
             }
         )

@@ -5,6 +5,11 @@
 ### Added
 - Add stable Feedback & support and Source · MIT links to the main screen.
 
+### Changed
+- Extract Android UI, accessibility, notification, lifecycle, and storage copy
+  into locale resources, with generated app-language metadata and debug
+  pseudo-locales for translation testing.
+
 ## [0.1.2]
 
 ### Fixed

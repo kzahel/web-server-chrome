@@ -71,6 +71,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
@@ -79,8 +80,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.text.BidiFormatter
+import androidx.core.text.TextDirectionHeuristicsCompat
 import app.ok200.android.BuildConfig
 import app.ok200.android.R
+import app.ok200.android.power.DozeMonitor.PowerState
 import app.ok200.android.server.ServerPhase
 import app.ok200.android.settings.ServerLifetimeMode
 import app.ok200.android.settings.WakeLockMode
@@ -125,6 +129,9 @@ fun ServerScreen(
     val uriHandler = LocalUriHandler.current
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    val settingsLockedMessage = stringResource(R.string.settings_locked_message)
+    val stopServerAction = stringResource(R.string.action_stop_server)
+    val androidRootError = stringResource(R.string.error_android_root_cannot_be_served)
 
     var portText by remember(configuredPort) { mutableStateOf(configuredPort.toString()) }
     var showFilePicker by remember { mutableStateOf(false) }
@@ -138,8 +145,8 @@ fun ServerScreen(
     val onLockedSettingsTap: () -> Unit = {
         coroutineScope.launch {
             val result = snackbarHostState.showSnackbar(
-                message = "Stop the web server before changing settings.",
-                actionLabel = "Stop server",
+                message = settingsLockedMessage,
+                actionLabel = stopServerAction,
                 withDismissAction = true
             )
             if (result == SnackbarResult.ActionPerformed) {
@@ -159,7 +166,7 @@ fun ServerScreen(
             onFolderSelected = { file ->
                 when {
                     file.canonicalPath == File.separator -> {
-                        Toast.makeText(context, "The Android OS root cannot be served", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, androidRootError, Toast.LENGTH_LONG).show()
                     }
                     isBroadStorageRoot(file) -> broadRootCandidate = file
                     else -> viewModel.setRootUri(Uri.fromFile(file), file.absolutePath)
@@ -173,11 +180,10 @@ fun ServerScreen(
     broadRootCandidate?.let { file ->
         AlertDialog(
             onDismissRequest = { broadRootCandidate = null },
-            title = { Text("Serve all shared storage?") },
+            title = { Text(stringResource(R.string.dialog_serve_all_storage_title)) },
             text = {
                 Text(
-                    "Every readable file under ${file.absolutePath} may be reachable from the selected network. " +
-                        "Choose a narrower folder unless you intend this exposure."
+                    stringResource(R.string.dialog_serve_all_storage_message, file.absolutePath)
                 )
             },
             confirmButton = {
@@ -186,10 +192,12 @@ fun ServerScreen(
                         viewModel.setRootUri(Uri.fromFile(file), file.absolutePath)
                         broadRootCandidate = null
                     }
-                ) { Text("Use this folder") }
+                ) { Text(stringResource(R.string.action_use_this_folder)) }
             },
             dismissButton = {
-                TextButton(onClick = { broadRootCandidate = null }) { Text("Cancel") }
+                TextButton(onClick = { broadRootCandidate = null }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
             }
         )
     }
@@ -211,9 +219,9 @@ fun ServerScreen(
                     error = state.error,
                     canStart = rootUri != null && portValid && lifetimeReady,
                     blockedReason = when {
-                        rootUri == null -> "Choose a folder to enable"
-                        !portValid -> "Enter a valid port to enable"
-                        !lifetimeReady -> "Enable notifications for Reliable background"
+                        rootUri == null -> stringResource(R.string.server_blocked_choose_folder)
+                        !portValid -> stringResource(R.string.server_blocked_invalid_port)
+                        !lifetimeReady -> stringResource(R.string.server_blocked_enable_notifications)
                         else -> null
                     },
                     onStart = viewModel::startServer,
@@ -238,7 +246,7 @@ fun ServerScreen(
                     onLockedClick = onLockedSettingsTap
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        SectionLabel("Serving folder")
+                        SectionLabel(stringResource(R.string.section_serving_folder))
                         ElevatedCard(modifier = Modifier.fillMaxWidth().testTag("root-card")) {
                             Row(
                                 modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -248,31 +256,43 @@ fun ServerScreen(
                                 Spacer(Modifier.width(12.dp))
                                 Column(Modifier.weight(1f)) {
                                     Text(
-                                        if (rootUri == null) "No folder selected" else rootDisplayName,
+                                        if (rootUri == null) {
+                                            stringResource(R.string.folder_none_selected)
+                                        } else {
+                                            rootDisplayName
+                                        },
                                         style = MaterialTheme.typography.titleMedium,
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
-                                        if (rootUri?.scheme == "file") "Direct folder access" else "Android folder access",
+                                        if (rootUri?.scheme == "file") {
+                                            stringResource(R.string.folder_access_direct)
+                                        } else {
+                                            stringResource(R.string.folder_access_android)
+                                        },
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                                 Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(6.dp)) {
                                     Button(onClick = onPickFolder, enabled = settingsEnabled) {
-                                        Text(if (rootUri == null) "Select" else "Change")
+                                        Text(
+                                            stringResource(
+                                                if (rootUri == null) R.string.action_select else R.string.action_change
+                                            )
+                                        )
                                     }
                                     if (allFilesAccess) {
                                         TextButton(onClick = { showFilePicker = true }, enabled = settingsEnabled) {
-                                            Text("Filesystem")
+                                            Text(stringResource(R.string.folder_action_filesystem))
                                         }
                                     }
                                 }
                             }
                         }
 
-                        SectionLabel("Network")
+                        SectionLabel(stringResource(R.string.section_network))
                         OutlinedTextField(
                             value = portText,
                             onValueChange = { value ->
@@ -281,9 +301,17 @@ fun ServerScreen(
                                     value.toIntOrNull()?.takeIf { it in 0..65_535 }?.let(viewModel::setPort)
                                 }
                             },
-                            label = { Text("Port") },
+                            label = { Text(stringResource(R.string.setting_port)) },
                             supportingText = {
-                                Text(if (configuredPort == 0) "0 chooses a free port when started" else "1–65535, or 0 for automatic")
+                                Text(
+                                    stringResource(
+                                        if (configuredPort == 0) {
+                                            R.string.setting_port_automatic_active
+                                        } else {
+                                            R.string.setting_port_help
+                                        }
+                                    )
+                                )
                             },
                             isError = !portValid,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -292,21 +320,45 @@ fun ServerScreen(
                             modifier = Modifier.fillMaxWidth().testTag("port-input")
                         )
                         SettingToggle(
-                            title = "Available on local network",
-                            description = if (lanEnabled) "Other devices on this network can connect" else "Only this Android device can connect",
+                            title = stringResource(R.string.setting_lan_title),
+                            description = stringResource(
+                                if (lanEnabled) {
+                                    R.string.setting_lan_enabled_description
+                                } else {
+                                    R.string.setting_lan_disabled_description
+                                }
+                            ),
                             checked = lanEnabled,
                             onCheckedChange = viewModel::setLanEnabled,
                             enabled = settingsEnabled
                         )
 
-                        SectionLabel("Serving behavior")
+                        SectionLabel(stringResource(R.string.section_serving_behavior))
                         Card(modifier = Modifier.fillMaxWidth()) {
                             Column {
-                                CompactToggle("Directory listing", "Show folder contents when no index.html exists", directoryListing, viewModel::setDirectoryListing, settingsEnabled)
+                                CompactToggle(
+                                    stringResource(R.string.setting_directory_listing_title),
+                                    stringResource(R.string.setting_directory_listing_description),
+                                    directoryListing,
+                                    viewModel::setDirectoryListing,
+                                    settingsEnabled
+                                )
                                 HorizontalDivider()
-                                CompactToggle("CORS", "Allow browser requests from other origins", corsEnabled, viewModel::setCorsEnabled, settingsEnabled)
+                                CompactToggle(
+                                    stringResource(R.string.setting_cors_title),
+                                    stringResource(R.string.setting_cors_description),
+                                    corsEnabled,
+                                    viewModel::setCorsEnabled,
+                                    settingsEnabled
+                                )
                                 HorizontalDivider()
-                                CompactToggle("Single-page app fallback", "Serve the root index.html for missing routes", spaEnabled, viewModel::setSpaEnabled, settingsEnabled)
+                                CompactToggle(
+                                    stringResource(R.string.setting_spa_title),
+                                    stringResource(R.string.setting_spa_description),
+                                    spaEnabled,
+                                    viewModel::setSpaEnabled,
+                                    settingsEnabled
+                                )
                             }
                         }
                     }
@@ -321,16 +373,22 @@ fun ServerScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(Modifier.weight(1f)) {
-                            Text("Advanced", style = MaterialTheme.typography.titleMedium)
+                            Text(stringResource(R.string.advanced_title), style = MaterialTheme.typography.titleMedium)
                             Text(
-                                "Storage access, serving lifetime, power, and boot",
+                                stringResource(R.string.advanced_description),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         Icon(
                             if (advancedExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                            contentDescription = if (advancedExpanded) "Collapse Advanced" else "Expand Advanced"
+                            contentDescription = stringResource(
+                                if (advancedExpanded) {
+                                    R.string.accessibility_collapse_advanced
+                                } else {
+                                    R.string.accessibility_expand_advanced
+                                }
+                            )
                         )
                     }
                     AnimatedVisibility(advancedExpanded) {
@@ -345,7 +403,7 @@ fun ServerScreen(
                             batteryLevel = batteryLevel,
                             charging = charging,
                             dozing = dozing,
-                            powerState = powerState.name,
+                            powerState = powerState,
                             ignoringBatteryOptimizations = viewModel.isIgnoringBatteryOptimizations(),
                             onManageAllFiles = onRequestAllFilesAccess,
                             onLifetimeModeChanged = { mode ->
@@ -376,6 +434,10 @@ fun ServerScreen(
 
 @Composable
 private fun Header() {
+    val brandName = BidiFormatter.getInstance().unicodeWrap(
+        stringResource(R.string.brand_name),
+        TextDirectionHeuristicsCompat.LTR
+    )
     Row(verticalAlignment = Alignment.CenterVertically) {
         Image(
             painter = painterResource(R.mipmap.ic_launcher_foreground),
@@ -384,8 +446,13 @@ private fun Header() {
         )
         Spacer(Modifier.width(12.dp))
         Column {
-            Text("200 OK", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-            Text("Web Server", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                brandName,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.testTag("brand-name")
+            )
+            Text(stringResource(R.string.web_server), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -401,12 +468,16 @@ private fun ServerSettingsHeader(locked: Boolean) {
         modifier = Modifier.fillMaxWidth().testTag("server-settings-header"),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        Text("Server settings", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Text(
+            stringResource(R.string.server_settings_title),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold
+        )
         Text(
             if (locked) {
-                "Locked while the server is running. Stop the server to change folder, network, or serving behavior."
+                stringResource(R.string.server_settings_locked_description)
             } else {
-                "Folder, network, and serving behavior"
+                stringResource(R.string.server_settings_description)
             },
             style = MaterialTheme.typography.bodySmall,
             color = if (locked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
@@ -420,6 +491,7 @@ internal fun LockedSettingsContainer(
     onLockedClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
+    val lockedDescription = stringResource(R.string.accessibility_server_settings_locked)
     Box(Modifier.fillMaxWidth()) {
         content()
         if (locked) {
@@ -434,7 +506,7 @@ internal fun LockedSettingsContainer(
                     )
                     .testTag("locked-settings-overlay")
                     .semantics {
-                        contentDescription = "Server settings locked while the server is running"
+                        contentDescription = lockedDescription
                     }
             )
         }
@@ -454,18 +526,21 @@ private fun ServerControl(
     val busy = phase == ServerPhase.STARTING || phase == ServerPhase.STOPPING
     val switchOn = running || phase == ServerPhase.STARTING
     val status = when (phase) {
-        ServerPhase.STOPPED -> "Stopped"
-        ServerPhase.STARTING -> "Starting…"
-        ServerPhase.RUNNING -> "Running"
-        ServerPhase.STOPPING -> "Stopping…"
-        ServerPhase.FAILED -> "Error"
+        ServerPhase.STOPPED -> stringResource(R.string.server_status_stopped)
+        ServerPhase.STARTING -> stringResource(R.string.server_status_starting)
+        ServerPhase.RUNNING -> stringResource(R.string.server_status_running)
+        ServerPhase.STOPPING -> stringResource(R.string.server_status_stopping)
+        ServerPhase.FAILED -> stringResource(R.string.server_status_error)
     }
     val detail = error ?: when {
-        running -> "Ready for HTTP requests"
-        busy -> "Please wait"
-        !canStart -> blockedReason ?: "Complete the required settings to enable"
-        else -> "Ready to start"
+        running -> stringResource(R.string.server_detail_ready_for_requests)
+        busy -> stringResource(R.string.server_detail_please_wait)
+        !canStart -> blockedReason ?: stringResource(R.string.server_detail_complete_settings)
+        else -> stringResource(R.string.server_detail_ready_to_start)
     }
+    val switchDescription = stringResource(
+        if (running) R.string.accessibility_stop_web_server else R.string.accessibility_start_web_server
+    )
     ElevatedCard(
         modifier = Modifier.fillMaxWidth().testTag("server-status"),
         colors = CardDefaults.cardColors(
@@ -479,7 +554,7 @@ private fun ServerControl(
             Icon(Icons.Default.PowerSettingsNew, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text("Web server", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.server_control_title), style = MaterialTheme.typography.titleMedium)
                 Text(status, style = MaterialTheme.typography.labelLarge)
                 Text(
                     detail,
@@ -494,7 +569,7 @@ private fun ServerControl(
                 modifier = Modifier
                     .testTag("server-toggle")
                     .semantics {
-                        contentDescription = if (running) "Stop web server" else "Start web server"
+                        contentDescription = switchDescription
                     }
             )
         }
@@ -515,12 +590,24 @@ private fun RunningUrls(
                 Icon(Icons.Default.Language, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                 Spacer(Modifier.width(10.dp))
                 Text(
-                    if (isLanAddress) "LAN address · HTTP only" else "This device · HTTP only",
+                    stringResource(
+                        if (isLanAddress) R.string.url_lan_http_only else R.string.url_device_http_only
+                    ),
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.weight(1f)
                 )
-                IconButton(onClick = onOpen) { Icon(Icons.Default.OpenInBrowser, "Open URL") }
-                IconButton(onClick = onCopy) { Icon(Icons.Default.ContentCopy, "Copy URL") }
+                IconButton(onClick = onOpen) {
+                    Icon(
+                        Icons.Default.OpenInBrowser,
+                        stringResource(R.string.accessibility_open_url)
+                    )
+                }
+                IconButton(onClick = onCopy) {
+                    Icon(
+                        Icons.Default.ContentCopy,
+                        stringResource(R.string.accessibility_copy_url)
+                    )
+                }
             }
             Text(
                 primaryUrl,
@@ -530,13 +617,17 @@ private fun RunningUrls(
                 modifier = Modifier.fillMaxWidth().clickable(onClick = onOpen).testTag("server-url")
             )
             Text(
-                "Use this exact http:// address. HTTPS is not supported.",
+                stringResource(R.string.url_http_only_help),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             if (showLoopback) {
+                val loopbackUrl = primaryUrl.replaceAfter(
+                    "//",
+                    "127.0.0.1:" + primaryUrl.substringAfterLast(':')
+                )
                 Text(
-                    "On this device: ${primaryUrl.replaceAfter("//", "127.0.0.1:" + primaryUrl.substringAfterLast(':'))}",
+                    stringResource(R.string.url_on_this_device, loopbackUrl),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -557,7 +648,7 @@ private fun AdvancedSettings(
     batteryLevel: Int,
     charging: Boolean,
     dozing: Boolean,
-    powerState: String,
+    powerState: PowerState,
     ignoringBatteryOptimizations: Boolean,
     onManageAllFiles: () -> Unit,
     onLifetimeModeChanged: (ServerLifetimeMode) -> Unit,
@@ -574,28 +665,33 @@ private fun AdvancedSettings(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         HorizontalDivider()
-        AdvancedSectionHeader("Storage access")
+        AdvancedSectionHeader(stringResource(R.string.advanced_storage_access_title))
         PermissionRow(
-            title = "All files access",
-            description = if (allFilesAccess) "Granted — filesystem picker available" else "Optional: serve folders outside the Android picker",
-            action = "Manage",
+            title = stringResource(R.string.setting_all_files_access_title),
+            description = stringResource(
+                if (allFilesAccess) {
+                    R.string.setting_all_files_access_granted
+                } else {
+                    R.string.setting_all_files_access_optional
+                }
+            ),
+            action = stringResource(R.string.action_manage),
             onClick = onManageAllFiles
         )
 
         HorizontalDivider()
         AdvancedSectionHeader(
-            title = "Server lifetime",
-            description = "Choose what happens after you leave 200 OK"
+            title = stringResource(R.string.advanced_server_lifetime_title),
+            description = stringResource(R.string.advanced_server_lifetime_description)
         )
         ServerLifetimeMode.entries.forEachIndexed { index, mode ->
             if (index > 0) HorizontalDivider()
             LifetimeOption(
-                title = mode.label,
+                title = stringResource(mode.labelRes),
                 description = when (mode) {
-                    ServerLifetimeMode.APP_OPEN -> "Stops when you leave 200 OK."
-                    ServerLifetimeMode.BACKGROUND -> "No notification. Android may suspend or stop it."
-                    ServerLifetimeMode.RELIABLE ->
-                        "Ongoing notification; best for long transfers and unattended serving."
+                    ServerLifetimeMode.APP_OPEN -> stringResource(R.string.lifetime_app_open_description)
+                    ServerLifetimeMode.BACKGROUND -> stringResource(R.string.lifetime_background_description)
+                    ServerLifetimeMode.RELIABLE -> stringResource(R.string.lifetime_reliable_description)
                 },
                 selected = lifetimeMode == mode,
                 onClick = { onLifetimeModeChanged(mode) }
@@ -604,22 +700,24 @@ private fun AdvancedSettings(
         if (lifetimeMode == ServerLifetimeMode.RELIABLE && !notificationGranted) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    "Notifications required",
+                    stringResource(R.string.notifications_required),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.weight(1f)
                 )
-                TextButton(onClick = onNotificationAction) { Text("Enable") }
+                TextButton(onClick = onNotificationAction) {
+                    Text(stringResource(R.string.action_enable))
+                }
             }
         }
 
         HorizontalDivider()
         AdvancedSectionHeader(
-            title = "Screen-off availability",
+            title = stringResource(R.string.advanced_screen_off_title),
             description = if (reliableReady) {
-                "Keep awake improves reachability but uses more battery"
+                stringResource(R.string.advanced_screen_off_ready_description)
             } else {
-                "Available with Reliable background"
+                stringResource(R.string.advanced_screen_off_unavailable_description)
             }
         )
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -628,18 +726,18 @@ private fun AdvancedSettings(
                     selected = wakeLockMode == mode,
                     onClick = { onWakeModeChanged(mode) },
                     enabled = reliableReady,
-                    label = { Text(mode.label) }
+                    label = { Text(stringResource(mode.labelRes)) }
                 )
             }
         }
         Text(
             if (!reliableReady) {
-                "No wake lock is active."
+                stringResource(R.string.wake_lock_inactive_description)
             } else {
                 when (wakeLockMode) {
-                    WakeLockMode.NONE -> "Allows CPU and Wi-Fi to sleep."
-                    WakeLockMode.WIFI_ONLY -> "Keeps Wi-Fi available; CPU may sleep."
-                    WakeLockMode.FULL -> "Keeps CPU and Wi-Fi awake; highest battery use."
+                    WakeLockMode.NONE -> stringResource(R.string.wake_lock_off_description)
+                    WakeLockMode.WIFI_ONLY -> stringResource(R.string.wake_lock_wifi_description)
+                    WakeLockMode.FULL -> stringResource(R.string.wake_lock_full_description)
                 }
             },
             style = MaterialTheme.typography.bodySmall,
@@ -647,30 +745,36 @@ private fun AdvancedSettings(
         )
 
         HorizontalDivider()
-        AdvancedSectionHeader("Automation & safety")
+        AdvancedSectionHeader(stringResource(R.string.advanced_automation_title))
         AdvancedToggle(
-            title = "Start on boot",
+            title = stringResource(R.string.setting_start_on_boot_title),
             description = if (reliableReady) {
-                "Start automatically after reboot"
+                stringResource(R.string.setting_start_on_boot_ready_description)
             } else {
-                "Enables Reliable background and requires notifications"
+                stringResource(R.string.setting_start_on_boot_unavailable_description)
             },
             checked = startOnBoot,
             onCheckedChange = onStartOnBootChanged
         )
         AdvancedToggle(
-            title = "Stop on low battery",
+            title = stringResource(R.string.setting_low_battery_title),
             description = if (shutdownOnLowBattery) {
-                "Stop at or below $shutdownBatteryThreshold% when unplugged"
+                stringResource(
+                    R.string.setting_low_battery_enabled_description,
+                    shutdownBatteryThreshold
+                )
             } else {
-                "Protect battery during unattended serving"
+                stringResource(R.string.setting_low_battery_description)
             },
             checked = shutdownOnLowBattery,
             onCheckedChange = onLowBatteryChanged
         )
         if (shutdownOnLowBattery) {
             Column(Modifier.padding(start = 8.dp)) {
-                Text("Battery threshold: $shutdownBatteryThreshold%", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    stringResource(R.string.setting_battery_threshold, shutdownBatteryThreshold),
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Slider(
                     value = shutdownBatteryThreshold.toFloat(),
                     onValueChange = { onBatteryThresholdChanged(it.toInt()) },
@@ -681,19 +785,53 @@ private fun AdvancedSettings(
         }
 
         HorizontalDivider()
-        AdvancedSectionHeader("Power diagnostics")
+        AdvancedSectionHeader(stringResource(R.string.advanced_power_diagnostics_title))
         Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
             Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(
-                    "${if (batteryLevel >= 0) "$batteryLevel%" else "Battery unknown"} · ${if (charging) "Charging" else "On battery"} · $powerState",
-                    style = MaterialTheme.typography.bodySmall
+                val batteryText = if (batteryLevel >= 0) {
+                    stringResource(R.string.battery_level_percent, batteryLevel)
+                } else {
+                    stringResource(R.string.battery_unknown)
+                }
+                val chargingText = stringResource(
+                    if (charging) R.string.battery_charging else R.string.battery_on_battery
+                )
+                val powerStateText = stringResource(
+                    when (powerState) {
+                        PowerState.Active -> R.string.power_state_active
+                        PowerState.ScreenOff -> R.string.power_state_screen_off
+                        PowerState.Dozing -> R.string.power_state_dozing
+                        PowerState.Charging -> R.string.power_state_charging
+                        PowerState.ChargingButDozing -> R.string.power_state_charging_dozing
+                    }
                 )
                 Text(
-                    "Doze: ${if (dozing) "active" else "inactive"} · Optimization: ${if (ignoringBatteryOptimizations) "unrestricted" else "managed by Android"}",
+                    stringResource(
+                        R.string.power_diagnostics_summary,
+                        batteryText,
+                        chargingText,
+                        powerStateText
+                    ),
+                    style = MaterialTheme.typography.bodySmall
+                )
+                val dozeText = stringResource(
+                    if (dozing) R.string.doze_active else R.string.doze_inactive
+                )
+                val optimizationText = stringResource(
+                    if (ignoringBatteryOptimizations) {
+                        R.string.optimization_unrestricted
+                    } else {
+                        R.string.optimization_managed
+                    }
+                )
+                Text(
+                    stringResource(R.string.power_diagnostics_details, dozeText, optimizationText),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                TextButton(onClick = onOpenBatterySettings) { Text("Battery optimization settings") }
+                TextButton(onClick = onOpenBatterySettings) {
+                    Text(stringResource(R.string.action_battery_optimization_settings))
+                }
             }
         }
     }
@@ -820,11 +958,15 @@ private fun ProjectLinks(onOpen: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         HorizontalDivider()
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedButton(onClick = { onOpen(FEEDBACK_URL) }, modifier = Modifier.weight(1f)) { Text("Feedback") }
-            OutlinedButton(onClick = { onOpen(SOURCE_URL) }, modifier = Modifier.weight(1f)) { Text("Source") }
+            OutlinedButton(onClick = { onOpen(FEEDBACK_URL) }, modifier = Modifier.weight(1f)) {
+                Text(stringResource(R.string.action_feedback))
+            }
+            OutlinedButton(onClick = { onOpen(SOURCE_URL) }, modifier = Modifier.weight(1f)) {
+                Text(stringResource(R.string.action_source))
+            }
         }
         Text(
-            "200 OK for Android ${BuildConfig.VERSION_NAME}",
+            stringResource(R.string.project_version, BuildConfig.VERSION_NAME),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -840,6 +982,8 @@ private fun isBroadStorageRoot(file: File): Boolean {
 
 private fun copyUrl(context: Context, url: String) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    clipboard.setPrimaryClip(ClipData.newPlainText("Server URL", url))
-    Toast.makeText(context, "HTTP URL copied", Toast.LENGTH_SHORT).show()
+    clipboard.setPrimaryClip(
+        ClipData.newPlainText(context.getString(R.string.clipboard_server_url_label), url)
+    )
+    Toast.makeText(context, context.getString(R.string.toast_http_url_copied), Toast.LENGTH_SHORT).show()
 }

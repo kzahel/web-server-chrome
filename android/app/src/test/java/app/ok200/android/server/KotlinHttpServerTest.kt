@@ -192,7 +192,7 @@ class KotlinHttpServerTest {
     }
 
     private fun start(root: File, config: HttpServerConfig = HttpServerConfig(port = 0)): KotlinHttpServer {
-        return KotlinHttpServer(FilesystemFileTree(root), config).also {
+        return KotlinHttpServer(FilesystemFileTree(root, "Test root must be readable"), config).also {
             servers += it
             it.start()
         }

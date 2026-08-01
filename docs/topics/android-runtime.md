@@ -117,6 +117,13 @@ same rules rather than relying on Compose alone.
   offers a direct **Stop server** action. The header uses the actual 200 OK
   artwork rather than a text approximation. CORS defaults to Off, and
   user-facing folder copy avoids Android implementation acronyms such as SAF.
+- Android-owned user-facing copy lives in `res/values/strings.xml`, including
+  Compose text and accessibility descriptions, notification/channel text,
+  lifecycle messages, storage errors, and the direct-filesystem picker. The
+  unqualified locale is `en-US`; Gradle generates the app locale configuration
+  from resource folders, and debug builds include `en-XA`/`ar-XB` pseudo-locales
+  for expansion and right-to-left checks. A source-level unit guard rejects the
+  common hard-coded-copy patterns on these surfaces.
 
 ## HTTP and storage contract
 
@@ -181,6 +188,12 @@ They require explicit product decisions rather than accidental parity work.
   and direct locked-settings interception coverage. After clearing app data,
   the debug settings probe reports CORS disabled and screen-off availability
   Off, confirming both fresh defaults at the persistence boundary.
+- The localization-readiness pass passes Kotlin compilation, the JVM suite and
+  its hard-coded-copy source guard, Android lint, and all five targeted AVD
+  instrumentation tests. Visual checks under expanded `en-XA` and mirrored
+  `ar-XB` pseudo-locales show resource-backed copy, adequate expansion room,
+  correct RTL layout, and bidi-isolated `200 OK` brand order; the AVD was
+  restored to `en-US` afterward.
 - On the attached Pixel 9, Continue in background served successfully over LAN
   after Home with no `WebServerService`; While app is open stopped on Home.
   With notifications denied, reliable lifetime, wake-lock, and boot-start debug
@@ -202,9 +215,8 @@ They require explicit product decisions rather than accidental parity work.
 - Treat preservation of existing preferences and SAF grants as best effort.
   There is no migration-release or recovery requirement; invalid access asks
   the user to select a folder again.
-- The Compose interface is currently English-only: almost all user-facing copy
-  is hard-coded Kotlin rather than Android string resources. Localization needs
-  a deliberate resource-extraction pass and translated `values-<locale>` sets;
-  there is no translation pipeline yet.
+- English remains the only authored locale. Adding a translation now means
+  adding reviewed `values-<locale>` resources; the locale manifest is generated
+  automatically, but there is not yet a translation vendor/community pipeline.
 - Keep Android and desktop feature work synchronized through their contract and
   black-box tests, not shared runtime source.

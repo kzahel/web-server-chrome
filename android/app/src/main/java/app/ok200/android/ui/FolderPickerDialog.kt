@@ -58,6 +58,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import app.ok200.android.R
 import java.io.File
 
 @Immutable
@@ -139,15 +142,16 @@ fun FolderPickerDialog(
     // Incremented to force recomposition after creating a folder
     var refreshKey by remember { mutableIntStateOf(0) }
 
-    val shortcuts = remember {
-        listOf(
-            "External storage" to Environment.getExternalStorageDirectory(),
-            "Downloads" to Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-            "DCIM" to Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
-            "Documents" to Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-            "File system root" to root,
-        )
-    }
+    val shortcuts = listOf(
+        stringResource(R.string.folder_shortcut_external_storage) to Environment.getExternalStorageDirectory(),
+        stringResource(R.string.folder_shortcut_downloads) to
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+        stringResource(R.string.folder_shortcut_dcim) to
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
+        stringResource(R.string.folder_shortcut_documents) to
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+        stringResource(R.string.folder_shortcut_filesystem_root) to root,
+    )
 
     val (subdirs, files) = remember(currentDir, showHidden, refreshKey) {
         val listed = currentDir.listFiles()
@@ -180,12 +184,12 @@ fun FolderPickerDialog(
         var folderName by remember { mutableStateOf("") }
         AlertDialog(
             onDismissRequest = { showCreateFolder = false },
-            title = { Text("Create folder") },
+            title = { Text(stringResource(R.string.folder_picker_create_folder)) },
             text = {
                 OutlinedTextField(
                     value = folderName,
                     onValueChange = { folderName = it },
-                    label = { Text("Folder name") },
+                    label = { Text(stringResource(R.string.folder_picker_folder_name)) },
                     singleLine = true
                 )
             },
@@ -201,12 +205,12 @@ fun FolderPickerDialog(
                     },
                     enabled = folderName.isNotBlank()
                 ) {
-                    Text("Create")
+                    Text(stringResource(R.string.action_create))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showCreateFolder = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.action_cancel))
                 }
             }
         )
@@ -235,7 +239,7 @@ fun FolderPickerDialog(
                                     } else {
                                         Icons.Default.KeyboardArrowDown
                                     },
-                                    contentDescription = "Shortcuts"
+                                    contentDescription = stringResource(R.string.folder_picker_shortcuts)
                                 )
                             }
                             DropdownMenu(
@@ -265,11 +269,17 @@ fun FolderPickerDialog(
                     actions = {
                         // Create folder button
                         IconButton(onClick = { showCreateFolder = true }) {
-                            Icon(Icons.Default.Add, contentDescription = "Create folder")
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = stringResource(R.string.folder_picker_create_folder)
+                            )
                         }
                         // Close button
                         IconButton(onClick = onDismiss) {
-                            Icon(Icons.Default.Close, contentDescription = "Cancel")
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = stringResource(R.string.action_cancel)
+                            )
                         }
                     }
                 )
@@ -281,7 +291,7 @@ fun FolderPickerDialog(
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp, vertical = 8.dp)
                 ) {
-                    Text("Select")
+                    Text(stringResource(R.string.action_select))
                 }
             }
         ) { innerPadding ->
@@ -298,14 +308,24 @@ fun FolderPickerDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    val folderCount = pluralStringResource(
+                        R.plurals.folder_picker_folder_count,
+                        subdirs.size,
+                        subdirs.size
+                    )
+                    val fileCount = pluralStringResource(
+                        R.plurals.folder_picker_file_count,
+                        files.size,
+                        files.size
+                    )
                     Text(
-                        text = "${subdirs.size} folders, ${files.size} files",
+                        text = stringResource(R.string.folder_picker_counts, folderCount, fileCount),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "Hidden",
+                            text = stringResource(R.string.folder_picker_hidden),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -360,7 +380,7 @@ fun FolderPickerDialog(
                     if (subdirs.isEmpty() && files.isEmpty()) {
                         item {
                             Text(
-                                text = "Empty folder",
+                                text = stringResource(R.string.folder_picker_empty_folder),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
@@ -402,7 +422,7 @@ fun FolderPickerDialog(
                                 )
                                 if (meta != null) {
                                     Text(
-                                        text = meta.description,
+                                        text = stringResource(meta.descriptionRes),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         maxLines = 1,

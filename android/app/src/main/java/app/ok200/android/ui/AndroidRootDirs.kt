@@ -1,5 +1,7 @@
 package app.ok200.android.ui
 
+import androidx.annotation.StringRes
+import app.ok200.android.R
 import java.io.File
 
 /**
@@ -7,19 +9,19 @@ import java.io.File
  *
  * Ordered roughly by user relevance: storage/data first, system internals last.
  */
-enum class RootDirCategory(val label: String) {
+enum class RootDirCategory {
     /** User-accessible storage volumes (sdcard, storage, mnt) */
-    STORAGE("storage"),
+    STORAGE,
     /** App data, caches, and databases */
-    DATA("data"),
+    DATA,
     /** OS and vendor partitions (system, vendor, product, apex, …) */
-    SYSTEM("system"),
+    SYSTEM,
     /** Configuration files and symlinks (etc, config, linkerconfig) */
-    CONFIG("config"),
+    CONFIG,
     /** Kernel virtual filesystems (proc, sys, dev, acct) */
-    VIRTUAL("virtual"),
+    VIRTUAL,
     /** Boot, init, and debug artifacts */
-    BOOT("boot"),
+    BOOT,
 }
 
 /**
@@ -32,7 +34,7 @@ data class AndroidRootDir(
     /** Directory name under "/" (e.g. "sdcard", "system") */
     val name: String,
     /** Short human-readable description */
-    val description: String,
+    @StringRes val descriptionRes: Int,
     /** High-level category */
     val category: RootDirCategory,
     /**
@@ -58,45 +60,45 @@ data class AndroidRootDir(
  */
 val ANDROID_ROOT_DIRS: List<AndroidRootDir> = listOf(
     // ── Storage (user-accessible content) ──────────────────────────────────
-    AndroidRootDir("sdcard", "Primary shared storage (/storage/emulated/0)", RootDirCategory.STORAGE),
-    AndroidRootDir("storage", "Internal and external storage volumes", RootDirCategory.STORAGE),
-    AndroidRootDir("mnt", "Mount points for media, USB, and OBB", RootDirCategory.STORAGE),
+    AndroidRootDir("sdcard", R.string.root_dir_sdcard_description, RootDirCategory.STORAGE),
+    AndroidRootDir("storage", R.string.root_dir_storage_description, RootDirCategory.STORAGE),
+    AndroidRootDir("mnt", R.string.root_dir_mnt_description, RootDirCategory.STORAGE),
 
     // ── Data ───────────────────────────────────────────────────────────────
-    AndroidRootDir("data", "App installs, user data, and databases", RootDirCategory.DATA),
-    AndroidRootDir("cache", "Temporary cached data (absent on A/B devices)", RootDirCategory.DATA),
-    AndroidRootDir("metadata", "Metadata encryption partition", RootDirCategory.DATA, minApiLevel = 28),
+    AndroidRootDir("data", R.string.root_dir_data_description, RootDirCategory.DATA),
+    AndroidRootDir("cache", R.string.root_dir_cache_description, RootDirCategory.DATA),
+    AndroidRootDir("metadata", R.string.root_dir_metadata_description, RootDirCategory.DATA, minApiLevel = 28),
 
     // ── System partitions ──────────────────────────────────────────────────
-    AndroidRootDir("system", "Core Android OS and pre-installed apps", RootDirCategory.SYSTEM),
-    AndroidRootDir("system_ext", "Extensions to the system partition", RootDirCategory.SYSTEM, minApiLevel = 30),
-    AndroidRootDir("vendor", "Hardware-specific binaries (Project Treble)", RootDirCategory.SYSTEM, minApiLevel = 26),
-    AndroidRootDir("product", "Product/SKU-specific customizations", RootDirCategory.SYSTEM, minApiLevel = 28),
-    AndroidRootDir("odm", "Original Device Manufacturer partition", RootDirCategory.SYSTEM, minApiLevel = 29),
-    AndroidRootDir("oem", "OEM-specific customizations (legacy)", RootDirCategory.SYSTEM),
-    AndroidRootDir("apex", "Updatable system modules (Project Mainline)", RootDirCategory.SYSTEM, minApiLevel = 29),
+    AndroidRootDir("system", R.string.root_dir_system_description, RootDirCategory.SYSTEM),
+    AndroidRootDir("system_ext", R.string.root_dir_system_ext_description, RootDirCategory.SYSTEM, minApiLevel = 30),
+    AndroidRootDir("vendor", R.string.root_dir_vendor_description, RootDirCategory.SYSTEM, minApiLevel = 26),
+    AndroidRootDir("product", R.string.root_dir_product_description, RootDirCategory.SYSTEM, minApiLevel = 28),
+    AndroidRootDir("odm", R.string.root_dir_odm_description, RootDirCategory.SYSTEM, minApiLevel = 29),
+    AndroidRootDir("oem", R.string.root_dir_oem_description, RootDirCategory.SYSTEM),
+    AndroidRootDir("apex", R.string.root_dir_apex_description, RootDirCategory.SYSTEM, minApiLevel = 29),
 
     // ── Configuration ──────────────────────────────────────────────────────
-    AndroidRootDir("config", "Kernel configfs", RootDirCategory.CONFIG),
-    AndroidRootDir("etc", "Configuration files (symlink to /system/etc)", RootDirCategory.CONFIG),
-    AndroidRootDir("linkerconfig", "Dynamic linker namespace configuration", RootDirCategory.CONFIG, minApiLevel = 30),
+    AndroidRootDir("config", R.string.root_dir_config_description, RootDirCategory.CONFIG),
+    AndroidRootDir("etc", R.string.root_dir_etc_description, RootDirCategory.CONFIG),
+    AndroidRootDir("linkerconfig", R.string.root_dir_linkerconfig_description, RootDirCategory.CONFIG, minApiLevel = 30),
 
     // ── Virtual filesystems ────────────────────────────────────────────────
-    AndroidRootDir("dev", "Device nodes (tmpfs)", RootDirCategory.VIRTUAL),
-    AndroidRootDir("proc", "Kernel and process information (procfs)", RootDirCategory.VIRTUAL),
-    AndroidRootDir("sys", "Kernel device/driver model (sysfs)", RootDirCategory.VIRTUAL),
-    AndroidRootDir("acct", "Process accounting (cgroup)", RootDirCategory.VIRTUAL),
+    AndroidRootDir("dev", R.string.root_dir_dev_description, RootDirCategory.VIRTUAL),
+    AndroidRootDir("proc", R.string.root_dir_proc_description, RootDirCategory.VIRTUAL),
+    AndroidRootDir("sys", R.string.root_dir_sys_description, RootDirCategory.VIRTUAL),
+    AndroidRootDir("acct", R.string.root_dir_acct_description, RootDirCategory.VIRTUAL),
 
     // ── Boot / init / debug ────────────────────────────────────────────────
-    AndroidRootDir("bin", "Essential command binaries", RootDirCategory.BOOT),
-    AndroidRootDir("sbin", "System binaries (restricted)", RootDirCategory.BOOT),
-    AndroidRootDir("init", "Init process binary and configs", RootDirCategory.BOOT),
-    AndroidRootDir("d", "Symlink to /sys/kernel/debug (debugfs)", RootDirCategory.BOOT),
-    AndroidRootDir("bugreports", "Symlink for bug report generation", RootDirCategory.BOOT),
-    AndroidRootDir("charger", "Off-mode charging resources", RootDirCategory.BOOT),
-    AndroidRootDir("debug_ramdisk", "Debug-mode ramdisk", RootDirCategory.BOOT, minApiLevel = 30),
-    AndroidRootDir("postinstall", "OTA post-install staging", RootDirCategory.BOOT, minApiLevel = 28),
-    AndroidRootDir("tmp", "Temporary files (tmpfs)", RootDirCategory.BOOT),
+    AndroidRootDir("bin", R.string.root_dir_bin_description, RootDirCategory.BOOT),
+    AndroidRootDir("sbin", R.string.root_dir_sbin_description, RootDirCategory.BOOT),
+    AndroidRootDir("init", R.string.root_dir_init_description, RootDirCategory.BOOT),
+    AndroidRootDir("d", R.string.root_dir_d_description, RootDirCategory.BOOT),
+    AndroidRootDir("bugreports", R.string.root_dir_bugreports_description, RootDirCategory.BOOT),
+    AndroidRootDir("charger", R.string.root_dir_charger_description, RootDirCategory.BOOT),
+    AndroidRootDir("debug_ramdisk", R.string.root_dir_debug_ramdisk_description, RootDirCategory.BOOT, minApiLevel = 30),
+    AndroidRootDir("postinstall", R.string.root_dir_postinstall_description, RootDirCategory.BOOT, minApiLevel = 28),
+    AndroidRootDir("tmp", R.string.root_dir_tmp_description, RootDirCategory.BOOT),
 )
 
 /** Lookup table for root directory metadata by name. */

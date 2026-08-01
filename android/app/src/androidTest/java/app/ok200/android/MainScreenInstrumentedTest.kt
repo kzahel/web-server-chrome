@@ -20,7 +20,7 @@ class MainScreenInstrumentedTest {
 
     @Test
     fun mainScreenExposesCoreAndAdvancedControls() {
-        composeRule.onNodeWithText("200 OK").assertIsDisplayed()
+        composeRule.onNodeWithTag("brand-name").assertIsDisplayed()
         composeRule.onNodeWithTag("app-logo").assertIsDisplayed()
         composeRule.onNodeWithTag("server-toggle").assertIsDisplayed()
         composeRule.onNodeWithText("Server settings").assertIsDisplayed()

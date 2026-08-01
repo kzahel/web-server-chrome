@@ -12,7 +12,10 @@ import app.ok200.android.power.WakeLockManager
 import app.ok200.android.server.storage.FilesystemFileTree
 import app.ok200.android.server.storage.ReadOnlyFileTree
 import app.ok200.android.server.storage.SafFileTree
+import app.ok200.android.service.ServiceNotificationPolicy
 import app.ok200.android.service.WebServerService
+import app.ok200.android.settings.ServerLifetimeMode
+import app.ok200.android.settings.ServerLifetimePolicy
 import app.ok200.android.settings.SettingsStore
 import app.ok200.android.settings.WakeLockMode
 import java.io.File
@@ -30,6 +33,8 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 private const val TAG = "AndroidServerController"
+const val RELIABLE_NOTIFICATION_REQUIRED =
+    "Enable notifications before using Reliable background"
 
 enum class ServerPhase {
     STOPPED,
@@ -69,20 +74,36 @@ class AndroidServerController(
 
     /** Entry point for UI/RPC. Background runs are initialized by the service. */
     fun requestStart() {
-        if (settings.backgroundEnabled) {
-            settings.desiredRunning = true
-            val intent = WebServerService.startIntent(appContext)
-            ContextCompat.startForegroundService(appContext, intent)
-        } else {
-            settings.desiredRunning = false
-            scope.launch { startNow(backgroundRun = false) }
+        when (settings.lifetimeMode) {
+            ServerLifetimeMode.RELIABLE -> {
+                if (!ServiceNotificationPolicy.canShowOngoingNotification(appContext)) {
+                    settings.desiredRunning = false
+                    scope.launch { commandMutex.withLock { failStart(RELIABLE_NOTIFICATION_REQUIRED) } }
+                    return
+                }
+                settings.desiredRunning = true
+                val intent = WebServerService.startIntent(appContext)
+                ContextCompat.startForegroundService(appContext, intent)
+            }
+            ServerLifetimeMode.APP_OPEN,
+            ServerLifetimeMode.BACKGROUND -> {
+                settings.desiredRunning = false
+                scope.launch { startNow(reliableRun = false) }
+            }
         }
     }
 
     /** Called by the foreground service after it has posted its notification. */
     fun requestStartFromService() {
+        if (settings.lifetimeMode != ServerLifetimeMode.RELIABLE ||
+            !ServiceNotificationPolicy.canShowOngoingNotification(appContext)
+        ) {
+            onNotificationAvailabilityChanged(false)
+            scope.launch { commandMutex.withLock { failStart(RELIABLE_NOTIFICATION_REQUIRED) } }
+            return
+        }
         settings.desiredRunning = true
-        scope.launch { startNow(backgroundRun = true) }
+        scope.launch { startNow(reliableRun = true) }
     }
 
     fun requestStop() {
@@ -90,10 +111,13 @@ class AndroidServerController(
         scope.launch { stopNow() }
     }
 
-    suspend fun startNow(backgroundRun: Boolean): ServerState = commandMutex.withLock {
+    suspend fun startNow(reliableRun: Boolean): ServerState = commandMutex.withLock {
         val current = _state.value
         if (current.running) {
-            if (backgroundRun) settings.desiredRunning = true
+            if (reliableRun && settings.lifetimeMode == ServerLifetimeMode.RELIABLE) {
+                settings.desiredRunning = true
+                wakeLocks.acquire(effectiveWakeLockMode())
+            }
             return current
         }
         if (current.phase == ServerPhase.STARTING) return current
@@ -128,7 +152,11 @@ class AndroidServerController(
             )
             val info = httpServer.start()
             server = httpServer
-            wakeLocks.acquire(settings.wakeLockMode)
+            if (reliableRun && settings.lifetimeMode == ServerLifetimeMode.RELIABLE) {
+                wakeLocks.acquire(effectiveWakeLockMode())
+            } else {
+                wakeLocks.release()
+            }
             startBatteryMonitoring()
             _state.value = ServerState(
                 phase = ServerPhase.RUNNING,
@@ -171,24 +199,66 @@ class AndroidServerController(
     }
 
     fun onAppBackgrounded() {
-        if (!settings.backgroundEnabled && _state.value.running) requestStop()
+        if (settings.lifetimeMode == ServerLifetimeMode.APP_OPEN && _state.value.running) requestStop()
     }
 
-    fun onBackgroundSettingChanged(enabled: Boolean) {
-        settings.backgroundEnabled = enabled
-        if (!enabled) {
+    fun onLifetimeModeChanged(mode: ServerLifetimeMode): Boolean {
+        if (mode == ServerLifetimeMode.RELIABLE &&
+            !ServiceNotificationPolicy.canShowOngoingNotification(appContext)
+        ) {
+            return false
+        }
+
+        settings.lifetimeMode = mode
+        if (mode != ServerLifetimeMode.RELIABLE) {
             settings.desiredRunning = false
             if (settings.startOnBoot) settings.startOnBoot = false
+            wakeLocks.release()
             stopForegroundService()
-        } else if (_state.value.running) {
+        } else if (_state.value.running || _state.value.phase == ServerPhase.STARTING) {
             settings.desiredRunning = true
             ContextCompat.startForegroundService(appContext, WebServerService.startIntent(appContext))
         }
+        return true
     }
 
-    fun updateWakeLockMode(mode: WakeLockMode) {
+    fun updateWakeLockMode(mode: WakeLockMode): Boolean {
+        if (mode != WakeLockMode.NONE && !reliableBackgroundAvailable()) return false
         settings.wakeLockMode = mode
-        if (_state.value.running) wakeLocks.updateMode(mode)
+        if (_state.value.running && reliableBackgroundAvailable()) {
+            wakeLocks.updateMode(effectiveWakeLockMode())
+        } else {
+            wakeLocks.release()
+        }
+        return true
+    }
+
+    fun setStartOnBoot(enabled: Boolean): Boolean {
+        if (enabled && !ServerLifetimePolicy.startOnBootAvailable(
+                settings.lifetimeMode,
+                ServiceNotificationPolicy.canShowOngoingNotification(appContext)
+            )
+        ) return false
+        settings.startOnBoot = enabled
+        return true
+    }
+
+    /** Enforces the visible-notification prerequisite across resume/service paths. */
+    fun onNotificationAvailabilityChanged(available: Boolean): Boolean {
+        if (available || settings.lifetimeMode != ServerLifetimeMode.RELIABLE) return false
+
+        val affectedRun = settings.desiredRunning || _state.value.running ||
+            _state.value.phase == ServerPhase.STARTING || settings.startOnBoot
+        settings.desiredRunning = false
+        settings.startOnBoot = false
+        if (affectedRun) settings.reliableNotificationBlockedNotice = true
+        wakeLocks.release()
+        if (_state.value.running || _state.value.phase == ServerPhase.STARTING) {
+            requestStop()
+        } else {
+            stopForegroundService()
+        }
+        return affectedRun
     }
 
     fun onPowerSettingsChanged() {
@@ -245,6 +315,19 @@ class AndroidServerController(
     }
 
     private fun bindHost(): String = if (settings.lanEnabled) "0.0.0.0" else "127.0.0.1"
+
+    private fun reliableBackgroundAvailable(): Boolean =
+        ServerLifetimePolicy.modeAvailable(
+            settings.lifetimeMode,
+            ServiceNotificationPolicy.canShowOngoingNotification(appContext)
+        ) && settings.lifetimeMode == ServerLifetimeMode.RELIABLE
+
+    private fun effectiveWakeLockMode(): WakeLockMode =
+        ServerLifetimePolicy.effectiveWakeLockMode(
+            settings.lifetimeMode,
+            ServiceNotificationPolicy.canShowOngoingNotification(appContext),
+            settings.wakeLockMode
+        )
 
     private fun startBatteryMonitoring() {
         batteryJob?.cancel()

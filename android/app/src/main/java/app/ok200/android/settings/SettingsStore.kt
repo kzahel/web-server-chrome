@@ -54,15 +54,24 @@ class SettingsStore(context: Context) {
         get() = prefs.getBoolean(KEY_DESIRED_RUNNING, false)
         set(value) = prefs.edit { putBoolean(KEY_DESIRED_RUNNING, value) }
 
-    // --- Power management settings (new) ---
+    // --- Lifecycle and power management settings ---
 
     /**
-     * Whether the server should continue running when the app is backgrounded.
-     * Default ON — a server's value is availability.
+     * What should happen after the application leaves the foreground.
+     * Default BACKGROUND keeps casual serving lightweight; reliable unattended
+     * serving remains an explicit foreground-service choice.
      */
-    var backgroundEnabled: Boolean
-        get() = prefs.getBoolean(KEY_BACKGROUND_ENABLED, true)
-        set(value) = prefs.edit { putBoolean(KEY_BACKGROUND_ENABLED, value) }
+    var lifetimeMode: ServerLifetimeMode
+        get() = ServerLifetimeMode.fromString(
+            prefs.getString(KEY_LIFETIME_MODE, ServerLifetimeMode.BACKGROUND.key)
+                ?: ServerLifetimeMode.BACKGROUND.key
+        )
+        set(value) = prefs.edit { putString(KEY_LIFETIME_MODE, value.key) }
+
+    /** A reliable run was blocked or stopped because its notification was unavailable. */
+    var reliableNotificationBlockedNotice: Boolean
+        get() = prefs.getBoolean(KEY_RELIABLE_NOTIFICATION_BLOCKED_NOTICE, false)
+        set(value) = prefs.edit { putBoolean(KEY_RELIABLE_NOTIFICATION_BLOCKED_NOTICE, value) }
 
     /**
      * How aggressively to keep the device awake while serving.
@@ -110,13 +119,47 @@ class SettingsStore(context: Context) {
         private const val KEY_SPA_ENABLED = "spa_enabled"
         private const val KEY_DESIRED_RUNNING = "desired_running"
 
-        // New power management keys
-        private const val KEY_BACKGROUND_ENABLED = "background_enabled"
+        // Lifecycle and power management keys
+        private const val KEY_LIFETIME_MODE = "lifetime_mode"
+        private const val KEY_RELIABLE_NOTIFICATION_BLOCKED_NOTICE = "reliable_notification_blocked_notice"
         private const val KEY_WAKE_LOCK_MODE = "wake_lock_mode"
         private const val KEY_START_ON_BOOT = "start_on_boot"
         private const val KEY_SHUTDOWN_ON_LOW_BATTERY = "shutdown_on_low_battery"
         private const val KEY_SHUTDOWN_BATTERY_THRESHOLD = "shutdown_battery_threshold"
     }
+}
+
+/** Server ownership after the application leaves the foreground. */
+enum class ServerLifetimeMode(val key: String, val label: String) {
+    /** Deterministic activity-scoped serving. */
+    APP_OPEN("app_open", "While app is open"),
+
+    /** Application-owned serving with no Android component keeping the process important. */
+    BACKGROUND("background", "Continue in background"),
+
+    /** Foreground-service serving with a visible ongoing notification. */
+    RELIABLE("reliable", "Reliable background");
+
+    companion object {
+        fun fromString(key: String): ServerLifetimeMode =
+            entries.firstOrNull { it.key == key } ?: BACKGROUND
+    }
+}
+
+/** Pure dependency rules shared by UI-facing and runtime lifecycle paths. */
+object ServerLifetimePolicy {
+    fun modeAvailable(mode: ServerLifetimeMode, notificationAvailable: Boolean): Boolean =
+        mode != ServerLifetimeMode.RELIABLE || notificationAvailable
+
+    fun effectiveWakeLockMode(
+        mode: ServerLifetimeMode,
+        notificationAvailable: Boolean,
+        requested: WakeLockMode
+    ): WakeLockMode =
+        if (mode == ServerLifetimeMode.RELIABLE && notificationAvailable) requested else WakeLockMode.NONE
+
+    fun startOnBootAvailable(mode: ServerLifetimeMode, notificationAvailable: Boolean): Boolean =
+        mode == ServerLifetimeMode.RELIABLE && notificationAvailable
 }
 
 /**

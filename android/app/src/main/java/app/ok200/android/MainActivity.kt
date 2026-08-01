@@ -51,8 +51,8 @@ class MainActivity : AppCompatActivity() {
     private val notificationSettingsLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        // User returned from notification settings — refresh permission state
-        viewModel.refreshNotificationPermission()
+        // User returned from notification settings — resolve the requested mode/action.
+        viewModel.completeNotificationRequest()
     }
 
     private val folderPickerLauncher = registerForActivityResult(
@@ -98,21 +98,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val granted = ContextCompat.checkSelfPermission(
+        val runtimePermissionMissing =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(
                 this, Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
+            ) != PackageManager.PERMISSION_GRANTED
 
-            if (granted) {
-                // Permission already granted — user is toggling OFF, open notification settings
-                val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                    putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
-                }
-                notificationSettingsLauncher.launch(intent)
-            } else {
-                // Permission not granted — request it
-                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        if (runtimePermissionMissing) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
             }
+            notificationSettingsLauncher.launch(intent)
         }
     }
 

@@ -8,13 +8,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import app.ok200.android.power.DozeMonitor
 import app.ok200.android.server.AndroidServerController
+import app.ok200.android.service.SERVICE_NOTIFICATION_CHANNEL_ID
 import app.ok200.android.settings.SettingsStore
 
 class Ok200Application : Application() {
-
-    object NotificationChannels {
-        const val SERVICE = "ok200_service"
-    }
 
     val settingsStore: SettingsStore by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
         SettingsStore(this)
@@ -30,6 +27,7 @@ class Ok200Application : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        createNotificationChannels()
         // Eager during normal startup, while remaining safe if a debug provider
         // is Android's first component and accesses these before onCreate().
         serverController
@@ -40,14 +38,13 @@ class Ok200Application : Application() {
                 }
             }
         )
-        createNotificationChannels()
     }
 
     private fun createNotificationChannels() {
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(
             NotificationChannel(
-                NotificationChannels.SERVICE,
+                SERVICE_NOTIFICATION_CHANNEL_ID,
                 "Web Server",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {

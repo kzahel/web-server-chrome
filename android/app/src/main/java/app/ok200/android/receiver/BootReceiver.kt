@@ -6,7 +6,9 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat
 import app.ok200.android.Ok200Application
+import app.ok200.android.service.ServiceNotificationPolicy
 import app.ok200.android.service.WebServerService
+import app.ok200.android.settings.ServerLifetimeMode
 
 private const val TAG = "BootReceiver"
 
@@ -19,7 +21,15 @@ class BootReceiver : BroadcastReceiver() {
             Log.i(TAG, "Boot start skipped: disabled or no root")
             return
         }
-        settings.backgroundEnabled = true
+        if (settings.lifetimeMode != ServerLifetimeMode.RELIABLE ||
+            !ServiceNotificationPolicy.canShowOngoingNotification(context)
+        ) {
+            settings.startOnBoot = false
+            settings.desiredRunning = false
+            settings.reliableNotificationBlockedNotice = true
+            Log.w(TAG, "Boot start disabled: Reliable background notification unavailable")
+            return
+        }
         settings.desiredRunning = true
         ContextCompat.startForegroundService(context, WebServerService.startIntent(context))
         Log.i(TAG, "Boot start requested")

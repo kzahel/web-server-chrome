@@ -17,7 +17,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 private const val TAG = "WebServerService"
@@ -29,9 +31,15 @@ class WebServerService : Service() {
         get() = application as Ok200Application
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private var foregroundAccepted = false
 
     override fun onCreate() {
         super.onCreate()
+        if (!ServiceNotificationPolicy.canShowOngoingNotification(this)) {
+            rejectHiddenForegroundService()
+            return
+        }
+        foregroundAccepted = true
         startForeground(NOTIFICATION_ID, buildNotification())
         serviceScope.launch {
             app.serverController.state.collectLatest {
@@ -39,10 +47,23 @@ class WebServerService : Service() {
                     .notify(NOTIFICATION_ID, buildNotification())
             }
         }
+        serviceScope.launch {
+            while (isActive) {
+                delay(NOTIFICATION_CHECK_INTERVAL_MILLIS)
+                if (!ServiceNotificationPolicy.canShowOngoingNotification(this@WebServerService)) {
+                    rejectHiddenForegroundService()
+                    break
+                }
+            }
+        }
         Log.i(TAG, "Foreground service created")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (!foregroundAccepted || !ServiceNotificationPolicy.canShowOngoingNotification(this)) {
+            rejectHiddenForegroundService()
+            return START_NOT_STICKY
+        }
         startForeground(NOTIFICATION_ID, buildNotification())
         when (intent?.action) {
             ACTION_STOP -> app.serverController.requestStop()
@@ -64,6 +85,13 @@ class WebServerService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    private fun rejectHiddenForegroundService() {
+        foregroundAccepted = false
+        app.serverController.onNotificationAvailabilityChanged(false)
+        stopSelf()
+        Log.w(TAG, "Reliable background stopped: notification unavailable")
+    }
 
     private fun buildNotification(): Notification {
         val state = app.serverController.state.value
@@ -93,7 +121,7 @@ class WebServerService : Service() {
             stopIntent(this),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        return NotificationCompat.Builder(this, Ok200Application.NotificationChannels.SERVICE)
+        return NotificationCompat.Builder(this, SERVICE_NOTIFICATION_CHANNEL_ID)
             .setContentTitle("200 OK")
             .setContentText(content)
             .setSmallIcon(R.drawable.ic_notification)
@@ -105,6 +133,7 @@ class WebServerService : Service() {
     }
 
     companion object {
+        private const val NOTIFICATION_CHECK_INTERVAL_MILLIS = 5_000L
         const val ACTION_START = "app.ok200.android.action.START_SERVER"
         const val ACTION_STOP = "app.ok200.android.action.STOP_SERVER"
 

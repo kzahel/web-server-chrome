@@ -35,6 +35,7 @@ if [[ -z "$METHOD" ]]; then
     echo "  getState                - Get server state and config"
     echo "  setPort <port>          - Set server port"
     echo "  setRootPath <path>      - Set serving root (file path on device)"
+    echo "  setLifetimeMode <mode>  - app_open, background, or reliable"
     echo "  startServer             - Start the web server"
     echo "  stopServer              - Stop the web server"
     echo ""

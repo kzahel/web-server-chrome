@@ -10,6 +10,7 @@ import android.os.Environment
 import android.util.Log
 import app.ok200.android.Ok200Application
 import app.ok200.android.server.ServerPhase
+import app.ok200.android.settings.ServerLifetimeMode
 import app.ok200.android.settings.WakeLockMode
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -44,15 +45,13 @@ class DebugRpcProvider : ContentProvider() {
                 "getPowerState" -> handleGetPowerState()
                 "getSettings" -> handleGetSettings()
                 "setWakeLockMode" -> handleSetWakeLockMode(arg)
+                "setLifetimeMode" -> handleSetLifetimeMode(arg)
                 "setBackgroundEnabled" -> handleSetBackgroundEnabled(arg)
                 "setLanEnabled" -> handleBooleanSetting(arg, "lanEnabled") { settings.lanEnabled = it }
                 "setDirectoryListing" -> handleBooleanSetting(arg, "directoryListing") { settings.directoryListing = it }
                 "setCorsEnabled" -> handleBooleanSetting(arg, "corsEnabled") { settings.corsEnabled = it }
                 "setSpaEnabled" -> handleBooleanSetting(arg, "spaEnabled") { settings.spaEnabled = it }
-                "setStartOnBoot" -> handleBooleanSetting(arg, "startOnBoot") {
-                    settings.startOnBoot = it
-                    if (it) app.serverController.onBackgroundSettingChanged(true)
-                }
+                "setStartOnBoot" -> handleSetStartOnBoot(arg)
                 "setShutdownOnLowBattery" -> handleBooleanSetting(arg, "shutdownOnLowBattery") {
                     settings.shutdownOnLowBattery = it
                     app.serverController.onPowerSettingsChanged()
@@ -217,7 +216,8 @@ class DebugRpcProvider : ContentProvider() {
             put("directoryListing", settings.directoryListing)
             put("corsEnabled", settings.corsEnabled)
             put("spaEnabled", settings.spaEnabled)
-            put("backgroundEnabled", settings.backgroundEnabled)
+            put("lifetimeMode", settings.lifetimeMode.key)
+            put("backgroundEnabled", settings.lifetimeMode != ServerLifetimeMode.APP_OPEN)
             put("wakeLockMode", settings.wakeLockMode.key)
             put("startOnBoot", settings.startOnBoot)
             put("shutdownOnLowBattery", settings.shutdownOnLowBattery)
@@ -234,10 +234,24 @@ class DebugRpcProvider : ContentProvider() {
         if (arg.isNullOrBlank())
             return errorJson("Mode required (none, wifi_only, full)")
         val mode = WakeLockMode.fromString(arg)
-        app.serverController.updateWakeLockMode(mode)
+        if (!app.serverController.updateWakeLockMode(mode)) {
+            return errorJson("Wake locks require Reliable background with notifications enabled")
+        }
         return buildJsonObject {
             put("ok", true)
             put("wakeLockMode", mode.key)
+        }.toString()
+    }
+
+    private fun handleSetLifetimeMode(arg: String?): String {
+        val mode = ServerLifetimeMode.entries.firstOrNull { it.key == arg?.lowercase() }
+            ?: return errorJson("Mode required (app_open, background, reliable)")
+        if (!app.serverController.onLifetimeModeChanged(mode)) {
+            return errorJson("Reliable background requires notifications")
+        }
+        return buildJsonObject {
+            put("ok", true)
+            put("lifetimeMode", settings.lifetimeMode.key)
         }.toString()
     }
 
@@ -247,10 +261,25 @@ class DebugRpcProvider : ContentProvider() {
             "false", "0", "no" -> false
             else -> return errorJson("Boolean required: $arg")
         }
-        app.serverController.onBackgroundSettingChanged(enabled)
+        val mode = if (enabled) ServerLifetimeMode.RELIABLE else ServerLifetimeMode.APP_OPEN
+        if (!app.serverController.onLifetimeModeChanged(mode)) {
+            return errorJson("Reliable background requires notifications")
+        }
         return buildJsonObject {
             put("ok", true)
             put("backgroundEnabled", enabled)
+            put("lifetimeMode", mode.key)
+        }.toString()
+    }
+
+    private fun handleSetStartOnBoot(arg: String?): String {
+        val enabled = parseBoolean(arg) ?: return errorJson("Boolean required: $arg")
+        if (!app.serverController.setStartOnBoot(enabled)) {
+            return errorJson("Start on boot requires Reliable background with notifications enabled")
+        }
+        return buildJsonObject {
+            put("ok", true)
+            put("startOnBoot", settings.startOnBoot)
         }.toString()
     }
 

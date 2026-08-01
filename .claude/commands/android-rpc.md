@@ -22,14 +22,15 @@ The app process does NOT need to be open — Android auto-starts it when the Con
 | `setRootPath` | device path | `{"ok":true,"rootUri":"...","rootDisplayName":"..."}` |
 | `setRootUri` | persisted SAF tree URI | Select an already-granted SAF root |
 | `releaseRootPermission` | — | Release the configured SAF root's persisted read grant |
-| `getSettings` | — | Server, storage, background, wake, boot, and low-battery settings |
+| `getSettings` | — | Server, storage, lifetime, wake, boot, and low-battery settings |
 | `setLanEnabled` | boolean | Update localhost/LAN binding |
 | `setDirectoryListing` | boolean | Update directory listing |
 | `setCorsEnabled` | boolean | Update CORS |
 | `setSpaEnabled` | boolean | Update SPA fallback |
-| `setBackgroundEnabled` | boolean | Update foreground-service policy |
-| `setWakeLockMode` | `none`, `wifi_only`, or `full` | Update wake policy |
-| `setStartOnBoot` | boolean | Update boot start |
+| `setLifetimeMode` | `app_open`, `background`, or `reliable` | Update the server-lifetime policy |
+| `setBackgroundEnabled` | boolean | Legacy alias: false selects `app_open`, true selects `reliable` |
+| `setWakeLockMode` | `none`, `wifi_only`, or `full` | Update wake policy; non-None requires valid Reliable background |
+| `setStartOnBoot` | boolean | Update boot start; enabling requires valid Reliable background |
 | `setShutdownOnLowBattery` | boolean | Update low-battery shutdown |
 | `setShutdownBatteryThreshold` | 5–50 | Update shutdown threshold |
 | `getPowerState` | — | Current battery, charging, display, Doze, and optimization state |
@@ -42,6 +43,7 @@ The app process does NOT need to be open — Android auto-starts it when the Con
 emu rpc ping
 emu rpc setRootPath /sdcard/Download
 emu rpc setPort 8080
+emu rpc setLifetimeMode background
 emu rpc startServer
 emu rpc getState
 emu rpc stopServer
@@ -70,6 +72,9 @@ emu rpc stopServer
 
 - Only works on **debug builds** (ContentProvider excluded from release)
 - `setRootPath` uses `file://` URIs, bypassing the SAF folder picker
-- `startServer` uses the application-scoped Kotlin controller and starts a foreground service only when background mode is enabled
+- `startServer` uses the application-scoped Kotlin controller. Reliable mode
+  requires enabled notifications and, on modern Android, a visible app when the
+  debug RPC initiates its foreground service; `app_open` and `background` start
+  directly through the application controller.
 - All methods return JSON with an `ok` field indicating success
 - Errors return `{"ok":false,"error":"message"}`

@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -58,6 +57,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -82,6 +82,7 @@ import androidx.compose.ui.unit.dp
 import app.ok200.android.BuildConfig
 import app.ok200.android.R
 import app.ok200.android.server.ServerPhase
+import app.ok200.android.settings.ServerLifetimeMode
 import app.ok200.android.settings.WakeLockMode
 import app.ok200.android.viewmodel.ServerViewModel
 import java.io.File
@@ -109,12 +110,13 @@ fun ServerScreen(
     val directoryListing by viewModel.directoryListing.collectAsState()
     val corsEnabled by viewModel.corsEnabled.collectAsState()
     val spaEnabled by viewModel.spaEnabled.collectAsState()
-    val backgroundEnabled by viewModel.backgroundEnabled.collectAsState()
+    val lifetimeMode by viewModel.lifetimeMode.collectAsState()
     val wakeLockMode by viewModel.wakeLockMode.collectAsState()
     val startOnBoot by viewModel.startOnBoot.collectAsState()
     val shutdownOnLowBattery by viewModel.shutdownOnLowBattery.collectAsState()
     val shutdownBatteryThreshold by viewModel.shutdownBatteryThreshold.collectAsState()
     val notificationGranted by viewModel.notificationPermissionGranted.collectAsState()
+    val uiMessage by viewModel.uiMessage.collectAsState()
     val powerState by viewModel.powerState.collectAsState()
     val batteryLevel by viewModel.batteryLevel.collectAsState()
     val charging by viewModel.isCharging.collectAsState()
@@ -132,6 +134,7 @@ fun ServerScreen(
     val portValid = portValue != null && portValue in 0..65_535
     val busy = state.phase == ServerPhase.STARTING || state.phase == ServerPhase.STOPPING
     val settingsEnabled = !state.running && !busy
+    val lifetimeReady = lifetimeMode != ServerLifetimeMode.RELIABLE || notificationGranted
     val onLockedSettingsTap: () -> Unit = {
         coroutineScope.launch {
             val result = snackbarHostState.showSnackbar(
@@ -143,6 +146,12 @@ fun ServerScreen(
                 viewModel.stopServer()
             }
         }
+    }
+
+    LaunchedEffect(uiMessage) {
+        val message = uiMessage ?: return@LaunchedEffect
+        snackbarHostState.showSnackbar(message = message, withDismissAction = true)
+        viewModel.clearUiMessage()
     }
 
     if (showFilePicker) {
@@ -200,7 +209,13 @@ fun ServerScreen(
                 ServerControl(
                     phase = state.phase,
                     error = state.error,
-                    canStart = rootUri != null && portValid,
+                    canStart = rootUri != null && portValid && lifetimeReady,
+                    blockedReason = when {
+                        rootUri == null -> "Choose a folder to enable"
+                        !portValid -> "Enter a valid port to enable"
+                        !lifetimeReady -> "Enable notifications for Reliable background"
+                        else -> null
+                    },
                     onStart = viewModel::startServer,
                     onStop = viewModel::stopServer
                 )
@@ -321,7 +336,7 @@ fun ServerScreen(
                     AnimatedVisibility(advancedExpanded) {
                         AdvancedSettings(
                             allFilesAccess = allFilesAccess,
-                            backgroundEnabled = backgroundEnabled,
+                            lifetimeMode = lifetimeMode,
                             notificationGranted = notificationGranted,
                             wakeLockMode = wakeLockMode,
                             startOnBoot = startOnBoot,
@@ -333,10 +348,14 @@ fun ServerScreen(
                             powerState = powerState.name,
                             ignoringBatteryOptimizations = viewModel.isIgnoringBatteryOptimizations(),
                             onManageAllFiles = onRequestAllFilesAccess,
-                            onBackgroundChanged = viewModel::setBackgroundEnabled,
+                            onLifetimeModeChanged = { mode ->
+                                if (viewModel.setLifetimeMode(mode)) onRequestNotificationPermission()
+                            },
                             onNotificationAction = onRequestNotificationPermission,
                             onWakeModeChanged = viewModel::setWakeLockMode,
-                            onStartOnBootChanged = viewModel::setStartOnBoot,
+                            onStartOnBootChanged = { enabled ->
+                                if (viewModel.setStartOnBoot(enabled)) onRequestNotificationPermission()
+                            },
                             onLowBatteryChanged = viewModel::setShutdownOnLowBattery,
                             onBatteryThresholdChanged = viewModel::setShutdownBatteryThreshold,
                             onOpenBatterySettings = onOpenBatterySettings
@@ -427,6 +446,7 @@ private fun ServerControl(
     phase: ServerPhase,
     error: String?,
     canStart: Boolean,
+    blockedReason: String?,
     onStart: () -> Unit,
     onStop: () -> Unit
 ) {
@@ -443,7 +463,7 @@ private fun ServerControl(
     val detail = error ?: when {
         running -> "Ready for HTTP requests"
         busy -> "Please wait"
-        !canStart -> "Choose a folder and valid port to enable"
+        !canStart -> blockedReason ?: "Complete the required settings to enable"
         else -> "Ready to start"
     }
     ElevatedCard(
@@ -528,7 +548,7 @@ private fun RunningUrls(
 @Composable
 private fun AdvancedSettings(
     allFilesAccess: Boolean,
-    backgroundEnabled: Boolean,
+    lifetimeMode: ServerLifetimeMode,
     notificationGranted: Boolean,
     wakeLockMode: WakeLockMode,
     startOnBoot: Boolean,
@@ -540,7 +560,7 @@ private fun AdvancedSettings(
     powerState: String,
     ignoringBatteryOptimizations: Boolean,
     onManageAllFiles: () -> Unit,
-    onBackgroundChanged: (Boolean) -> Unit,
+    onLifetimeModeChanged: (ServerLifetimeMode) -> Unit,
     onNotificationAction: () -> Unit,
     onWakeModeChanged: (WakeLockMode) -> Unit,
     onStartOnBootChanged: (Boolean) -> Unit,
@@ -548,88 +568,108 @@ private fun AdvancedSettings(
     onBatteryThresholdChanged: (Int) -> Unit,
     onOpenBatterySettings: () -> Unit
 ) {
-    Column(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    val reliableReady = lifetimeMode == ServerLifetimeMode.RELIABLE && notificationGranted
+    Column(
+        Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         HorizontalDivider()
+        AdvancedSectionHeader("Storage access")
         PermissionRow(
             title = "All files access",
             description = if (allFilesAccess) "Granted — filesystem picker available" else "Optional: serve folders outside the Android picker",
             action = "Manage",
             onClick = onManageAllFiles
         )
-        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text("Serving lifetime", style = MaterialTheme.typography.titleSmall)
-            Text(
-                "Choose when the server should remain active",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            LifetimeOption(
-                title = "While app is open",
-                description = "Stops when 200 OK leaves the foreground. No background service.",
-                selected = !backgroundEnabled,
-                onClick = { onBackgroundChanged(false) }
-            )
-            HorizontalDivider()
-            LifetimeOption(
-                title = "Keep serving in background",
-                description = "Continues after you leave 200 OK. Uses an Android foreground service.",
-                selected = backgroundEnabled,
-                onClick = { onBackgroundChanged(true) }
-            )
-        }
-        if (backgroundEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (notificationGranted) {
-                PermissionRow(
-                    title = "Background service notice",
-                    description = "Visible in the notification drawer and Android Active apps",
-                    action = "Settings",
-                    onClick = onNotificationAction
-                )
-            } else {
-                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
-                    PermissionRow(
-                        title = "Background service notice hidden",
-                        description = "Android is hiding the drawer notification because notifications are off. The service remains visible under Active apps.",
-                        action = "Allow",
-                        onClick = onNotificationAction,
-                        modifier = Modifier.padding(12.dp)
-                    )
-                }
-            }
-        }
-        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Availability & battery", style = MaterialTheme.typography.titleSmall)
-            Text(
-                "Wake locks affect reachability with the screen off, not how long the service runs",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text("Keep awake", style = MaterialTheme.typography.titleSmall)
-            Text("Stronger locks improve availability but use more battery", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                WakeLockMode.entries.forEach { mode ->
-                    FilterChip(
-                        selected = wakeLockMode == mode,
-                        onClick = { onWakeModeChanged(mode) },
-                        label = { Text(mode.label) }
-                    )
-                }
-            }
-        }
-        CompactToggle(
-            "Start on boot",
-            "Requires Keep serving in background and enables it automatically",
-            startOnBoot,
-            onStartOnBootChanged
+
+        HorizontalDivider()
+        AdvancedSectionHeader(
+            title = "Server lifetime",
+            description = "Choose what happens after you leave 200 OK"
         )
-        CompactToggle(
-            "Stop on low battery",
-            if (shutdownOnLowBattery) "Stop at or below $shutdownBatteryThreshold% when unplugged" else "Protect battery during unattended serving",
-            shutdownOnLowBattery,
-            onLowBatteryChanged
+        ServerLifetimeMode.entries.forEachIndexed { index, mode ->
+            if (index > 0) HorizontalDivider()
+            LifetimeOption(
+                title = mode.label,
+                description = when (mode) {
+                    ServerLifetimeMode.APP_OPEN -> "Stops when you leave 200 OK."
+                    ServerLifetimeMode.BACKGROUND -> "No notification. Android may suspend or stop it."
+                    ServerLifetimeMode.RELIABLE ->
+                        "Ongoing notification; best for long transfers and unattended serving."
+                },
+                selected = lifetimeMode == mode,
+                onClick = { onLifetimeModeChanged(mode) }
+            )
+        }
+        if (lifetimeMode == ServerLifetimeMode.RELIABLE && !notificationGranted) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "Notifications required",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.weight(1f)
+                )
+                TextButton(onClick = onNotificationAction) { Text("Enable") }
+            }
+        }
+
+        HorizontalDivider()
+        AdvancedSectionHeader(
+            title = "Screen-off availability",
+            description = if (reliableReady) {
+                "Keep awake improves reachability but uses more battery"
+            } else {
+                "Available with Reliable background"
+            }
+        )
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            WakeLockMode.entries.forEach { mode ->
+                FilterChip(
+                    selected = wakeLockMode == mode,
+                    onClick = { onWakeModeChanged(mode) },
+                    enabled = reliableReady,
+                    label = { Text(mode.label) }
+                )
+            }
+        }
+        Text(
+            if (!reliableReady) {
+                "No wake lock is active."
+            } else {
+                when (wakeLockMode) {
+                    WakeLockMode.NONE -> "Allows CPU and Wi-Fi to sleep."
+                    WakeLockMode.WIFI_ONLY -> "Keeps Wi-Fi available; CPU may sleep."
+                    WakeLockMode.FULL -> "Keeps CPU and Wi-Fi awake; highest battery use."
+                }
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        HorizontalDivider()
+        AdvancedSectionHeader("Automation & safety")
+        AdvancedToggle(
+            title = "Start on boot",
+            description = if (reliableReady) {
+                "Start automatically after reboot"
+            } else {
+                "Enables Reliable background and requires notifications"
+            },
+            checked = startOnBoot,
+            onCheckedChange = onStartOnBootChanged
+        )
+        AdvancedToggle(
+            title = "Stop on low battery",
+            description = if (shutdownOnLowBattery) {
+                "Stop at or below $shutdownBatteryThreshold% when unplugged"
+            } else {
+                "Protect battery during unattended serving"
+            },
+            checked = shutdownOnLowBattery,
+            onCheckedChange = onLowBatteryChanged
         )
         if (shutdownOnLowBattery) {
-            Column {
+            Column(Modifier.padding(start = 8.dp)) {
                 Text("Battery threshold: $shutdownBatteryThreshold%", style = MaterialTheme.typography.bodyMedium)
                 Slider(
                     value = shutdownBatteryThreshold.toFloat(),
@@ -639,9 +679,11 @@ private fun AdvancedSettings(
                 )
             }
         }
+
+        HorizontalDivider()
+        AdvancedSectionHeader("Power diagnostics")
         Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
             Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text("Power diagnostics", style = MaterialTheme.typography.titleSmall)
                 Text(
                     "${if (batteryLevel >= 0) "$batteryLevel%" else "Battery unknown"} · ${if (charging) "Charging" else "On battery"} · $powerState",
                     style = MaterialTheme.typography.bodySmall
@@ -654,6 +696,48 @@ private fun AdvancedSettings(
                 TextButton(onClick = onOpenBatterySettings) { Text("Battery optimization settings") }
             }
         }
+    }
+}
+
+@Composable
+private fun AdvancedSectionHeader(title: String, description: String? = null) {
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            title,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.primary
+        )
+        if (description != null) {
+            Text(
+                description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun AdvancedToggle(
+    title: String,
+    description: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.titleSmall)
+            Text(
+                description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Spacer(Modifier.width(12.dp))
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
 

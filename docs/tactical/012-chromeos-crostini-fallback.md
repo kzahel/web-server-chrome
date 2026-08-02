@@ -5,8 +5,10 @@ disposable offline handoff from a cached non-terminal Launcher app through a
 stopped Crostini VM and local external-message page into a dormant extension
 worker. The extension launch/optional-permission slice and a checked-in
 pure-Rust graphical launcher/desktop template are implemented and physically
-validated. No supported Rust controller, installer, setup/control product, or
-release artifact ships yet.**
+validated. A follow-up also proves the accepted static on-demand service
+lifecycle and permission-free dedicated Chrome popup shape. No supported Rust
+controller, installer/updater, setup/control product, or release artifact ships
+yet.**
 
 Last updated: **2026-08-02**.
 
@@ -40,6 +42,9 @@ the published Node CLI or the full desktop AppImage:
   old glibc baseline or as static musl builds;
 - install per-user under `~/.local/bin` with a versioned, checksum-verifying
   `https://ok200.app/install-crostini.sh` script;
+- install the controller as a static on-demand systemd user unit with
+  `Restart=always`, but no enable target or linger mutation; the ChromeOS
+  Launcher starts it explicitly;
 - install a non-terminal `.desktop` launcher with the real 200 OK icon;
 - have a small launcher helper briefly map a branded startup window, start or
   focus the controller, wait for its local control surface, and open it in
@@ -52,6 +57,13 @@ the published Node CLI or the full desktop AppImage:
 - keep LAN ingress off until the user explicitly enables it and adds the same
   TCP port under **Settings -> About ChromeOS -> Developers -> Linux
   development environment -> Port forwarding**.
+
+Use a normal extension tab for first install, permission, claim, and recovery;
+use one dedicated Chrome popup browser window for routine connected controls,
+with a normal tab as fallback. Automatic update checks run only while the
+controller is already active. Manual update is always available, and
+automatic installation is an explicit recommended preference that applies only
+while the content server is stopped.
 
 The extension should eventually own a full-page ChromeOS setup and control UI,
 while the Crostini binary runs as a small authenticated headless controller.
@@ -210,33 +222,66 @@ serve `~/Downloads`; serving arbitrary ChromeOS folders needs an explicit
 shared-folder selection and path UX rather than pretending a browser directory
 picker grants a persistent Linux filesystem path.
 
+### On-demand service and popup control surface
+
+A disposable static user unit on the physical M150 reported inactive after
+Linux startup, started only on explicit request, stayed active after Terminal
+closed, and returned inactive after the VM stopped and later restarted. Its
+`Restart=always` policy did not override explicit `systemctl stop`. The test
+account already had `Linger=yes` from JSTorrent; the static unit still remained
+on-demand, proving 200 OK must neither enable nor disable that shared setting.
+
+A separate permission-free Manifest V3 fixture created a persistent 700×750
+Chrome popup window on the same device. The page was returned by
+`runtime.getContexts({contextTypes: ["TAB"]})` with its `windowId`, validating
+the warning-minimizing create/find/focus mechanism. The production setup-tab
+routing, responsive control UI, bounds persistence, fallback, and exact packed
+manifest remain unimplemented.
+
 ## Implementation ledger
 
 ### C1 - productionize the native binary
 
 - [ ] Give the Crostini binary a stable product name and release identity
       without silently replacing the feature-richer npm CLI.
+- [ ] Prefer one `ok200-crostini` release artifact containing launcher and
+      controller subcommands so their installed versions cannot drift.
 - [ ] Add version output, persisted configuration, single-instance locking,
-      clear bind failures, and machine-readable readiness/status.
+      clear bind failures, machine-readable readiness/status, authenticated
+      control APIs, and status/reset/token/update/rollback commands.
 - [ ] Preserve localhost-only as the safe default; make LAN binding explicit.
 - [ ] Build and test x86_64 and ARM64 assets against the oldest claimed
       Crostini runtime.
 - [ ] Publish SHA-256 manifests and reject unverified downloads.
+- [ ] Publish a separately signed `crostini-v` artifact manifest with
+      architecture and controller/extension protocol compatibility ranges.
 
 ### C2 - create install, update, and uninstall paths
 
 - [ ] Add a source-controlled installer modeled on JSTorrent's Crostini
       installer: architecture selection, immutable release URL, checksum
-      verification, per-user install, and `--uninstall`.
+      and signature verification, per-user install, and version selection.
 - [x] Implement the small pure-Rust transient graphical helper and the
       non-terminal `app.ok200.crostini.desktop.in` template. The helper is
       DPI-aware, has failure/retry controls, and does not require GTK, Tauri,
       `xmessage`, or Xlib at runtime.
 - [ ] Have the real installer install that helper, desktop entry, branded icon,
-      and controller unit idempotently.
-- [ ] Make repeated installation an idempotent update.
-- [ ] Remove only files owned by the installer and never delete served user
-      content or the Crostini environment.
+      combined controller, local rollback/uninstall helpers, and static
+      non-enabled controller unit idempotently without changing linger.
+- [ ] Install immutable version directories behind an atomic stable link, take
+      an installer lock, preserve one previous version, and make repeated
+      installation an idempotent update.
+- [ ] Record exact owned paths. Normal uninstall preserves settings; explicit
+      `--purge` removes controller settings/tokens. Neither mode removes served
+      content, ChromeOS sharing/forwarding state, or the Crostini environment.
+- [ ] Extend the shared update service with a separate `/crostini` product and
+      generic signed artifact-manifest response. The current simple-version
+      route lacks per-architecture URL/hash/signature/compatibility fields.
+- [ ] Check automatically only after on-demand controller start and at a
+      bounded daily cadence while active; offer manual update plus explicit
+      automatic-install preference, defer install while content is served, and
+      physically prove restart, reconnect, rollback, corruption, interruption,
+      and offline recovery.
 
 ### C3 - complete the launcher/controller UX
 
@@ -255,6 +300,10 @@ picker grants a persistent Linux filesystem path.
       failure-to-retry recovery, warm single-service reuse, and two consecutive
       stopped-VM extension handoffs. Final host launch count advanced 16 → 17 →
       18 and no launcher process remained after either handoff.
+- [x] Prove a static `Restart=always` controller fixture stays inactive across
+      Linux/VM restart until explicitly started, survives Terminal close after
+      start, respects explicit stop, and remains static even with pre-existing
+      account lingering.
 - [ ] Repeat warm, stopped-VM, and full-reboot/login tests with the production
       Rust controller and prove its local launch page wakes a dormant extension
       worker and focuses one extension control surface.
@@ -272,6 +321,11 @@ picker grants a persistent Linux filesystem path.
       close control, but not its custom-drawn body, in the automation tree.
 - [ ] Do not silently keep serving a folder after the user believes the app has
       stopped.
+- [x] Prove a permission-free 700×750 Chrome popup and context-based discovery
+      with a usable `windowId` on physical M150 ChromeOS.
+- [ ] Route incomplete setup/permission/claim to a normal extension tab and
+      routine connected launch to one focused popup control window; validate
+      sizing, bounds, fallback, and packed-extension behavior.
 
 ### C4 - integrate the website and extension
 
@@ -304,14 +358,14 @@ picker grants a persistent Linux filesystem path.
 
 | Gate | Required evidence |
 |---|---|
-| Install | Fresh default Debian Crostini on x86_64 and ARM64 installs one verified command without npm or developer mode |
+| Install | Fresh default Debian Crostini on x86_64 and ARM64 installs one signed/verified command without npm, sudo, developer mode, service enablement, or linger mutation; rerun, local uninstall, preserve, purge, and ownership boundaries pass |
 | Launcher | Windowless user launchers became stale after one host launch, and direct `chrome-extension://` handoff failed. The checked-in pure-Rust helper passed readable failure/retry, warm reuse, and two consecutive stopped-VM launches through the local HTTP bridge into one extension surface. The installer plus production controller and full-reboot/login path remain unproved |
 | Files | Linux `~/Downloads` and one ChromeOS folder explicitly shared with Linux serve exact fixtures; unshared paths fail clearly |
 | Local browser | `localhost` or the accepted stable Crostini hostname reaches the server without a ChromeOS LAN port entry |
 | LAN off | A second device cannot reach the server through the Chromebook LAN address |
 | LAN on | After the documented ChromeOS port entry, a second device fetches the exact fixture at the shown Chromebook IPv4 and port |
-| Lifecycle | Stop, reboot, Linux shutdown, suspend/resume, port conflict, update, and uninstall are truthful and leave no unintended listener |
-| Extension | Bundled instructions and `penguin.linux.test` launch work offline; external messaging adds no install/update warning; optional host plus any Local Network Access prompts are contextual; deterministic discovery, exact-origin claim/token, and control UI pass physically |
+| Lifecycle | Static on-demand systemd semantics passed disposably. Production stop, reboot, Linux shutdown, suspend/resume, port conflict, signed update/reconnect/rollback, and uninstall must remain truthful and leave no unintended listener |
+| Extension | Bundled instructions and `penguin.linux.test` launch work offline; external messaging adds no install/update warning; optional host plus any Local Network Access prompts are contextual; deterministic discovery, exact-origin claim/token, setup tab, single popup control window, and fallback pass physically |
 | Unsupported | Managed/child/secondary/old-device copy directs users to another supported device without a dead loop |
 
 ## Release boundary

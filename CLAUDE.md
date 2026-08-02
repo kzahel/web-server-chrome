@@ -240,7 +240,9 @@ All components follow the same release pattern:
 ```
 
 - Updates `android/app/build.gradle.kts` (versionName + auto-increments versionCode)
-- Creates tag: `android-v{version}`
+- Runs Android compile, unit-test, and lint gates before versioning
+- Creates the version commit and local tag `android-v{version}` without pushing
+- **Maintainer release step:** Atomically push `main` and the approved tag
 - CI builds signed APK and AAB, creates GitHub Release with both attached
 - **Manual step:** Download AAB from GitHub Release and upload to Google Play Console
 - Changelog: `android/CHANGELOG.md`

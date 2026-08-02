@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.2.1]
 
 ### Fixed
 - Resolve URLs from Android’s active Wi-Fi/Ethernet network instead of the

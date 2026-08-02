@@ -1,6 +1,6 @@
 {
   "name": "@ok200/extension",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "200 OK Web Server Chrome Extension",
   "private": true,
   "type": "module",

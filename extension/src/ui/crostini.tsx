@@ -441,19 +441,43 @@ function OfflineSetup({ compact = false }: { compact?: boolean }) {
         </li>
         <li>Open Terminal once after Linux finishes installing.</li>
         <li>
-          Install the 200 OK Linux component. The verified public installer is
-          not published yet; this source build is currently for testbed
-          validation only.
+          Install the 200 OK Linux component with the verified installer:
+          <code style={commandStyle}>
+            curl -fsSL https://ok200.app/install-crostini.sh | bash
+          </code>
+          <span style={{ ...warningStyle, display: "block" }}>
+            The signed public component is not published yet. This command is
+            bundled now for offline setup documentation, but it will not be a
+            supported install path until the Linux option is announced.
+          </span>
         </li>
         <li>
           After installation, launch <strong>200 OK Linux</strong> from the
           ChromeOS Launcher whenever you want to use it after a reboot.
+        </li>
+        <li>
+          If the Launcher item cannot wake Linux, open Terminal once, wait for
+          its prompt, close it, and try <strong>200 OK Linux</strong> again.
         </li>
       </ol>
       <p style={mutedStyle}>
         If the Linux setting is unavailable, your Chromebook, profile, or
         administrator may not allow Linux applications.
       </p>
+      <details style={detailsStyle}>
+        <summary>Update, rollback, and uninstall commands</summary>
+        <code style={commandStyle}>
+          ok200-crostini check-update{"\n"}
+          ok200-crostini update{"\n"}
+          ok200-crostini rollback{"\n"}
+          ok200-crostini uninstall
+        </code>
+        <p style={mutedStyle}>
+          Uninstall preserves settings. Use <code>uninstall --purge</code> only
+          when you also want to remove pairing and controller settings. Served
+          folders are never deleted.
+        </p>
+      </details>
     </div>
   );
 }
@@ -538,6 +562,20 @@ const warningStyle = {
   lineHeight: 1.45,
 };
 const detailsStyle = { marginTop: 18, color: "#4d5b70" };
+const commandStyle = {
+  display: "block",
+  boxSizing: "border-box" as const,
+  margin: "8px 0",
+  padding: "10px 12px",
+  borderRadius: 8,
+  background: "#edf2f7",
+  color: "#172033",
+  fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace",
+  fontSize: 12,
+  lineHeight: 1.5,
+  overflowWrap: "anywhere" as const,
+  whiteSpace: "pre-wrap" as const,
+};
 const statusRowStyle = {
   display: "flex",
   justifyContent: "space-between",

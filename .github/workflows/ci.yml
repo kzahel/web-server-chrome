@@ -23,3 +23,5 @@ jobs:
       - run: pnpm test
         env:
           OK200_SOCKET_TESTS: '1'
+      - run: node --test .github/scripts/write-crostini-release-manifest.test.mjs
+      - run: scripts/test-crostini-installer.sh

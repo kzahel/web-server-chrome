@@ -1,16 +1,20 @@
 [package]
 name = "ok200-crostini"
-version.workspace = true
+version = "0.1.0-dev.1"
 edition.workspace = true
 description = "ChromeOS Linux launcher and controller for 200 OK Web Server"
 
 [dependencies]
 axum = { version = "0.8.9", default-features = false, features = ["http1", "json", "tokio"] }
+base64 = "0.22.1"
 dirs = { workspace = true }
 fs2 = "0.4.3"
+minisign-verify = "0.2.5"
 ok200-core = { path = "../core" }
+semver = "1.0.27"
 serde = { workspace = true }
 serde_json = { workspace = true }
+sha2 = "0.10.9"
 subtle = "2.6.1"
 tokio = { version = "1", features = ["fs", "macros", "net", "rt-multi-thread", "signal", "sync"] }
 uuid = { workspace = true }

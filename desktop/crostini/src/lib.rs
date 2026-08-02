@@ -198,9 +198,13 @@ fn checked_command(result: std::io::Result<Output>, action: &str) -> Result<(), 
 
 mod controller;
 mod installer;
+mod release;
 
 pub use controller::{reset_controller_identity, ControllerOptions, RunningController};
-pub use installer::{install_current_executable, stop_controller_for_reset, uninstall};
+pub use installer::{install_current_executable, rollback, stop_controller_for_reset, uninstall};
+pub use release::{
+    check_for_update, current_architecture, download_update, verify_release_files, VerifiedRelease,
+};
 
 #[cfg(target_os = "linux")]
 mod x11_launcher;

@@ -193,6 +193,7 @@ All components follow the same release pattern:
 | **Desktop** | `desktop-v{ver}` | Targets signed Mac/Win/Linux installers | Auto-updates only after the release-readiness gate passes |
 | **Extension** | `extension-v{ver}` | ZIP | Manual upload to Chrome Web Store |
 | **Android** | `android-v{ver}` | Signed APK + AAB | Manual upload to Google Play Console |
+| **ChromeOS Linux** | `crostini-v{ver}` | Signed static x86_64 + ARM64 binaries and manifest | CI creates a separate GitHub release; website/update-service rollout is a coordinated maintainer step |
 
 ### CLI Releases
 
@@ -253,3 +254,26 @@ All components follow the same release pattern:
 - CI builds signed APK and AAB, creates GitHub Release with both attached
 - **Manual step:** Download AAB from GitHub Release and upload to Google Play Console
 - Changelog: `android/CHANGELOG.md`
+
+### ChromeOS Linux Releases
+
+```bash
+./scripts/release-crostini.sh <version> --check
+./scripts/release-crostini.sh <version>
+```
+
+- `--check` runs the Crostini Rust, canonical-manifest, and bootstrap-installer
+  gates without changing source, committing, tagging, pushing, or publishing.
+- Updates the independently versioned `desktop/crostini/Cargo.toml` package and
+  `desktop/Cargo.lock`, then creates the version commit and local
+  `crostini-v{version}` tag without pushing either one.
+- Tag CI cross-builds static musl binaries for `x86_64` and `aarch64`, signs a
+  canonical manifest with the desktop release key, verifies both artifacts,
+  and creates a separate GitHub release.
+- The bootstrap installer verifies the signed manifest, architecture-specific
+  SHA-256 and size, and binary version before any per-user installation change.
+- **Maintainer release steps:** push the approved commit/tag, inspect both
+  release artifacts, deploy the compatible shared update-server change and
+  `/crostini` product config, then expose the Linux option only after the
+  physical acceptance gates in the Crostini topic pass.
+- Changelog: `desktop/crostini/CHANGELOG.md`

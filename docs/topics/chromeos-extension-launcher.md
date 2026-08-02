@@ -10,8 +10,10 @@ ZIP passes local and CI inspection. The maintainer reports that Android
 store-delivered proof remains open. The separate Crostini fallback now has an
 accepted product flow plus a physically proved source-built x86_64 controller,
 self-install transaction, authenticated extension controls, and stopped-VM
-Launcher/popup path, but signed public artifacts and remaining release gates do
-not exist, so it does not ship yet.**
+Launcher/popup path. Its signed static-artifact, verified installer,
+ownership/rollback, and update-service plumbing now exist in source, but the
+exact tagged/deployed route, ARM64 runtime proof, and remaining release gates
+do not, so it does not ship yet.**
 
 Last reconciled: **2026-08-02**.
 
@@ -179,7 +181,7 @@ features, or that every legacy option is already available.
 | Play disabled | Passed on the explicitly authorized physical testbed: options route works; intent is blank; Play link opens Play setup/Terms |
 | Play unsupported or policy-blocked | Compatible physical/managed fixture or documented user report; options page remains independently reachable regardless |
 | Crostini feasibility | Passed on physical x86_64 for native build, localhost, explicit LAN forwarding, Linux files, Launcher indexing, one-click browser open, and wake from a fully stopped VM/container |
-| Crostini release | Source-built x86_64 production controller, local handoff, exact optional prompt, one-time claim/token, controls, popup, stopped-VM wake, and preserve/purge pass. Signed x86_64/ARM64 public installer, full reboot, packed-warning proof, shared-folder picker, LAN controls, and updates remain open |
+| Crostini release | Source-built controller/UI/handoff plus a static-musl x86_64 development artifact, ownership-tamper refusal, two-version restart/rollback, and preserve/purge pass. Signed public tag/deployment, ARM64 runtime, full reboot, packed-warning proof, shared-folder picker, LAN controls, and production updates remain open |
 | Store delivery | Existing controlled profile receives the reviewed version and repeats installed/absent routing checks |
 
 ## Current evidence and gaps

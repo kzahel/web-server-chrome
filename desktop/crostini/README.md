@@ -19,15 +19,22 @@ The first launch transfers a one-time claim code through the exact extension
 handoff; later API calls require the persistent bearer token stored by that
 extension.
 
-The checked-in `install` command installs the already-verified current binary
-into an immutable per-user version directory, renders the `.desktop` and
-static service templates, and starts the controller for that setup session
-without enabling the unit or changing user lingering. `uninstall` preserves
-settings by default; `uninstall --purge` removes pairing/settings while always
-leaving served content alone. This is the install transaction used for
-physical development validation. The public download script, signed manifest,
-release artifacts, updates, ownership manifest, and rollback still need to be
-built before this becomes a supported route.
+The checked-in bootstrap installer selects a static x86_64 or ARM64 release,
+verifies its signed canonical manifest plus exact size and SHA-256, runs a
+binary version self-test, and only then calls the binary's guarded install
+transaction. Installation uses immutable per-user version directories, an
+atomic `current` link, one retained `previous` version, an exact ownership
+manifest, a local rollback command, a `.desktop` entry, and a static user
+service. It starts the controller for that explicit setup session without
+enabling the unit or changing user lingering. Normal uninstall preserves
+settings; `uninstall --purge` removes controller identity/settings while both
+modes leave served content and ChromeOS sharing/forwarding state alone.
+
+The release pipeline and update-service protocol are implemented in source,
+but no signed `crostini-v` release or public route is available yet. The
+source-only `install` command remains useful for development; a supported
+installation starts at `https://ok200.app/install-crostini.sh` only after the
+release and physical gates in the topic document pass.
 
 Useful commands:
 
@@ -38,6 +45,9 @@ ok200-crostini status
 ok200-crostini reset-controller
 ok200-crostini install
 ok200-crostini uninstall [--purge]
+ok200-crostini check-update
+ok200-crostini update
+ok200-crostini rollback
 ```
 
 The complete product and security contract lives in

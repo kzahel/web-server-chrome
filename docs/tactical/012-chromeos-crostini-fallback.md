@@ -11,7 +11,10 @@ post-verification self-install/uninstall transaction, and responsive extension
 setup/control UI. That exact source-built x86_64 slice passed claim,
 start/localhost/stop, one routine popup, stopped-VM wake without content
 autostart, reset/reclaim, idempotent reinstall, preserve uninstall, and purge
-on M150. No signed public installer/updater, ARM64 artifact, packed extension
+on M150. Signed static-artifact CI, the canonical manifest, verified bootstrap
+installer, ownership/previous/rollback transaction, CLI updater, and shared
+update-service route are now implemented in source. No signed public tag,
+deployed update route, physically exercised ARM64 artifact, packed extension
 candidate, or supported public route ships yet.**
 
 Last updated: **2026-08-02**.
@@ -268,53 +271,62 @@ denial, signed download/update, and public setup copy remain unproved.
 
 ### C1 - productionize the native binary
 
-- [ ] Give the Crostini binary a stable product name and release identity
+- [x] Give the Crostini binary the independent `ok200-crostini` product name,
+      `crostini-v` tag namespace, package version, changelog, and release script
       without silently replacing the feature-richer npm CLI.
 - [x] Implement one `ok200-crostini` binary containing the launcher, controller,
       status, reset, self-install, and uninstall subcommands so installed
-      launcher/service versions cannot drift; release identity is still open.
+      launcher/service versions cannot drift; its independent release identity
+      is now defined above.
 - [x] Add version output, private persisted identity/settings, process locking,
       clear bind failures, machine-readable readiness/status, one-time claim,
       bearer-authenticated settings/start/stop, and reset/identity rotation.
-- [ ] Add independent token rotation, rooted browse, logs/diagnostics,
-      migrations, signed update, and rollback commands/protocols.
+- [ ] Add independent token rotation, rooted browse, logs/diagnostics, and
+      migrations. Signed `check-update`/`update` plus offline `rollback` are
+      implemented in source and await exact-release physical proof.
 - [x] Preserve localhost-only as the content default and make LAN binding
       explicit; the controller is separately authenticated and must never be
       forwarded.
 - [ ] Build and test x86_64 and ARM64 assets against the oldest claimed
-      Crostini runtime.
-- [ ] Publish SHA-256 manifests and reject unverified downloads.
-- [ ] Publish a separately signed `crostini-v` artifact manifest with
+      Crostini runtime. Pinned static-musl cross-builds now pass for both
+      architectures; the exact x86_64 development artifact ran on Debian 12,
+      while ARM64 and the oldest baseline remain runtime gaps.
+- [x] Generate canonical SHA-256/size metadata and reject unsigned, tampered,
+      incompatible, wrong-architecture, or wrong-version downloads before
+      installation mutation.
+- [x] Implement a separately signed `crostini-v` artifact manifest with
       architecture and controller/extension protocol compatibility ranges.
+      Publication and exact-artifact proof remain open.
 
 ### C2 - create install, update, and uninstall paths
 
-- [ ] Add a source-controlled installer modeled on JSTorrent's Crostini
-      installer: architecture selection, immutable release URL, checksum
-      and signature verification, per-user install, and version selection.
+- [x] Add a source-controlled installer modeled on JSTorrent's Crostini
+      installer: architecture selection, immutable release URL, checksum and
+      signature verification, per-user install, and version selection.
 - [x] Implement the small pure-Rust transient graphical helper and the
       non-terminal `app.ok200.crostini.desktop.in` template. The helper is
       DPI-aware, has failure/retry controls, and does not require GTK, Tauri,
       `xmessage`, or Xlib at runtime.
-- [ ] Have the real installer install that helper, desktop entry, branded icon,
-      combined controller, local rollback/uninstall helpers, and static
+- [x] Have the real installer install that helper, desktop entry, branded icon,
+      combined controller, local rollback/uninstall commands, and static
       non-enabled controller unit idempotently without changing linger.
 - [x] Implement and physically prove the post-verification subset: the combined
       binary self-installs its versioned executable, stable links, real
       launcher/icon, and static unit; rerun is idempotent and never changes
       enablement or linger. Public verification/rollback remains open.
-- [ ] Install immutable version directories behind an atomic stable link, take
+- [x] Install immutable version directories behind an atomic stable link, take
       an installer lock, preserve one previous version, and make repeated
       installation an idempotent update.
-- [ ] Record exact owned paths. Normal uninstall preserves settings; explicit
+- [x] Record exact owned paths. Normal uninstall preserves settings; explicit
       `--purge` removes controller settings/tokens. Neither mode removes served
       content, ChromeOS sharing/forwarding state, or the Crostini environment.
 - [x] Physically prove current exact-path preserve and purge behavior on x86_64,
-      including served-root and linger preservation and Launcher-cache removal;
-      the formal ownership manifest remains open.
-- [ ] Extend the shared update service with a separate `/crostini` product and
-      generic signed artifact-manifest response. The current simple-version
-      route lacks per-architecture URL/hash/signature/compatibility fields.
+      including served-root and linger preservation, formal ownership-manifest
+      fail-closed behavior, two-version restart/rollback, and Launcher-cache
+      removal.
+- [x] Extend the shared update-service source with a separate `/crostini`
+      product and generic signed artifact-manifest response carrying the exact
+      signed manifest/signature bytes. Production deployment remains open.
 - [ ] Check automatically only after on-demand controller start and at a
       bounded daily cadence while active; offer manual update plus explicit
       automatic-install preference, defer install while content is served, and
@@ -373,7 +385,10 @@ denial, signed download/update, and public setup copy remain unproved.
 
 - [ ] Bundle a full-page Crostini setup/recovery guide in the extension with
       supported-device caveats, Linux setup, one verified install command,
-      Launcher instructions, Linux-files guidance, and LAN forwarding.
+      Launcher instructions, Linux-files guidance, and LAN forwarding. The
+      hidden source UI now bundles the exact command plus launcher recovery,
+      update, rollback, preserve-uninstall, and purge guidance; file sharing
+      and LAN guidance still need the finished setup flow.
 - [ ] Mirror the bundled guide on an owned Crostini website page without making
       the extension depend on that page at runtime.
 - [ ] Update `/chromeos` from **Future option** only after the exact installer
@@ -403,13 +418,13 @@ denial, signed download/update, and public setup copy remain unproved.
 
 | Gate | Required evidence |
 |---|---|
-| Install | The source-built x86_64 post-verification transaction now passes versioned per-user install without npm/sudo/enable/linger mutation, idempotent rerun, preserve/reinstall/purge, served-root preservation, and app removal. Fresh x86_64 plus ARM64 signed public download, ownership manifest, and rollback remain |
+| Install | The source-built and static-musl development x86_64 transactions pass versioned per-user install without npm/sudo/enable/linger mutation, manifest-tamper refusal, two-version restart/rollback, preserve/reinstall/purge, served-root preservation, and app removal. Exact signed-release x86_64 plus ARM64 physical proof remains |
 | Launcher | Windowless user launchers became stale after one host launch, and direct `chrome-extension://` handoff failed. The checked-in pure-Rust helper plus production controller passed warm reuse and stopped-VM launch through the installed static unit into one popup without Terminal. Full ChromeOS reboot/login remains |
 | Files | Linux `~/Downloads` and one ChromeOS folder explicitly shared with Linux serve exact fixtures; unshared paths fail clearly |
 | Local browser | `localhost` or the accepted stable Crostini hostname reaches the server without a ChromeOS LAN port entry |
 | LAN off | A second device cannot reach the server through the Chromebook LAN address |
 | LAN on | After the documented ChromeOS port entry, a second device fetches the exact fixture at the shown Chromebook IPv4 and port |
-| Lifecycle | Static semantics plus production explicit start/fetch/stop, controller-only VM wake with content stopped, reset/reclaim, reinstall, and both uninstall modes pass. Full reboot/logout, suspend/resume, collision, signed update/reconnect/rollback remain |
+| Lifecycle | Static semantics plus production explicit start/fetch/stop, controller-only VM wake with content stopped, reset/reclaim, reinstall, and both uninstall modes pass. Signed CLI update/rollback exists in source; full reboot/logout, suspend/resume, collision, and exact-release update/reconnect/rollback proof remain |
 | Extension | Source build passes deterministic health, exact-extension one-time claim, bearer token, optional host prompt, normal setup tab, one focused popup, and offline local handoff. Packed warning proof, fresh denial, forced tab fallback, and final offline install copy remain |
 | Unsupported | Managed/child/secondary/old-device copy directs users to another supported device without a dead loop |
 

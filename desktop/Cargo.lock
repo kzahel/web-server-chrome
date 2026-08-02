@@ -2319,9 +2319,9 @@ dependencies = [
 
 [[package]]
 name = "minisign-verify"
-version = "0.2.4"
+version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e856fdd13623a2f5f2f54676a4ee49502a96a80ef4a62bcedd23d52427c44d43"
+checksum = "22f9645cb765ea72b8111f36c522475d2daa0d22c957a9826437e97534bc4e9e"
 
 [[package]]
 name = "miniz_oxide"
@@ -2683,15 +2683,19 @@ dependencies = [
 
 [[package]]
 name = "ok200-crostini"
-version = "0.1.5"
+version = "0.1.0-dev.1"
 dependencies = [
  "axum",
+ "base64 0.22.1",
  "dirs 5.0.1",
  "font8x8",
  "fs2",
+ "minisign-verify",
  "ok200-core",
+ "semver",
  "serde",
  "serde_json",
+ "sha2",
  "subtle",
  "tempfile",
  "tokio",

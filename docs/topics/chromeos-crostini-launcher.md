@@ -24,10 +24,14 @@ claimed through the exact optional permission, served `localhost`, stopped
 truthfully, opened setup in a normal tab, focused one 700×750 routine popup,
 woke from a stopped VM without Terminal, reset/reclaimed, reinstalled
 idempotently, and uninstalled with both preserve and purge behavior. Signed
-public installation/update delivery, an ownership manifest and rollback,
-ARM64/oldest-runtime artifacts, packed-update warning proof, directory picker,
-host-address LAN controls, and full-reboot proof still do not exist. This
-remains a future option rather than a shipped fallback.**
+release delivery is now implemented in source: a fail-closed static-musl CI
+workflow, canonical signed artifact manifest, architecture-selecting bootstrap
+installer, formal ownership manifest, retained previous version, local
+rollback, CLI update check/install, and a separate update-service manifest
+route. No `crostini-v` tag or signed public artifact has run through that path,
+the update-service route is not deployed, and ARM64/oldest-runtime, packed-
+update warning, directory-picker, host-address LAN, and full-reboot proofs
+remain open. This remains a future option rather than a shipped fallback.**
 
 Last reconciled: **2026-08-02**.
 
@@ -68,9 +72,9 @@ controller-served launch page --external message--> extension worker
   those distinct names rather than overloading “controller.” Prefer one
   `ok200-crostini` release artifact. The combined source binary now exposes
   `launch`, `controller`, `status`, `reset-controller`, `install`, and
-  `uninstall`; token rotation, signed `update`, and `rollback` remain release
-  work. One artifact keeps the launcher and service from drifting across
-  independently installed versions.
+  `uninstall`, plus signed `check-update`, `update`, and local `rollback`;
+  independent token rotation remains open. One artifact keeps the launcher and
+  service from drifting across independently installed versions.
 - A branded `Terminal=false` `.desktop` entry installed in Crostini is the
   post-install ChromeOS Launcher surface. ChromeOS, not the extension, can use
   that registered Linux app to wake a stopped VM/container and execute its
@@ -643,10 +647,46 @@ All installed files, extension state, transferred source/build trees, and the
 empty test serve root were removed afterward; the VM was stopped and the
 testbed returned 8/8 healthy. This evidence does not make the self-install
 command a public installer: it begins only after a binary has already been
-downloaded and verified. Full ChromeOS reboot/login, signed public download,
-ARM64/older-Crostini artifacts, popup-failure fallback, fresh permission
-denial, shared-folder UI, LAN controls through this exact UI, and updates remain
-open.
+downloaded and verified. The source now contains the missing signed bootstrap,
+ownership, rollback, and update plumbing, but the exact release artifacts have
+not been produced or physically exercised. Full ChromeOS reboot/login, signed
+public download, ARM64/older-Crostini runtime proof, popup-failure fallback,
+fresh permission denial, shared-folder UI, LAN controls through this exact UI,
+and production update/reconnect remain open.
+
+### Release-plumbing validation
+
+The 2026-08-02 follow-up exercised the newly implemented delivery transaction
+without claiming a production release:
+
+- pinned `cargo-zigbuild` 0.23.0 with Zig 0.15.2 produced stripped,
+  statically linked musl development binaries for both `x86_64` (3,007,152
+  bytes) and `aarch64` (2,828,720 bytes); the ARM64 ELF identity was inspected
+  but could not be executed on the available x86_64 Chromebook;
+- that exact static x86_64 development binary ran on the Debian 12 Crostini
+  testbed, installed the real launcher/controller transaction, answered the
+  versioned health endpoint, and uninstalled with purge;
+- all 24 Linux-target Crostini tests, strict Clippy, the OpenSSL/Minisign
+  bootstrap integrity fixtures, and the release build passed inside the same
+  container;
+- an ownership-manifest tamper made uninstall fail closed without removing the
+  application; restoring the exact manifest allowed normal removal;
+- installing development versions `0.1.0-dev.1` then `0.1.0-dev.2` atomically
+  retained `previous`, restarted the active controller into the new version,
+  and local rollback restarted it into the old version with the same persisted
+  controller identity;
+- a direct attempt to reinstall the older development binary then failed
+  before changing `current`; the explicit local rollback path remained usable;
+- normal uninstall preserved configuration and an explicit served-root
+  sentinel, reinstall reused the identity, purge removed configuration, and
+  neither path changed the pre-existing account linger value; and
+- all temporary application/source fixtures were removed, Crostini was
+  stopped, and the ChromeOS testbed returned 8/8 healthy.
+
+This proves the static build shape and source-level transaction on one current
+x86_64 Crostini environment. It does not prove the production signing secret,
+tag-created GitHub assets, deployed update route, oldest claimed Crostini
+baseline, ARM64 execution, or exact signed bootstrap/update/reconnect path.
 
 ## LAN behavior
 
@@ -674,29 +714,34 @@ architecture selection, verified immutable release assets, per-user systemd,
 version pinning, idempotent rerun, and uninstall—but 200 OK should tighten its
 transaction and ownership model:
 
-The combined binary now implements the post-verification transaction used by
-the physical test: `install` copies itself to a versioned per-user directory,
-atomically switches stable links, renders the desktop/static-service files and
-icon, refreshes caches when available, and starts but never enables the
-controller. `uninstall` and `uninstall --purge` passed the preserve/purge
-boundaries above. This intentionally does not claim the public download layer,
-installer lock/ownership manifest, previous-version rollback, signed manifest,
-or architecture selection below.
+The combined binary now implements the full post-verification transaction:
+`install-release` independently verifies the signed manifest and running
+executable, takes a per-user installer lock, copies into an immutable version
+directory, atomically switches stable links, retains one `previous` version,
+writes an exact ownership manifest, renders the desktop/static-service files
+and icon, refreshes caches when available, and starts but never enables the
+controller. `rollback` works from retained local state without Internet.
+`uninstall` and `uninstall --purge` enforce the owned-path and preserve/purge
+boundaries. The bootstrap script selects `x86_64` or `aarch64`, downloads into
+a private temporary directory, verifies the signed canonical manifest, exact
+size and SHA-256, and binary version, and performs no install mutation before
+those checks pass. This source implementation still needs exact-release and
+physical acceptance evidence.
 
-- publish a separate `crostini-v<version>` release containing one combined
+- the separate `crostini-v<version>` workflow contains one combined
   `ok200-crostini` binary for `x86_64` and `aarch64`, a signed release manifest,
   SHA-256 values, and release notes;
-- take an installation lock, reject unknown/missing arguments, download to a
-  private temporary directory, and perform no mutation until verification and
+- the installer takes an installation lock, rejects unknown/missing arguments,
+  downloads to a private temporary directory, and performs no mutation until verification and
   a downloaded-binary self-test pass;
-- install versioned immutable files below
-  `~/.local/lib/ok200-crostini/versions/<version>/`, then atomically switch a
+- it installs versioned immutable files below
+  `~/.local/lib/ok200-crostini/versions/<version>/`, then atomically switches a
   stable `current` link or shim used by the `.desktop` entry and systemd unit;
-- retain one known-good `previous` version and install offline-capable local
+- it retains one known-good `previous` version and installs offline-capable local
   rollback and uninstall helpers under `~/.local/bin`;
-- write an ownership manifest for the binary versions, stable shims, rendered
+- it writes an ownership manifest for the binary versions, stable shims, rendered
   desktop entry, icons, and static service unit; and
-- preserve configuration and claim state across idempotent installer reruns
+- it preserves configuration and claim state across idempotent installer reruns
   unless a documented migration fails closed.
 
 The installer may start the static controller service once so the already-open
@@ -731,22 +776,23 @@ Each update must:
    controller or Internet access.
 
 The live `updates.ok200.app` service and current desktop `0.1.5` Tauri route
-were rechecked successfully on 2026-08-02. The shared update server already
-supports multiple products on one hostname through a path prefix, but its
-simple-version protocol does not return architecture-specific artifact URLs,
-hashes, signatures, or compatibility ranges. Before Crostini release work, add
-a separate `/crostini` product using `crostini-v` tags and a generic signed
-artifact-manifest response. Do not overload the desktop Tauri route or scrape
-GitHub's “latest” release from the client. The controller verifies signatures
-locally, so compromise or misconfiguration of the routing service alone cannot
+were rechecked successfully on 2026-08-02. The shared update-server source now
+has a distinct artifact-manifest product type and `/crostini/manifest` route.
+It fetches the exact manifest and signature assets from the newest matching
+`crostini-v` release and returns their exact bytes in a schema-versioned
+envelope. This repository's
+[`update-server/web-server.json`](../../update-server/web-server.json) adds the
+separate `/crostini` product without overloading the desktop Tauri route. Both
+the Rust client and shell bootstrap verify the signature and the signed
+repository/tag, compatibility, architecture, asset name, size, and hash
+locally, so routing-service compromise or misconfiguration alone cannot
 authorize arbitrary code.
 
-No Remy or dotfiles deployment change is needed while this remains a design:
-the current product config and deployment runbook are sufficient entry points.
-The future implementation will require coordinated changes to this repository's
-[`update-server/web-server.json`](../../update-server/web-server.json), the
-shared update-server schema/tests, CI release assets, and only then the
-documented Remy build/restart procedure.
+The update-server source/config change must be committed and deployed together
+before a public Crostini install. Deployment still follows the existing Remy
+runbook; it is intentionally deferred until a signed `crostini-v` release
+exists, because the current production service cannot serve the new endpoint
+and there is no valid production manifest for it to return yet.
 
 ### Uninstall and recovery
 
@@ -779,25 +825,31 @@ Before changing **Future option** to a supported public route:
       status/settings/start/stop, and reset; pass local and physical x86_64
       tests.
 - [ ] Add token rotation independent of reset, rooted directory browsing,
-      diagnostics/logs, signed update/rollback, migrations, and protocol
-      compatibility policy.
+      diagnostics/logs, and migrations. Signed CLI update/rollback and a strict
+      controller/extension protocol compatibility policy are implemented in
+      source but still need production artifact/reconnect proof.
 - [x] Implement the pure-Rust, DPI-aware transient graphical launcher and
       `.desktop` template without GTK, Tauri, `xmessage`, or Xlib runtime
       dependencies; prove failure/retry, warm reuse, and two consecutive
       stopped-VM extension handoffs on physical x86_64 ChromeOS.
 - [ ] Publish verified x86_64 and ARM64 binaries compatible with the oldest
       claimed Crostini baseline.
-- [ ] Test the source-controlled installer and uninstall path in fresh default
-      Crostini environments on both architectures, including idempotent update,
-      ownership-manifest removal, default settings preservation, and explicit
-      purge.
+- [ ] Test the source-controlled signed installer and uninstall path in fresh
+      default Crostini environments on both architectures, including
+      idempotent update, ownership-manifest removal, default settings
+      preservation, and explicit purge. Source integrity tests pass; physical
+      signed-artifact evidence is still required.
 - [x] Physically prove the post-verification self-install transaction on the
       existing x86_64 Debian 12 testbed: versioned atomic install, static unit,
       no linger mutation, idempotent rerun, normal preserve, reinstall, purge,
       served-root preservation, cache removal, and exact cleanup.
-- [ ] Add the separate signed `crostini-v` artifact-manifest channel to the
-      shared update service and CI; prove current, available, incompatible,
-      corrupt, interrupted, rollback, and offline recovery cases.
+- [x] Add the separate signed `crostini-v` artifact-manifest source contract to
+      the shared update service and CI, including exact asset selection,
+      canonical manifest generation, local signature/hash/version verification,
+      and current-version responses.
+- [ ] Deploy that update-service route and prove the exact signed release's
+      current, available, incompatible, corrupt, interrupted, rollback, and
+      offline recovery cases.
 - [x] Install the checked-in `.desktop` launcher, helper, controller, icon, and
       static unit through the self-install transaction; repeat warm and fully
       stopped-VM handoff with the production controller and one extension

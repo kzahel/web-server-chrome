@@ -1,8 +1,23 @@
-{
-  "id": "web-server-chrome",
-  "displayName": "200 OK - Web Server",
-  "hostnames": ["updates.ok200.app"],
-  "githubRepo": "kzahel/web-server-chrome",
-  "tagPrefix": "desktop-v",
-  "tauriUpdates": true
-}
+[
+  {
+    "id": "web-server-chrome",
+    "displayName": "200 OK - Web Server",
+    "hostnames": ["updates.ok200.app"],
+    "githubRepo": "kzahel/web-server-chrome",
+    "tagPrefix": "desktop-v",
+    "tauriUpdates": true
+  },
+  {
+    "id": "web-server-chrome-crostini",
+    "displayName": "200 OK - ChromeOS Linux",
+    "hostnames": ["updates.ok200.app"],
+    "pathPrefix": "/crostini",
+    "githubRepo": "kzahel/web-server-chrome",
+    "tagPrefix": "crostini-v",
+    "tauriUpdates": false,
+    "artifactManifest": {
+      "manifestAsset": "ok200-crostini-release.manifest",
+      "signatureAsset": "ok200-crostini-release.manifest.minisig"
+    }
+  }
+]

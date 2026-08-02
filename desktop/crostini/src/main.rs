@@ -1,6 +1,6 @@
 use std::net::SocketAddr;
 use std::path::PathBuf;
-use std::process::ExitCode;
+use std::process::{Command, ExitCode};
 
 fn main() -> ExitCode {
     let mut arguments = std::env::args().skip(1);
@@ -10,6 +10,13 @@ fn main() -> ExitCode {
         Some("install") => {
             reject_extra_arguments(arguments).map_or_else(fail, |()| install_current_executable())
         }
+        Some("install-release") => install_verified_release(arguments),
+        Some("check-update") => {
+            reject_extra_arguments(arguments).map_or_else(fail, |()| check_update())
+        }
+        Some("update") => reject_extra_arguments(arguments).map_or_else(fail, |()| update()),
+        Some("rollback") => reject_extra_arguments(arguments).map_or_else(fail, |()| rollback()),
+        Some("verify-release") => verify_release(arguments),
         Some("reset-controller") => {
             reject_extra_arguments(arguments).map_or_else(fail, |()| reset_controller())
         }
@@ -32,7 +39,40 @@ fn main() -> ExitCode {
 }
 
 fn install_current_executable() -> ExitCode {
-    ok200_crostini::install_current_executable().map_or_else(fail, |()| ExitCode::SUCCESS)
+    ok200_crostini::install_current_executable(None).map_or_else(fail, |()| ExitCode::SUCCESS)
+}
+
+fn install_verified_release(mut arguments: impl Iterator<Item = String>) -> ExitCode {
+    let manifest_path = match arguments.next() {
+        Some(path) => PathBuf::from(path),
+        None => return fail("install-release requires a manifest path"),
+    };
+    let signature_path = match arguments.next() {
+        Some(path) => PathBuf::from(path),
+        None => return fail("install-release requires a signature path"),
+    };
+    if let Some(argument) = arguments.next() {
+        return fail(format!("unexpected argument: {argument}"));
+    }
+    let executable = match std::env::current_exe() {
+        Ok(path) => path,
+        Err(error) => return fail(format!("could not locate this executable: {error}")),
+    };
+    let arch = match ok200_crostini::current_architecture() {
+        Ok(arch) => arch,
+        Err(error) => return fail(error),
+    };
+    let release = match ok200_crostini::verify_release_files(
+        &manifest_path,
+        &signature_path,
+        &executable,
+        arch,
+    ) {
+        Ok(release) => release,
+        Err(error) => return fail(error),
+    };
+    ok200_crostini::install_current_executable(Some(&release))
+        .map_or_else(fail, |()| ExitCode::SUCCESS)
 }
 
 fn uninstall(mut arguments: impl Iterator<Item = String>) -> ExitCode {
@@ -45,6 +85,104 @@ fn uninstall(mut arguments: impl Iterator<Item = String>) -> ExitCode {
         return fail(format!("unexpected argument: {argument}"));
     }
     ok200_crostini::uninstall(purge).map_or_else(fail, |()| ExitCode::SUCCESS)
+}
+
+fn check_update() -> ExitCode {
+    match ok200_crostini::check_for_update() {
+        Ok(Some(release)) => {
+            println!(
+                "200 OK Linux {} is available (installed {}).",
+                release.manifest.version,
+                env!("CARGO_PKG_VERSION")
+            );
+            ExitCode::SUCCESS
+        }
+        Ok(None) => {
+            println!("200 OK Linux {} is current.", env!("CARGO_PKG_VERSION"));
+            ExitCode::SUCCESS
+        }
+        Err(error) => fail(error),
+    }
+}
+
+fn update() -> ExitCode {
+    let release = match ok200_crostini::check_for_update() {
+        Ok(Some(release)) => release,
+        Ok(None) => {
+            println!(
+                "200 OK Linux {} is already current.",
+                env!("CARGO_PKG_VERSION")
+            );
+            return ExitCode::SUCCESS;
+        }
+        Err(error) => return fail(error),
+    };
+    let staged = match ok200_crostini::download_update(release) {
+        Ok(staged) => staged,
+        Err(error) => return fail(error),
+    };
+    let output = match Command::new(&staged.binary_path)
+        .arg("install-release")
+        .arg(&staged.manifest_path)
+        .arg(&staged.signature_path)
+        .output()
+    {
+        Ok(output) => output,
+        Err(error) => {
+            return fail(format!(
+                "could not launch verified update installer: {error}"
+            ))
+        }
+    };
+    if !output.status.success() {
+        let detail = String::from_utf8_lossy(&output.stderr).trim().to_owned();
+        return fail(if detail.is_empty() {
+            format!("verified update installer failed with {}", output.status)
+        } else {
+            format!("verified update installer failed: {detail}")
+        });
+    }
+    println!(
+        "Updated 200 OK Linux to {}. The controller is restarting.",
+        staged.release.manifest.version
+    );
+    ExitCode::SUCCESS
+}
+
+fn rollback() -> ExitCode {
+    ok200_crostini::rollback().map_or_else(fail, |()| ExitCode::SUCCESS)
+}
+
+fn verify_release(mut arguments: impl Iterator<Item = String>) -> ExitCode {
+    let manifest_path = match arguments.next() {
+        Some(path) => PathBuf::from(path),
+        None => return fail("verify-release requires a manifest path"),
+    };
+    let signature_path = match arguments.next() {
+        Some(path) => PathBuf::from(path),
+        None => return fail("verify-release requires a signature path"),
+    };
+    let asset_path = match arguments.next() {
+        Some(path) => PathBuf::from(path),
+        None => return fail("verify-release requires an asset path"),
+    };
+    let Some(arch) = arguments.next() else {
+        return fail("verify-release requires an architecture");
+    };
+    if let Some(argument) = arguments.next() {
+        return fail(format!("unexpected argument: {argument}"));
+    }
+    match ok200_crostini::verify_release_files(&manifest_path, &signature_path, &asset_path, &arch)
+    {
+        Ok(release) => {
+            println!(
+                "Verified 200 OK Linux {} {} release asset.",
+                release.manifest.version, arch
+            );
+            ExitCode::SUCCESS
+        }
+        Err(error) => fail(error),
+    }
 }
 
 fn reset_controller() -> ExitCode {
@@ -207,6 +345,9 @@ fn print_usage() {
            launch       Start and open the ChromeOS Linux controller\n\
            controller   Run the on-demand controller service\n\
            install      Install this verified binary for the current user\n\
+           check-update Check the signed Crostini release channel\n\
+           update       Download, verify, and install the latest release\n\
+           rollback     Switch atomically to the retained previous release\n\
            uninstall    Remove installed files; add --purge for settings\n\
            status       Check whether the controller is ready\n\n\
            reset-controller  Reset extension pairing and stop the controller\n\n\

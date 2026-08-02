@@ -1,15 +1,18 @@
 # ChromeOS Crostini Fallback
 
-Status: **scoped; physical feasibility is proved on x86_64 ChromeOS, but no
-supported artifact, installer, or extension launch path ships yet.**
+Status: **scoped; physical x86_64 feasibility now includes waking a fully
+stopped Crostini VM/container from a cached non-terminal Launcher app. The
+provisional install/everyday flow is accepted, but no supported controller,
+installer, extension control path, or release artifact ships yet.**
 
 Last updated: **2026-08-02**.
 
-Topic: `chromeos-extension-launcher`
+Topic: `chromeos-crostini-launcher`
 
 Related continuing concern:
 
 - [ChromeOS extension launcher](../topics/chromeos-extension-launcher.md)
+- [ChromeOS Crostini launcher/controller](../topics/chromeos-crostini-launcher.md)
 - [Extension and ChromeOS release closeout](011-extension-launcher-and-chromeos-network-readiness.md)
 - [Desktop runtime](../topics/desktop-runtime.md)
 
@@ -45,11 +48,21 @@ the published Node CLI or the full desktop AppImage:
   TCP port under **Settings -> About ChromeOS -> Developers -> Linux
   development environment -> Port forwarding**.
 
-The initial extension integration should remain permission-minimal: add a
-clear **Use Linux (Crostini)** link to the owned HTTPS instructions. Do not add
-local-network host permissions or claim automatic detection until a later
-prototype proves that the benefit outweighs the new permission and failure
-surface.
+The extension should eventually own a full-page ChromeOS setup and control UI,
+while the Crostini binary runs as a small authenticated headless controller.
+Essential install, start, recovery, update, and uninstall guidance must be
+bundled in the extension so it remains readable offline; the website mirrors
+that content but is not its only copy. Request any optional local-host
+permission only after the user chooses **Use the Linux version**, and do not
+ship discovery or automatic claim until a physical prototype proves the exact
+hostname, CORS, permission, origin, and token behavior.
+
+The provisional first install uses one Terminal command to run a verified
+per-user installer. After registration, the user normally clicks **200 OK
+Linux** in the ChromeOS Launcher. ChromeOS can wake Linux through that installed
+`.desktop` app; the extension itself cannot start the VM. The complete user
+journey, security boundary, and recovery copy live in the focused Crostini
+topic.
 
 ## Why not the existing Linux products
 
@@ -158,6 +171,15 @@ Terminal instead of executing its command, while the distribution-owned Htop
 entry worked. Do not base the product on a terminal-mode desktop entry. The
 non-terminal controller/launcher path passed and is the recommended shape.
 
+A second disposable fixture tested the missing cold path. With all Terminal
+surfaces and the controller tab closed, `termina` stopped, and the fixture URL
+unreachable, the cached app remained in the ChromeOS Launcher. Clicking it
+woke the VM/container, started one user service, and opened the exact local
+page in Chrome without opening Terminal. A repeated click while active did not
+start a second service in this fixture. This proves stopped-VM wake after the
+Linux app has been registered; it does not yet prove persistence after a full
+ChromeOS reboot/login or focus of a `chrome-extension://` control page.
+
 The default Linux home is visible under **Linux files**. ChromeOS-owned folders
 must be shared with Linux before the server can read them. An MVP can safely
 serve `~/Downloads`; serving arbitrary ChromeOS folders needs an explicit
@@ -189,28 +211,35 @@ picker grants a persistent Linux filesystem path.
 
 ### C3 - complete the launcher/controller UX
 
-- [ ] Start or focus one controller from the ChromeOS Launcher and open its
-      local browser UI.
+- [x] Prove with a disposable physical fixture that a cached non-terminal
+      ChromeOS Launcher app can wake a stopped VM/container, start one
+      controller service, and open its local browser UI without Terminal.
+- [ ] Repeat warm, stopped-VM, and full-reboot/login tests with the production
+      Rust controller and prove one extension control surface is focused.
 - [ ] Provide start, stop, root, port, localhost/LAN, directory-listing, CORS,
       and SPA settings at the existing native-core capability level.
 - [ ] Start with Linux `~/Downloads`; document **Linux files** and **Share with
       Linux**, then add a tested shared-folder selection flow.
 - [ ] Present the Chromebook host IPv4 instructions and exact ChromeOS
       port-forwarding path when LAN is enabled.
-- [ ] Explain that Linux may need to start after reboot; prove launcher behavior
-      from a fully stopped VM before choosing any systemd auto-start policy.
+- [ ] Explain that the installed Launcher item wakes Linux, retain a
+      Terminal-once recovery path, and prove behavior after a full ChromeOS
+      reboot before finalizing systemd policy.
 - [ ] Do not silently keep serving a folder after the user believes the app has
       stopped.
 
 ### C4 - integrate the website and extension
 
-- [ ] Add a dedicated owned Crostini page with supported-device caveats, Linux
-      setup, one verified install command, Launcher instructions, Linux-files
-      guidance, and LAN port-forwarding instructions.
+- [ ] Bundle a full-page Crostini setup/recovery guide in the extension with
+      supported-device caveats, Linux setup, one verified install command,
+      Launcher instructions, Linux-files guidance, and LAN forwarding.
+- [ ] Mirror the bundled guide on an owned Crostini website page without making
+      the extension depend on that page at runtime.
 - [ ] Update `/chromeos` from **Future option** only after the exact installer
       and both architecture assets pass.
-- [ ] In the next extension revision, link to the owned Crostini instructions;
-      do not promise direct launch or detection in the first release.
+- [ ] Add the **Use the Linux version** route and ChromeOS-specific control UI;
+      do not claim direct launch or automatic controller detection until its
+      physical protocol gates pass.
 - [ ] Test Android-installed, Play-enabled/app-absent, Play-disabled, and
       Crostini paths together so Crostini does not obscure the recommended
       Android route.
@@ -220,13 +249,13 @@ picker grants a persistent Linux filesystem path.
 | Gate | Required evidence |
 |---|---|
 | Install | Fresh default Debian Crostini on x86_64 and ARM64 installs one verified command without npm or developer mode |
-| Launcher | A stopped-Linux and running-Linux launch each open or focus one browser control surface without an empty Terminal |
+| Launcher | Disposable stopped-VM wake passed on physical x86_64; the production controller must still pass running, stopped, and full-reboot/login launch and focus one extension control surface without Terminal |
 | Files | Linux `~/Downloads` and one ChromeOS folder explicitly shared with Linux serve exact fixtures; unshared paths fail clearly |
 | Local browser | `localhost` or the accepted stable Crostini hostname reaches the server without a ChromeOS LAN port entry |
 | LAN off | A second device cannot reach the server through the Chromebook LAN address |
 | LAN on | After the documented ChromeOS port entry, a second device fetches the exact fixture at the shown Chromebook IPv4 and port |
 | Lifecycle | Stop, reboot, Linux shutdown, suspend/resume, port conflict, update, and uninstall are truthful and leave no unintended listener |
-| Extension | The launcher links to the owned instructions without new unjustified permissions or false detection claims |
+| Extension | Bundled instructions work offline; optional local permission, deterministic discovery, exact-origin claim/token, and control UI pass physically without false detection claims |
 | Unsupported | Managed/child/secondary/old-device copy directs users to another supported device without a dead loop |
 
 ## Release boundary

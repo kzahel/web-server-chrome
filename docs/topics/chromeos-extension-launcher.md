@@ -7,7 +7,9 @@ HTTPS options route and does not claim to detect Android or Google Play
 availability. The owned page is live and the exact `extension-v0.1.4` release
 ZIP passes local and CI inspection. The maintainer reports that Android
 `0.2.1` and extension `0.1.4` have been submitted to their stores;
-store-delivered proof remains open.**
+store-delivered proof remains open. The separate Crostini fallback now has an
+accepted provisional product flow and physical stopped-VM Launcher proof, but
+does not ship yet.**
 
 Last reconciled: **2026-08-02**.
 
@@ -15,10 +17,12 @@ Implementation and release sequencing live in
 [Tactical 011](../tactical/011-extension-launcher-and-chromeos-network-readiness.md).
 The bounded implementation path for the Play-free Linux fallback lives in
 [Tactical 012](../tactical/012-chromeos-crostini-fallback.md).
+Its continuing launcher/controller, install, and control-UI decisions live in
+[`chromeos-crostini-launcher.md`](chromeos-crostini-launcher.md).
 Android's runtime and address presentation are owned by
 [`android-runtime.md`](android-runtime.md). This topic owns the continuing
 ChromeOS extension-launcher contract, including unsupported-device messaging
-and any future Crostini route.
+and the choice between Android, Linux, and honest unsupported alternatives.
 
 ## Product role
 
@@ -37,7 +41,7 @@ truthful for these materially different Chromebook states:
 | Android or Play unavailable on the model | Options page offers honest supported-device alternatives |
 | Work/school/admin policy blocks Play or Android apps | Options page explains that policy may make the Android route unavailable |
 | User declines Google Play | The launcher remains useful as an explanation and alternatives surface; it must not loop or report success |
-| Crostini enabled | Physical feasibility is proved, but keep the public path labeled future until the verified installer, launcher/controller, ARM64 artifact, shared-folder UX, and lifecycle gates pass |
+| Crostini enabled | Offer a clearly labeled future Linux route only after its verified installer/controller ships; the provisional flow and remaining gates live in the dedicated Crostini topic |
 
 ## Detection boundary
 
@@ -112,23 +116,29 @@ The 2026-08-02 physical investigation substantially narrowed the design:
 - the release build was 2,404,648 bytes and reachable from ChromeOS at both
   `localhost` and `penguin.linux.test`;
 - a non-terminal Linux `.desktop` launcher could start the server and open its
-  browser page in one click;
+  browser page in one click, and a later cold-path test proved the cached app
+  could wake a fully stopped VM/container without opening Terminal;
 - Linux `~/Downloads` is available under **Linux files**, while ChromeOS-owned
   folders need an explicit **Share with Linux** workflow; and
 - other LAN devices could not connect until the same TCP port was added under
   ChromeOS's Linux **Port forwarding** settings, after which an external fetch
   returned HTTP 200.
 
-The product should therefore use verified x86_64/ARM64 mini-Rust binaries, a
-checksum-verifying per-user installer, a non-terminal Launcher entry, and an
-owned browser controller. The first extension integration should link to HTTPS
-instructions rather than add local-network permissions or claim automatic
-detection. The Node/npm CLI and full AppImage are not the recommended fallback.
+The accepted product shape is now an extension-bundled, offline-capable setup
+and control UI paired with a small authenticated Rust controller inside
+Crostini, plus a non-terminal Linux Launcher entry for waking the VM after
+installation. The website mirrors the setup guide but is not its only copy.
+Any local extension permission is requested only when the user chooses the
+Linux route and only after physical protocol validation. The Node/npm CLI and
+full AppImage are not the recommended fallback.
 
-[Tactical 012](../tactical/012-chromeos-crostini-fallback.md) owns the remaining
-installer, controller, folder, lifecycle, architecture, and release gates.
-Until they pass, public copy remains **Future option** and another supported
-desktop or Android device remains the dependable alternative.
+[`chromeos-crostini-launcher.md`](chromeos-crostini-launcher.md) owns the
+provisional install/everyday user flows, offline-content requirement,
+controller security boundary, physical Launcher evidence, and continuing
+decisions. [Tactical 012](../tactical/012-chromeos-crostini-fallback.md) owns
+implementation. Until its gates pass, public copy remains **Future option**
+and another supported desktop or Android device remains the dependable
+alternative.
 
 ## Store and website copy contract
 
@@ -163,8 +173,8 @@ features, or that every legacy option is already available.
 | Android absent, Play present | Physical Stable ChromeOS opens the owned options page; exact Play link is usable |
 | Play disabled | Passed on the explicitly authorized physical testbed: options route works; intent is blank; Play link opens Play setup/Terms |
 | Play unsupported or policy-blocked | Compatible physical/managed fixture or documented user report; options page remains independently reachable regardless |
-| Crostini feasibility | Passed on physical x86_64 for native build, localhost, explicit LAN forwarding, Linux files, Launcher indexing, and one-click browser open |
-| Crostini release | Exact verified x86_64/ARM64 installer, lifecycle, shared-folder, stopped-VM, and extension-link proof remain open |
+| Crostini feasibility | Passed on physical x86_64 for native build, localhost, explicit LAN forwarding, Linux files, Launcher indexing, one-click browser open, and wake from a fully stopped VM/container |
+| Crostini release | Exact verified x86_64/ARM64 installer, production controller, full-reboot lifecycle, shared-folder UX, and authenticated extension-control proof remain open |
 | Store delivery | Existing controlled profile receives the reviewed version and repeats installed/absent routing checks |
 
 ## Current evidence and gaps
@@ -208,6 +218,14 @@ features, or that every legacy option is already available.
   for `18080` were removed; the Linux VM was stopped. Play remains disabled
   because re-enabling it requires accepting Google Play terms and choices
   outside the engineering test.
+- A second disposable Launcher fixture then proved the missing cold-start
+  mechanism: after closing Terminal/browser surfaces, stopping `termina`, and
+  confirming the controller URL was unreachable, the cached non-terminal
+  Linux app remained in the ChromeOS Launcher. Clicking it woke the
+  VM/container, started one user service, and opened the exact local page in
+  Chrome with no Terminal window. A full ChromeOS reboot/login and the
+  production extension/controller handoff remain untested. The fixture was
+  removed and the VM returned to its stopped state.
 - Thirteen source tests cover the no-detection contract, Android retry,
   permanent links, direct desktop download, and unsupported platforms.
 - GitHub Actions run `30734453353` passed all thirteen tests, the strict

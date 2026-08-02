@@ -15,10 +15,12 @@ The accepted plan, implementation sequence, and detailed emulator evidence are
 recorded in
 [Tactical 010](../tactical/010-native-kotlin-android-server.md). This topic owns
 continuing Android runtime truth after that bounded tactical. ChromeOS
-extension detection, fallback, and future Crostini behavior are owned by
-[`chromeos-extension-launcher.md`](chromeos-extension-launcher.md), with active
-implementation sequencing in
+extension detection, Android fallback, and platform-choice behavior are owned
+by [`chromeos-extension-launcher.md`](chromeos-extension-launcher.md), with
+active implementation sequencing in
 [Tactical 011](../tactical/011-extension-launcher-and-chromeos-network-readiness.md).
+The separate Play-free Linux controller path is owned by
+[`chromeos-crostini-launcher.md`](chromeos-crostini-launcher.md).
 Future UPnP/public-listening work is owned separately by
 [`internet-exposure-and-port-mapping.md`](internet-exposure-and-port-mapping.md).
 

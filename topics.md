@@ -27,3 +27,6 @@ Keep each string exact across its commit series so
 - `chromeos-extension-launcher` — keep the Chrome extension truthful across
   Android/Play availability states, preserve reliable install alternatives,
   and establish any future Crostini route through physical evidence.
+- `chromeos-crostini-launcher` — provide a Play-free ChromeOS route through an
+  extension control surface, authenticated Rust controller, verified
+  per-user installer, and non-terminal Linux Launcher entry.

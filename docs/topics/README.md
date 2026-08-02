@@ -26,7 +26,10 @@ status. Do not create a topic for every small standalone change.
   contract, evidence, and release gaps.
 - [`chromeos-extension-launcher.md`](chromeos-extension-launcher.md) — public
   detection limits, Android/Play fallback contract, unsupported-device
-  messaging, Crostini direction, and physical/store validation gates.
+  messaging, platform-choice routing, and physical/store validation gates.
+- [`chromeos-crostini-launcher.md`](chromeos-crostini-launcher.md) — accepted
+  Play-free Linux product shape, bundled setup and everyday flow,
+  launcher/controller security boundary, and physical cold-start evidence.
 - [`internet-exposure-and-port-mapping.md`](internet-exposure-and-port-mapping.md)
   — accepted future UPnP roadmap, public-exposure safety contract, native
   runtime ownership, and ChromeOS multi-NAT constraints.

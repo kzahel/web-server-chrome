@@ -80,7 +80,9 @@ relationship explained in description and migration copy.
 ChromeOS availability and fallback claims must also follow
 [`chromeos-extension-launcher.md`](chromeos-extension-launcher.md); branding
 must not conceal that Android apps and Google Play are unavailable on some
-Chromebooks or accounts.
+Chromebooks or accounts. The future **200 OK Linux** Launcher and control
+surface are governed by
+[`chromeos-crostini-launcher.md`](chromeos-crostini-launcher.md).
 
 ## Surface contract
 

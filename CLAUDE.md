@@ -5,6 +5,8 @@ architecture and implementation direction, read
 [docs/topics/desktop-runtime.md](docs/topics/desktop-runtime.md),
 [docs/topics/android-runtime.md](docs/topics/android-runtime.md), and
 [docs/topics/chromeos-extension-launcher.md](docs/topics/chromeos-extension-launcher.md).
+For the accepted Play-free Linux product shape and user flow, also read
+[docs/topics/chromeos-crostini-launcher.md](docs/topics/chromeos-crostini-launcher.md).
 For the active final release gate and the split between agent-owned and
 maintainer/device checks, read
 [docs/tactical/009-release-confidence-closeout.md](docs/tactical/009-release-confidence-closeout.md)
@@ -48,8 +50,11 @@ Do not recreate the deleted generic TypeScript native-I/O architecture.
 Android and desktop own their Kotlin and Rust implementations respectively;
 keep Node imports in `packages/engine` within its Node adapter.
 ChromeOS launcher detection limits, Android/Play fallbacks, and the future
-Crostini decision are owned by
+Crostini choice are owned by
 [`docs/topics/chromeos-extension-launcher.md`](docs/topics/chromeos-extension-launcher.md).
+The Crostini installer, Linux Launcher, controller protocol, and extension
+control UI are owned by
+[`docs/topics/chromeos-crostini-launcher.md`](docs/topics/chromeos-crostini-launcher.md).
 
 ## Cross-Project Context
 

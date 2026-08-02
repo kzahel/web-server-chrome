@@ -46,7 +46,8 @@ See the living
 [product branding decision](docs/topics/product-branding.md),
 [desktop runtime decision](docs/topics/desktop-runtime.md),
 [Android runtime decision](docs/topics/android-runtime.md),
-[ChromeOS extension launcher decision](docs/topics/chromeos-extension-launcher.md), and
+[ChromeOS extension launcher decision](docs/topics/chromeos-extension-launcher.md),
+[ChromeOS Crostini launcher/controller decision](docs/topics/chromeos-crostini-launcher.md), and
 [active extension/ChromeOS closeout](docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md).
 The scoped Play-free Linux fallback is recorded in
 [the Crostini tactical](docs/tactical/012-chromeos-crostini-fallback.md).

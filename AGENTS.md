@@ -30,6 +30,8 @@ the root [`topics.md`](topics.md) log before reusing them across a series.
 - Android runtime: [`docs/topics/android-runtime.md`](docs/topics/android-runtime.md)
 - ChromeOS extension launcher:
   [`docs/topics/chromeos-extension-launcher.md`](docs/topics/chromeos-extension-launcher.md)
+- ChromeOS Crostini launcher/controller:
+  [`docs/topics/chromeos-crostini-launcher.md`](docs/topics/chromeos-crostini-launcher.md)
 - Desktop CI, signing, and releases:
   [`docs/topics/desktop-release-readiness.md`](docs/topics/desktop-release-readiness.md)
 - Legacy Chrome App migration:

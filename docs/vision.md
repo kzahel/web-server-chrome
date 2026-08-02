@@ -173,13 +173,16 @@ After the replacement and release path are dependable:
 - Removing the Tauri webview.
 - Expanding UDP/UPnP, proxying, or other power features before the basic server
   and release gate are solid.
-- Treating ChromeOS as a separate desktop runtime instead of the Android route.
+- Treating ChromeOS as a separate Tauri desktop GUI runtime. The future
+  Play-free route is a small headless Crostini controller driven by the
+  extension, as recorded in the current topic.
 
 ## Planning and current truth
 
 - [Desktop runtime topic](topics/desktop-runtime.md)
 - [Android runtime topic](topics/android-runtime.md)
 - [ChromeOS extension launcher topic](topics/chromeos-extension-launcher.md)
+- [ChromeOS Crostini launcher/controller topic](topics/chromeos-crostini-launcher.md)
 - [Internet exposure and port mapping topic](topics/internet-exposure-and-port-mapping.md)
 - [Desktop release/signing topic](topics/desktop-release-readiness.md)
 - [Legacy migration topic](topics/legacy-app-migration.md)

@@ -231,8 +231,11 @@ and a small extension allowlist. The store extension cannot rely on it.
 ChromeOS application availability has the same public/private boundary. The
 store extension can identify `cros` through `runtime.getPlatformInfo`, but the
 internal `chromeosInfoPrivate.playStoreStatus` API is allowlisted. The accepted
-intent, fallback, unsupported-device, and future Crostini behavior now lives in
+intent, Android fallback, unsupported-device, and platform-choice behavior
+lives in
 [`chromeos-extension-launcher.md`](../topics/chromeos-extension-launcher.md).
+The future Linux install/controller path lives separately in
+[`chromeos-crostini-launcher.md`](../topics/chromeos-crostini-launcher.md).
 
 #### 4. Accepted manual IPv4 behavior
 
@@ -506,6 +509,11 @@ on-device URL. This is less convenient than automatic discovery but true.
   `ok200-core` built as a 2,404,648-byte x86_64 release binary, served Linux and
   shared ChromeOS folders at `localhost` and `penguin.linux.test`, and launched
   from a non-terminal ChromeOS Launcher entry into Chrome.
+- A follow-up disposable `.desktop` fixture remained registered after
+  `termina` was stopped. Clicking it from the ChromeOS Launcher woke the
+  VM/container, started one user service, and opened its exact local page
+  without opening Terminal. Full ChromeOS reboot/login and the production
+  extension/controller handoff remain open.
 - External LAN access was blocked until TCP port `18080` was added to
   ChromeOS's Linux **Port forwarding** settings, then returned HTTP 200 at the
   Chromebook host IPv4; removing the port blocked it again.
@@ -515,7 +523,9 @@ on-device URL. This is less convenient than automatic discovery but true.
   require accepting Google Play terms and choices.
 - [Tactical 012](012-chromeos-crostini-fallback.md) owns the resulting mini-Rust
   installer, controller, files, lifecycle, architecture, and public-launch
-  work. Crostini is not part of the submitted release claim.
+  work. The continuing product/user-flow decision is recorded in the
+  [Crostini launcher/controller topic](../topics/chromeos-crostini-launcher.md).
+  Crostini is not part of the submitted release claim.
 
 ## Completion criteria
 

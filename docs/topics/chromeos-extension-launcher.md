@@ -10,10 +10,12 @@ ZIP passes local and CI inspection. The maintainer reports that Android
 store-delivered proof remains open. The Play-free Crostini component now ships
 as signed `crostini-v0.1.1`; exact x86_64 ChromeOS and exact ARM64 Linux runtime
 transactions pass, and the public installer/update feed are deployed. The
-`0.1.5` follow-up exposes **Use the Linux version**, bundles offline setup and
-recovery, and retains the contextual optional host permission rather than
-adding an install-time warning. Its exact store ZIP and fresh-install warning/
-denial checks remain in closeout.**
+public `extension-v0.1.5` follow-up exposes **Use the Linux version**, bundles
+offline setup and recovery, and retains the contextual optional host
+permission rather than adding an install-time warning. Its exact CI ZIP passes
+independent inspection and a warning-free physical load; the production-ID
+candidate passes contextual denial/re-request and forced normal-tab fallback.
+Chrome Web Store upload remains maintainer-owned.**
 
 Last reconciled: **2026-08-02**.
 
@@ -187,6 +189,15 @@ features, or that every legacy option is already available.
 
 ## Current evidence and gaps
 
+- Public
+  [`extension-v0.1.5`](https://github.com/kzahel/web-server-chrome/releases/tag/extension-v0.1.5)
+  contains a 142,557-byte CI ZIP with SHA-256
+  `15dece6ba750b8a659acf79eb0f55a347bd0a6376c0db708aa795d2764c66b83`.
+  Independent checksum and 13-file store-package validation pass. The exact
+  downloaded ZIP loaded on M150 without an install-time permission prompt and
+  rendered its bundled Linux guide. A production-ID build of the same
+  candidate passed contextual deny/re-request/claim and forced normal-tab
+  fallback; its development-only manifest key is absent from the store ZIP.
 - Exact source package `0.1.3` with SHA-256
   `0000c1194ed65f576c7fc56ecbf3412393c64635c053c332ddac7e447e04fd46`
   passed the store-package inspector and physical Stable ChromeOS validation.

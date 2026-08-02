@@ -3,18 +3,20 @@
 Topic: chromeos-crostini-launcher
 
 Status: **the Play-free Linux fallback now has a public signed component,
-deployed update feed, public bootstrap, owned website guide, and a separately
-versioned extension follow-up in release closeout. `crostini-v0.1.1` is the
+deployed update feed, public bootstrap, owned website guide, and public
+separately versioned extension follow-up. `crostini-v0.1.1` is the
 first completed release. Its exact x86_64 artifact passed the public bootstrap,
 contextual permission/claim, start/ChromeOS-localhost-fetch/stop, repeated
 graphical Launcher handoff, current-feed check, preserve/reinstall, and purge
 on M150 ChromeOS with Debian 12. The exact ARM64 artifact passed signature,
 static execution, install, and purge on the ARM64 Linux testbed; this is not a
-native ARM Chromebook claim. The extension bundles the setup/recovery guide
-and exposes **Use the Linux version** while Android remains recommended.
-Full ChromeOS reboot/login, native ARM ChromeOS, packed-update warning/fresh
-denial, rooted directory browsing, update-to-a-newer-release/rollback, and
-broader lifecycle/accessibility tests remain follow-up evidence.**
+native ARM Chromebook claim. Exact `extension-v0.1.5` passes its store-package
+allowlist and warning-free physical install; the production-ID candidate
+passes contextual deny/re-request/claim and forced popup-to-tab fallback. The
+extension bundles setup/recovery and exposes **Use the Linux version** while
+Android remains recommended. Full ChromeOS reboot/login, native ARM ChromeOS,
+rooted directory browsing, update-to-a-newer-release/rollback, and broader
+lifecycle/accessibility tests remain follow-up evidence.**
 
 Last reconciled: **2026-08-02**.
 
@@ -628,19 +630,14 @@ than disposable controller/popup fixtures:
 
 All installed files, extension state, transferred source/build trees, and the
 empty test serve root were removed afterward; the VM was stopped and the
-testbed returned 8/8 healthy. This evidence does not make the self-install
-command a public installer: it begins only after a binary has already been
-downloaded and verified. The source now contains the missing signed bootstrap,
-ownership, rollback, and update plumbing, but the exact release artifacts have
-not been produced or physically exercised. Full ChromeOS reboot/login, signed
-public download, ARM64/older-Crostini runtime proof, popup-failure fallback,
-fresh permission denial, shared-folder UI, LAN controls through this exact UI,
-and production update/reconnect remain open.
+testbed returned 8/8 healthy. This was source-built evidence before a public
+artifact existed; the exact-release evidence below supersedes its delivery
+gaps.
 
-### Release-plumbing validation
+### Pre-release plumbing validation
 
 The 2026-08-02 follow-up exercised the newly implemented delivery transaction
-without claiming a production release:
+before the first completed production release:
 
 - pinned `cargo-zigbuild` 0.23.0 with Zig 0.15.2 produced stripped,
   statically linked musl development binaries for both `x86_64` (3,007,152
@@ -666,10 +663,39 @@ without claiming a production release:
 - all temporary application/source fixtures were removed, Crostini was
   stopped, and the ChromeOS testbed returned 8/8 healthy.
 
-This proves the static build shape and source-level transaction on one current
-x86_64 Crostini environment. It does not prove the production signing secret,
-tag-created GitHub assets, deployed update route, oldest claimed Crostini
-baseline, ARM64 execution, or exact signed bootstrap/update/reconnect path.
+This stage proved the static build shape and source-level transaction on one
+current x86_64 Crostini environment. The exact public release closed its
+signing/download/deployment/ARM-execution gaps as recorded next; oldest-
+baseline and real next-version transitions remain open.
+
+### Exact public release evidence
+
+Public
+[`crostini-v0.1.1`](https://github.com/kzahel/web-server-chrome/releases/tag/crostini-v0.1.1)
+was published on 2026-08-02 after tag workflow `30756468260` built, signed,
+verified, and released the exact five-asset set. Independent download and
+validation established:
+
+- x86_64 static ELF: 3,052,784 bytes, SHA-256
+  `7ba3f73f830593bb71310c1eac14c84eab4ea3eb7edae73e41fcee8ab2749332`;
+- ARM64 static ELF: 2,910,432 bytes, SHA-256
+  `2cdd6274d01580ca50463a13b317910c8e23e33c5b1dccb554988d0419e81451`;
+- signed canonical manifest: 662 bytes, SHA-256
+  `a0f64dd5c6adb8b580fc355e4776135d127f552706034870bdce4f5239409ff7`;
+- manifest source commit `849fdcb568afb2f91e0af5351572654ef5c2cd6f`, controller protocol 1,
+  extension protocol range 1–1, and static-musl runtime identity; and
+- all published checksums, manifest signature, per-architecture identity,
+  executable version, ELF architecture, and static linkage passed.
+
+The byte-identical public bootstrap installed the x86_64 hash on the Debian 12
+M150 Crostini environment. Exact claim, start/ChromeOS `localhost` fetch/stop,
+current-feed display, repeated graphical launch, clean preserve/reinstall, and
+purge passed. The exact ARM64 artifact verified, executed, installed, and
+purged on the ARM64 Ubuntu 24.04 VM; this is not a native ARM Chromebook
+claim. The deployed update service returns the exact signed envelope for an
+older x86_64 client and `204` for a current ARM64 client, while the existing
+desktop route remains unchanged. Public `extension-v0.1.5` exact-package and
+permission/fallback evidence is owned by the parent extension topic.
 
 ## LAN behavior
 
@@ -771,17 +797,18 @@ repository/tag, compatibility, architecture, asset name, size, and hash
 locally, so routing-service compromise or misconfiguration alone cannot
 authorize arbitrary code.
 
-The update-server source/config change must be committed and deployed together
-before a public Crostini install. Deployment still follows the existing Remy
-runbook; it is intentionally deferred until a signed `crostini-v` release
-exists, because the current production service cannot serve the new endpoint
-and there is no valid production manifest for it to return yet.
+The update-server source/config change was committed and deployed together
+through the Remy runbook after `crostini-v0.1.1` existed. Public health and
+both architecture routes pass, current requests return `204`, an older client
+receives the exact signed release assets, and the desktop Tauri route is
+unchanged.
 
 ### Uninstall and recovery
 
-The primary uninstall path is the version-matched local helper installed on
-first setup, not another mandatory network pipe. A remote
-`install-crostini.sh --uninstall` remains a recovery convenience.
+The primary uninstall path is the version-matched local
+`ok200-crostini uninstall` command installed on first setup, not another
+mandatory network pipe. A remote `install-crostini.sh --uninstall` remains a
+recovery convenience.
 
 Normal uninstall explicitly stops the service, removes only paths in the
 ownership manifest, reloads the user service manager, refreshes application
@@ -860,19 +887,23 @@ must remain explicit:
       persistence, authenticated mutation, process locking, controller reset,
       identity rotation, and reclaim. CORS is fixed to the production origin;
       authentication does not depend on Chrome supplying `Origin`.
-- [ ] Prove control/content port-collision recovery, independent token rotation,
-      and fresh-install optional-permission denial/re-request.
-- [ ] Pack an update candidate and prove the local external-message allowlist
-      adds no install/update warning; record the exact contextual optional-host
-      and any Local Network Access prompts.
+- [ ] Prove control/content port-collision recovery and independent token
+      rotation. Fresh-install optional-permission denial/re-request passes on
+      M150 with recovery copy retained after denial.
+- [x] Pack `extension-v0.1.5` and prove the local external-message allowlist
+      adds no install-time warning; record the exact contextual optional-host
+      **Deny/Allow** prompt and absence of a separate Local Network Access
+      prompt on M150. A true Chrome Web Store update warning remains observable
+      only after store delivery.
 - [x] Prove a permission-free 700×750 Chrome popup control window on M150 and
       confirm `runtime.getContexts()` returns it as a `TAB` context with a
       focusable `windowId`.
 - [x] Implement and physically validate first claim in a normal setup tab,
       routine launch in one focused 700×750 popup, responsive controls, and
       conversion of the earlier setup tab into the routine popup.
-- [ ] Force and prove popup creation failure falls back to a normal tab; repeat
-      against the exact packed update candidate and smaller display settings.
+- [x] Force and prove popup creation failure falls back to a normal 1600×900
+      tab with the production-ID `0.1.5` candidate. Smaller display settings
+      remain open.
 - [ ] Test Linux `~/Downloads`, one explicitly shared ChromeOS folder, and
       clear rejection of an unshared path.
 - [x] Physically test explicit start/localhost fetch/stop, controller-only VM
@@ -887,7 +918,7 @@ must remain explicit:
 - [ ] Validate Chromebook-host IPv4 presentation and explicit content-port
       forwarding from a second LAN device; never forward the control API.
 - [ ] Validate the bundled setup/recovery instructions offline, including
-      unsupported, policy-blocked, and ChromeOS Flex wording. The bundled
+      unsupported, policy-blocked, and ChromeOS Flex wording. The exact ZIP's
       install/Launcher/Linux-files/LAN/update/uninstall guide passes on the
       physical candidate; unavailable-policy and Flex fixtures remain open.
 

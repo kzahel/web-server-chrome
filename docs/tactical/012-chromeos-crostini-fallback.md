@@ -8,9 +8,12 @@ Debian 12. The independently downloaded ARM64 asset passed signature/static
 runtime and install/purge validation on the ARM64 Linux testbed. The public
 update service and byte-identical website installer are deployed, and the
 extension/website now expose the Linux fallback with bundled offline setup,
-file-sharing, forwarding, update, rollback, and uninstall guidance. Extension
-`0.1.5` packaging, fresh-install permission-denial proof, and the maintainer-
-assisted full ChromeOS reboot/login remain the final closeout work.**
+file-sharing, forwarding, update, rollback, and uninstall guidance. Public
+`extension-v0.1.5` and its exact store ZIP pass package inspection, a warning-
+free fresh unpacked install, contextual deny/re-request/claim, bundled-guide
+rendering, and forced popup-to-normal-tab fallback on the Chromebook. The
+maintainer-assisted full ChromeOS reboot/login and a real later Crostini
+release update/rollback are the principal deferred lifecycle proofs.**
 
 Last updated: **2026-08-02**.
 
@@ -275,6 +278,20 @@ The exact public `crostini-v0.1.1` release then closed the artifact boundary:
   current ARM64 request returned `204`; the existing desktop feed remained
   unchanged.
 
+The separately versioned
+[`extension-v0.1.5`](https://github.com/kzahel/web-server-chrome/releases/tag/extension-v0.1.5)
+release workflow `30757990447` then produced a 142,557-byte store ZIP with
+SHA-256
+`15dece6ba750b8a659acf79eb0f55a347bd0a6376c0db708aa795d2764c66b83`.
+Its checksum and 13-file store allowlist passed after independent download.
+The exact ZIP loaded unpacked on M150 with version `0.1.5`, no install-time
+permission prompt, and a working bundled setup guide. The same candidate built
+with the development-only production public key proved the real extension ID's
+contextual optional-host **Deny**, retained offline recovery, successful
+re-request/claim, and a forced popup-creation failure into a normal tab. The
+key is intentionally absent from the store ZIP and is not a package-content
+claim.
+
 The first browser claim also found and repaired a ChromeOS-only illegal
 invocation from an unbound `fetch`; the retained client binds its browser
 receiver and has a regression test. Popup-failure fallback, bounds persistence,
@@ -358,21 +375,26 @@ the first publication candidate.
 
 ### R5 — close ChromeOS/store-facing gates
 
-- [ ] Pack the exact extension candidate and compare install/update warning
+- [x] Pack the exact extension candidate and compare install/update warning
       text, optional-host denial/re-request, Local Network Access behavior, and
       forced popup-to-tab fallback. Do not change the already submitted store
-      artifact silently; prepare a separately versioned follow-up if code must
-      ship.
+      artifact silently; `extension-v0.1.5` is the separately versioned
+      follow-up. The exact CI ZIP loaded with no install-time prompt; the
+      production-ID candidate showed the contextual **Deny/Allow** prompt,
+      retained setup after denial, re-requested successfully, and fell back to
+      a 1600×900 normal tab when popup creation was deliberately forced to
+      fail. M150 showed no separate Local Network Access prompt.
 - [ ] With the maintainer available to sign back in, perform a full ChromeOS
       reboot/login and prove the cached **200 OK Linux** Launcher item wakes the
       VM, starts one controller, opens one extension surface, and leaves content
       stopped. Retain the Terminal-once recovery copy until this passes.
-- [ ] Record any first-release-only limitation honestly. In particular, an
+- [x] Record any first-release-only limitation honestly. In particular, an
       exact public signed upgrade/rollback transition may require the next
       `crostini-v` release even though source/dev two-version rollback passes.
-- [ ] Update the topic, extension topic, vision, and this ledger with exact
-      release URLs/hashes/evidence. Only then decide whether to change the
-      website/extension label from **Future option** to supported.
+      Native ARM ChromeOS and full reboot/login also remain explicit gaps.
+- [x] Update the topic, extension topic, and this ledger with exact release
+      URLs/hashes/evidence, then change the website/extension label from
+      **Future option** only after public delivery passed.
 
 ## Implementation ledger
 
@@ -534,7 +556,7 @@ the first publication candidate.
 | LAN off | A second device cannot reach the server through the Chromebook LAN address |
 | LAN on | After the documented ChromeOS port entry, a second device fetches the exact fixture at the shown Chromebook IPv4 and port |
 | Lifecycle | Static semantics plus exact-release explicit start/fetch/stop, controller-only VM wake with content stopped, reset/reclaim, reinstall, and both uninstall modes pass. The live signed feed reports current; full reboot/logout, suspend/resume, collision, and a real newer-release update/reconnect/rollback transition remain |
-| Extension | The candidate source passes deterministic health, exact-extension one-time claim, bearer token, contextual optional host prompt, normal setup tab, one focused popup, bundled offline guide, and local handoff. Packed warning proof, fresh denial, and forced tab fallback remain |
+| Extension | Exact `extension-v0.1.5` passes its 13-file store allowlist and warning-free unpacked install; the production-ID candidate passes one-time claim, bearer token, contextual denial/re-request, setup tab, focused popup, forced normal-tab fallback, bundled offline guide, and local handoff |
 | Unsupported | Managed/child/secondary/old-device copy directs users to another supported device without a dead loop |
 
 ## Release boundary

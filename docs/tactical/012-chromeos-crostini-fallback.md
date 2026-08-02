@@ -407,9 +407,9 @@ the first publication candidate.
       **Launch 200 OK on desktop or ChromeOS; set up and control its ChromeOS
       Linux server. Successor to Web Server for Chrome.**
 - [x] Update the matching expected description in
-      `scripts/validate-extension-package.mjs`; do not put the store summary in
-      `extension/package.json`, which owns package metadata and the matching
-      release version only.
+      `scripts/validate-extension-package.mjs`; do not put the manifest
+      description in `extension/package.json`, which owns package metadata and
+      the matching release version only.
 - [x] Present Android and ChromeOS Linux as peer choices rather than treating
       Linux only as a fallback. Describe Android as the quick Google Play
       route and Linux as the no-Play, extension-controlled route. Use

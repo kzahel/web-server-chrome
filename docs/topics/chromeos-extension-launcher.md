@@ -16,8 +16,8 @@ permission rather than adding an install-time warning. Its exact CI ZIP passes
 independent inspection and a warning-free physical load; the production-ID
 candidate passes contextual denial/re-request and forced normal-tab fallback.
 Public `extension-v0.1.6` presents Linux and Android as peer choices, updates
-the package summary and store copy, and keeps failed Linux setup retries on the
-Linux route. Its exact CI ZIP passes independent store-package inspection; the
+the package description and store copy, and keeps failed Linux setup retries
+on the Linux route. Its exact CI ZIP passes independent store-package inspection; the
 website's matching chooser and guide copy are deployed. Chrome Web Store upload
 remains maintainer-owned.**
 
@@ -160,71 +160,26 @@ Google Play or ChromeOS Linux.
 
 ## Store and website copy contract
 
-Extension package `0.1.6` uses this manifest-bound Web Store summary:
+Extension package `0.1.6` contains this manifest description:
 
 > Launch 200 OK on desktop or ChromeOS; set up and control its ChromeOS Linux
 > server. Successor to Web Server for Chrome.
 
 It lives in `extension/public/manifest.json` under `description`, with the same
-value enforced by `scripts/validate-extension-package.mjs`. It does not belong
-in `extension/package.json`. ChromeOS copy presents Android and Linux as peer
-implementation choices: Android is the quick Google Play route; Linux avoids
-Play and provides extension-based setup, configuration, start/stop, and
-updates. ChromeOS Flex claims say **compatible** devices because the Linux
-development environment is model-dependent and Flex is x86_64-only.
+value enforced by `scripts/validate-extension-package.mjs`. This is packaged
+manifest metadata, not a second editable store-listing description field. It
+does not belong in `extension/package.json`. ChromeOS copy presents Android and
+Linux as peer implementation choices: Android is the quick Google Play route;
+Linux avoids Play and provides extension-based setup, configuration,
+start/stop, and updates. ChromeOS Flex claims say **compatible** devices because
+the Linux development environment is model-dependent and Flex is x86_64-only.
 
 Chrome Web Store listing:
 
-- Paste-ready plain text with Web Store-safe Unicode bullets:
+- The Web Store has one description field. Paste this platform-scoped plain
+  text with Web Store-safe Unicode bullets into that field:
   [`../chrome-web-store-listing.txt`](../chrome-web-store-listing.txt)
 - Name: **200 OK Web Server**
-- Summary: **Launch 200 OK on desktop or ChromeOS; set up and control its
-  ChromeOS Linux server. Successor to Web Server for Chrome.**
-- Detailed description, ready to paste:
-
-  > 200 OK Web Server keeps the familiar browser entry point from Web Server
-  > for Chrome while launching and controlling the modern native
-  > implementations.
-  >
-  > On ChromeOS, choose the implementation that fits your device and
-  > preferences:
-  >
-  > CHROMEOS LINUX
-  >
-  > - Works without Google Play.
-  > - Uses a small signed Linux component for x86_64 and ARM64 Chromebooks,
-  >   plus compatible x86_64 ChromeOS Flex devices where the Linux development
-  >   environment is available.
-  > - Configure the served folder, port, directory listings, single-page-app
-  >   fallback, CORS, and LAN listening in the extension.
-  > - Start and stop the server, check signed component updates, and opt into
-  >   automatic updates while the server is stopped.
-  > - After one Terminal installation, open 200 OK Linux from the ChromeOS
-  >   Launcher whenever you want to use it.
-  >
-  > ANDROID
-  >
-  > - Offers the quickest setup when Google Play and Android apps are
-  >   available.
-  > - Opens the installed 200 OK Android app and provides direct Google Play
-  >   and ChromeOS options links.
-  > - Android and Google Play availability depends on the Chromebook, account,
-  >   and administrator policy.
-  >
-  > DESKTOP
-  >
-  > - On macOS, Windows, and Linux, opens the installed 200 OK desktop app
-  >   through native messaging.
-  > - If the app is missing, directs you to the signed desktop downloads.
-  >
-  > The extension does not contain the HTTP server and does not read browsing
-  > history or page content. Access to the local ChromeOS Linux controller at
-  > penguin.linux.test is optional and requested only after you choose ChromeOS
-  > Linux.
-  >
-  > 200 OK Web Server is the successor to Web Server for Chrome. Source code is
-  > available under the MIT License.
-
 - Screenshots: show the ChromeOS Linux/Android chooser, bundled Linux setup,
   connected Linux controller, desktop detected, and desktop missing/download.
   Do not show legacy in-extension server controls.
@@ -259,8 +214,8 @@ features, or that every legacy option is already available.
   run
   [`30759152520`](https://github.com/kzahel/web-server-chrome/actions/runs/30759152520)
   passed build, typecheck, all 42 extension tests, package inspection, and
-  release publication. The ZIP has the new 119-character summary, peer Linux
-  and Android chooser, action-preserving retry, and unchanged optional
+  release publication. The ZIP has the new 119-character manifest description,
+  peer Linux and Android chooser, action-preserving retry, and unchanged optional
   `penguin.linux.test` permission model. The popup copy/order change has
   deterministic UI coverage; warning/claim/physical integration evidence
   remains inherited from exact `0.1.5` below rather than silently attributed to

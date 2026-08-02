@@ -1,45 +1,27 @@
-NAME
+Launch and control 200 OK Web Server from Chrome on Windows, macOS, Linux, and ChromeOS. The successor to Web Server for Chrome.
 
-200 OK Web Server
+The extension preserves the familiar browser entry point while launching and controlling the modern native implementations. The extension itself does not contain the HTTP server.
 
+ON CHROMEOS
 
-SUMMARY
+Choose the implementation that fits your device and preferences:
 
-Launch 200 OK on desktop or ChromeOS; set up and control its ChromeOS Linux server. Successor to Web Server for Chrome.
+• ChromeOS Linux works without Google Play and gives the extension full server controls. Install one small signed Linux component, then configure the served folder, port, directory listings, single-page-app fallback, CORS, and LAN listening from the extension. You can start and stop the server, check signed component updates, and opt into automatic updates while the server is stopped.
 
+• The Linux component supports x86_64 and ARM64 Chromebooks, plus compatible x86_64 ChromeOS Flex devices where the Linux development environment is available. After one Terminal installation, open 200 OK Linux from the ChromeOS Launcher whenever you want to use it.
 
-DETAILED DESCRIPTION
+• The Android app offers the quickest setup when Google Play and Android apps are available. The extension can open the installed 200 OK Android app and provides direct Google Play and ChromeOS options links. Availability depends on the Chromebook, account, and administrator policy.
 
-200 OK Web Server keeps the familiar browser entry point from Web Server for Chrome while launching and controlling the modern native implementations.
+ON WINDOWS, MACOS, AND LINUX
 
-On ChromeOS, choose the implementation that fits your device and preferences:
+• Open the installed 200 OK desktop app directly from Chrome through native messaging.
 
-CHROMEOS LINUX
+• If the desktop app is missing, go directly to the signed downloads for your platform.
 
-• Works without Google Play.
+PRIVACY AND PERMISSIONS
 
-• Uses a small signed Linux component for x86_64 and ARM64 Chromebooks, plus compatible x86_64 ChromeOS Flex devices where the Linux development environment is available.
+• The extension does not read browsing history or page content.
 
-• Configure the served folder, port, directory listings, single-page-app fallback, CORS, and LAN listening in the extension.
+• Access to the local ChromeOS Linux controller at penguin.linux.test is optional and requested only after you choose ChromeOS Linux.
 
-• Start and stop the server, check signed component updates, and opt into automatic updates while the server is stopped.
-
-• After one Terminal installation, open 200 OK Linux from the ChromeOS Launcher whenever you want to use it.
-
-ANDROID
-
-• Offers the quickest setup when Google Play and Android apps are available.
-
-• Opens the installed 200 OK Android app and provides direct Google Play and ChromeOS options links.
-
-• Android and Google Play availability depends on the Chromebook, account, and administrator policy.
-
-DESKTOP
-
-• On macOS, Windows, and Linux, opens the installed 200 OK desktop app through native messaging.
-
-• If the app is missing, directs you to the signed desktop downloads.
-
-The extension does not contain the HTTP server and does not read browsing history or page content. Access to the local ChromeOS Linux controller at penguin.linux.test is optional and requested only after you choose ChromeOS Linux.
-
-200 OK Web Server is the successor to Web Server for Chrome. Source code is available under the MIT License.
+200 OK Web Server is open source under the MIT License.

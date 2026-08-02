@@ -11,7 +11,7 @@ Status: **urgent execution.** The maintainer's operational deadline is
 **2026-08-31**, after which the legacy packaged app must be treated as unable
 to receive another useful update.
 
-Last reconciled: **2026-07-31**.
+Last reconciled: **2026-08-02**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md).
@@ -62,8 +62,10 @@ those are linked below.
   `0.5.3`, but had only the older basic notification destination. Therefore the
   source tree and published package must be diffed before assigning the next
   version or describing current reach.
-- The new extension and Android app are published. The extension is a launcher,
-  not a replacement HTTP engine.
+- The new extension and Android app have published predecessors. The extension
+  is a launcher, not a replacement HTTP engine. Exact GitHub release artifacts
+  `extension-v0.1.4` and `android-v0.2.1` now pass their engineering gates and
+  are ready for maintainer store upload; store delivery remains unproved.
 - Desktop `v0.1.5` is the complete signed Rust-core release. Its five build
   legs and finalizer passed; every public asset matched `SHA256SUMS`; and exact
   signed update, server, native-host, and production-extension paths passed on
@@ -72,8 +74,10 @@ those are linked below.
   [`desktop-release-readiness.md`](desktop-release-readiness.md) and
   [Tactical 009](../tactical/009-release-confidence-closeout.md).
 - Desktop is therefore an accepted migration destination on macOS, Windows,
-  and Linux. Physical ChromeOS plus store-delivered extension/Android behavior
-  remains a separate promotion gate; MSI, RPM-native, physical ARM64, and
+  and Linux. Physical ChromeOS source candidates pass, and the owned
+  `https://ok200.app/chromeos` fallback is live. Store-delivered
+  extension/Android behavior remains a separate promotion gate; MSI,
+  RPM-native, physical ARM64, and
   subjective tray/install UI checks limit secondary claims rather than the
   recommended desktop paths.
 
@@ -168,7 +172,8 @@ communication channel. The updater can deliver the Rust core later.
   recommendation, or a bounded hybrid?
 - How long is Chrome Web Store review taking for legacy Chrome App updates in
   August 2026?
-- Does the final blast advertise desktop immediately after the remaining
-  `v0.1.4` product acceptance, or initially route ChromeOS users to Android?
+- Does the final blast advertise ChromeOS immediately after `extension-v0.1.4`
+  and `android-v0.2.1` pass store delivery, or initially emphasize the already
+  accepted desktop destination?
 - What is the minimum useful telemetry needed to decide whether a corrective
   `0.5.5` is warranted?

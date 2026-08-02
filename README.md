@@ -37,11 +37,11 @@ lifecycle work; its Tauri webview is only a static React control surface.
 Signed desktop `v0.1.5` includes the AppImage-first Linux installation,
 native-host relaunch repair, Linux ARM64 packages, and package-aware signed
 updates. Android, desktop, and the published Node CLI remain deliberately
-independent implementations. GitHub release `android-v0.2.0` contains the
-native Kotlin APK and AAB; Play production can continue serving the older
-`v0.1.2` artifact while the submitted `v0.2.0` build completes review. Source
-after `v0.2.0` includes the physically validated ChromeOS LAN-address
-correction for the next Android candidate.
+independent implementations. GitHub release `android-v0.2.1` contains the
+signed native Kotlin APK and AAB with the physically validated ChromeOS
+LAN-address correction. It is ready for maintainer upload; Play may continue
+serving an earlier artifact until `v0.2.1` is uploaded, reviewed, and rolled
+out.
 
 See the living
 [product branding decision](docs/topics/product-branding.md),

@@ -4,9 +4,9 @@ Topic: chromeos-extension-launcher
 
 Status: **the extension uses a best-effort Android intent with an always-visible
 HTTPS options route and does not claim to detect Android or Google Play
-availability. Exact source-package and physical-device validation pass; the
-owned options-page deployment, final release-version ZIP, and store-delivered
-proof remain open.**
+availability. The owned page is live and the exact `extension-v0.1.4` release
+ZIP passes local and CI inspection. It is ready for maintainer upload;
+store-delivered proof remains open.**
 
 Last reconciled: **2026-08-02**.
 
@@ -178,16 +178,23 @@ features, or that every legacy option is already available.
   the same package exposed the prominent options link at the exact
   `https://ok200.app/chromeos` destination and the exact
   `app.ok200.android` Play listing. The source-built options page passed a
-  physical Chromium visual check, but its production URL still returns 404 and
-  must be deployed before the extension is submitted.
+  physical Chromium visual check. GitHub Pages run `30734359055` deployed that
+  route; production now returns `200` with the exact Android intent, Play link,
+  Play-unavailable alternatives, and future-Crostini copy.
 - The earlier test did **not** disable or remove Google Play. Doing so through
   ChromeOS settings can remove Android applications and data, so that state
   remains an explicit separate-fixture gap.
 - Thirteen source tests cover the no-detection contract, Android retry,
   permanent links, direct desktop download, and unsupported platforms.
+- GitHub Actions run `30734453353` passed all thirteen tests, the strict
+  package inspector, tag/version matching, and release publication for
+  `extension-v0.1.4`. The final 132,936-byte, nine-file ZIP contains no key,
+  development origin, source map, or source file and has SHA-256
+  `bd7947c7aff9f5162455f97e0dddd6f36e111ddd9e3ecaf793eff7a0680482f7`.
 - Current production Chrome Web Store `0.1.3` still uses the former name/copy
-  and exposes the development-only `http://local.ok200.app/*` match. The next
-  exact ZIP must pass the store-package inspector before upload.
+  and exposes the development-only `http://local.ok200.app/*` match. Upload
+  the exact inspected `extension-v0.1.4` ZIP to replace it; store delivery is
+  not implied by the GitHub release.
 
 ## Release ownership
 

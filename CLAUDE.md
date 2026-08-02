@@ -23,11 +23,10 @@ owns HTTP execution on Windows, macOS, and Linux. Desktop `v0.1.5` includes
 AppImage-first integration, Linux ARM64 artifacts, AppImage native-host repair,
 macOS Dock activation repair, and the package-aware updater policy. Android
 source uses a native Kotlin HTTP server; the Node/TypeScript CLI remains an
-independent implementation. GitHub release `android-v0.2.0` contains the
-native-Kotlin APK/AAB and is submitted to Play, whose production track may
-still serve pre-cutover `v0.1.2` during review. Source after `v0.2.0` contains
-the physically accepted ChromeOS LAN-address correction for the next Android
-candidate.
+independent implementation. GitHub release `android-v0.2.1` contains the
+signed native-Kotlin APK/AAB with the physically accepted ChromeOS LAN-address
+correction. It is ready for maintainer upload; Play may still serve an earlier
+artifact until `v0.2.1` is uploaded, reviewed, and rolled out.
 
 ## Architecture
 

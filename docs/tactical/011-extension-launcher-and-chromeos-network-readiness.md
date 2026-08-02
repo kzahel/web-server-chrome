@@ -1,8 +1,9 @@
 # Extension Launcher and ChromeOS Network Readiness
 
-Status: **active; the ChromeOS URL source fix and exact extension source
-candidate pass physical validation. The owned options-page deployment, final
-release-version artifact, and store-delivered proof remain open.**
+Status: **active; the ChromeOS URL fix passes physical validation, the owned
+options page is live, and exact signed Android `0.2.1` and extension `0.1.4`
+GitHub release artifacts pass inspection. Maintainer store uploads and
+store-delivered proof remain open.**
 
 Last updated: **2026-08-02**.
 
@@ -27,7 +28,9 @@ plain-HTTP file server.
 
 ## Current release decision
 
-**Do not publish the current extension source as the next store version yet.**
+**The exact extension and Android artifacts are ready for maintainer store
+upload. Do not claim store delivery until the reviewed versions arrive through
+controlled store installs.**
 
 The desktop destination is ready: signed desktop `v0.1.5` and its production
 extension/native-host paths passed on the recommended macOS, Windows NSIS, and
@@ -38,11 +41,11 @@ is installed. The remaining blockers are narrower but user-visible:
 |---|---|---|
 | Desktop native launch | Pass on accepted `v0.1.5` packages | Keep this route |
 | ChromeOS launch with Android installed | Exact source candidate offers the system **Open with** confirmation, then opens one app task | Keep the intent route and explain the confirmation |
-| ChromeOS without Android installed | Previous intent fallback reached generic Play or a blank intent tab; source now separates **Open installed Android app** from a prominent owned HTTPS options route | Deploy and prove the options page before release |
+| ChromeOS without Android installed | Previous intent fallback reached generic Play or a blank intent tab; source now separates **Open installed Android app** from a prominent owned HTTPS options route | Production route is live; preserve the separate choices |
 | ChromeOS server reachability over IPv4 | Pass at the Chromebook's physical LAN IPv4 and selected port | Preserve ChromeOS automatic forwarding |
-| Android URL shown on ChromeOS | Source fix passes: no ARC URL, honest Chromebook IPv4 instructions, reachable bracketed IPv6, and loopback | Include it in the next Android candidate and prove store delivery |
-| Extension artifact hygiene | Exact `0.1.3` source candidate passes local inspection; local and CI packaging share the same path | Prove the later `0.1.4` release-version ZIP and digest |
-| Store delivery | Not yet proved for the new extension or Play `v0.2.0` | Required before broad migration messaging |
+| Android URL shown on ChromeOS | Fix passes: no ARC URL, honest Chromebook IPv4 instructions, reachable bracketed IPv6, and loopback | Included in inspected signed `android-v0.2.1`; upload and prove store delivery |
+| Extension artifact hygiene | Exact `extension-v0.1.4` ZIP passes local and CI inspection with recorded digest | Upload this exact ZIP |
+| Store delivery | Not yet proved for extension `0.1.4` or Android `0.2.1` | Required before broad ChromeOS migration messaging |
 
 ## Accepted product boundaries
 
@@ -340,7 +343,8 @@ on-device URL. This is less convenient than automatic discovery but true.
 
 - Engineering work in this tactical covers source fixes, automated tests,
   candidate artifacts, digests, and physical-device validation.
-- A release tag is created only after the maintainer explicitly requests it.
+- Release tags are created only after the maintainer explicitly requests them;
+  that authorization was given for `extension-v0.1.4` and `android-v0.2.1`.
 - The maintainer owns Chrome Web Store and Google Play uploads, submissions,
   review responses, rollout, and release management.
 - Investigation, a passing candidate, or a requested fix never implies
@@ -352,7 +356,9 @@ on-device URL. This is less convenient than automatic discovery but true.
 - [x] Engineering: install that ZIP unpacked on physical ChromeOS and repeat
       installed-app, one-task, no-app options, and Play-link checks. Server
       reachability remains covered by the Android validation above.
-- [ ] Engineering: after authorized versioning, inspect the exact `0.1.4`
+- [x] Engineering: deploy and verify the production
+      `https://ok200.app/chromeos` options route.
+- [x] Engineering: after authorized versioning, inspect the exact `0.1.4`
       release ZIP and record its digest.
 - [ ] Maintainer: upload that exact ZIP to the Chrome Web Store.
 - [ ] Maintainer/device proof: verify the updated extension arrives through
@@ -439,9 +445,8 @@ on-device URL. This is less convenient than automatic discovery but true.
 - After removing only the sideloaded 200 OK app, while preserving
   `com.android.vending`, the same package's prominent options action opened
   exactly `https://ok200.app/chromeos` and its Play action opened the exact
-  `app.ok200.android` listing. Production `/chromeos` still returns 404, so
-  deployment remains a publication gate even though the source-built page
-  passed physical visual review.
+  `app.ok200.android` listing. The source-built page passed physical visual
+  review; the release evidence below records its later production deployment.
 - Popup-level tests now cover permanent ChromeOS options/Play links, absence of
   native messaging, Android-route retry, direct desktop download, and an
   unsupported platform. Pure route/intent tests cover all supported desktop
@@ -453,6 +458,35 @@ on-device URL. This is less convenient than automatic discovery but true.
   localhost origin, source map, or source file, and passes an allowlisted-file,
   permission, origin, and manifest inspector for both directory and ZIP. The
   extension workflow runs the same package path and enforces tag/version match.
+
+## Release evidence recorded on 2026-08-02
+
+- GitHub Pages run `30734359055` deployed `https://ok200.app/chromeos` and
+  production returned `200` with the exact Android intent/package, Play link,
+  honest Play-unavailable alternatives, and future-Crostini copy.
+- `extension-v0.1.4` points to commit `9a49a4c`. GitHub Actions run
+  `30734453353` passed all thirteen routing/popup tests, strict package
+  inspection, tag/version matching, and release publication. The final
+  132,936-byte ZIP contains nine allowlisted files and has SHA-256
+  `bd7947c7aff9f5162455f97e0dddd6f36e111ddd9e3ecaf793eff7a0680482f7`.
+- `android-v0.2.1` points to commit `3a80442`. GitHub Actions run
+  `30734434763` passed debug build, JVM tests, lint, API-30 emulator
+  instrumentation, guarded version/changelog checks, signed APK/AAB builds,
+  and release publication.
+- Bundletool validates the final 4,157,113-byte AAB. Its manifest and the
+  2,158,203-byte APK report `app.ok200.android`, version `0.2.1`, code 6,
+  minimum SDK 26, and target SDK 36. The signing certificate matches the prior
+  release, and APK/AAB scans find no QuickJS, old JNI/C++ server payload,
+  bundled engine, or debug-RPC provider. SHA-256 values are
+  `a96bf8fdf2eb66e82c192f4fb976603388662274bddc14881d3f4b4fee44b0e6`
+  (AAB),
+  `4b01d1212c02a7432896a19ef2187659cca3e00e63ce5984e94fc70f37d257c9`
+  (APK), and
+  `b1e123a51eabe5c95128f79159d82c71a03abf0893c4fa8bfaec920926968c87`
+  (2,214,059-byte compressed mapping).
+- The GitHub releases are engineering handoffs, not store delivery. The
+  maintainer still owns uploading the exact AAB and ZIP, listing edits, review,
+  rollout, and controlled store-served validation.
 
 ## Completion criteria
 

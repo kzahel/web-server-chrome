@@ -22,16 +22,16 @@ The extension is not itself the HTTP server.
 
 ## Current state
 
-As of 2026-08-01:
+As of 2026-08-02:
 
 | Surface | Runtime | Released state |
 |---|---|---|
 | CLI | TypeScript engine on Node.js | `v0.1.1` |
 | Desktop release | Tauri/React controls; Rust server state and HTTP core | `v0.1.5`, complete signed release; recommended macOS app, Windows NSIS, and Linux AppImage update/server/extension paths accepted |
 | Desktop source | Same Rust-native runtime with AppImage-first Linux integration, Linux ARM64 artifacts, and package-aware updates | Published baseline is `v0.1.5`; RPM-native, MSI-elevated, and physical ARM64 product smoke remain claim-only gaps |
-| Android / ChromeOS source | Compose UI and native Kotlin HTTP/storage core | Kotlin cutover complete; signed APK/AAB published in GitHub release `android-v0.2.0`; follow-up ChromeOS LAN-address fix physically accepted in source |
-| Android / ChromeOS Play artifact | Submitted native Kotlin build; production may still serve the earlier artifact during review | `v0.2.0` submitted; the follow-up address fix requires the next candidate before ChromeOS promotion |
-| Chrome extension | MV3 launcher/status UI | `v0.1.3`, published |
+| Android / ChromeOS source | Compose UI and native Kotlin HTTP/storage core | Kotlin cutover and ChromeOS LAN-address correction physically accepted; signed upload candidate published in GitHub release `android-v0.2.1` |
+| Android / ChromeOS Play artifact | A native Kotlin build was previously submitted; store delivery can still differ during review | `v0.2.1` AAB is ready for maintainer upload; Play-delivered validation remains open |
+| Chrome extension | MV3 launcher/status UI | `v0.1.3` remains store-published; inspected `v0.1.4` ZIP is ready for maintainer upload |
 | Legacy Chrome App | Chrome packaged-app APIs | Migration channel approaching end of life |
 
 This mixed state is intentional during migration. “Current implementation” and

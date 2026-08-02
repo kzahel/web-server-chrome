@@ -4,13 +4,11 @@ Topic: android-native-kotlin
 
 Status: **Android source uses one native Kotlin HTTP server, one
 application-scoped controller, and a Compose control surface. GitHub release
-`android-v0.2.0` publishes the signed native-Kotlin APK and AAB. Google Play
-production still serves `v0.1.2` until the `v0.2.0` AAB and declarations finish
-Play Console review. Source after `v0.2.0` contains the physically accepted
-ChromeOS LAN-address correction and requires a new Android candidate before
-ChromeOS promotion.**
+`android-v0.2.1` publishes the signed APK and AAB containing the physically
+accepted ChromeOS LAN-address correction. The exact artifacts are ready for
+maintainer upload; Play delivery and store-served validation remain open.**
 
-Last reconciled: **2026-08-01**.
+Last reconciled: **2026-08-02**.
 
 The accepted plan, implementation sequence, and detailed emulator evidence are
 recorded in
@@ -231,6 +229,22 @@ They require explicit product decisions rather than accidental parity work.
   4,146,396-byte AAB, and the compressed R8 mapping. The APK reports version
   `0.2.0`, version code 5, and target SDK 36; its verified signing-certificate
   SHA-256 digest matches `v0.1.2`.
+- GitHub Actions run `30734434763` passed the guarded tag/version/changelog
+  check, debug build, JVM tests, lint, API-30 emulator instrumentation, signed
+  release build, artifact uploads, and GitHub Release publication for
+  `android-v0.2.1`. Bundletool validates the 4,157,113-byte AAB; its manifest
+  and the 2,158,203-byte APK report package `app.ok200.android`, version
+  `0.2.1`, version code 6, minimum SDK 26, and target SDK 36. The APK verifies
+  with the same upload-certificate SHA-256 digest as `v0.2.0`,
+  `ccb5af8e44d626e9aefb1f0fbd8496dbf23ad27da9347248e71fb3ce70044915`.
+  APK and AAB content scans find no QuickJS, old JNI/C++ server payload,
+  bundled engine, or debug-RPC provider. Artifact SHA-256 values are
+  `a96bf8fdf2eb66e82c192f4fb976603388662274bddc14881d3f4b4fee44b0e6`
+  (AAB),
+  `4b01d1212c02a7432896a19ef2187659cca3e00e63ce5984e94fc70f37d257c9`
+  (APK), and
+  `b1e123a51eabe5c95128f79159d82c71a03abf0893c4fa8bfaec920926968c87`
+  (2,214,059-byte compressed R8 mapping).
 - A temporary sparse 3 GiB file in the Pixel's SAF root reported the full
   64-bit content length, and a range beginning at byte 3,221,225,450 returned
   the correct `206`, `Content-Range`, and marker bytes. The file was removed
@@ -258,19 +272,18 @@ They require explicit product decisions rather than accidental parity work.
 
 ## Known gaps and next direction
 
-- Play upload, review, declarations, and rollout are maintainer-owned. Before
-  the next Android tag is requested, retain the accepted Pixel storage/runtime
-  evidence and include the ChromeOS address correction in the exact candidate;
-  store-delivered validation remains separate from source/debug proof.
+- Play upload, review, declarations, and rollout are maintainer-owned. Upload
+  the exact `android-v0.2.1` AAB; store-delivered validation remains separate
+  from source, sideload, CI, and GitHub Release proof.
 - Before targeting Android 17/API 37, add and test the
   `ACCESS_LOCAL_NETWORK` runtime-permission flow. Target-36 apps must not
   request that permission and retain implicit LAN access through `INTERNET`.
-- The first-interface ChromeOS defect is fixed and physically accepted in
-  source. Do not promote the destination until an exact tagged/release-signed
-  candidate containing the fix is validated and the maintainer advances it
-  through Play. mDNS is deferred; the accepted next-release behavior is the
-  honest manual Chromebook IPv4 instruction plus each directly reachable IPv6
-  URL. UPnP WAN mapping is not part of this fix.
+- The first-interface ChromeOS defect is fixed, physically accepted, and
+  included in the inspected `android-v0.2.1` signed release candidate. Do not
+  claim Play delivery until the maintainer advances that AAB and verifies the
+  store-served build. mDNS is deferred; the accepted behavior is the honest
+  manual Chromebook IPv4 instruction plus each directly reachable IPv6 URL.
+  UPnP WAN mapping is not part of this fix.
 - A user-facing IPv6 listener toggle is a possible future feature. It is not
   part of the immediate ChromeOS address correction; until its listener and
   lifecycle semantics are designed, URL discovery must report actual reachable

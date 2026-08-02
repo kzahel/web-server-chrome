@@ -4,9 +4,7 @@
   "short_name": "200 OK",
   "version": "0.1.4",
   "description": "Launch 200 OK Web Server on desktop or ChromeOS. The successor to Web Server for Chrome.",
-  "permissions": [
-    "nativeMessaging"
-  ],
+  "permissions": ["nativeMessaging"],
   "background": {
     "service_worker": "sw.js",
     "type": "module"
@@ -22,12 +20,7 @@
     "128": "icons/ok-128.png"
   },
   "externally_connectable": {
-    "ids": [
-      "ofhbbkphhbklhfoeikjpcbhemlocgigb"
-    ],
-    "matches": [
-      "https://ok200.app/*",
-      "http://local.ok200.app/*"
-    ]
+    "ids": ["ofhbbkphhbklhfoeikjpcbhemlocgigb"],
+    "matches": ["https://ok200.app/*", "http://local.ok200.app/*"]
   }
 }

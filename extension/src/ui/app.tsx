@@ -23,6 +23,8 @@ type AppState =
   | "unsupported"
   | "error";
 
+type LaunchAction = "android" | "desktop" | "linux";
+
 async function getPlatformOS(): Promise<string> {
   return new Promise((resolve) => {
     chrome.runtime.getPlatformInfo((info) => resolve(info.os));
@@ -34,6 +36,7 @@ export function App() {
   const [route, setRoute] = useState<PlatformRoute | null>(null);
   const [error, setError] = useState("");
   const [hostVersion, setHostVersion] = useState("");
+  const [lastAction, setLastAction] = useState<LaunchAction>("desktop");
 
   useEffect(() => {
     let cancelled = false;
@@ -100,6 +103,7 @@ export function App() {
   }, []);
 
   const handleLaunch = () => {
+    setLastAction("desktop");
     setState("launching");
     chrome.runtime.sendMessage(
       { type: "launch" },
@@ -116,6 +120,7 @@ export function App() {
   };
 
   const handleChromeOsLaunch = () => {
+    setLastAction("android");
     setState("launching");
     chrome.tabs.create({ url: CHROMEOS_INTENT_URL }, () => {
       if (chrome.runtime.lastError) {
@@ -131,6 +136,7 @@ export function App() {
   };
 
   const handleLinuxSetup = () => {
+    setLastAction("linux");
     chrome.tabs.create(
       { url: chrome.runtime.getURL("src/ui/crostini.html") },
       () => {
@@ -147,8 +153,11 @@ export function App() {
     );
   };
 
-  const handleRetry =
-    route === "chromeos" ? handleChromeOsLaunch : handleLaunch;
+  const handleRetry = () => {
+    if (lastAction === "linux") handleLinuxSetup();
+    else if (lastAction === "android") handleChromeOsLaunch();
+    else handleLaunch();
+  };
 
   return (
     <div
@@ -214,24 +223,24 @@ export function App() {
       {state === "chromeos" && (
         <>
           <p style={{ color: "#666", margin: "0 0 12px", fontSize: 13 }}>
-            Already installed? Open the 200 OK Android app and confirm the
-            ChromeOS prompt. Otherwise use the install options—Android apps and
-            Google Play aren&apos;t available on every Chromebook.
+            Choose the implementation you prefer. ChromeOS Linux avoids Google
+            Play and gives this extension full server controls; Android is the
+            quickest setup when Play is available.
           </p>
           <button
             type="button"
-            onClick={handleChromeOsLaunch}
+            onClick={handleLinuxSetup}
             style={primaryButton}
           >
-            Open installed Android app
+            Use ChromeOS Linux
           </button>
           <div style={{ marginTop: 8 }}>
             <button
               type="button"
-              onClick={handleLinuxSetup}
+              onClick={handleChromeOsLaunch}
               style={secondaryButton}
             >
-              Use the Linux version
+              Open installed Android app
             </button>
           </div>
           <div style={{ marginTop: 8 }}>

@@ -15,6 +15,7 @@ type ChromeMockOptions = {
   os: string;
   desktopConnected?: boolean;
   tabError?: string;
+  tabErrors?: Array<string | undefined>;
 };
 
 type ChromeMocks = {
@@ -41,13 +42,16 @@ afterEach(async () => {
 });
 
 describe("extension popup routing", () => {
-  it("shows honest ChromeOS requirements and permanent install alternatives", async () => {
+  it("presents Linux and Android as honest peer choices", async () => {
     const mocks = installChromeMock({ os: "cros" });
 
     await renderApp();
 
     expect(document.body.textContent).toContain(
-      "Android apps and Google Play aren't available on every Chromebook.",
+      "ChromeOS Linux avoids Google Play and gives this extension full server controls",
+    );
+    expect(document.body.textContent).toContain(
+      "Android is the quickest setup",
     );
     expect(linkHref("Compare ChromeOS options")).toBe(CHROMEOS_HELP_URL);
     expect(linkHref("Google Play")).toBe(PLAY_STORE_URL);
@@ -58,13 +62,32 @@ describe("extension popup routing", () => {
     const mocks = installChromeMock({ os: "cros" });
 
     await renderApp();
-    await clickButton("Use the Linux version");
+    await clickButton("Use ChromeOS Linux");
 
     expect(mocks.createTab).toHaveBeenCalledWith(
       { url: "chrome-extension://test/src/ui/crostini.html" },
       expect.any(Function),
     );
     expect(mocks.sendMessage).not.toHaveBeenCalled();
+  });
+
+  it("retries the Linux guide rather than switching to Android after an error", async () => {
+    const mocks = installChromeMock({
+      os: "cros",
+      tabErrors: ["Could not open Linux setup", undefined],
+    });
+    await renderApp();
+
+    await clickButton("Use ChromeOS Linux");
+    expect(document.body.textContent).toContain("Could not open Linux setup");
+
+    await clickButton("Try Again");
+    expect(mocks.createTab).toHaveBeenCalledTimes(2);
+    expect(mocks.createTab).toHaveBeenNthCalledWith(
+      2,
+      { url: "chrome-extension://test/src/ui/crostini.html" },
+      expect.any(Function),
+    );
   });
 
   it("retries the Android route after a ChromeOS launch error", async () => {
@@ -160,7 +183,10 @@ function installChromeMock(options: ChromeMockOptions): ChromeMocks {
       _properties: { url?: string },
       callback?: (tab?: chrome.tabs.Tab) => void,
     ) => {
-      lastError = options.tabError ? { message: options.tabError } : undefined;
+      const tabError = options.tabErrors
+        ? options.tabErrors[createTab.mock.calls.length - 1]
+        : options.tabError;
+      lastError = tabError ? { message: tabError } : undefined;
       callback?.();
       lastError = undefined;
     },

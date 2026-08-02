@@ -15,7 +15,9 @@ offline setup and recovery, and retains the contextual optional host
 permission rather than adding an install-time warning. Its exact CI ZIP passes
 independent inspection and a warning-free physical load; the production-ID
 candidate passes contextual denial/re-request and forced normal-tab fallback.
-Chrome Web Store upload remains maintainer-owned.**
+The `0.1.6` source candidate presents Linux and Android as peer choices,
+updates the package summary and store copy, and keeps failed Linux setup retries
+on the Linux route. Chrome Web Store upload remains maintainer-owned.**
 
 Last reconciled: **2026-08-02**.
 
@@ -35,8 +37,10 @@ and the choice between Android, Linux, and honest unsupported alternatives.
 The Chrome extension is a launcher and install-discovery surface. It does not
 run the HTTP server.
 
-On ChromeOS, Android is recommended and the lightweight Linux component is the
-fallback when Google Play is unavailable or unwanted.
+On ChromeOS, Android and the lightweight Linux component are peer choices.
+Android is the quickest setup when Google Play is available; Linux works
+without Play and gives the extension full setup, configuration, lifecycle, and
+update controls.
 The extension should preserve the familiar browser entry point while remaining
 truthful for these materially different Chromebook states:
 
@@ -48,7 +52,7 @@ truthful for these materially different Chromebook states:
 | Android or Play unavailable on the model | Offer the Linux setup route when the profile supports it; otherwise offer another supported device |
 | Work/school/admin policy blocks Play or Android apps | Options page explains that policy may make the Android route unavailable |
 | User declines Google Play | The launcher remains useful as an explanation and alternatives surface; it must not loop or report success |
-| Crostini enabled | **Use the Linux version** opens the bundled setup guide; the installed Linux Launcher later opens or focuses the authenticated controller surface |
+| Crostini enabled | **Use ChromeOS Linux** opens the bundled setup guide; the installed Linux Launcher later opens or focuses the authenticated controller surface |
 
 ## Detection boundary
 
@@ -113,8 +117,10 @@ with a fragile heuristic.
 
 ## Crostini direction
 
-Crostini is the supported fallback for users whose Chromebook cannot or will
-not run Google Play. Android remains the recommended path when available.
+Crostini is the first-class extension-controlled choice for users who prefer
+Linux or whose Chromebook cannot or will not run Google Play. Android remains
+the quicker Google Play choice when available; neither route is universally
+preferred.
 
 The 2026-08-02 physical investigation substantially narrowed the design:
 
@@ -152,20 +158,72 @@ Google Play or ChromeOS Linux.
 
 ## Store and website copy contract
 
+Extension package `0.1.6` uses this manifest-bound Web Store summary:
+
+> Launch 200 OK on desktop or ChromeOS; set up and control its ChromeOS Linux
+> server. Successor to Web Server for Chrome.
+
+It lives in `extension/public/manifest.json` under `description`, with the same
+value enforced by `scripts/validate-extension-package.mjs`. It does not belong
+in `extension/package.json`. ChromeOS copy presents Android and Linux as peer
+implementation choices: Android is the quick Google Play route; Linux avoids
+Play and provides extension-based setup, configuration, start/stop, and
+updates. ChromeOS Flex claims say **compatible** devices because the Linux
+development environment is model-dependent and Flex is x86_64-only.
+
 Chrome Web Store listing:
 
 - Name: **200 OK Web Server**
-- Short description: **Launch 200 OK Web Server on desktop or ChromeOS. The
-  successor to Web Server for Chrome.**
-- Overview: state first that the extension launches an installed desktop or
-  Android application and does not contain the server.
-- ChromeOS paragraph: Android app support and Google Play availability vary by
-  Chromebook and account; provide the exact Play and ChromeOS-options links.
-- Desktop paragraph: link to the signed macOS, Windows, and Linux downloads;
-  AppImage remains the recommended Linux package.
-- Screenshots: show desktop detected, desktop missing/download, ChromeOS launch
-  with its two install links, and the ChromeOS options page. Do not show legacy
-  in-extension server controls.
+- Summary: **Launch 200 OK on desktop or ChromeOS; set up and control its
+  ChromeOS Linux server. Successor to Web Server for Chrome.**
+- Detailed description, ready to paste:
+
+  > 200 OK Web Server keeps the familiar browser entry point from Web Server
+  > for Chrome while launching and controlling the modern native
+  > implementations.
+  >
+  > On ChromeOS, choose the implementation that fits your device and
+  > preferences:
+  >
+  > CHROMEOS LINUX
+  >
+  > - Works without Google Play.
+  > - Uses a small signed Linux component for x86_64 and ARM64 Chromebooks,
+  >   plus compatible x86_64 ChromeOS Flex devices where the Linux development
+  >   environment is available.
+  > - Configure the served folder, port, directory listings, single-page-app
+  >   fallback, CORS, and LAN listening in the extension.
+  > - Start and stop the server, check signed component updates, and opt into
+  >   automatic updates while the server is stopped.
+  > - After one Terminal installation, open 200 OK Linux from the ChromeOS
+  >   Launcher whenever you want to use it.
+  >
+  > ANDROID
+  >
+  > - Offers the quickest setup when Google Play and Android apps are
+  >   available.
+  > - Opens the installed 200 OK Android app and provides direct Google Play
+  >   and ChromeOS options links.
+  > - Android and Google Play availability depends on the Chromebook, account,
+  >   and administrator policy.
+  >
+  > DESKTOP
+  >
+  > - On macOS, Windows, and Linux, opens the installed 200 OK desktop app
+  >   through native messaging.
+  > - If the app is missing, directs you to the signed desktop downloads.
+  >
+  > The extension does not contain the HTTP server and does not read browsing
+  > history or page content. Access to the local ChromeOS Linux controller at
+  > penguin.linux.test is optional and requested only after you choose ChromeOS
+  > Linux.
+  >
+  > 200 OK Web Server is the successor to Web Server for Chrome. Source code is
+  > available under the MIT License.
+
+- Screenshots: show the ChromeOS Linux/Android chooser, bundled Linux setup,
+  connected Linux controller, desktop detected, and desktop missing/download.
+  Do not show legacy in-extension server controls.
 
 The website must not say that the store listing “will be updated once ready”
 after it is already published, that the extension itself has the legacy app's
@@ -176,7 +234,7 @@ features, or that every legacy option is already available.
 | Gate | Required evidence |
 |---|---|
 | Pure routing | ChromeOS, macOS, Windows, Linux, and unsupported platform tests |
-| Popup ChromeOS | No native message on init; permanent options/Play links; retry remains Android |
+| Popup ChromeOS | No native message on init; peer Linux/Android choices; permanent options/Play links; retry remains on the action that failed |
 | Popup desktop | Installed native host launches; missing host opens `/download` |
 | Package | Exact allowlisted files, minimal permission, no key/local origin/maps, manifest/tag version match, SHA-256 |
 | Android installed | Physical Stable ChromeOS offers 200 OK in the system chooser and opens/focuses one 200 OK task after confirmation |

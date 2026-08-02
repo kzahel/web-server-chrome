@@ -8,7 +8,7 @@ const LEGACY_APP_ID = "ofhbbkphhbklhfoeikjpcbhemlocgigb";
 const PRODUCTION_SITE_MATCH = "https://ok200.app/*";
 const CROSTINI_CONTROLLER_MATCH = "http://penguin.linux.test/*";
 const EXPECTED_DESCRIPTION =
-  "Launch 200 OK Web Server on desktop or ChromeOS. The successor to Web Server for Chrome.";
+  "Launch 200 OK on desktop or ChromeOS; set up and control its ChromeOS Linux server. Successor to Web Server for Chrome.";
 const EXPECTED_ICONS = {
   16: "icons/ok-16.png",
   32: "icons/ok-32.png",

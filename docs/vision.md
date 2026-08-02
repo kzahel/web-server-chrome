@@ -31,8 +31,8 @@ As of 2026-08-02:
 | Desktop source | Same Rust-native runtime with AppImage-first Linux integration, Linux ARM64 artifacts, and package-aware updates | Published baseline is `v0.1.5`; RPM-native, MSI-elevated, and physical ARM64 product smoke remain claim-only gaps |
 | Android / ChromeOS source | Compose UI and native Kotlin HTTP/storage core | Kotlin cutover and ChromeOS LAN-address correction physically accepted; signed upload candidate published in GitHub release `android-v0.2.1` |
 | Android / ChromeOS Play artifact | A native Kotlin build was previously submitted; store delivery can still differ during review | `v0.2.1` AAB is ready for maintainer upload; Play-delivered validation remains open |
-| Chrome extension | MV3 launcher/status UI | `v0.1.3` remains store-published; inspected `v0.1.4` ZIP is ready for maintainer upload |
-| ChromeOS Linux fallback | Extension control UI plus a small Rust Crostini launcher/controller | Source has the signed static-artifact, verified installer, update/rollback, and ownership plumbing; no public tag, deployed update route, ARM64 runtime proof, or supported user-facing route yet |
+| Chrome extension | MV3 launcher/status UI | Public `v0.1.5` GitHub candidate includes the ChromeOS Linux controller; `v0.1.6` source updates its package/store copy and peer Linux/Android chooser |
+| ChromeOS Linux choice | Extension control UI plus a small Rust Crostini launcher/controller | Public `crostini-v0.1.1`, update route, installer, website guide, x86_64 ChromeOS proof, ARM64 Linux proof, and extension controller are complete; lifecycle and native ARM ChromeOS gaps remain documented |
 | Legacy Chrome App | Chrome packaged-app APIs | Migration channel approaching end of life |
 
 This mixed state is intentional during migration. “Current implementation” and
@@ -84,11 +84,11 @@ A Rust CLI may be reconsidered only as a separate product decision.
 ### Extension
 
 On desktop, the extension talks to the installed Tauri app through native
-messaging. On ChromeOS, where native messaging is unavailable, it launches the
-Android app. Its product copy must explain this launcher role honestly. A
-Play-free Crostini fallback is being built as a separate on-demand Linux
-controller reached through the extension; it remains hidden until signed
-artifacts and its remaining physical gates pass.
+messaging. On ChromeOS, where native messaging is unavailable, it offers peer
+Android and ChromeOS Linux choices. Android is the quickest Google Play route;
+the public signed Crostini component is the no-Play route configured and
+controlled through the extension. Its product copy must explain that the
+extension is a launcher/controller, not the HTTP server.
 
 ## Why the desktop direction changed
 

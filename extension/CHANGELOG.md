@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.6]
+
+### Changed
+- Present ChromeOS Linux and Android as peer implementation choices: Linux is
+  the no-Play, extension-controlled route, while Android is the quickest Google
+  Play route when available.
+- Update the package summary and canonical store copy to explain that the
+  extension can set up and control the ChromeOS Linux server as well as launch
+  the desktop and Android apps.
+- Describe Linux support for x86_64 and ARM64 Chromebooks plus compatible
+  x86_64 ChromeOS Flex devices without claiming universal availability.
+
+### Fixed
+- Keep **Try Again** on the Linux setup route after a tab-opening error instead
+  of switching to the Android launcher.
+
 ## [0.1.5]
 
 ### Added

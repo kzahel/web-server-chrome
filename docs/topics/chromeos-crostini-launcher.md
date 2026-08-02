@@ -2,7 +2,7 @@
 
 Topic: chromeos-crostini-launcher
 
-Status: **the Play-free Linux fallback now has a public signed component,
+Status: **the Play-free Linux choice now has a public signed component,
 deployed update feed, public bootstrap, owned website guide, and public
 separately versioned extension follow-up. `crostini-v0.1.1` is the
 first completed release. Its exact x86_64 artifact passed the public bootstrap,
@@ -13,8 +13,9 @@ static execution, install, and purge on the ARM64 Linux testbed; this is not a
 native ARM Chromebook claim. Exact `extension-v0.1.5` passes its store-package
 allowlist and warning-free physical install; the production-ID candidate
 passes contextual deny/re-request/claim and forced popup-to-tab fallback. The
-extension bundles setup/recovery and exposes **Use the Linux version** while
-Android remains recommended. Full ChromeOS reboot/login, native ARM ChromeOS,
+extension bundles setup/recovery and exposes **Use ChromeOS Linux**. The
+`0.1.6` source candidate presents Linux's no-Play full controls and Android's
+quick setup as peer choices. Full ChromeOS reboot/login, native ARM ChromeOS,
 rooted directory browsing, update-to-a-newer-release/rollback, and broader
 lifecycle/accessibility tests remain follow-up evidence.**
 
@@ -120,9 +121,9 @@ The exact words and paths need physical validation, but this is the accepted
 flow to prototype:
 
 1. On ChromeOS, the extension presents two independent choices:
-   **Open installed Android app** and **Use the Linux version**. It does not
+   **Use ChromeOS Linux** and **Open installed Android app**. It does not
    infer whether Google Play, Android, or Linux is supported or enabled.
-2. **Use the Linux version** opens a full extension tab containing the bundled
+2. **Use ChromeOS Linux** opens a full extension tab containing the bundled
    setup wizard. It explains that Linux availability varies on older,
    managed, child, and secondary-profile devices, and that ChromeOS Flex has
    no Android route but may offer Linux on supported hardware.

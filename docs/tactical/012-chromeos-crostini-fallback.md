@@ -7,8 +7,9 @@ preserve/reinstall/purge, and live update-feed checks on M150 ChromeOS with
 Debian 12. The independently downloaded ARM64 asset passed signature/static
 runtime and install/purge validation on the ARM64 Linux testbed. The public
 update service and byte-identical website installer are deployed, and the
-extension/website now expose the Linux fallback with bundled offline setup,
-file-sharing, forwarding, update, rollback, and uninstall guidance. Public
+extension/website now expose Linux as a first-class choice with bundled
+offline setup, file-sharing, forwarding, update, rollback, and uninstall
+guidance. Public
 `extension-v0.1.5` and its exact store ZIP pass package inspection, a warning-
 free fresh unpacked install, contextual deny/re-request/claim, bundled-guide
 rendering, and forced popup-to-normal-tab fallback on the Chromebook. The
@@ -396,6 +397,25 @@ the first publication candidate.
       URLs/hashes/evidence, then change the website/extension label from
       **Future option** only after public delivery passed.
 
+### R6 — extension copy correction (`0.1.6`)
+
+- [x] Replace the package-bound `description` in
+      `extension/public/manifest.json` with:
+      **Launch 200 OK on desktop or ChromeOS; set up and control its ChromeOS
+      Linux server. Successor to Web Server for Chrome.**
+- [x] Update the matching expected description in
+      `scripts/validate-extension-package.mjs`; do not put the store summary in
+      `extension/package.json`, which owns package metadata and the matching
+      release version only.
+- [x] Present Android and ChromeOS Linux as peer choices rather than treating
+      Linux only as a fallback. Describe Android as the quick Google Play
+      route and Linux as the no-Play, extension-controlled route. Use
+      **compatible ChromeOS Flex devices** because Linux availability varies by
+      model and Flex is x86_64-only.
+- [x] Reconcile the popup, `/chromeos` website page, long Web Store listing,
+      screenshots, changelog, and topic copy before cutting and submitting
+      `extension-v0.1.6`.
+
 ## Implementation ledger
 
 ### C1 - productionize the native binary
@@ -542,8 +562,8 @@ the first publication candidate.
       prove a fresh-install denial path. M150 showed no separate Local Network
       Access prompt for the successful extension-origin controller request.
 - [ ] Test Android-installed, Play-enabled/app-absent, Play-disabled, and
-      Crostini paths together so Crostini does not obscure the recommended
-      Android route.
+      Crostini paths together so the peer Linux and Android routes do not
+      obscure one another.
 
 ## Acceptance matrix
 
@@ -566,6 +586,7 @@ tag, deploy publication plumbing, and validate exact release artifacts. The
 maintainer still owns Chrome Web Store uploads. The current submitted Android
 and extension releases remain valid without Crostini; any changed extension is
 a separately versioned follow-up candidate rather than a silent replacement.
-Crostini is now exposed as the non-Android fallback backed by exact release
-artifacts. The remaining matrix items are documented first-release limitations
-and follow-up hardening rather than claims the current path silently satisfies.
+Crostini is now exposed as a first-class non-Android choice backed by exact
+release artifacts. The remaining matrix items are documented first-release
+limitations and follow-up hardening rather than claims the current path
+silently satisfies.

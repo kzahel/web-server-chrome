@@ -3,7 +3,7 @@
   "name": "200 OK Web Server",
   "short_name": "200 OK",
   "version": "0.1.5",
-  "description": "Launch 200 OK Web Server on desktop or ChromeOS. The successor to Web Server for Chrome.",
+  "description": "Launch 200 OK on desktop or ChromeOS; set up and control its ChromeOS Linux server. Successor to Web Server for Chrome.",
   "permissions": ["nativeMessaging"],
   "optional_host_permissions": ["http://penguin.linux.test/*"],
   "background": {

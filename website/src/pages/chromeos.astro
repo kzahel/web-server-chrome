@@ -13,7 +13,7 @@ const androidIntentUrl =
 
 <BaseLayout
   title="200 OK Web Server on ChromeOS"
-  description="Open or install the 200 OK Web Server Android app on supported Chromebooks, with clear alternatives when Android apps or Google Play are unavailable."
+  description="Choose the 200 OK Android app or the extension-controlled ChromeOS Linux server on supported Chromebooks and compatible ChromeOS Flex devices."
 >
   <Header />
 
@@ -23,21 +23,43 @@ const androidIntentUrl =
         <p class="eyebrow">ChromeOS</p>
         <h1>200 OK Web Server on your Chromebook</h1>
         <p class="lede">
-          The Chrome extension is a launcher. Use the Android app when Google
-          Play is available, or the lightweight Linux version when it is not.
+          Choose the implementation you prefer. ChromeOS Linux works without
+          Google Play and gives the extension full server controls; Android is
+          the quickest setup when Play is available.
         </p>
       </div>
     </section>
 
     <section class="chromeos-options">
       <div class="container narrow cards">
-        <article class="option-card recommended">
-          <p class="option-label">Recommended today</p>
+        <article class="option-card">
+          <p class="option-label">Full extension control</p>
+          <h2>Use ChromeOS Linux</h2>
+          <p>
+            Install a small signed Linux component, then configure, start,
+            stop, and update it from the extension—without Google Play. It is
+            available for x86_64 and ARM64 Chromebooks and compatible x86_64
+            ChromeOS Flex devices where the Linux development environment is
+            available.
+          </p>
+          <div class="actions">
+            <a class="btn btn-primary" href="/chromeos/linux">Linux setup guide</a>
+          </div>
+          <p class="note">
+            Initial installation needs Internet access and one Terminal
+            command. Afterward, open 200 OK Linux from the Launcher; normal
+            launching and control work locally.
+          </p>
+        </article>
+
+        <article class="option-card">
+          <p class="option-label">Quickest setup</p>
           <h2>Use the Android app</h2>
           <p>
-            This requires a Chromebook that supports Android apps, with Google
-            Play enabled for the current account. Some older, managed, work, or
-            school Chromebooks do not provide Google Play.
+            Use Google Play when your Chromebook and account support Android
+            apps. Some older, managed, work, or school Chromebooks do not
+            provide this route. ChromeOS Flex does not support general Android
+            apps.
           </p>
           <div class="actions">
             <a class="btn btn-primary" href={androidIntentUrl} target="_blank" rel="noopener">Open Android app</a>
@@ -46,31 +68,12 @@ const androidIntentUrl =
           <p class="note">
             ChromeOS may ask you to confirm which app should open. If 200 OK is
             not offered and Google Play is unavailable in ChromeOS Settings,
-            this Android route is not available on this Chromebook.
+            use the Linux option or another supported device.
           </p>
         </article>
 
         <article class="option-card">
-          <p class="option-label">No Android or Google Play</p>
-          <h2>Use the Linux version</h2>
-          <p>
-            The lightweight ChromeOS Linux component works with the extension
-            and installs for your Linux user without sudo. It is available for
-            x86_64 and ARM64 Chromebooks. Your Chromebook and profile must
-            allow the Linux development environment.
-          </p>
-          <div class="actions">
-            <a class="btn btn-secondary" href="/chromeos/linux">Linux setup guide</a>
-          </div>
-          <p class="note">
-            Initial installation needs Internet access. Afterward, the
-            Launcher and extension controller work locally and can be used
-            offline.
-          </p>
-        </article>
-
-        <article class="option-card">
-          <p class="option-label">Another fallback</p>
+          <p class="option-label">Other devices</p>
           <h2>Use another supported device</h2>
           <p>
             Run 200 OK on a macOS, Windows, or Linux computer, or on another
@@ -140,10 +143,6 @@ const androidIntentUrl =
     border: 1px solid var(--border);
     border-radius: 14px;
     background: var(--bg-secondary);
-  }
-
-  .option-card.recommended {
-    border-color: var(--accent);
   }
 
   .option-card h2 {

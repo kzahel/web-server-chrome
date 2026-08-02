@@ -306,6 +306,13 @@ supported user path until the later exact-release gates pass.
 
 ### R3 — create the exact signed release
 
+Attempt note: `crostini-v0.1.0` built both static architectures and generated
+and verified the signed manifest for both assets, but GitHub Actions artifact
+transport removed the x86_64 executable bit. The release job failed at its
+binary self-test before GitHub Release creation. That pushed tag is retained
+as an immutable failed attempt; the workflow restores `0755`, and `0.1.1` is
+the first publication candidate.
+
 - [ ] Reconcile both repositories with their remotes, push the shared
       update-server commit and product source commits, and preserve the
       pre-existing untracked update-server `CLAUDE.md` without publishing it.

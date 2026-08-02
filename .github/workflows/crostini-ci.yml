@@ -130,6 +130,8 @@ jobs:
           cache: pnpm
       - name: Install signing CLI
         run: pnpm install --frozen-lockfile
+      - name: Restore executable artifact modes
+        run: chmod 755 release/ok200-crostini-*-unknown-linux-musl
       - name: Generate and sign canonical release manifest
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}

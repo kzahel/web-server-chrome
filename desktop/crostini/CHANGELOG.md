@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [0.1.1]
+
+- Publish the first completed signed ChromeOS Linux release after restoring
+  executable modes removed by GitHub Actions artifact transport. Product
+  behavior is unchanged from the verified `0.1.0` source; that tag's release
+  job stopped before publication.
+
 ## [0.1.0]
 
 - Add the combined graphical launcher, authenticated local controller, and

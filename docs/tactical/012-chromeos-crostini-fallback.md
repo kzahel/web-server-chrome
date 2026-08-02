@@ -178,7 +178,15 @@ woke the VM/container, started one user service, and opened the exact local
 page in Chrome without opening Terminal. A repeated click while active did not
 start a second service in this fixture. This proves stopped-VM wake after the
 Linux app has been registered; it does not yet prove persistence after a full
-ChromeOS reboot/login or focus of a `chrome-extension://` control page.
+ChromeOS reboot/login or the accepted local external-message handoff into the
+extension UI.
+
+A direct follow-up test established what not to use: `xdg-open` on the
+installed extension's `chrome-extension://...` UI URL failed through ChromeOS
+Garcon with `Failure in OpenUrl`, `xdg-open` reported no available method, and
+no extension target opened. The production launcher must open its own
+`http://penguin.linux.test:<control-port>/launch-chromeos` page, which then
+wakes the extension through `runtime.sendMessage`.
 
 The default Linux home is visible under **Linux files**. ChromeOS-owned folders
 must be shared with Linux before the server can read them. An MVP can safely
@@ -215,7 +223,8 @@ picker grants a persistent Linux filesystem path.
       ChromeOS Launcher app can wake a stopped VM/container, start one
       controller service, and open its local browser UI without Terminal.
 - [ ] Repeat warm, stopped-VM, and full-reboot/login tests with the production
-      Rust controller and prove one extension control surface is focused.
+      Rust controller and prove its local launch page wakes a dormant extension
+      worker and focuses one extension control surface.
 - [ ] Provide start, stop, root, port, localhost/LAN, directory-listing, CORS,
       and SPA settings at the existing native-core capability level.
 - [ ] Start with Linux `~/Downloads`; document **Linux files** and **Share with
@@ -240,6 +249,15 @@ picker grants a persistent Linux filesystem path.
 - [ ] Add the **Use the Linux version** route and ChromeOS-specific control UI;
       do not claim direct launch or automatic controller detection until its
       physical protocol gates pass.
+- [ ] Add the exact `penguin.linux.test` launch-page origin to
+      `externally_connectable`, accept only a narrow open/focus message, and
+      keep normal launch independent of `ok200.app` and Internet access.
+- [ ] Declare controller access under `optional_host_permissions` rather than
+      required host access, request it only after **Use the Linux version**,
+      and bundle contextual explanation and denial recovery.
+- [ ] Physically inspect a packed update for install/update warning changes and
+      record the exact optional-host and Chrome 142+ Local Network Access
+      prompts on the Stable Chromebook.
 - [ ] Test Android-installed, Play-enabled/app-absent, Play-disabled, and
       Crostini paths together so Crostini does not obscure the recommended
       Android route.
@@ -249,13 +267,13 @@ picker grants a persistent Linux filesystem path.
 | Gate | Required evidence |
 |---|---|
 | Install | Fresh default Debian Crostini on x86_64 and ARM64 installs one verified command without npm or developer mode |
-| Launcher | Disposable stopped-VM wake passed on physical x86_64; the production controller must still pass running, stopped, and full-reboot/login launch and focus one extension control surface without Terminal |
+| Launcher | Disposable stopped-VM wake passed and direct `chrome-extension://` handoff failed on physical x86_64; the production local HTTP bridge must still pass running, stopped, and full-reboot/login launch and focus one extension control surface without Terminal |
 | Files | Linux `~/Downloads` and one ChromeOS folder explicitly shared with Linux serve exact fixtures; unshared paths fail clearly |
 | Local browser | `localhost` or the accepted stable Crostini hostname reaches the server without a ChromeOS LAN port entry |
 | LAN off | A second device cannot reach the server through the Chromebook LAN address |
 | LAN on | After the documented ChromeOS port entry, a second device fetches the exact fixture at the shown Chromebook IPv4 and port |
 | Lifecycle | Stop, reboot, Linux shutdown, suspend/resume, port conflict, update, and uninstall are truthful and leave no unintended listener |
-| Extension | Bundled instructions work offline; optional local permission, deterministic discovery, exact-origin claim/token, and control UI pass physically without false detection claims |
+| Extension | Bundled instructions and `penguin.linux.test` launch work offline; external messaging adds no install/update warning; optional host plus any Local Network Access prompts are contextual; deterministic discovery, exact-origin claim/token, and control UI pass physically |
 | Unsupported | Managed/child/secondary/old-device copy directs users to another supported device without a dead loop |
 
 ## Release boundary

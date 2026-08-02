@@ -127,10 +127,13 @@ The 2026-08-02 physical investigation substantially narrowed the design:
 The accepted product shape is now an extension-bundled, offline-capable setup
 and control UI paired with a small authenticated Rust controller inside
 Crostini, plus a non-terminal Linux Launcher entry for waking the VM after
-installation. The website mirrors the setup guide but is not its only copy.
-Any local extension permission is requested only when the user chooses the
-Linux route and only after physical protocol validation. The Node/npm CLI and
-full AppImage are not the recommended fallback.
+installation. The launcher opens a controller-served
+`penguin.linux.test` page, which wakes the dormant extension worker through a
+narrow external message; routine launch does not require the website or
+background polling. The extension requests controller host access only as an
+optional runtime permission after the user chooses Linux. The website mirrors
+the setup guide but is not its only copy. The Node/npm CLI and full AppImage
+are not the recommended fallback.
 
 [`chromeos-crostini-launcher.md`](chromeos-crostini-launcher.md) owns the
 provisional install/everyday user flows, offline-content requirement,
@@ -174,7 +177,7 @@ features, or that every legacy option is already available.
 | Play disabled | Passed on the explicitly authorized physical testbed: options route works; intent is blank; Play link opens Play setup/Terms |
 | Play unsupported or policy-blocked | Compatible physical/managed fixture or documented user report; options page remains independently reachable regardless |
 | Crostini feasibility | Passed on physical x86_64 for native build, localhost, explicit LAN forwarding, Linux files, Launcher indexing, one-click browser open, and wake from a fully stopped VM/container |
-| Crostini release | Exact verified x86_64/ARM64 installer, production controller, full-reboot lifecycle, shared-folder UX, and authenticated extension-control proof remain open |
+| Crostini release | Exact verified x86_64/ARM64 installer, production controller, full-reboot lifecycle, local external-message handoff, optional-permission warnings, shared-folder UX, and authenticated extension-control proof remain open |
 | Store delivery | Existing controlled profile receives the reviewed version and repeats installed/absent routing checks |
 
 ## Current evidence and gaps
@@ -226,6 +229,12 @@ features, or that every legacy option is already available.
   Chrome with no Terminal window. A full ChromeOS reboot/login and the
   production extension/controller handoff remain untested. The fixture was
   removed and the VM returned to its stopped state.
+- A follow-up `xdg-open chrome-extension://...` check from `penguin` failed
+  through ChromeOS Garcon with `Failure in OpenUrl`, and no extension page
+  opened. The accepted design therefore opens a controller-served local HTTP
+  page that externally messages the extension. The direct-test Terminal
+  surface was closed and the VM was stopped afterward; the local message
+  bridge and its optional-permission prompts remain to be physically proved.
 - Thirteen source tests cover the no-detection contract, Android retry,
   permanent links, direct desktop download, and unsupported platforms.
 - GitHub Actions run `30734453353` passed all thirteen tests, the strict

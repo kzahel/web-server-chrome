@@ -65,7 +65,8 @@ those are linked below.
 - The new extension and Android app have published predecessors. The extension
   is a launcher, not a replacement HTTP engine. Exact GitHub release artifacts
   `extension-v0.1.4` and `android-v0.2.1` now pass their engineering gates and
-  are ready for maintainer store upload; store delivery remains unproved.
+  were reportedly submitted by the maintainer; store delivery remains
+  unproved.
 - Desktop `v0.1.5` is the complete signed Rust-core release. Its five build
   legs and finalizer passed; every public asset matched `SHA256SUMS`; and exact
   signed update, server, native-host, and production-extension paths passed on

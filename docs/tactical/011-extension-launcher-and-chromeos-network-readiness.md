@@ -2,8 +2,8 @@
 
 Status: **active; the ChromeOS URL fix passes physical validation, the owned
 options page is live, and exact signed Android `0.2.1` and extension `0.1.4`
-GitHub release artifacts pass inspection. Maintainer store uploads and
-store-delivered proof remain open.**
+GitHub release artifacts pass inspection. The maintainer reports both store
+submissions complete; review, rollout, and store-delivered proof remain open.**
 
 Last updated: **2026-08-02**.
 
@@ -28,8 +28,8 @@ plain-HTTP file server.
 
 ## Current release decision
 
-**The exact extension and Android artifacts are ready for maintainer store
-upload. Do not claim store delivery until the reviewed versions arrive through
+**The exact extension and Android artifacts were submitted by the maintainer.
+Do not claim store delivery until the reviewed versions arrive through
 controlled store installs.**
 
 The desktop destination is ready: signed desktop `v0.1.5` and its production
@@ -43,9 +43,9 @@ is installed. The remaining blockers are narrower but user-visible:
 | ChromeOS launch with Android installed | Exact source candidate offers the system **Open with** confirmation, then opens one app task | Keep the intent route and explain the confirmation |
 | ChromeOS without Android installed | Previous intent fallback reached generic Play or a blank intent tab; source now separates **Open installed Android app** from a prominent owned HTTPS options route | Production route is live; preserve the separate choices |
 | ChromeOS server reachability over IPv4 | Pass at the Chromebook's physical LAN IPv4 and selected port | Preserve ChromeOS automatic forwarding |
-| Android URL shown on ChromeOS | Fix passes: no ARC URL, honest Chromebook IPv4 instructions, reachable bracketed IPv6, and loopback | Included in inspected signed `android-v0.2.1`; upload and prove store delivery |
-| Extension artifact hygiene | Exact `extension-v0.1.4` ZIP passes local and CI inspection with recorded digest | Upload this exact ZIP |
-| Store delivery | Not yet proved for extension `0.1.4` or Android `0.2.1` | Required before broad ChromeOS migration messaging |
+| Android URL shown on ChromeOS | Fix passes: no ARC URL, honest Chromebook IPv4 instructions, reachable bracketed IPv6, and loopback | Included in submitted signed `android-v0.2.1`; prove store delivery |
+| Extension artifact hygiene | Exact submitted `extension-v0.1.4` ZIP passes local and CI inspection with recorded digest | Preserve the exact artifact identity through store delivery |
+| Store delivery | Extension `0.1.4` and Android `0.2.1` reportedly submitted; neither is proved store-delivered | Required before broad ChromeOS migration messaging |
 
 ## Accepted product boundaries
 
@@ -360,7 +360,10 @@ on-device URL. This is less convenient than automatic discovery but true.
       `https://ok200.app/chromeos` options route.
 - [x] Engineering: after authorized versioning, inspect the exact `0.1.4`
       release ZIP and record its digest.
-- [ ] Maintainer: upload that exact ZIP to the Chrome Web Store.
+- [x] Maintainer: upload and submit the exact ZIP to the Chrome Web Store;
+      completion reported 2026-08-02.
+- [x] Maintainer: upload and submit the exact Android `0.2.1` AAB to Google
+      Play; completion reported 2026-08-02.
 - [ ] Maintainer/device proof: verify the updated extension arrives through
       store delivery on an existing controlled profile.
 - [ ] Maintainer/device proof: install/update Android through the chosen Play
@@ -427,9 +430,9 @@ on-device URL. This is less convenient than automatic discovery but true.
   only behind an allowlisted private permission, so the product contract now
   explicitly forbids pretending to detect it.
 - The earlier missing-app physical test uninstalled 200 OK but did not disable
-  Google Play. The new ChromeOS topic records Play-disabled/unsupported and
-  managed-policy states separately and prohibits destructive Play removal on a
-  data-bearing profile merely to complete the matrix.
+  Google Play. A later explicitly authorized testbed run removed Play and
+  Android apps and now supplies the separate disabled-state evidence recorded
+  below. Play-unsupported and managed-policy fixtures remain open.
 - An exact store-safe source package reproduced a second missing-app behavior:
   ChromeOS left the extension-created `intent:` tab blank and ignored its
   encoded HTTPS fallback. A timed tab replacement was rejected because it can
@@ -485,8 +488,34 @@ on-device URL. This is less convenient than automatic discovery but true.
   `b1e123a51eabe5c95128f79159d82c71a03abf0893c4fa8bfaec920926968c87`
   (2,214,059-byte compressed mapping).
 - The GitHub releases are engineering handoffs, not store delivery. The
-  maintainer still owns uploading the exact AAB and ZIP, listing edits, review,
-  rollout, and controlled store-served validation.
+  maintainer reported submitting the exact AAB and ZIP on 2026-08-02 and still
+  owns review, rollout, and controlled store-served validation.
+
+## Follow-up physical evidence recorded on 2026-08-02
+
+- On the explicitly authorized ChromeOS testbed, removing Google Play and
+  Android apps left the exact extension `0.1.4` popup unchanged. Its Android
+  action still produced a blank `intent:` tab, while its separate HTTPS
+  options action opened the live `https://ok200.app/chromeos` route.
+- From that options page, **View on Google Play** opened the ChromeOS Play
+  setup and current Terms dialog rather than a passive web listing. The
+  Settings Play entry remained available as a setup action. Future website
+  copy must warn users who deliberately decline Play to skip Android actions;
+  an ordinary extension still cannot detect this state.
+- The same device proved a focused Crostini fallback is feasible. Current
+  `ok200-core` built as a 2,404,648-byte x86_64 release binary, served Linux and
+  shared ChromeOS folders at `localhost` and `penguin.linux.test`, and launched
+  from a non-terminal ChromeOS Launcher entry into Chrome.
+- External LAN access was blocked until TCP port `18080` was added to
+  ChromeOS's Linux **Port forwarding** settings, then returned HTTP 200 at the
+  Chromebook host IPv4; removing the port blocked it again.
+- Temporary Crostini binaries, launcher entries, services, build files, and
+  the ChromeOS LAN port-forwarding entry for `18080` were removed, and the
+  Linux VM was stopped. Play remains disabled because restoring it would
+  require accepting Google Play terms and choices.
+- [Tactical 012](012-chromeos-crostini-fallback.md) owns the resulting mini-Rust
+  installer, controller, files, lifecycle, architecture, and public-launch
+  work. Crostini is not part of the submitted release claim.
 
 ## Completion criteria
 

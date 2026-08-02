@@ -10,6 +10,8 @@ maintainer/device checks, read
 [docs/tactical/009-release-confidence-closeout.md](docs/tactical/009-release-confidence-closeout.md)
 and
 [docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md](docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md).
+The scoped Play-free ChromeOS Linux fallback lives in
+[docs/tactical/012-chromeos-crostini-fallback.md](docs/tactical/012-chromeos-crostini-fallback.md).
 
 ## Quick Context
 
@@ -25,8 +27,9 @@ macOS Dock activation repair, and the package-aware updater policy. Android
 source uses a native Kotlin HTTP server; the Node/TypeScript CLI remains an
 independent implementation. GitHub release `android-v0.2.1` contains the
 signed native-Kotlin APK/AAB with the physically accepted ChromeOS LAN-address
-correction. It is ready for maintainer upload; Play may still serve an earlier
-artifact until `v0.2.1` is uploaded, reviewed, and rolled out.
+correction. The maintainer reports the exact Android `v0.2.1` and extension
+`v0.1.4` candidates submitted to their stores; production may still serve
+earlier artifacts until review and rollout finish.
 
 ## Architecture
 

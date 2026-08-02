@@ -91,10 +91,10 @@ either would need a separate product decision.
 | Previous desktop `v0.1.4` | Same Rust-native runtime before the AppImage/Dock/package-awareness repairs | Public updater source used in the accepted `0.1.4` → `0.1.5` macOS, Windows, and Linux transitions | Retain only as immutable update evidence |
 | Historical desktop `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Partial legacy release | Historical baseline only |
 | Android source | Compose UI; Kotlin owns HTTP, storage adapters, and Android lifecycle policy | Native cutover complete and AVD-validated | Keep broadly compatible through the cross-runtime contract in `android-runtime.md` |
-| Android GitHub release `v0.2.0` | Compose UI and native Kotlin implementation | Signed APK/AAB published; Play submission in review | Follow-up source corrects the ChromeOS LAN URL; ship that correction before destination promotion |
-| Android Play production | May still serve the earlier `v0.1.2` artifact during review | `v0.2.0` submitted but not yet accepted as store-delivered | Maintainer owns Play review and rollout; prove the final served build separately |
+| Android GitHub release `v0.2.1` | Compose UI and native Kotlin implementation | Signed APK/AAB published with the physically accepted ChromeOS LAN-address correction | Exact candidate reportedly submitted to Play; prove the final served build separately |
+| Android Play production | May still serve an earlier artifact during review | `v0.2.1` submitted but not yet accepted as store-delivered | Maintainer owns Play review and rollout; prove the final served build separately |
 | CLI `v0.1.1` | Node.js runs the TypeScript engine and Node adapters | Published developer CLI | Keep independent; do not make it block desktop |
-| Chrome extension `v0.1.3` | MV3 service worker and popup | Launcher/status surface | Desktop launches Tauri through native messaging; ChromeOS launches Android |
+| Chrome extension `v0.1.4` candidate | MV3 service worker and popup | Launcher/status surface; exact candidate reportedly submitted to the Chrome Web Store | Desktop launches Tauri through native messaging; ChromeOS exposes best-effort Android launch plus the owned options route; prove store delivery separately |
 | Legacy Chrome App `v0.5.x` | Chrome packaged-app APIs | Existing user migration channel | Preserve only long enough to route users to replacements |
 
 The desktop command/state boundary lives in

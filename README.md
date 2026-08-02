@@ -39,9 +39,8 @@ native-host relaunch repair, Linux ARM64 packages, and package-aware signed
 updates. Android, desktop, and the published Node CLI remain deliberately
 independent implementations. GitHub release `android-v0.2.1` contains the
 signed native Kotlin APK and AAB with the physically validated ChromeOS
-LAN-address correction. It is ready for maintainer upload; Play may continue
-serving an earlier artifact until `v0.2.1` is uploaded, reviewed, and rolled
-out.
+LAN-address correction. The maintainer reports `v0.2.1` submitted to Play;
+Play may continue serving an earlier artifact until review and rollout finish.
 
 See the living
 [product branding decision](docs/topics/product-branding.md),
@@ -49,6 +48,8 @@ See the living
 [Android runtime decision](docs/topics/android-runtime.md),
 [ChromeOS extension launcher decision](docs/topics/chromeos-extension-launcher.md), and
 [active extension/ChromeOS closeout](docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md).
+The scoped Play-free Linux fallback is recorded in
+[the Crostini tactical](docs/tactical/012-chromeos-crostini-fallback.md).
 
 ## Install
 
@@ -94,8 +95,10 @@ npx ok200 ./dist --upload          # enable PUT/POST file uploads
 ## Roadmap
 
 ### Coming Soon
-- Publish the corrected Android ChromeOS address candidate
-- Publish the launcher-focused Chrome extension refresh and ChromeOS options page
+- Complete store review, rollout, and controlled delivery proof for the
+  submitted Android and launcher-focused extension candidates
+- Provide a verified mini-Rust Crostini fallback for ChromeOS users without
+  Google Play
 - Complete the final legacy Chrome App migration update
 - HTTPS with self-signed cert generation
 - HTTP Basic Auth

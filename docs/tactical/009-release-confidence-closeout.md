@@ -76,7 +76,7 @@ subjective product approval.
 | Windows extension launch | Exact signed updated and clean-installed NSIS plus production extension identity pass popup → host → one desktop instance | Tray-only subjective review |
 | Linux extension launch | Exact updated AppImage, verified installer, and installed DEB all pass production extension identity → host → one process | Native RPM-family and physical ARM64 claims only |
 | macOS extension launch | Exact signed updated app passes native framing, production extension launch, one process, Dock recreation, serving, and stop | Attended `/Applications` PKG install and subjective tray review |
-| Android / ChromeOS | Native-Kotlin `v0.2.0` APK/AAB is on GitHub and submitted to Play; production may still serve pre-cutover `v0.1.2`; extension `v0.1.3` is public | The fixed ChromeOS launcher source is not store-delivered, and the submitted Android app displays an ARC-private URL on ChromeOS; Tactical 011 owns both corrections |
+| Android / ChromeOS | Corrected native-Kotlin `v0.2.1` and launcher extension `v0.1.4` pass exact release inspection and were reportedly submitted to Play and the Chrome Web Store | Store review, rollout, and controlled store-delivered proof remain open; Tactical 011 owns the closeout |
 | Live update service | Deployed config/hash, health, reason/CFU accounting, Control Room aggregates, and final `0.1.5` route/asset matrix agree | None; keep normal operational monitoring |
 | Documentation | Repository topics, tactical evidence, quick context, and private operational pointers now describe `v0.1.5` and the remaining manual lane | Continue updating store/legacy state as it changes |
 

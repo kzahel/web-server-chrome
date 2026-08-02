@@ -5,13 +5,16 @@ Topic: chromeos-extension-launcher
 Status: **the extension uses a best-effort Android intent with an always-visible
 HTTPS options route and does not claim to detect Android or Google Play
 availability. The owned page is live and the exact `extension-v0.1.4` release
-ZIP passes local and CI inspection. It is ready for maintainer upload;
+ZIP passes local and CI inspection. The maintainer reports that Android
+`0.2.1` and extension `0.1.4` have been submitted to their stores;
 store-delivered proof remains open.**
 
 Last reconciled: **2026-08-02**.
 
 Implementation and release sequencing live in
 [Tactical 011](../tactical/011-extension-launcher-and-chromeos-network-readiness.md).
+The bounded implementation path for the Play-free Linux fallback lives in
+[Tactical 012](../tactical/012-chromeos-crostini-fallback.md).
 Android's runtime and address presentation are owned by
 [`android-runtime.md`](android-runtime.md). This topic owns the continuing
 ChromeOS extension-launcher contract, including unsupported-device messaging
@@ -30,11 +33,11 @@ truthful for these materially different Chromebook states:
 |---|---|
 | Android supported, Google Play enabled, 200 OK installed | Best-effort `ok200://launch` intent offers 200 OK in ChromeOS's **Open with** confirmation, then opens or focuses the Android app |
 | Android supported, Google Play enabled, app absent | User selects the owned ChromeOS-options route, which exposes the exact Play listing |
-| Android supported but Google Play disabled by the user | Options page explains the requirement without claiming Play is installed or enabled |
+| Android supported but Google Play disabled by the user | Options route remains reachable; explain that Play actions may reopen Play setup and let users skip Android entirely |
 | Android or Play unavailable on the model | Options page offers honest supported-device alternatives |
 | Work/school/admin policy blocks Play or Android apps | Options page explains that policy may make the Android route unavailable |
 | User declines Google Play | The launcher remains useful as an explanation and alternatives surface; it must not loop or report success |
-| Crostini enabled | Do not claim extension integration yet; describe it as future work until its launch and networking contract passes |
+| Crostini enabled | Physical feasibility is proved, but keep the public path labeled future until the verified installer, launcher/controller, ARM64 artifact, shared-folder UX, and lifecycle gates pass |
 
 ## Detection boundary
 
@@ -89,34 +92,43 @@ with a fragile heuristic.
    handling changes.
 9. The options page states that Android apps and Google Play are not available
    on every Chromebook and offers a non-Android alternative.
-10. If the intent call itself errors, **Try Again** retries the Android intent.
-11. Missing desktop installations go directly to `https://ok200.app/download`.
-12. Unknown non-ChromeOS platforms do not attempt native messaging and instead
+10. Do not describe the Play link as passive when Play is disabled. ChromeOS
+    may open its Play setup and Terms dialog; users who do not want Play must be
+    told to skip the Android actions.
+11. If the intent call itself errors, **Try Again** retries the Android intent.
+12. Missing desktop installations go directly to `https://ok200.app/download`.
+13. Unknown non-ChromeOS platforms do not attempt native messaging and instead
    open the supported-platform overview.
 
 ## Crostini direction
 
-Crostini is an important potential path for users whose Chromebook cannot or
+Crostini is the recommended future path for users whose Chromebook cannot or
 will not run Google Play, but it is not a current launcher promise.
 
-The existing desktop AppImage and Node CLI are Linux products. That does not by
-itself establish a good ChromeOS product path. Before presenting Crostini as
-supported, a bounded investigation must decide and prove:
+The 2026-08-02 physical investigation substantially narrowed the design:
 
-- which artifact is appropriate inside the Linux development environment;
-- whether a normal ChromeOS user can install and launch it without brittle
-  developer-mode steps;
-- whether the ChromeOS browser extension can initiate that launch or must link
-  to explicit Terminal instructions;
-- how loopback, ChromeOS-to-Crostini forwarding, LAN ingress, firewall settings,
-  and displayed URLs behave;
-- how ChromeOS Files and shared folders map into the server's picker/root model;
-- background, suspend, update, uninstall, and native-host behavior; and
-- whether an external LAN client can fetch the exact served fixture.
+- the existing Tauri-independent Rust `ok200-core` built and served correctly
+  inside the testbed's x86_64 Debian 12 container;
+- the release build was 2,404,648 bytes and reachable from ChromeOS at both
+  `localhost` and `penguin.linux.test`;
+- a non-terminal Linux `.desktop` launcher could start the server and open its
+  browser page in one click;
+- Linux `~/Downloads` is available under **Linux files**, while ChromeOS-owned
+  folders need an explicit **Share with Linux** workflow; and
+- other LAN devices could not connect until the same TCP port was added under
+  ChromeOS's Linux **Port forwarding** settings, after which an external fetch
+  returned HTTP 200.
 
-Until those gates pass, public copy says **Crostini integration is being
-investigated** and directs users to another supported desktop or Android device
-as the dependable alternative.
+The product should therefore use verified x86_64/ARM64 mini-Rust binaries, a
+checksum-verifying per-user installer, a non-terminal Launcher entry, and an
+owned browser controller. The first extension integration should link to HTTPS
+instructions rather than add local-network permissions or claim automatic
+detection. The Node/npm CLI and full AppImage are not the recommended fallback.
+
+[Tactical 012](../tactical/012-chromeos-crostini-fallback.md) owns the remaining
+installer, controller, folder, lifecycle, architecture, and release gates.
+Until they pass, public copy remains **Future option** and another supported
+desktop or Android device remains the dependable alternative.
 
 ## Store and website copy contract
 
@@ -149,9 +161,10 @@ features, or that every legacy option is already available.
 | Package | Exact allowlisted files, minimal permission, no key/local origin/maps, manifest/tag version match, SHA-256 |
 | Android installed | Physical Stable ChromeOS offers 200 OK in the system chooser and opens/focuses one 200 OK task after confirmation |
 | Android absent, Play present | Physical Stable ChromeOS opens the owned options page; exact Play link is usable |
-| Play disabled | Separate non-destructive profile/device proof; do not disable Play on a data-bearing profile merely to satisfy this gate |
+| Play disabled | Passed on the explicitly authorized physical testbed: options route works; intent is blank; Play link opens Play setup/Terms |
 | Play unsupported or policy-blocked | Compatible physical/managed fixture or documented user report; options page remains independently reachable regardless |
-| Crostini | Explicitly deferred; no release claim until the future investigation passes |
+| Crostini feasibility | Passed on physical x86_64 for native build, localhost, explicit LAN forwarding, Linux files, Launcher indexing, and one-click browser open |
+| Crostini release | Exact verified x86_64/ARM64 installer, lifecycle, shared-folder, stopped-VM, and extension-link proof remain open |
 | Store delivery | Existing controlled profile receives the reviewed version and repeats installed/absent routing checks |
 
 ## Current evidence and gaps
@@ -181,9 +194,20 @@ features, or that every legacy option is already available.
   physical Chromium visual check. GitHub Pages run `30734359055` deployed that
   route; production now returns `200` with the exact Android intent, Play link,
   Play-unavailable alternatives, and future-Crostini copy.
-- The earlier test did **not** disable or remove Google Play. Doing so through
-  ChromeOS settings can remove Android applications and data, so that state
-  remains an explicit separate-fixture gap.
+- On 2026-08-02, the exact `0.1.4` ZIP was loaded unpacked on the explicitly
+  authorized physical testbed and Google Play plus Android apps were removed
+  through Settings. The popup remained unchanged. **Open installed Android
+  app** left a blank intent tab, while **Install or other ChromeOS options**
+  opened the production HTTPS route. The options page's **View on Google
+  Play** action opened ChromeOS's Play setup and current Terms dialog. The
+  Settings entry remained visible as a **Turn on**/setup route, proving that
+  its presence does not imply Play is enabled.
+- The same testbed proved the Crostini runtime, file, browser, Launcher, and
+  explicit LAN port-forwarding facts summarized above. Temporary binaries,
+  launchers, services, build files, and the ChromeOS LAN port-forwarding entry
+  for `18080` were removed; the Linux VM was stopped. Play remains disabled
+  because re-enabling it requires accepting Google Play terms and choices
+  outside the engineering test.
 - Thirteen source tests cover the no-detection contract, Android retry,
   permanent links, direct desktop download, and unsupported platforms.
 - GitHub Actions run `30734453353` passed all thirteen tests, the strict
@@ -191,10 +215,10 @@ features, or that every legacy option is already available.
   `extension-v0.1.4`. The final 132,936-byte, nine-file ZIP contains no key,
   development origin, source map, or source file and has SHA-256
   `bd7947c7aff9f5162455f97e0dddd6f36e111ddd9e3ecaf793eff7a0680482f7`.
-- Current production Chrome Web Store `0.1.3` still uses the former name/copy
-  and exposes the development-only `http://local.ok200.app/*` match. Upload
-  the exact inspected `extension-v0.1.4` ZIP to replace it; store delivery is
-  not implied by the GitHub release.
+- The maintainer reported submitting the exact extension `0.1.4` and Android
+  `0.2.1` store candidates on 2026-08-02. The last observed production Chrome
+  Web Store version was still `0.1.3`; submission and review do not establish
+  controlled store delivery.
 
 ## Release ownership
 

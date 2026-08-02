@@ -1,0 +1,237 @@
+# ChromeOS Crostini Fallback
+
+Status: **scoped; physical feasibility is proved on x86_64 ChromeOS, but no
+supported artifact, installer, or extension launch path ships yet.**
+
+Last updated: **2026-08-02**.
+
+Topic: `chromeos-extension-launcher`
+
+Related continuing concern:
+
+- [ChromeOS extension launcher](../topics/chromeos-extension-launcher.md)
+- [Extension and ChromeOS release closeout](011-extension-launcher-and-chromeos-network-readiness.md)
+- [Desktop runtime](../topics/desktop-runtime.md)
+
+## Objective
+
+Give ChromeOS users who cannot or do not want to enable Google Play a small,
+honest, supportable local web-server path through the Linux development
+environment. The result should install from one documented Terminal command,
+appear in the ChromeOS Launcher, open its local browser surface, and explain the
+one additional ChromeOS port-forwarding step required for other LAN devices.
+
+This fallback does not make the extension the HTTP server. It does not require
+developer mode, Android, npm, the desktop AppImage, mDNS, UPnP, or public
+Internet exposure.
+
+## Product recommendation
+
+Build this path around the existing Tauri-independent Rust `ok200-core`, not
+the published Node CLI or the full desktop AppImage:
+
+- publish verified `x86_64` and `aarch64` Linux binaries from a sufficiently
+  old glibc baseline or as static musl builds;
+- install per-user under `~/.local/bin` with a versioned, checksum-verifying
+  `https://ok200.app/install-crostini.sh` script;
+- install a non-terminal `.desktop` launcher with the real 200 OK icon;
+- have a small launcher/controller start or focus one server process, wait for
+  its local control surface, and open it in Chrome;
+- default to a Linux-owned folder such as `~/Downloads`, which appears under
+  **Linux files** in the ChromeOS Files app;
+- explain **Share with Linux** before accepting ChromeOS My Files or Drive
+  paths; and
+- keep LAN ingress off until the user explicitly enables it and adds the same
+  TCP port under **Settings -> About ChromeOS -> Developers -> Linux
+  development environment -> Port forwarding**.
+
+The initial extension integration should remain permission-minimal: add a
+clear **Use Linux (Crostini)** link to the owned HTTPS instructions. Do not add
+local-network host permissions or claim automatic detection until a later
+prototype proves that the benefit outweighs the new permission and failure
+surface.
+
+## Why not the existing Linux products
+
+The Node `ok200` CLI is a capable TypeScript server with an embedded management
+UI, but it requires Node 18 or later and introduces npm installation and update
+behavior into the fallback. The current desktop AppImage has a complete native
+picker and UI, but it is substantially larger, brings WebKit/GUI packaging
+dependencies, and has not been accepted inside Crostini.
+
+The Rust workspace already contains a standalone CLI in
+`desktop/core/src/main.rs`. It is currently documented as development-only,
+but it has the right server boundary and options for a small Crostini product.
+It lacks the product controller, persisted settings, single-instance behavior,
+folder-selection workflow, installer, icon, update path, and release artifacts.
+Those are the implementation slice; the HTTP core does not need to be
+rewritten.
+
+## Physical evidence: Play disabled
+
+The Stable ChromeOS testbed was exercised with the exact unpacked
+`extension-v0.1.4` ZIP after removing Google Play and Android apps through
+ChromeOS Settings. Removal warned that downloaded Android apps and local app
+data would be deleted; the user explicitly authorized that destructive test.
+
+Observed behavior:
+
+- the extension popup did not change, as expected from the public-API
+  detection boundary;
+- **Open installed Android app** opened a blank `intent:` tab, the same failure
+  seen when Play was enabled but 200 OK was absent;
+- **Install or other ChromeOS options** reliably opened
+  `https://ok200.app/chromeos`;
+- **View on Google Play** opened ChromeOS's Google Play setup and current Terms
+  dialog rather than a passive web listing; and
+- Settings continued to show **Google Play Store** as a setup entry. Its
+  presence therefore does not mean Play is enabled.
+
+The owned options route is a sufficient reliable escape hatch for the
+submitted extension, but its next copy revision should say that the Play link
+may ask the user to turn Play back on. Users who deliberately decline Play
+should be told to skip both Android actions. If the Play entry is absent or
+administrator-blocked, the Android route is unavailable.
+
+The policy-disabled and Play-unsupported device fixtures remain untested. The
+owned HTTPS route is independent of Play and is the accepted fallback for
+those states.
+
+## Physical evidence: Crostini
+
+The same Chromebook has an existing default Crostini environment. The test
+used ChromeOS milestone 150 with a Debian 12 `penguin` container on x86_64.
+The temporary server, launcher entries, LAN port-forwarding entry, build tree,
+and processes were removed after the test; the Linux VM was returned to its
+stopped state.
+
+### Runtime and packaging
+
+- Rust `ok200-core` built from the current repository inside Crostini with
+  `cargo build --locked --release -p ok200-core`.
+- The resulting dynamically linked x86_64 binary was 2,404,648 bytes and had
+  five reported dynamic dependency lines.
+- It served both Linux `~/Downloads` and an already shared ChromeOS folder.
+- Chrome opened the exact directory listing at both
+  `http://localhost:18080/` and `http://penguin.linux.test:18080/`.
+
+This proves the native core is small and functional. It does not prove the
+future release binaries on ARM64 or across older supported Crostini images.
+
+### Networking
+
+- ChromeOS host loopback reached a Crostini listener on `0.0.0.0:18080`
+  without any manual setting.
+- A second physical LAN client timed out at the Chromebook's Wi-Fi IPv4 and
+  port before ChromeOS port forwarding was enabled.
+- Adding TCP port `18080` under ChromeOS's Linux **Port forwarding** page made
+  the same external request return HTTP 200.
+- Removing that entry made external ingress time out again.
+
+This matches Google's current documentation: Linux must be running, and
+ChromeOS's explicit port-forwarding list controls access from phones or other
+computers on the LAN. The user-facing address is the Chromebook host IPv4 plus
+the forwarded port, not a Crostini guest address.
+
+References:
+
+- [Set up Linux on a Chromebook](https://support.google.com/chromebook/answer/9145439)
+- [ChromeOS port forwarding](https://developers.google.com/chromeos/app-development/develop/port-forwarding)
+- [Systems supporting Linux on ChromeOS](https://www.chromium.org/chromium-os/chrome-os-systems-supporting-linux/)
+
+Chromium currently says that, unless otherwise specified, ChromeOS devices
+launched in 2019 or later support Linux. Work/school policy, child/secondary
+profiles, older hardware, and user choice still prevent treating Crostini as a
+universal fallback.
+
+### Launcher and files
+
+A temporary user `.desktop` entry appeared in ChromeOS app search. A
+non-terminal wrapper successfully:
+
+1. launched the Rust server;
+2. waited for the local URL to answer; and
+3. used `xdg-open` to show the directory listing in Chrome.
+
+A `Terminal=true` user-installed entry appeared in search but opened an empty
+Terminal instead of executing its command, while the distribution-owned Htop
+entry worked. Do not base the product on a terminal-mode desktop entry. The
+non-terminal controller/launcher path passed and is the recommended shape.
+
+The default Linux home is visible under **Linux files**. ChromeOS-owned folders
+must be shared with Linux before the server can read them. An MVP can safely
+serve `~/Downloads`; serving arbitrary ChromeOS folders needs an explicit
+shared-folder selection and path UX rather than pretending a browser directory
+picker grants a persistent Linux filesystem path.
+
+## Implementation ledger
+
+### C1 - productionize the native binary
+
+- [ ] Give the Crostini binary a stable product name and release identity
+      without silently replacing the feature-richer npm CLI.
+- [ ] Add version output, persisted configuration, single-instance locking,
+      clear bind failures, and machine-readable readiness/status.
+- [ ] Preserve localhost-only as the safe default; make LAN binding explicit.
+- [ ] Build and test x86_64 and ARM64 assets against the oldest claimed
+      Crostini runtime.
+- [ ] Publish SHA-256 manifests and reject unverified downloads.
+
+### C2 - create install, update, and uninstall paths
+
+- [ ] Add a source-controlled installer modeled on JSTorrent's Crostini
+      installer: architecture selection, immutable release URL, checksum
+      verification, per-user install, and `--uninstall`.
+- [ ] Install the branded icon and a non-terminal `.desktop` launcher.
+- [ ] Make repeated installation an idempotent update.
+- [ ] Remove only files owned by the installer and never delete served user
+      content or the Crostini environment.
+
+### C3 - complete the launcher/controller UX
+
+- [ ] Start or focus one controller from the ChromeOS Launcher and open its
+      local browser UI.
+- [ ] Provide start, stop, root, port, localhost/LAN, directory-listing, CORS,
+      and SPA settings at the existing native-core capability level.
+- [ ] Start with Linux `~/Downloads`; document **Linux files** and **Share with
+      Linux**, then add a tested shared-folder selection flow.
+- [ ] Present the Chromebook host IPv4 instructions and exact ChromeOS
+      port-forwarding path when LAN is enabled.
+- [ ] Explain that Linux may need to start after reboot; prove launcher behavior
+      from a fully stopped VM before choosing any systemd auto-start policy.
+- [ ] Do not silently keep serving a folder after the user believes the app has
+      stopped.
+
+### C4 - integrate the website and extension
+
+- [ ] Add a dedicated owned Crostini page with supported-device caveats, Linux
+      setup, one verified install command, Launcher instructions, Linux-files
+      guidance, and LAN port-forwarding instructions.
+- [ ] Update `/chromeos` from **Future option** only after the exact installer
+      and both architecture assets pass.
+- [ ] In the next extension revision, link to the owned Crostini instructions;
+      do not promise direct launch or detection in the first release.
+- [ ] Test Android-installed, Play-enabled/app-absent, Play-disabled, and
+      Crostini paths together so Crostini does not obscure the recommended
+      Android route.
+
+## Acceptance matrix
+
+| Gate | Required evidence |
+|---|---|
+| Install | Fresh default Debian Crostini on x86_64 and ARM64 installs one verified command without npm or developer mode |
+| Launcher | A stopped-Linux and running-Linux launch each open or focus one browser control surface without an empty Terminal |
+| Files | Linux `~/Downloads` and one ChromeOS folder explicitly shared with Linux serve exact fixtures; unshared paths fail clearly |
+| Local browser | `localhost` or the accepted stable Crostini hostname reaches the server without a ChromeOS LAN port entry |
+| LAN off | A second device cannot reach the server through the Chromebook LAN address |
+| LAN on | After the documented ChromeOS port entry, a second device fetches the exact fixture at the shown Chromebook IPv4 and port |
+| Lifecycle | Stop, reboot, Linux shutdown, suspend/resume, port conflict, update, and uninstall are truthful and leave no unintended listener |
+| Extension | The launcher links to the owned instructions without new unjustified permissions or false detection claims |
+| Unsupported | Managed/child/secondary/old-device copy directs users to another supported device without a dead loop |
+
+## Release boundary
+
+This tactical does not authorize a tag, website deployment, extension update,
+or release upload. The current submitted Android and extension releases remain
+valid without Crostini. Crostini becomes a public supported option only after
+the acceptance matrix passes on exact release artifacts.

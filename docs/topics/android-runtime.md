@@ -5,8 +5,9 @@ Topic: android-native-kotlin
 Status: **Android source uses one native Kotlin HTTP server, one
 application-scoped controller, and a Compose control surface. GitHub release
 `android-v0.2.1` publishes the signed APK and AAB containing the physically
-accepted ChromeOS LAN-address correction. The exact artifacts are ready for
-maintainer upload; Play delivery and store-served validation remain open.**
+accepted ChromeOS LAN-address correction. The maintainer reports that exact
+candidate submitted to Play; delivery and store-served validation remain
+open.**
 
 Last reconciled: **2026-08-02**.
 

@@ -40,8 +40,8 @@ const CONTROLLER_DIRECTORY_NAME: &str = "ok200-crostini";
 const DEFAULT_CONTENT_PORT: u16 = 8080;
 const MIN_CONTENT_PORT: u16 = 1024;
 const CHROMEOS_SHARED_ROOT: &str = "/mnt/chromeos";
-const UPDATE_SUCCESS_INTERVAL: Duration = Duration::from_secs(24 * 60 * 60);
-const UPDATE_FAILURE_BACKOFF: Duration = Duration::from_secs(60 * 60);
+const UPDATE_SUCCESS_INTERVAL: Duration = Duration::from_hours(24);
+const UPDATE_FAILURE_BACKOFF: Duration = Duration::from_hours(1);
 const UPDATE_INSTALL_DELAY: Duration = Duration::from_millis(250);
 const MAX_UPDATE_ERROR_CHARS: usize = 512;
 

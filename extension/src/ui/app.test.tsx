@@ -49,10 +49,21 @@ describe("extension popup routing", () => {
     expect(document.body.textContent).toContain(
       "Android apps and Google Play aren't available on every Chromebook.",
     );
-    expect(linkHref("Install or other ChromeOS options")).toBe(
-      CHROMEOS_HELP_URL,
-    );
+    expect(linkHref("Compare ChromeOS options")).toBe(CHROMEOS_HELP_URL);
     expect(linkHref("Google Play")).toBe(PLAY_STORE_URL);
+    expect(mocks.sendMessage).not.toHaveBeenCalled();
+  });
+
+  it("opens the bundled Linux setup guide without depending on the website", async () => {
+    const mocks = installChromeMock({ os: "cros" });
+
+    await renderApp();
+    await clickButton("Use the Linux version");
+
+    expect(mocks.createTab).toHaveBeenCalledWith(
+      { url: "chrome-extension://test/src/ui/crostini.html" },
+      expect.any(Function),
+    );
     expect(mocks.sendMessage).not.toHaveBeenCalled();
   });
 
@@ -173,6 +184,9 @@ function installChromeMock(options: ChromeMockOptions): ChromeMocks {
   const runtime = {
     get lastError() {
       return lastError;
+    },
+    getURL(path: string) {
+      return `chrome-extension://test/${path}`;
     },
     getPlatformInfo(callback: (info: chrome.runtime.PlatformInfo) => void) {
       callback({

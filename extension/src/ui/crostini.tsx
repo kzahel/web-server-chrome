@@ -566,8 +566,9 @@ function ControllerPanel({
         <details style={detailsStyle}>
           <summary>Update recovery</summary>
           <p style={mutedStyle}>
-            If an update causes trouble, run <code>ok200-crostini rollback</code>{" "}
-            in Terminal. Rollback is local and does not need Internet access.
+            If an update causes trouble, run{" "}
+            <code>ok200-crostini rollback</code> in Terminal. Rollback is local
+            and does not need Internet access.
           </p>
         </details>
       </section>
@@ -613,10 +614,10 @@ function OfflineSetup({ compact = false }: { compact?: boolean }) {
           <code style={commandStyle}>
             curl -fsSL https://ok200.app/install-crostini.sh | bash
           </code>
-          <span style={{ ...warningStyle, display: "block" }}>
-            The signed public component is not published yet. This command is
-            bundled now for offline setup documentation, but it will not be a
-            supported install path until the Linux option is announced.
+          <span style={{ ...mutedStyle, display: "block" }}>
+            The installer selects the x86_64 or ARM64 release, verifies its
+            signed manifest, and installs only for your Linux user. It does not
+            use sudo or start the web server automatically.
           </span>
         </li>
         <li>
@@ -632,6 +633,26 @@ function OfflineSetup({ compact = false }: { compact?: boolean }) {
         If the Linux setting is unavailable, your Chromebook, profile, or
         administrator may not allow Linux applications.
       </p>
+      <details style={detailsStyle}>
+        <summary>Folders under Linux files</summary>
+        <p style={mutedStyle}>
+          The default folder is <code>~/Downloads/200 OK</code>. To serve a
+          Chromebook folder, right-click it in the Files app, choose
+          <strong> Share with Linux</strong>, then enter its
+          <code> /mnt/chromeos/…</code> path in the controller. Unshared
+          ChromeOS folders are intentionally unavailable to Linux.
+        </p>
+      </details>
+      <details style={detailsStyle}>
+        <summary>Reach the server from another device</summary>
+        <p style={mutedStyle}>
+          First start the server. Then open ChromeOS Settings → About ChromeOS →
+          Developers → Linux development environment → Port forwarding, add the
+          content port shown in the controller (8080 by default) as TCP, and
+          turn it on. Use your Chromebook&apos;s Wi-Fi IPv4 address from its
+          network details. Never forward controller port 20080.
+        </p>
+      </details>
       <details style={detailsStyle}>
         <summary>Update, rollback, and uninstall commands</summary>
         <code style={commandStyle}>

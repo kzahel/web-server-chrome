@@ -23,8 +23,8 @@ const androidIntentUrl =
         <p class="eyebrow">ChromeOS</p>
         <h1>200 OK Web Server on your Chromebook</h1>
         <p class="lede">
-          The Chrome extension is a launcher. On supported Chromebooks, the
-          Android app runs the web server.
+          The Chrome extension is a launcher. Use the Android app when Google
+          Play is available, or the lightweight Linux version when it is not.
         </p>
       </div>
     </section>
@@ -52,6 +52,25 @@ const androidIntentUrl =
 
         <article class="option-card">
           <p class="option-label">No Android or Google Play</p>
+          <h2>Use the Linux version</h2>
+          <p>
+            The lightweight ChromeOS Linux component works with the extension
+            and installs for your Linux user without sudo. It is available for
+            x86_64 and ARM64 Chromebooks. Your Chromebook and profile must
+            allow the Linux development environment.
+          </p>
+          <div class="actions">
+            <a class="btn btn-secondary" href="/chromeos/linux">Linux setup guide</a>
+          </div>
+          <p class="note">
+            Initial installation needs Internet access. Afterward, the
+            Launcher and extension controller work locally and can be used
+            offline.
+          </p>
+        </article>
+
+        <article class="option-card">
+          <p class="option-label">Another fallback</p>
           <h2>Use another supported device</h2>
           <p>
             Run 200 OK on a macOS, Windows, or Linux computer, or on another
@@ -62,22 +81,6 @@ const androidIntentUrl =
             <a class="btn btn-secondary" href="/download">Desktop downloads</a>
             <a class="text-link" href="/#platforms">All supported platforms</a>
           </div>
-        </article>
-
-        <article class="option-card">
-          <p class="option-label">Future option</p>
-          <h2>Linux development environment (Crostini)</h2>
-          <p>
-            A dedicated lightweight Crostini launcher/controller is in release
-            validation. It is not currently a supported extension launch path,
-            and installing the Linux desktop app inside Crostini is not the
-            same product and will not make this extension detect it.
-          </p>
-          <p class="note">
-            We will expose the verified installer only after signed x86_64 and
-            ARM64 artifacts, the update channel, reboot behavior, networking,
-            and remaining ChromeOS permission checks pass.
-          </p>
         </article>
       </div>
     </section>

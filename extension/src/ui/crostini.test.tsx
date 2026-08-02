@@ -55,6 +55,25 @@ afterEach(async () => {
 });
 
 describe("Crostini controller UI", () => {
+  it("bundles the complete Linux setup and recovery path", async () => {
+    window.history.replaceState({}, "", "/src/ui/crostini.html");
+
+    await renderController();
+
+    expect(document.body.textContent).toContain("Set up the Linux version");
+    expect(document.body.textContent).toContain(
+      "curl -fsSL https://ok200.app/install-crostini.sh | bash",
+    );
+    expect(document.body.textContent).toContain("Folders under Linux files");
+    expect(document.body.textContent).toContain(
+      "Reach the server from another device",
+    );
+    expect(document.body.textContent).toContain(
+      "Never forward controller port 20080",
+    );
+    expect(document.body.textContent).not.toContain("not published yet");
+  });
+
   it("parses claimed and unclaimed launch URLs fail closed", () => {
     expect(readLaunchParameters()).toEqual({
       claimed: false,

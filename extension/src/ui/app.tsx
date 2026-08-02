@@ -130,6 +130,23 @@ export function App() {
     });
   };
 
+  const handleLinuxSetup = () => {
+    chrome.tabs.create(
+      { url: chrome.runtime.getURL("src/ui/crostini.html") },
+      () => {
+        if (chrome.runtime.lastError) {
+          setError(
+            chrome.runtime.lastError.message ||
+              "Failed to open the Linux setup guide",
+          );
+          setState("error");
+          return;
+        }
+        window.close();
+      },
+    );
+  };
+
   const handleRetry =
     route === "chromeos" ? handleChromeOsLaunch : handleLaunch;
 
@@ -209,13 +226,22 @@ export function App() {
             Open installed Android app
           </button>
           <div style={{ marginTop: 8 }}>
+            <button
+              type="button"
+              onClick={handleLinuxSetup}
+              style={secondaryButton}
+            >
+              Use the Linux version
+            </button>
+          </div>
+          <div style={{ marginTop: 8 }}>
             <a
               href={CHROMEOS_HELP_URL}
               target="_blank"
               rel="noopener noreferrer"
               style={secondaryActionLink}
             >
-              Install or other ChromeOS options
+              Compare ChromeOS options
             </a>
           </div>
           <div style={{ marginTop: 8 }}>

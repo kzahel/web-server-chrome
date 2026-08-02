@@ -267,6 +267,91 @@ receiver and has a regression test. Popup-failure fallback, bounds persistence,
 the exact packed manifest, full ChromeOS reboot/login, ARM64, fresh permission
 denial, signed download/update, and public setup copy remain unproved.
 
+## Active end-to-end release closeout
+
+The maintainer authorized proceeding through implementation, tagging,
+publication plumbing, deployment, and exact-artifact validation. Work remains
+split into reviewable commits; a completed source slice is not promoted to a
+supported user path until the later exact-release gates pass.
+
+### R1 — release contract and source plumbing
+
+- [x] Implement and commit the signed manifest, static-musl two-architecture
+      workflow, verified bootstrap, exact ownership transaction, retained
+      previous version, downgrade refusal, update/rollback CLI, bundled offline
+      commands, and `/crostini` update-service source/config.
+- [x] Cross-build both development architectures, execute the static x86_64
+      artifact on the Chromebook, and physically prove ownership tamper
+      refusal, version-change restart, downgrade refusal, rollback,
+      preserve/purge boundaries, linger preservation, and cleanup.
+- [x] Commit the shared update-server protocol independently so deployment can
+      be coordinated without coupling its history to the product repository.
+
+### R2 — finish the production controller update experience
+
+- [ ] Persist bounded update-check state and check only after the controller is
+      already active, at most once per 24 hours with failure backoff. Never
+      wake Crostini merely to check.
+- [ ] Expose authenticated update status plus an explicit update action to the
+      extension. Run replacement outside the controller service cgroup, return
+      an accepted/pending response before restart, and never resume stopped
+      content after replacement.
+- [ ] Add the recommended but explicit automatic-install preference. Install
+      automatically only while content is stopped; otherwise leave the signed
+      release pending until an explicit stop/restart decision.
+- [ ] Show current/available version, check/update progress, offline failure,
+      and local rollback guidance in the extension control surface; cover the
+      client/controller protocol with deterministic tests.
+
+### R3 — create the exact signed release
+
+- [ ] Reconcile both repositories with their remotes, push the shared
+      update-server commit and product source commits, and preserve the
+      pre-existing untracked update-server `CLAUDE.md` without publishing it.
+- [ ] Run `scripts/release-crostini.sh 0.1.0 --check`, then the mutating release
+      command; inspect the version commit and local `crostini-v0.1.0` tag before
+      atomically pushing `main` plus the tag.
+- [ ] Monitor tag CI through static x86_64/ARM64 construction, manifest signing,
+      independent verification, exact asset-set enforcement, checksums, and
+      GitHub Release creation. A partial or failed job is not a release.
+- [ ] Download the public assets independently, verify the manifest signature,
+      signed identity/protocols, hashes, sizes, executable versions, ELF
+      architecture/static linkage, release notes, and checksums.
+
+### R4 — deploy and validate public delivery
+
+- [ ] Deploy the compatible update-server commit and this repository's
+      `/crostini` product config through the existing Remy runbook. Confirm the
+      desktop Tauri route is unchanged and `/crostini/manifest` returns the
+      exact signed release or `204` for a current client.
+- [ ] Confirm the deployed website serves the source-controlled bootstrap, and
+      compare its bytes with the tagged source before executing it.
+- [ ] In a clean x86_64 Crostini installation, run the public one-command
+      bootstrap, verify the installed exact public hash/version and static
+      unit/ownership state, claim through the extension, serve/fetch/stop, run
+      current/offline checks, and exercise uninstall preserve plus purge.
+- [ ] Execute the exact ARM64 artifact in the strongest available ARM64 Linux
+      testbed. Keep ChromeOS-specific claims separate if no ARM Chromebook is
+      available.
+
+### R5 — close ChromeOS/store-facing gates
+
+- [ ] Pack the exact extension candidate and compare install/update warning
+      text, optional-host denial/re-request, Local Network Access behavior, and
+      forced popup-to-tab fallback. Do not change the already submitted store
+      artifact silently; prepare a separately versioned follow-up if code must
+      ship.
+- [ ] With the maintainer available to sign back in, perform a full ChromeOS
+      reboot/login and prove the cached **200 OK Linux** Launcher item wakes the
+      VM, starts one controller, opens one extension surface, and leaves content
+      stopped. Retain the Terminal-once recovery copy until this passes.
+- [ ] Record any first-release-only limitation honestly. In particular, an
+      exact public signed upgrade/rollback transition may require the next
+      `crostini-v` release even though source/dev two-version rollback passes.
+- [ ] Update the topic, extension topic, vision, and this ledger with exact
+      release URLs/hashes/evidence. Only then decide whether to change the
+      website/extension label from **Future option** to supported.
+
 ## Implementation ledger
 
 ### C1 - productionize the native binary

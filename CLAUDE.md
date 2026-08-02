@@ -224,7 +224,10 @@ All components follow the same release pattern:
 - `--check` runs typechecking, popup/routing tests, and store-safe ZIP
   construction without changing tracked files, committing, tagging, or pushing.
 - Updates `extension/public/manifest.json` and `extension/package.json`
-- Creates tag: `extension-v{version}`
+- Creates the version commit and local tag `extension-v{version}` without
+  pushing either one
+- **Maintainer release step:** Push `main` and the approved tag; the tag starts
+  the GitHub Release workflow
 - CI independently runs extension tests, rejects development material or
   manifest/tag mismatch, and creates a GitHub Release with ZIP and checksum
 - **Manual step:** Download ZIP from GitHub Release and upload to Chrome Web Store

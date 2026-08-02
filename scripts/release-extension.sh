@@ -106,7 +106,8 @@ node "$SCRIPT_DIR/validate-extension-package.mjs" \
 git add "$MANIFEST" "$PACKAGE_JSON" "$CHANGELOG"
 git commit -m "Release Extension v${VERSION}"
 git tag "$TAG"
-git push origin main "$TAG"
 
-echo "Released Extension v${VERSION}"
-echo "CI will build and create the exact Chrome Web Store ZIP."
+echo "Prepared Extension v${VERSION} commit and local tag $TAG."
+echo "Nothing was pushed or published."
+echo "Maintainer release command: git push origin main $TAG"
+echo "Pushing the tag will let CI create the exact Chrome Web Store ZIP."

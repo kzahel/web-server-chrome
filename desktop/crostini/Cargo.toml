@@ -2,15 +2,25 @@
 name = "ok200-crostini"
 version.workspace = true
 edition.workspace = true
-description = "ChromeOS Linux transient launcher for 200 OK Web Server"
+description = "ChromeOS Linux launcher and controller for 200 OK Web Server"
 
 [dependencies]
+axum = { version = "0.8.9", default-features = false, features = ["http1", "json", "tokio"] }
+dirs = { workspace = true }
+fs2 = "0.4.3"
+ok200-core = { path = "../core" }
 serde = { workspace = true }
 serde_json = { workspace = true }
+subtle = "2.6.1"
+tokio = { version = "1", features = ["fs", "macros", "net", "rt-multi-thread", "signal", "sync"] }
+uuid = { workspace = true }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 font8x8 = { version = "0.3.1", default-features = false, features = ["unicode"] }
 x11rb = { version = "0.13.2", default-features = false }
+
+[dev-dependencies]
+tempfile = "3"
 
 [lints]
 workspace = true

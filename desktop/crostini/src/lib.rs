@@ -11,6 +11,7 @@ pub const CONTROLLER_PRODUCT: &str = "ok200-crostini-controller";
 pub const CONTROLLER_PROTOCOL_VERSION: u16 = 1;
 pub const CONTROLLER_PORT: u16 = 20_080;
 pub const CONTROLLER_SERVICE: &str = "app.ok200.crostini-controller.service";
+pub const PRODUCTION_EXTENSION_ID: &str = "lpkjdhnmgkhaabhimpdinmdgejoaejic";
 
 const HEALTH_ATTEMPTS: usize = 60;
 const HEALTH_RETRY_DELAY: Duration = Duration::from_millis(250);
@@ -177,6 +178,10 @@ fn probe_controller(address: SocketAddr) -> Result<ControllerHealth, String> {
     parse_health_response(&response)
 }
 
+pub fn probe_system_controller() -> Result<ControllerHealth, String> {
+    probe_controller(SocketAddr::from(([127, 0, 0, 1], CONTROLLER_PORT)))
+}
+
 fn checked_command(result: std::io::Result<Output>, action: &str) -> Result<(), String> {
     let output = result.map_err(|error| format!("could not {action}: {error}"))?;
     if output.status.success() {
@@ -190,6 +195,12 @@ fn checked_command(result: std::io::Result<Output>, action: &str) -> Result<(), 
         Err(format!("could not {action}: {detail}"))
     }
 }
+
+mod controller;
+mod installer;
+
+pub use controller::{reset_controller_identity, ControllerOptions, RunningController};
+pub use installer::{install_current_executable, stop_controller_for_reset, uninstall};
 
 #[cfg(target_os = "linux")]
 mod x11_launcher;

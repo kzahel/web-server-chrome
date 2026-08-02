@@ -5,10 +5,14 @@ disposable offline handoff from a cached non-terminal Launcher app through a
 stopped Crostini VM and local external-message page into a dormant extension
 worker. The extension launch/optional-permission slice and a checked-in
 pure-Rust graphical launcher/desktop template are implemented and physically
-validated. A follow-up also proves the accepted static on-demand service
-lifecycle and permission-free dedicated Chrome popup shape. No supported Rust
-controller, installer/updater, setup/control product, or release artifact ships
-yet.**
+validated. The first production-shaped vertical slice now adds the combined
+Rust controller, authenticated control/content lifecycle, static unit,
+post-verification self-install/uninstall transaction, and responsive extension
+setup/control UI. That exact source-built x86_64 slice passed claim,
+start/localhost/stop, one routine popup, stopped-VM wake without content
+autostart, reset/reclaim, idempotent reinstall, preserve uninstall, and purge
+on M150. No signed public installer/updater, ARM64 artifact, packed extension
+candidate, or supported public route ships yet.**
 
 Last updated: **2026-08-02**.
 
@@ -71,8 +75,9 @@ Essential install, start, recovery, update, and uninstall guidance must be
 bundled in the extension so it remains readable offline; the website mirrors
 that content but is not its only copy. Request any optional local-host
 permission only after the user chooses **Use the Linux version**, and do not
-ship discovery or automatic claim until a physical prototype proves the exact
-hostname, CORS, permission, origin, and token behavior.
+expose the public route until the now-proved hostname, preflight, permission,
+one-time claim, and token behavior is paired with signed release artifacts and
+the remaining acceptance gates.
 
 The provisional first install uses one Terminal command to run a verified
 per-user installer. After registration, the user normally clicks **200 OK
@@ -234,9 +239,30 @@ on-demand, proving 200 OK must neither enable nor disable that shared setting.
 A separate permission-free Manifest V3 fixture created a persistent 700×750
 Chrome popup window on the same device. The page was returned by
 `runtime.getContexts({contextTypes: ["TAB"]})` with its `windowId`, validating
-the warning-minimizing create/find/focus mechanism. The production setup-tab
-routing, responsive control UI, bounds persistence, fallback, and exact packed
-manifest remain unimplemented.
+the warning-minimizing create/find/focus mechanism.
+
+The later production vertical slice then passed on the same x86_64 testbed:
+
+- Linux tests/Clippy and a release build of the combined launcher/controller;
+- versioned atomic per-user self-install, static active-on-request unit,
+  `0600` controller config, no enable or linger mutation, and idempotent rerun;
+- normal-tab first claim through the exact optional host-permission prompt,
+  fixed-origin preflight, one-time external-message code, persisted bearer
+  token, and authenticated status/settings/start/stop;
+- explicit `ok200-core` start at `localhost:8080`, exact browser fetch, truthful
+  stop, and stopped content after a controller-only VM wake;
+- one 700×750 routine popup, repeated focus without duplication, and a fully
+  stopped-VM Launcher wake with no Terminal;
+- reset/identity rotation/reclaim and preserve/reinstall/purge uninstall
+  behavior without deleting the served root or changing pre-existing linger;
+  and
+- removal of the Launcher item and all test fixtures after uninstall.
+
+The first browser claim also found and repaired a ChromeOS-only illegal
+invocation from an unbound `fetch`; the retained client binds its browser
+receiver and has a regression test. Popup-failure fallback, bounds persistence,
+the exact packed manifest, full ChromeOS reboot/login, ARM64, fresh permission
+denial, signed download/update, and public setup copy remain unproved.
 
 ## Implementation ledger
 
@@ -244,12 +270,17 @@ manifest remain unimplemented.
 
 - [ ] Give the Crostini binary a stable product name and release identity
       without silently replacing the feature-richer npm CLI.
-- [ ] Prefer one `ok200-crostini` release artifact containing launcher and
-      controller subcommands so their installed versions cannot drift.
-- [ ] Add version output, persisted configuration, single-instance locking,
-      clear bind failures, machine-readable readiness/status, authenticated
-      control APIs, and status/reset/token/update/rollback commands.
-- [ ] Preserve localhost-only as the safe default; make LAN binding explicit.
+- [x] Implement one `ok200-crostini` binary containing the launcher, controller,
+      status, reset, self-install, and uninstall subcommands so installed
+      launcher/service versions cannot drift; release identity is still open.
+- [x] Add version output, private persisted identity/settings, process locking,
+      clear bind failures, machine-readable readiness/status, one-time claim,
+      bearer-authenticated settings/start/stop, and reset/identity rotation.
+- [ ] Add independent token rotation, rooted browse, logs/diagnostics,
+      migrations, signed update, and rollback commands/protocols.
+- [x] Preserve localhost-only as the content default and make LAN binding
+      explicit; the controller is separately authenticated and must never be
+      forwarded.
 - [ ] Build and test x86_64 and ARM64 assets against the oldest claimed
       Crostini runtime.
 - [ ] Publish SHA-256 manifests and reject unverified downloads.
@@ -268,12 +299,19 @@ manifest remain unimplemented.
 - [ ] Have the real installer install that helper, desktop entry, branded icon,
       combined controller, local rollback/uninstall helpers, and static
       non-enabled controller unit idempotently without changing linger.
+- [x] Implement and physically prove the post-verification subset: the combined
+      binary self-installs its versioned executable, stable links, real
+      launcher/icon, and static unit; rerun is idempotent and never changes
+      enablement or linger. Public verification/rollback remains open.
 - [ ] Install immutable version directories behind an atomic stable link, take
       an installer lock, preserve one previous version, and make repeated
       installation an idempotent update.
 - [ ] Record exact owned paths. Normal uninstall preserves settings; explicit
       `--purge` removes controller settings/tokens. Neither mode removes served
       content, ChromeOS sharing/forwarding state, or the Crostini environment.
+- [x] Physically prove current exact-path preserve and purge behavior on x86_64,
+      including served-root and linger preservation and Launcher-cache removal;
+      the formal ownership manifest remains open.
 - [ ] Extend the shared update service with a separate `/crostini` product and
       generic signed artifact-manifest response. The current simple-version
       route lacks per-architecture URL/hash/signature/compatibility fields.
@@ -304,11 +342,13 @@ manifest remain unimplemented.
       Linux/VM restart until explicitly started, survives Terminal close after
       start, respects explicit stop, and remains static even with pre-existing
       account lingering.
-- [ ] Repeat warm, stopped-VM, and full-reboot/login tests with the production
-      Rust controller and prove its local launch page wakes a dormant extension
-      worker and focuses one extension control surface.
-- [ ] Provide start, stop, root, port, localhost/LAN, directory-listing, CORS,
-      and SPA settings at the existing native-core capability level.
+- [x] Repeat warm and fully stopped-VM tests with the production Rust controller;
+      its local page woke the extension worker and focused one popup without
+      Terminal. Full ChromeOS reboot/login remains open.
+- [x] Provide and physically exercise start, stop, validated root, port,
+      localhost/LAN, directory-listing, CORS, and SPA settings at the existing
+      native-core capability level. Exact LAN ingress through this UI remains
+      open.
 - [ ] Start with Linux `~/Downloads`; document **Linux files** and **Share with
       Linux**, then add a tested shared-folder selection flow.
 - [ ] Present the Chromebook host IPv4 instructions and exact ChromeOS
@@ -323,9 +363,11 @@ manifest remain unimplemented.
       stopped.
 - [x] Prove a permission-free 700×750 Chrome popup and context-based discovery
       with a usable `windowId` on physical M150 ChromeOS.
-- [ ] Route incomplete setup/permission/claim to a normal extension tab and
-      routine connected launch to one focused popup control window; validate
-      sizing, bounds, fallback, and packed-extension behavior.
+- [x] Route incomplete setup/permission/claim to a normal extension tab and
+      routine connected launch to one focused 700×750 popup; physically prove
+      setup-to-popup conversion, responsive controls, and repeated focus.
+- [ ] Force normal-tab fallback, validate bounds/small displays, and repeat with
+      the exact packed extension candidate.
 
 ### C4 - integrate the website and extension
 
@@ -339,6 +381,9 @@ manifest remain unimplemented.
 - [ ] Add the **Use the Linux version** route and ChromeOS-specific control UI;
       do not claim direct launch or automatic controller detection until its
       physical protocol gates pass.
+- [x] Implement the ChromeOS control UI and physically prove the installed
+      controller handoff; keep the public popup route hidden until the signed
+      installer and release gates pass.
 - [x] Add the exact `penguin.linux.test` launch-page origin to
       `externally_connectable`, accept only a narrow open/focus message, and
       keep normal launch independent of `ok200.app` and Internet access; the
@@ -358,14 +403,14 @@ manifest remain unimplemented.
 
 | Gate | Required evidence |
 |---|---|
-| Install | Fresh default Debian Crostini on x86_64 and ARM64 installs one signed/verified command without npm, sudo, developer mode, service enablement, or linger mutation; rerun, local uninstall, preserve, purge, and ownership boundaries pass |
-| Launcher | Windowless user launchers became stale after one host launch, and direct `chrome-extension://` handoff failed. The checked-in pure-Rust helper passed readable failure/retry, warm reuse, and two consecutive stopped-VM launches through the local HTTP bridge into one extension surface. The installer plus production controller and full-reboot/login path remain unproved |
+| Install | The source-built x86_64 post-verification transaction now passes versioned per-user install without npm/sudo/enable/linger mutation, idempotent rerun, preserve/reinstall/purge, served-root preservation, and app removal. Fresh x86_64 plus ARM64 signed public download, ownership manifest, and rollback remain |
+| Launcher | Windowless user launchers became stale after one host launch, and direct `chrome-extension://` handoff failed. The checked-in pure-Rust helper plus production controller passed warm reuse and stopped-VM launch through the installed static unit into one popup without Terminal. Full ChromeOS reboot/login remains |
 | Files | Linux `~/Downloads` and one ChromeOS folder explicitly shared with Linux serve exact fixtures; unshared paths fail clearly |
 | Local browser | `localhost` or the accepted stable Crostini hostname reaches the server without a ChromeOS LAN port entry |
 | LAN off | A second device cannot reach the server through the Chromebook LAN address |
 | LAN on | After the documented ChromeOS port entry, a second device fetches the exact fixture at the shown Chromebook IPv4 and port |
-| Lifecycle | Static on-demand systemd semantics passed disposably. Production stop, reboot, Linux shutdown, suspend/resume, port conflict, signed update/reconnect/rollback, and uninstall must remain truthful and leave no unintended listener |
-| Extension | Bundled instructions and `penguin.linux.test` launch work offline; external messaging adds no install/update warning; optional host plus any Local Network Access prompts are contextual; deterministic discovery, exact-origin claim/token, setup tab, single popup control window, and fallback pass physically |
+| Lifecycle | Static semantics plus production explicit start/fetch/stop, controller-only VM wake with content stopped, reset/reclaim, reinstall, and both uninstall modes pass. Full reboot/logout, suspend/resume, collision, signed update/reconnect/rollback remain |
+| Extension | Source build passes deterministic health, exact-extension one-time claim, bearer token, optional host prompt, normal setup tab, one focused popup, and offline local handoff. Packed warning proof, fresh denial, forced tab fallback, and final offline install copy remain |
 | Unsupported | Managed/child/secondary/old-device copy directs users to another supported device without a dead loop |
 
 ## Release boundary

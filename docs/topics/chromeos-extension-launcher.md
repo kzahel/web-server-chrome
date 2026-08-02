@@ -8,8 +8,10 @@ availability. The owned page is live and the exact `extension-v0.1.4` release
 ZIP passes local and CI inspection. The maintainer reports that Android
 `0.2.1` and extension `0.1.4` have been submitted to their stores;
 store-delivered proof remains open. The separate Crostini fallback now has an
-accepted provisional product flow and physical stopped-VM Launcher proof, but
-does not ship yet.**
+accepted product flow plus a physically proved source-built x86_64 controller,
+self-install transaction, authenticated extension controls, and stopped-VM
+Launcher/popup path, but signed public artifacts and remaining release gates do
+not exist, so it does not ship yet.**
 
 Last reconciled: **2026-08-02**.
 
@@ -177,7 +179,7 @@ features, or that every legacy option is already available.
 | Play disabled | Passed on the explicitly authorized physical testbed: options route works; intent is blank; Play link opens Play setup/Terms |
 | Play unsupported or policy-blocked | Compatible physical/managed fixture or documented user report; options page remains independently reachable regardless |
 | Crostini feasibility | Passed on physical x86_64 for native build, localhost, explicit LAN forwarding, Linux files, Launcher indexing, one-click browser open, and wake from a fully stopped VM/container |
-| Crostini release | Exact verified x86_64/ARM64 installer, production controller, full-reboot lifecycle, local external-message handoff, optional-permission warnings, shared-folder UX, and authenticated extension-control proof remain open |
+| Crostini release | Source-built x86_64 production controller, local handoff, exact optional prompt, one-time claim/token, controls, popup, stopped-VM wake, and preserve/purge pass. Signed x86_64/ARM64 public installer, full reboot, packed-warning proof, shared-folder picker, LAN controls, and updates remain open |
 | Store delivery | Existing controlled profile receives the reviewed version and repeats installed/absent routing checks |
 
 ## Current evidence and gaps
@@ -226,15 +228,24 @@ features, or that every legacy option is already available.
   confirming the controller URL was unreachable, the cached non-terminal
   Linux app remained in the ChromeOS Launcher. Clicking it woke the
   VM/container, started one user service, and opened the exact local page in
-  Chrome with no Terminal window. A full ChromeOS reboot/login and the
-  production extension/controller handoff remain untested. The fixture was
-  removed and the VM returned to its stopped state.
+  Chrome with no Terminal window. At that point the production handoff was
+  untested; the later vertical-slice pass below closes it. A full ChromeOS
+  reboot/login remains untested. The fixture was removed and the VM returned
+  to its stopped state.
 - A follow-up `xdg-open chrome-extension://...` check from `penguin` failed
   through ChromeOS Garcon with `Failure in OpenUrl`, and no extension page
   opened. The accepted design therefore opens a controller-served local HTTP
   page that externally messages the extension. The direct-test Terminal
-  surface was closed and the VM was stopped afterward; the local message
-  bridge and its optional-permission prompts remain to be physically proved.
+  surface was closed and the VM was stopped afterward; the later vertical
+  slice physically proves the replacement bridge and prompt.
+- The source-built production-shaped x86_64 slice subsequently passed the
+  fixed-port controller health, exact external handoff, optional host prompt,
+  one-time claim, bearer-authenticated settings/start/stop, `localhost`
+  content, one focused routine popup, controller-only stopped-VM wake, reset
+  and reclaim, idempotent install, preserve/reinstall/purge, and exact cleanup.
+  The control surface stays hidden from the public toolbar popup until signed
+  installer/artifact, packed-warning, ARM64, full-reboot, file, LAN, and update
+  gates pass.
 - Thirteen source tests cover the no-detection contract, Android retry,
   permanent links, direct desktop download, and unsupported platforms.
 - GitHub Actions run `30734453353` passed all thirteen tests, the strict

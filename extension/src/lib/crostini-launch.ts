@@ -4,6 +4,8 @@ export const CROSTINI_HOST_PERMISSION = `http://${CROSTINI_HOST}/*`;
 export const CROSTINI_UI_PATH = "src/ui/crostini.html";
 
 export type CrostiniLaunch = {
+  claimed: boolean;
+  claimCode?: string;
   instanceId: string;
   port: number;
 };
@@ -44,7 +46,22 @@ export function parseCrostiniLaunch(
     return null;
   }
 
-  return { instanceId: message.instanceId, port: senderPort };
+  if (typeof message.claimed !== "boolean") return null;
+  if (message.claimed) {
+    if (message.claimCode !== undefined) return null;
+  } else if (
+    typeof message.claimCode !== "string" ||
+    !/^[A-Fa-f0-9]{64}$/.test(message.claimCode)
+  ) {
+    return null;
+  }
+
+  return {
+    claimed: message.claimed,
+    claimCode: message.claimCode,
+    instanceId: message.instanceId,
+    port: senderPort,
+  };
 }
 
 export function controllerOrigin(port: number): string {

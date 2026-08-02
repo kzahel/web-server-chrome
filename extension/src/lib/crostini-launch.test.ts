@@ -8,6 +8,8 @@ import {
 
 const request = {
   type: "open-linux-controller",
+  claimed: false,
+  claimCode: "a".repeat(64),
   instanceId: "probe-1",
   port: 18182,
 };
@@ -19,7 +21,12 @@ describe("Crostini launch bridge", () => {
         request,
         "http://penguin.linux.test:18182/launch-chromeos",
       ),
-    ).toEqual({ instanceId: "probe-1", port: 18182 });
+    ).toEqual({
+      claimed: false,
+      claimCode: "a".repeat(64),
+      instanceId: "probe-1",
+      port: 18182,
+    });
     expect(controllerOrigin(18182)).toBe("http://penguin.linux.test:18182");
     expect(CROSTINI_HOST_PERMISSION).toBe("http://penguin.linux.test/*");
   });
@@ -59,6 +66,34 @@ describe("Crostini launch bridge", () => {
     expect(
       parseCrostiniLaunch(
         { ...request, instanceId },
+        "http://penguin.linux.test:18182/launch-chromeos",
+      ),
+    ).toBeNull();
+  });
+
+  it("accepts a claimed controller without a claim code", () => {
+    expect(
+      parseCrostiniLaunch(
+        { ...request, claimed: true, claimCode: undefined },
+        "http://penguin.linux.test:18182/launch-chromeos",
+      ),
+    ).toEqual({
+      claimed: true,
+      claimCode: undefined,
+      instanceId: "probe-1",
+      port: 18182,
+    });
+  });
+
+  it.each([
+    { claimed: false, claimCode: undefined },
+    { claimed: false, claimCode: "short" },
+    { claimed: true, claimCode: "a".repeat(64) },
+    { claimed: "yes", claimCode: undefined },
+  ])("rejects invalid claim state %#", (claim) => {
+    expect(
+      parseCrostiniLaunch(
+        { ...request, ...claim },
         "http://penguin.linux.test:18182/launch-chromeos",
       ),
     ).toBeNull();

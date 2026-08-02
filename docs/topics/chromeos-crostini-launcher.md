@@ -13,14 +13,21 @@ windowless launcher became stale after its first host launch. A checked-in
 pure-Rust graphical launcher and `.desktop` template now pass warm and two
 consecutive stopped-VM launches on the physical x86_64 testbed, including
 failure/retry and the extension handoff. The narrow extension bridge and
-optional runtime host-permission slice are also implemented. Disposable M150
-fixtures additionally prove that a static user unit remains off until
-explicitly started—even when another product has enabled user lingering—and
-that a permission-free 700×750 Chrome popup window is a viable persistent
-everyday control surface. The production Rust controller, installer/updater,
-setup/control product, ARM64 artifact, packed-update warning proof, and
-full-reboot proof do not exist yet. This remains a future option rather than a
-shipped fallback.**
+optional runtime host-permission slice are also implemented. The first
+production-shaped vertical slice now adds the combined Rust controller,
+private persisted identity/settings, process lock, one-time extension claim,
+authenticated status/settings/start/stop API, `ok200-core` content lifecycle,
+static systemd unit, per-user self-install/uninstall transaction, and the
+responsive extension control UI. On physical M150 ChromeOS the source-built
+x86_64 slice installed without enabling its unit or changing existing linger,
+claimed through the exact optional permission, served `localhost`, stopped
+truthfully, opened setup in a normal tab, focused one 700×750 routine popup,
+woke from a stopped VM without Terminal, reset/reclaimed, reinstalled
+idempotently, and uninstalled with both preserve and purge behavior. Signed
+public installation/update delivery, an ownership manifest and rollback,
+ARM64/oldest-runtime artifacts, packed-update warning proof, directory picker,
+host-address LAN controls, and full-reboot proof still do not exist. This
+remains a future option rather than a shipped fallback.**
 
 Last reconciled: **2026-08-02**.
 
@@ -59,10 +66,11 @@ controller-served launch page --external message--> extension worker
 - **Controller service** means that Rust process. **Control UI** means the
   extension page that operates it. Documentation and code should preserve
   those distinct names rather than overloading “controller.” Prefer one
-  `ok200-crostini` release artifact exposing `launch`, `controller`, `status`,
-  `reset-controller`, `rotate-token`, `update`, and `rollback` subcommands so
-  the launcher and service cannot drift across independently installed
-  versions.
+  `ok200-crostini` release artifact. The combined source binary now exposes
+  `launch`, `controller`, `status`, `reset-controller`, `install`, and
+  `uninstall`; token rotation, signed `update`, and `rollback` remain release
+  work. One artifact keeps the launcher and service from drifting across
+  independently installed versions.
 - A branded `Terminal=false` `.desktop` entry installed in Crostini is the
   post-install ChromeOS Launcher surface. ChromeOS, not the extension, can use
   that registered Linux app to wake a stopped VM/container and execute its
@@ -326,31 +334,38 @@ Rejected launch directions:
   page could avoid host permission, but would keep the bridge tab alive and
   add a second RPC layer. It is not the recommended first implementation.
 
-## Provisional controller discovery and claim contract
+## Controller discovery and claim contract
 
-The first prototype should prefer a small deterministic endpoint list over
-broad port scanning. Each endpoint must return an exact product identifier,
-protocol version, instance identifier, and claim state from `/health`; an
-unrelated process on the same port is a collision, not a controller.
+The implemented slice uses deterministic control port `20080`, not broad port
+scanning. `/health` returns the exact product identifier, protocol version,
+instance identifier, component version, and claim state; an unrelated process
+on that port is a collision, not a controller.
 
 Any prototype must preserve this security boundary:
 
 - bind the control API only to Crostini/ChromeOS-local interfaces needed by
   the accepted bridge;
-- allow requests only from the exact production extension origin/ID, not
-  arbitrary web pages and never wildcard CORS;
+- return CORS access only for the exact production extension origin, never a
+  wildcard, while treating CORS as browser isolation rather than
+  authentication;
 - require an unguessable token after the initial claim;
-- restrict the unclaimed window to fresh install/reset and make repeated
-  claims idempotent for the accepted extension identity;
+- restrict the unclaimed window to fresh install/reset and deliver its
+  one-time claim code only through the controller page's external message to
+  the exact production extension ID;
 - keep the control port separate from the served-content port and never tell
   users to add the control port to ChromeOS LAN forwarding; and
 - provide an explicit local reset path rather than an undocumented backdoor.
 
-Chrome host permissions, ChromeOS's newer local-network permission behavior,
-the exact `penguin.linux.test` CORS/preflight behavior, optional permission
-copy, and extension-origin claim behavior need a physical end-to-end prototype
-before the protocol is accepted. Auto-claim is a desired UX, not evidence that
-these browser security details already work.
+The physical source-build pass accepted this boundary. Chrome displayed the
+exact optional host-permission dialog, the controller's fixed-origin preflight
+allowed the JSON claim, the extension persisted the returned bearer token in
+its own origin, and authenticated status/start/stop succeeded. Earlier health
+evidence showed that Chrome may omit `Origin` on a host-permission-authorized
+extension request, so the controller deliberately does not mistake a request
+header for identity: the exact external-message destination protects the
+one-time claim code and the bearer token protects every later mutation. Reset
+rotates the instance ID, clears the token, stops the service, and permits one
+fresh claim.
 
 ## Production controller-service boundary
 
@@ -368,12 +383,15 @@ It owns:
   and
 - the static offline `/launch-chromeos` handoff page.
 
-The initial authenticated API should cover health/version, claim and token
-rotation, status/settings, browse/select-root, content-server start/stop, update
-check/apply, diagnostics, and controller reset. Exact routes remain an
-implementation contract to define with typed request/response tests. The
-control endpoint never becomes a ChromeOS-forwarded LAN port; only the separate
-content listener may be forwarded after explicit user action.
+The implemented first API slice provides public `GET /health` and
+`GET /launch-chromeos`, one-time `POST /api/claim`, authenticated
+`GET /api/status`, `PUT /api/settings`, and explicit
+`POST /api/server/start`/`stop`. Rust integration tests exercise private config,
+locking, claim/auth rejection, settings, a real `ok200-core` listener, exact
+content, and stop. Token rotation beyond reset, a rooted directory browser,
+logs/diagnostics, and update check/apply remain. The control endpoint never
+becomes a ChromeOS-forwarded LAN port; only the separate content listener may
+be forwarded after explicit user action.
 
 ## ChromeOS-specific control UI
 
@@ -394,9 +412,12 @@ create or focus a window; URL/title access on returned tabs is the permissioned
 part. The current context-based implementation direction therefore remains the
 warning-minimizing choice.
 
-The UI may share protocol types, validation rules, copy, styling, and React
-components with desktop, but it should not force the desktop Tauri UI or
-Android Compose structure onto ChromeOS.
+The implemented React surface follows this tab/popup split and reuses neither
+the desktop Tauri shell nor Android Compose. Its first slice exposes a validated
+root text field, content port, localhost/LAN bind, directory listing, CORS, SPA,
+start/stop, status, version, local URL, permission copy, reset guidance, and
+offline setup/recovery summary. A safe rooted directory browser, Chromebook
+IPv4 display, richer diagnostics, updates, and final install copy remain.
 
 Minimum controls:
 
@@ -579,6 +600,54 @@ the check. This does not yet prove bounds persistence, responsive behavior on
 small displays, popup fallback, the finished control UI, or full reboot/login
 with the production controller.
 
+### Production vertical-slice validation
+
+The same physical M150 and Debian 12 x86_64 container then exercised the
+checked-in controller, installer transaction, extension UI, and service rather
+than disposable controller/popup fixtures:
+
+- Linux compilation passed all 15 target-specific Crostini tests and strict
+  Clippy before producing the optimized combined binary.
+- `ok200-crostini install` installed the current verified binary below the
+  per-user version directory, rendered the real icon/desktop/static-service
+  files, started the controller for setup, and left the unit `static` while the
+  pre-existing account setting remained `Linger=yes`. The controller config
+  was mode `0600`; rerunning install succeeded idempotently.
+- The ChromeOS Launcher indexed **200 OK Linux** with the real icon. First
+  launch opened a normal extension setup tab and closed the local bridge. The
+  exact **Read and change your data on penguin.linux.test** optional-permission
+  prompt appeared; after approval, the extension completed the one-time claim
+  and showed authenticated controls.
+- The first browser pass exposed and fixed a real Chrome-only defect: an
+  extracted `fetch` function required its `Window` receiver. The retained
+  client binds the default browser fetch, has a regression test, and passed the
+  repeated physical claim.
+- **Start server** saved the default
+  `~/Downloads/200 OK` root and started `ok200-core` only on that click. Chrome
+  fetched the directory listing at `http://localhost:8080/`. **Stop server**
+  removed the listener immediately.
+- A later Launcher click replaced the setup tab with one 700×750 dedicated
+  popup; another click focused that same window instead of creating a second.
+- After closing the popup and fully stopping `termina`, the cached Launcher app
+  woke Linux, started the static controller, and reopened the single claimed
+  popup without Terminal. The content port remained closed, proving controller
+  wake did not resume serving.
+- `reset-controller` stopped the service, rotated the instance identity,
+  cleared pairing, and the next Launcher click reclaimed through a normal tab.
+- Normal uninstall removed the application/unit/icon/binary and preserved both
+  settings and served root without changing linger. Reinstall retained the
+  claimed identity. `uninstall --purge` then removed settings/pairing while
+  again preserving the served root, and ChromeOS removed the app from search.
+
+All installed files, extension state, transferred source/build trees, and the
+empty test serve root were removed afterward; the VM was stopped and the
+testbed returned 8/8 healthy. This evidence does not make the self-install
+command a public installer: it begins only after a binary has already been
+downloaded and verified. Full ChromeOS reboot/login, signed public download,
+ARM64/older-Crostini artifacts, popup-failure fallback, fresh permission
+denial, shared-folder UI, LAN controls through this exact UI, and updates remain
+open.
+
 ## LAN behavior
 
 Crostini guest addresses are implementation details and must not be presented
@@ -604,6 +673,15 @@ The JSTorrent Crostini installer is the behavioral starting point—one command,
 architecture selection, verified immutable release assets, per-user systemd,
 version pinning, idempotent rerun, and uninstall—but 200 OK should tighten its
 transaction and ownership model:
+
+The combined binary now implements the post-verification transaction used by
+the physical test: `install` copies itself to a versioned per-user directory,
+atomically switches stable links, renders the desktop/static-service files and
+icon, refreshes caches when available, and starts but never enables the
+controller. `uninstall` and `uninstall --purge` passed the preserve/purge
+boundaries above. This intentionally does not claim the public download layer,
+installer lock/ownership manifest, previous-version rollback, signed manifest,
+or architecture selection below.
 
 - publish a separate `crostini-v<version>` release containing one combined
   `ok200-crostini` binary for `x86_64` and `aarch64`, a signed release manifest,
@@ -695,10 +773,14 @@ the extension or controller cannot connect.
 
 Before changing **Future option** to a supported public route:
 
-- [ ] Build the production Rust controller around `ok200-core` with persisted
-      settings, explicit content-server lifecycle, readiness, locking,
-      authenticated typed API, and the accepted status/reset/update/rollback
-      commands.
+- [x] Build the first production-shaped Rust controller around `ok200-core`
+      with private persisted settings/identity, explicit content lifecycle,
+      readiness, process locking, one-time claim, bearer authentication,
+      status/settings/start/stop, and reset; pass local and physical x86_64
+      tests.
+- [ ] Add token rotation independent of reset, rooted directory browsing,
+      diagnostics/logs, signed update/rollback, migrations, and protocol
+      compatibility policy.
 - [x] Implement the pure-Rust, DPI-aware transient graphical launcher and
       `.desktop` template without GTK, Tauri, `xmessage`, or Xlib runtime
       dependencies; prove failure/retry, warm reuse, and two consecutive
@@ -709,15 +791,19 @@ Before changing **Future option** to a supported public route:
       Crostini environments on both architectures, including idempotent update,
       ownership-manifest removal, default settings preservation, and explicit
       purge.
+- [x] Physically prove the post-verification self-install transaction on the
+      existing x86_64 Debian 12 testbed: versioned atomic install, static unit,
+      no linger mutation, idempotent rerun, normal preserve, reinstall, purge,
+      served-root preservation, cache removal, and exact cleanup.
 - [ ] Add the separate signed `crostini-v` artifact-manifest channel to the
       shared update service and CI; prove current, available, incompatible,
       corrupt, interrupted, rollback, and offline recovery cases.
-- [ ] Install the checked-in `.desktop` launcher and helper through the real
-      installer, repeat the proved warm/stopped paths with the production
-      controller, and prove full ChromeOS reboot/login launch with one
-      controller.
-- [ ] Repeat the now-proved disposable warm and stopped-VM launch handoff with
-      the production controller, then add full ChromeOS reboot/login proof.
+- [x] Install the checked-in `.desktop` launcher, helper, controller, icon, and
+      static unit through the self-install transaction; repeat warm and fully
+      stopped-VM handoff with the production controller and one extension
+      surface.
+- [ ] Prove the installed app and one-controller behavior after a full ChromeOS
+      reboot/login rather than only a manual VM stop/start.
 - [x] Prove that a static `Restart=always` user unit remains inactive across a
       VM restart until explicitly started, survives Terminal close after start,
       respects explicit stop, and remains on-demand even when account lingering
@@ -725,21 +811,31 @@ Before changing **Future option** to a supported public route:
 - [x] Prototype the exact `externally_connectable` launch, optional host
       permission, extension health request, dormant-worker wake, Local Network
       Access behavior, and single-surface focus on the physical Chromebook.
-- [ ] Add and prove exact-origin claim, token persistence/rotation, port
-      collisions, controller reset, and fresh-install permission denial.
+- [x] Add and physically prove one-time exact-extension claim, extension token
+      persistence, authenticated mutation, process locking, controller reset,
+      identity rotation, and reclaim. CORS is fixed to the production origin;
+      authentication does not depend on Chrome supplying `Origin`.
+- [ ] Prove control/content port-collision recovery, independent token rotation,
+      and fresh-install optional-permission denial/re-request.
 - [ ] Pack an update candidate and prove the local external-message allowlist
       adds no install/update warning; record the exact contextual optional-host
       and any Local Network Access prompts.
 - [x] Prove a permission-free 700×750 Chrome popup control window on M150 and
       confirm `runtime.getContexts()` returns it as a `TAB` context with a
       focusable `windowId`.
-- [ ] Implement and physically validate setup-tab versus everyday-popup routing,
-      single-window focus, bounds behavior, responsive sizing, and normal-tab
-      fallback in the packed extension.
+- [x] Implement and physically validate first claim in a normal setup tab,
+      routine launch in one focused 700×750 popup, responsive controls, and
+      conversion of the earlier setup tab into the routine popup.
+- [ ] Force and prove popup creation failure falls back to a normal tab; repeat
+      against the exact packed update candidate and smaller display settings.
 - [ ] Test Linux `~/Downloads`, one explicitly shared ChromeOS folder, and
       clear rejection of an unshared path.
-- [ ] Test start/stop, logout, Linux shutdown, suspend/resume, port conflict,
-      update, uninstall, and recovery without an unintended content listener.
+- [x] Physically test explicit start/localhost fetch/stop, controller-only VM
+      wake with content still stopped, reset/reclaim, idempotent reinstall,
+      preserve uninstall, and purge without linger or served-root mutation.
+- [ ] Test full logout/reboot, suspend/resume, control/content port conflicts,
+      interrupted update/rollback, and offline failure recovery without an
+      unintended listener.
 - [ ] Validate keyboard and screen-reader behavior for the transient launcher;
       its current custom-drawn body is not exposed through ChromeOS's
       automation accessibility tree.

@@ -1,0 +1,14 @@
+[Unit]
+Description=200 OK ChromeOS Linux controller
+Documentation=https://ok200.app/chromeos
+
+[Service]
+Type=simple
+ExecStart=@OK200_CROSTINI_BINARY@ controller
+Restart=always
+RestartSec=1
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Deliberately no [Install] section. The ChromeOS Launcher starts this static
+# user unit on demand; installation must not enable it or change user lingering.

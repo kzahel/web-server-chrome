@@ -138,10 +138,13 @@ async function openOrFocusCrostiniUi(
 
   const baseUrl = chrome.runtime.getURL(CROSTINI_UI_PATH);
   const parameters = new URLSearchParams({
+    claimed: String(launch.claimed),
     instanceId: launch.instanceId,
     port: String(launch.port),
   });
+  if (launch.claimCode) parameters.set("claimCode", launch.claimCode);
   const targetUrl = `${baseUrl}?${parameters}`;
+  const targetWindowType = launch.claimed ? "popup" : "normal";
 
   try {
     const contexts =
@@ -154,17 +157,45 @@ async function openOrFocusCrostiniUi(
         isCrostiniUiUrl(context.documentUrl, baseUrl),
     );
     if (existing?.tabId !== undefined) {
-      await chrome.tabs.update(existing.tabId, {
-        active: true,
-        url: targetUrl,
-      });
-      if (existing.windowId !== undefined) {
-        await chrome.windows.update(existing.windowId, { focused: true });
+      const existingWindow =
+        existing.windowId === undefined
+          ? undefined
+          : await chrome.windows.get(existing.windowId);
+      if (existingWindow?.type === targetWindowType) {
+        await chrome.tabs.update(existing.tabId, {
+          active: true,
+          url: targetUrl,
+        });
+        if (existing.windowId !== undefined) {
+          await chrome.windows.update(existing.windowId, { focused: true });
+        }
+        if (senderTab?.id !== undefined && senderTab.id !== existing.tabId) {
+          await chrome.tabs.remove(senderTab.id);
+        }
+        return;
       }
-      if (senderTab?.id !== undefined && senderTab.id !== existing.tabId) {
-        await chrome.tabs.remove(senderTab.id);
+      await chrome.tabs.remove(existing.tabId);
+    }
+
+    if (launch.claimed) {
+      try {
+        const popup = await chrome.windows.create({
+          focused: true,
+          height: 750,
+          type: "popup",
+          url: targetUrl,
+          width: 700,
+        });
+        if (!popup)
+          throw new Error("Chrome did not create a controller window");
+        if (senderTab?.id !== undefined) await chrome.tabs.remove(senderTab.id);
+        return;
+      } catch (error) {
+        console.warn(
+          "[SW] Crostini popup unavailable; falling back to a normal tab:",
+          error,
+        );
       }
-      return;
     }
 
     if (senderTab?.id !== undefined) {

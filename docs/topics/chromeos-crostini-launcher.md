@@ -2,38 +2,19 @@
 
 Topic: chromeos-crostini-launcher
 
-Status: **the product shape and provisional user flow are accepted. A physical
-x86_64 ChromeOS prototype now proves the full disposable launch handoff: an
-installed non-terminal Linux `.desktop` entry can wake a fully stopped
-Crostini VM/container, start one user service, open its local
-`penguin.linux.test` bridge, wake a dormant extension worker, and open or focus
-one extension controller surface without Terminal or Internet. Reliable
-repeat launch requires a brief transient graphical Linux splash; a completely
-windowless launcher became stale after its first host launch. A checked-in
-pure-Rust graphical launcher and `.desktop` template now pass warm and two
-consecutive stopped-VM launches on the physical x86_64 testbed, including
-failure/retry and the extension handoff. The narrow extension bridge and
-optional runtime host-permission slice are also implemented. The first
-production-shaped vertical slice now adds the combined Rust controller,
-private persisted identity/settings, process lock, one-time extension claim,
-authenticated status/settings/start/stop API, `ok200-core` content lifecycle,
-static systemd unit, per-user self-install/uninstall transaction, and the
-responsive extension control UI. On physical M150 ChromeOS the source-built
-x86_64 slice installed without enabling its unit or changing existing linger,
-claimed through the exact optional permission, served `localhost`, stopped
-truthfully, opened setup in a normal tab, focused one 700×750 routine popup,
-woke from a stopped VM without Terminal, reset/reclaimed, reinstalled
-idempotently, and uninstalled with both preserve and purge behavior. Signed
-release delivery is now implemented in source: a fail-closed static-musl CI
-workflow, canonical signed artifact manifest, architecture-selecting bootstrap
-installer, formal ownership manifest, retained previous version, local
-rollback, CLI update check/install, a separate update-service manifest route,
-bounded daily controller checks with failure backoff, authenticated manual
-install, explicit stopped-content automatic installation, extension progress,
-and reconnect handling. No `crostini-v` tag or signed public artifact has run through that path,
-the update-service route is not deployed, and ARM64/oldest-runtime, packed-
-update warning, directory-picker, host-address LAN, and full-reboot proofs
-remain open. This remains a future option rather than a shipped fallback.**
+Status: **the Play-free Linux fallback now has a public signed component,
+deployed update feed, public bootstrap, owned website guide, and a separately
+versioned extension follow-up in release closeout. `crostini-v0.1.1` is the
+first completed release. Its exact x86_64 artifact passed the public bootstrap,
+contextual permission/claim, start/ChromeOS-localhost-fetch/stop, repeated
+graphical Launcher handoff, current-feed check, preserve/reinstall, and purge
+on M150 ChromeOS with Debian 12. The exact ARM64 artifact passed signature,
+static execution, install, and purge on the ARM64 Linux testbed; this is not a
+native ARM Chromebook claim. The extension bundles the setup/recovery guide
+and exposes **Use the Linux version** while Android remains recommended.
+Full ChromeOS reboot/login, native ARM ChromeOS, packed-update warning/fresh
+denial, rooted directory browsing, update-to-a-newer-release/rollback, and
+broader lifecycle/accessibility tests remain follow-up evidence.**
 
 Last reconciled: **2026-08-02**.
 
@@ -819,7 +800,8 @@ the extension or controller cannot connect.
 
 ## Remaining acceptance gates
 
-Before changing **Future option** to a supported public route:
+The fallback is public; these gates bound follow-up hardening and claims that
+must remain explicit:
 
 - [x] Build the first production-shaped Rust controller around `ok200-core`
       with private persisted settings/identity, explicit content lifecycle,
@@ -836,12 +818,15 @@ Before changing **Future option** to a supported public route:
       dependencies; prove failure/retry, warm reuse, and two consecutive
       stopped-VM extension handoffs on physical x86_64 ChromeOS.
 - [ ] Publish verified x86_64 and ARM64 binaries compatible with the oldest
-      claimed Crostini baseline.
-- [ ] Test the source-controlled signed installer and uninstall path in fresh
-      default Crostini environments on both architectures, including
-      idempotent update, ownership-manifest removal, default settings
-      preservation, and explicit purge. Source integrity tests pass; physical
-      signed-artifact evidence is still required.
+      claimed Crostini baseline. Both `crostini-v0.1.1` static artifacts are
+      public; exact x86_64 passed Debian 12 Crostini and exact ARM64 passed the
+      Ubuntu 24.04 ARM testbed, but a native ARM Chromebook and an older
+      claimed baseline remain open.
+- [x] Test the source-controlled signed installer and uninstall path with the
+      exact public x86_64 artifact in default Crostini, including ownership
+      removal, settings/identity preservation across reinstall, explicit
+      purge, and served-root preservation; run exact ARM64 install/purge in the
+      strongest available ARM64 Linux testbed.
 - [x] Physically prove the post-verification self-install transaction on the
       existing x86_64 Debian 12 testbed: versioned atomic install, static unit,
       no linger mutation, idempotent rerun, normal preserve, reinstall, purge,
@@ -856,7 +841,8 @@ Before changing **Future option** to a supported public route:
       and local rollback guidance with deterministic source tests.
 - [ ] Deploy that update-service route and prove the exact signed release's
       current, available, incompatible, corrupt, interrupted, rollback, and
-      offline recovery cases.
+      offline recovery cases. Deployment and exact current/`204` responses
+      pass; a real later release is required for available/install/rollback.
 - [x] Install the checked-in `.desktop` launcher, helper, controller, icon, and
       static unit through the self-install transaction; repeat warm and fully
       stopped-VM handoff with the production controller and one extension
@@ -901,7 +887,9 @@ Before changing **Future option** to a supported public route:
 - [ ] Validate Chromebook-host IPv4 presentation and explicit content-port
       forwarding from a second LAN device; never forward the control API.
 - [ ] Validate the bundled setup/recovery instructions offline, including
-      unsupported, policy-blocked, and ChromeOS Flex wording.
+      unsupported, policy-blocked, and ChromeOS Flex wording. The bundled
+      install/Launcher/Linux-files/LAN/update/uninstall guide passes on the
+      physical candidate; unavailable-policy and Flex fixtures remain open.
 
 ## References
 
@@ -919,7 +907,8 @@ Before changing **Future option** to a supported public route:
 
 ## Release boundary
 
-This topic does not authorize a tag, website deployment, extension update, or
-store upload. The submitted Android and extension releases remain valid
-without Crostini. The maintainer owns approval of the future public route and
-all release/store actions after the acceptance gates pass.
+The maintainer explicitly authorized implementation, release tagging,
+publication plumbing, and deployment for this closeout, while retaining
+ownership of Chrome Web Store upload. The submitted Android and extension
+releases remain valid without Crostini; extension `0.1.5` is a separately
+versioned follow-up rather than a silent replacement.

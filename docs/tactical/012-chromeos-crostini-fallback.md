@@ -1,22 +1,16 @@
 # ChromeOS Crostini Fallback
 
-Status: **active release closeout; physical x86_64 feasibility now includes the complete
-disposable offline handoff from a cached non-terminal Launcher app through a
-stopped Crostini VM and local external-message page into a dormant extension
-worker. The extension launch/optional-permission slice and a checked-in
-pure-Rust graphical launcher/desktop template are implemented and physically
-validated. The first production-shaped vertical slice now adds the combined
-Rust controller, authenticated control/content lifecycle, static unit,
-post-verification self-install/uninstall transaction, and responsive extension
-setup/control UI. That exact source-built x86_64 slice passed claim,
-start/localhost/stop, one routine popup, stopped-VM wake without content
-autostart, reset/reclaim, idempotent reinstall, preserve uninstall, and purge
-on M150. Signed static-artifact CI, the canonical manifest, verified bootstrap
-installer, ownership/previous/rollback transaction, CLI updater, and shared
-update-service route and the bounded controller/extension update experience
-are now implemented in source. No signed public tag,
-deployed update route, physically exercised ARM64 artifact, packed extension
-candidate, or supported public route ships yet.**
+Status: **active extension release closeout. The signed Crostini component is
+public as `crostini-v0.1.1`; its x86_64 asset passed the public bootstrap,
+claim, start/browser-fetch/stop, repeated graphical Launcher handoff,
+preserve/reinstall/purge, and live update-feed checks on M150 ChromeOS with
+Debian 12. The independently downloaded ARM64 asset passed signature/static
+runtime and install/purge validation on the ARM64 Linux testbed. The public
+update service and byte-identical website installer are deployed, and the
+extension/website now expose the Linux fallback with bundled offline setup,
+file-sharing, forwarding, update, rollback, and uninstall guidance. Extension
+`0.1.5` packaging, fresh-install permission-denial proof, and the maintainer-
+assisted full ChromeOS reboot/login remain the final closeout work.**
 
 Last updated: **2026-08-02**.
 
@@ -73,17 +67,17 @@ controller is already active. Manual update is always available, and
 automatic installation is an explicit recommended preference that applies only
 while the content server is stopped.
 
-The extension should eventually own a full-page ChromeOS setup and control UI,
+The extension owns a full-page ChromeOS setup and control UI,
 while the Crostini binary runs as a small authenticated headless controller.
 Essential install, start, recovery, update, and uninstall guidance must be
 bundled in the extension so it remains readable offline; the website mirrors
-that content but is not its only copy. Request any optional local-host
-permission only after the user chooses **Use the Linux version**, and do not
-expose the public route until the now-proved hostname, preflight, permission,
-one-time claim, and token behavior is paired with signed release artifacts and
-the remaining acceptance gates.
+that content but is not its only copy. Request the optional local-host
+permission only after the user chooses **Use the Linux version**; it is not an
+extension-install permission. The public route is now paired with signed
+release artifacts and the proved hostname, preflight, one-time claim, and
+token behavior.
 
-The provisional first install uses one Terminal command to run a verified
+The first install uses one Terminal command to run a verified
 per-user installer. After registration, the user normally clicks **200 OK
 Linux** in the ChromeOS Launcher. ChromeOS can wake Linux through that installed
 `.desktop` app; the extension itself cannot start the VM. The complete user
@@ -98,13 +92,11 @@ behavior into the fallback. The current desktop AppImage has a complete native
 picker and UI, but it is substantially larger, brings WebKit/GUI packaging
 dependencies, and has not been accepted inside Crostini.
 
-The Rust workspace already contains a standalone CLI in
-`desktop/core/src/main.rs`. It is currently documented as development-only,
-but it has the right server boundary and options for a small Crostini product.
-It lacks the product controller, persisted settings, single-instance behavior,
-folder-selection workflow, installer, icon, update path, and release artifacts.
-Those are the implementation slice; the HTTP core does not need to be
-rewritten.
+The Crostini product reuses that Rust HTTP core inside the independent
+`desktop/crostini` launcher/controller instead of publishing the development
+CLI as the product. The remaining gaps are rooted folder browsing,
+diagnostics, independent token rotation, and broader lifecycle testing; the
+HTTP core did not need to be rewritten.
 
 ## Physical evidence: Play disabled
 
@@ -262,11 +254,32 @@ The later production vertical slice then passed on the same x86_64 testbed:
   and
 - removal of the Launcher item and all test fixtures after uninstall.
 
+The exact public `crostini-v0.1.1` release then closed the artifact boundary:
+
+- public x86_64 SHA-256
+  `7ba3f73f830593bb71310c1eac14c84eab4ea3eb7edae73e41fcee8ab2749332`
+  installed through the byte-identical public bootstrap on Debian 12
+  Crostini, claimed through the candidate extension, served an exact fixture
+  through ChromeOS `localhost`, stopped, and reported current from the live
+  signed update feed;
+- two repeated installed graphical-launcher invocations completed successfully
+  and focused one 700×750 controller window;
+- normal uninstall stopped the controller and preserved the served root and
+  byte-identical pairing identity, reinstall reused it, and purge removed the
+  app settings without deleting the served root;
+- public ARM64 SHA-256
+  `2cdd6274d01580ca50463a13b317910c8e23e33c5b1dccb554988d0419e81451`
+  verified and ran as a static AArch64 ELF on the ARM64 Linux VM, completed the
+  signed per-user install transaction, and purged cleanly; and
+- the deployed x86_64 update route returned the exact signed manifest while a
+  current ARM64 request returned `204`; the existing desktop feed remained
+  unchanged.
+
 The first browser claim also found and repaired a ChromeOS-only illegal
 invocation from an unbound `fetch`; the retained client binds its browser
 receiver and has a regression test. Popup-failure fallback, bounds persistence,
-the exact packed manifest, full ChromeOS reboot/login, ARM64, fresh permission
-denial, signed download/update, and public setup copy remain unproved.
+full ChromeOS reboot/login, a native ARM Chromebook, fresh permission denial,
+and a real newer-release update/rollback transition remain unproved.
 
 ## Active end-to-end release closeout
 
@@ -313,34 +326,35 @@ binary self-test before GitHub Release creation. That pushed tag is retained
 as an immutable failed attempt; the workflow restores `0755`, and `0.1.1` is
 the first publication candidate.
 
-- [ ] Reconcile both repositories with their remotes, push the shared
+- [x] Reconcile both repositories with their remotes, push the shared
       update-server commit and product source commits, and preserve the
       pre-existing untracked update-server `CLAUDE.md` without publishing it.
-- [ ] Run `scripts/release-crostini.sh 0.1.0 --check`, then the mutating release
-      command; inspect the version commit and local `crostini-v0.1.0` tag before
-      atomically pushing `main` plus the tag.
-- [ ] Monitor tag CI through static x86_64/ARM64 construction, manifest signing,
+- [x] Run the release preflight and mutating command, retain failed immutable
+      `crostini-v0.1.0`, then inspect and atomically push corrected
+      `crostini-v0.1.1`.
+- [x] Monitor tag CI through static x86_64/ARM64 construction, manifest signing,
       independent verification, exact asset-set enforcement, checksums, and
       GitHub Release creation. A partial or failed job is not a release.
-- [ ] Download the public assets independently, verify the manifest signature,
+- [x] Download the public assets independently, verify the manifest signature,
       signed identity/protocols, hashes, sizes, executable versions, ELF
       architecture/static linkage, release notes, and checksums.
 
 ### R4 — deploy and validate public delivery
 
-- [ ] Deploy the compatible update-server commit and this repository's
+- [x] Deploy the compatible update-server commit and this repository's
       `/crostini` product config through the existing Remy runbook. Confirm the
       desktop Tauri route is unchanged and `/crostini/manifest` returns the
       exact signed release or `204` for a current client.
-- [ ] Confirm the deployed website serves the source-controlled bootstrap, and
+- [x] Confirm the deployed website serves the source-controlled bootstrap, and
       compare its bytes with the tagged source before executing it.
-- [ ] In a clean x86_64 Crostini installation, run the public one-command
+- [x] In a clean x86_64 Crostini installation, run the public one-command
       bootstrap, verify the installed exact public hash/version and static
       unit/ownership state, claim through the extension, serve/fetch/stop, run
-      current/offline checks, and exercise uninstall preserve plus purge.
-- [ ] Execute the exact ARM64 artifact in the strongest available ARM64 Linux
+      a current-version check, and exercise uninstall preserve plus purge.
+- [x] Execute the exact ARM64 artifact in the strongest available ARM64 Linux
       testbed. Keep ChromeOS-specific claims separate if no ARM Chromebook is
-      available.
+      available. The Ubuntu 24.04 ARM64 VM proved static execution and the full
+      signed install/purge transaction; it did not prove ChromeOS integration.
 
 ### R5 — close ChromeOS/store-facing gates
 
@@ -382,14 +396,15 @@ the first publication candidate.
       forwarded.
 - [ ] Build and test x86_64 and ARM64 assets against the oldest claimed
       Crostini runtime. Pinned static-musl cross-builds now pass for both
-      architectures; the exact x86_64 development artifact ran on Debian 12,
-      while ARM64 and the oldest baseline remain runtime gaps.
+      architectures; the exact public x86_64 artifact ran on Debian 12 and the
+      exact public ARM64 artifact ran on Ubuntu 24.04 AArch64. A native ARM
+      Chromebook and any older claimed Crostini baseline remain runtime gaps.
 - [x] Generate canonical SHA-256/size metadata and reject unsigned, tampered,
       incompatible, wrong-architecture, or wrong-version downloads before
       installation mutation.
 - [x] Implement a separately signed `crostini-v` artifact manifest with
       architecture and controller/extension protocol compatibility ranges.
-      Publication and exact-artifact proof remain open.
+      Publication and exact-artifact proof passed for `crostini-v0.1.1`.
 
 ### C2 - create install, update, and uninstall paths
 
@@ -419,7 +434,9 @@ the first publication candidate.
       removal.
 - [x] Extend the shared update-service source with a separate `/crostini`
       product and generic signed artifact-manifest response carrying the exact
-      signed manifest/signature bytes. Production deployment remains open.
+      signed manifest/signature bytes. Production deployment returns the exact
+      release envelope and `204` for a current client without changing the
+      desktop route.
 - [x] Check automatically only after on-demand controller start and at a
       bounded daily cadence while active; offer manual update plus explicit
       automatic-install preference, defer install while content is served, and
@@ -454,10 +471,11 @@ the first publication candidate.
       localhost/LAN, directory-listing, CORS, and SPA settings at the existing
       native-core capability level. Exact LAN ingress through this UI remains
       open.
-- [ ] Start with Linux `~/Downloads`; document **Linux files** and **Share with
-      Linux**, then add a tested shared-folder selection flow.
-- [ ] Present the Chromebook host IPv4 instructions and exact ChromeOS
-      port-forwarding path when LAN is enabled.
+- [ ] Start with Linux `~/Downloads`; **Linux files** and **Share with Linux**
+      are now documented, but a rooted browser/picker remains future work.
+- [x] Present the Chromebook host IPv4 instructions and exact ChromeOS
+      content-port-forwarding path, while warning never to forward the
+      controller port.
 - [ ] Explain that the installed Launcher item wakes Linux, retain a
       Terminal-once recovery path, and prove behavior after a full ChromeOS
       reboot before finalizing systemd policy.
@@ -476,17 +494,15 @@ the first publication candidate.
 
 ### C4 - integrate the website and extension
 
-- [ ] Bundle a full-page Crostini setup/recovery guide in the extension with
+- [x] Bundle a full-page Crostini setup/recovery guide in the extension with
       supported-device caveats, Linux setup, one verified install command,
-      Launcher instructions, Linux-files guidance, and LAN forwarding. The
-      hidden source UI now bundles the exact command plus launcher recovery,
-      update, rollback, preserve-uninstall, and purge guidance; file sharing
-      and LAN guidance still need the finished setup flow.
-- [ ] Mirror the bundled guide on an owned Crostini website page without making
+      Launcher instructions, Linux-files guidance, LAN forwarding, update,
+      rollback, preserve-uninstall, and purge guidance.
+- [x] Mirror the bundled guide on an owned Crostini website page without making
       the extension depend on that page at runtime.
-- [ ] Update `/chromeos` from **Future option** only after the exact installer
+- [x] Update `/chromeos` from **Future option** only after the exact installer
       and both architecture assets pass.
-- [ ] Add the **Use the Linux version** route and ChromeOS-specific control UI;
+- [x] Add the **Use the Linux version** route and ChromeOS-specific control UI;
       do not claim direct launch or automatic controller detection until its
       physical protocol gates pass.
 - [x] Implement the ChromeOS control UI and physically prove the installed
@@ -511,14 +527,14 @@ the first publication candidate.
 
 | Gate | Required evidence |
 |---|---|
-| Install | The source-built and static-musl development x86_64 transactions pass versioned per-user install without npm/sudo/enable/linger mutation, manifest-tamper refusal, two-version restart/rollback, preserve/reinstall/purge, served-root preservation, and app removal. Exact signed-release x86_64 plus ARM64 physical proof remains |
+| Install | The exact public signed x86_64 release passed the public bootstrap and full preserve/reinstall/purge transaction on Debian 12 Crostini. The exact public ARM64 release passed signature/static-runtime/install/purge on the ARM64 Linux VM; native ARM ChromeOS remains unproved |
 | Launcher | Windowless user launchers became stale after one host launch, and direct `chrome-extension://` handoff failed. The checked-in pure-Rust helper plus production controller passed warm reuse and stopped-VM launch through the installed static unit into one popup without Terminal. Full ChromeOS reboot/login remains |
 | Files | Linux `~/Downloads` and one ChromeOS folder explicitly shared with Linux serve exact fixtures; unshared paths fail clearly |
 | Local browser | `localhost` or the accepted stable Crostini hostname reaches the server without a ChromeOS LAN port entry |
 | LAN off | A second device cannot reach the server through the Chromebook LAN address |
 | LAN on | After the documented ChromeOS port entry, a second device fetches the exact fixture at the shown Chromebook IPv4 and port |
-| Lifecycle | Static semantics plus production explicit start/fetch/stop, controller-only VM wake with content stopped, reset/reclaim, reinstall, and both uninstall modes pass. Signed CLI update/rollback exists in source; full reboot/logout, suspend/resume, collision, and exact-release update/reconnect/rollback proof remain |
-| Extension | Source build passes deterministic health, exact-extension one-time claim, bearer token, optional host prompt, normal setup tab, one focused popup, and offline local handoff. Packed warning proof, fresh denial, forced tab fallback, and final offline install copy remain |
+| Lifecycle | Static semantics plus exact-release explicit start/fetch/stop, controller-only VM wake with content stopped, reset/reclaim, reinstall, and both uninstall modes pass. The live signed feed reports current; full reboot/logout, suspend/resume, collision, and a real newer-release update/reconnect/rollback transition remain |
+| Extension | The candidate source passes deterministic health, exact-extension one-time claim, bearer token, contextual optional host prompt, normal setup tab, one focused popup, bundled offline guide, and local handoff. Packed warning proof, fresh denial, and forced tab fallback remain |
 | Unsupported | Managed/child/secondary/old-device copy directs users to another supported device without a dead loop |
 
 ## Release boundary
@@ -528,5 +544,6 @@ tag, deploy publication plumbing, and validate exact release artifacts. The
 maintainer still owns Chrome Web Store uploads. The current submitted Android
 and extension releases remain valid without Crostini; any changed extension is
 a separately versioned follow-up candidate rather than a silent replacement.
-Crostini becomes a public supported option only after the acceptance matrix
-passes on exact release artifacts.
+Crostini is now exposed as the non-Android fallback backed by exact release
+artifacts. The remaining matrix items are documented first-release limitations
+and follow-up hardening rather than claims the current path silently satisfies.

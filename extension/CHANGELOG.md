@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.5]
+
+### Added
+- Add **Use the Linux version** to the ChromeOS launcher popup while keeping
+  Android as the recommended route.
+- Bundle the complete offline-capable Linux setup and recovery guide in the
+  extension, including the signed installer, Launcher behavior, Linux file
+  sharing, LAN port forwarding, updates, rollback, and uninstall.
+- Add a ChromeOS Linux controller for the signed x86_64 and ARM64 component,
+  with one-time pairing, authenticated start/stop/settings, version status,
+  manual update, and opt-in stopped-server automatic updates.
+
+### Changed
+- Rename the website action to **Compare ChromeOS options** now that the
+  owned page offers both Android and Linux paths.
+- Request access to `penguin.linux.test` only after the user enters the Linux
+  controller flow; the permission remains optional at install time.
+
 ## [0.1.4]
 
 ### Added

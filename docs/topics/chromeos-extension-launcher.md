@@ -7,13 +7,13 @@ HTTPS options route and does not claim to detect Android or Google Play
 availability. The owned page is live and the exact `extension-v0.1.4` release
 ZIP passes local and CI inspection. The maintainer reports that Android
 `0.2.1` and extension `0.1.4` have been submitted to their stores;
-store-delivered proof remains open. The separate Crostini fallback now has an
-accepted product flow plus a physically proved source-built x86_64 controller,
-self-install transaction, authenticated extension controls, and stopped-VM
-Launcher/popup path. Its signed static-artifact, verified installer,
-ownership/rollback, and update-service plumbing now exist in source, but the
-exact tagged/deployed route, ARM64 runtime proof, and remaining release gates
-do not, so it does not ship yet.**
+store-delivered proof remains open. The Play-free Crostini component now ships
+as signed `crostini-v0.1.1`; exact x86_64 ChromeOS and exact ARM64 Linux runtime
+transactions pass, and the public installer/update feed are deployed. The
+`0.1.5` follow-up exposes **Use the Linux version**, bundles offline setup and
+recovery, and retains the contextual optional host permission rather than
+adding an install-time warning. Its exact store ZIP and fresh-install warning/
+denial checks remain in closeout.**
 
 Last reconciled: **2026-08-02**.
 
@@ -33,7 +33,8 @@ and the choice between Android, Linux, and honest unsupported alternatives.
 The Chrome extension is a launcher and install-discovery surface. It does not
 run the HTTP server.
 
-On ChromeOS, the currently supported server application is the Android app.
+On ChromeOS, Android is recommended and the lightweight Linux component is the
+fallback when Google Play is unavailable or unwanted.
 The extension should preserve the familiar browser entry point while remaining
 truthful for these materially different Chromebook states:
 
@@ -42,10 +43,10 @@ truthful for these materially different Chromebook states:
 | Android supported, Google Play enabled, 200 OK installed | Best-effort `ok200://launch` intent offers 200 OK in ChromeOS's **Open with** confirmation, then opens or focuses the Android app |
 | Android supported, Google Play enabled, app absent | User selects the owned ChromeOS-options route, which exposes the exact Play listing |
 | Android supported but Google Play disabled by the user | Options route remains reachable; explain that Play actions may reopen Play setup and let users skip Android entirely |
-| Android or Play unavailable on the model | Options page offers honest supported-device alternatives |
+| Android or Play unavailable on the model | Offer the Linux setup route when the profile supports it; otherwise offer another supported device |
 | Work/school/admin policy blocks Play or Android apps | Options page explains that policy may make the Android route unavailable |
 | User declines Google Play | The launcher remains useful as an explanation and alternatives surface; it must not loop or report success |
-| Crostini enabled | Offer a clearly labeled future Linux route only after its verified installer/controller ships; the provisional flow and remaining gates live in the dedicated Crostini topic |
+| Crostini enabled | **Use the Linux version** opens the bundled setup guide; the installed Linux Launcher later opens or focuses the authenticated controller surface |
 
 ## Detection boundary
 
@@ -89,7 +90,7 @@ with a fragile heuristic.
    acting on that system prompt.
 5. Keep `https://ok200.app/chromeos` encoded as defensive browser-fallback
    metadata, but do not depend on ChromeOS honoring it from an extension page.
-6. Make **Install or other ChromeOS options** a separate prominent HTTPS action
+6. Make **Compare ChromeOS options** a separate prominent HTTPS action
    so the user chooses the reliable path when the app is absent or Android/Play
    is unavailable.
 7. Treat a tab-creation callback only as evidence that Chrome accepted the
@@ -110,8 +111,8 @@ with a fragile heuristic.
 
 ## Crostini direction
 
-Crostini is the recommended future path for users whose Chromebook cannot or
-will not run Google Play, but it is not a current launcher promise.
+Crostini is the supported fallback for users whose Chromebook cannot or will
+not run Google Play. Android remains the recommended path when available.
 
 The 2026-08-02 physical investigation substantially narrowed the design:
 
@@ -140,12 +141,12 @@ the setup guide but is not its only copy. The Node/npm CLI and full AppImage
 are not the recommended fallback.
 
 [`chromeos-crostini-launcher.md`](chromeos-crostini-launcher.md) owns the
-provisional install/everyday user flows, offline-content requirement,
+install/everyday user flows, offline-content requirement,
 controller security boundary, physical Launcher evidence, and continuing
 decisions. [Tactical 012](../tactical/012-chromeos-crostini-fallback.md) owns
-implementation. Until its gates pass, public copy remains **Future option**
-and another supported desktop or Android device remains the dependable
-alternative.
+implementation and exact release evidence. Another supported desktop or
+Android device remains the fallback when the current account cannot use either
+Google Play or ChromeOS Linux.
 
 ## Store and website copy contract
 
@@ -181,7 +182,7 @@ features, or that every legacy option is already available.
 | Play disabled | Passed on the explicitly authorized physical testbed: options route works; intent is blank; Play link opens Play setup/Terms |
 | Play unsupported or policy-blocked | Compatible physical/managed fixture or documented user report; options page remains independently reachable regardless |
 | Crostini feasibility | Passed on physical x86_64 for native build, localhost, explicit LAN forwarding, Linux files, Launcher indexing, one-click browser open, and wake from a fully stopped VM/container |
-| Crostini release | Source-built controller/UI/handoff plus a static-musl x86_64 development artifact, ownership-tamper refusal, two-version restart/rollback, and preserve/purge pass. Signed public tag/deployment, ARM64 runtime, full reboot, packed-warning proof, shared-folder picker, LAN controls, and production updates remain open |
+| Crostini release | Signed `crostini-v0.1.1`, public bootstrap/feed, exact x86_64 ChromeOS transaction, exact ARM64 Linux transaction, controller UI/handoff, current-feed check, and preserve/purge pass. Full reboot, native ARM ChromeOS, packed-warning/fresh-denial proof, rooted folder picker, and a real later-release update/rollback remain open |
 | Store delivery | Existing controlled profile receives the reviewed version and repeats installed/absent routing checks |
 
 ## Current evidence and gaps

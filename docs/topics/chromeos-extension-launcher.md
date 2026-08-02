@@ -15,9 +15,11 @@ offline setup and recovery, and retains the contextual optional host
 permission rather than adding an install-time warning. Its exact CI ZIP passes
 independent inspection and a warning-free physical load; the production-ID
 candidate passes contextual denial/re-request and forced normal-tab fallback.
-The `0.1.6` source candidate presents Linux and Android as peer choices,
-updates the package summary and store copy, and keeps failed Linux setup retries
-on the Linux route. Chrome Web Store upload remains maintainer-owned.**
+Public `extension-v0.1.6` presents Linux and Android as peer choices, updates
+the package summary and store copy, and keeps failed Linux setup retries on the
+Linux route. Its exact CI ZIP passes independent store-package inspection; the
+website's matching chooser and guide copy are deployed. Chrome Web Store upload
+remains maintainer-owned.**
 
 Last reconciled: **2026-08-02**.
 
@@ -247,6 +249,20 @@ features, or that every legacy option is already available.
 
 ## Current evidence and gaps
 
+- Public
+  [`extension-v0.1.6`](https://github.com/kzahel/web-server-chrome/releases/tag/extension-v0.1.6)
+  contains a 142,629-byte CI ZIP with SHA-256
+  `044ef38015abdf71a1adbb076adc8f845eaefd7ef39936e7d6a6b964d6947938`.
+  Independent checksum and 13-file store-package validation pass. Extension CI
+  run
+  [`30759152520`](https://github.com/kzahel/web-server-chrome/actions/runs/30759152520)
+  passed build, typecheck, all 42 extension tests, package inspection, and
+  release publication. The ZIP has the new 119-character summary, peer Linux
+  and Android chooser, action-preserving retry, and unchanged optional
+  `penguin.linux.test` permission model. The popup copy/order change has
+  deterministic UI coverage; warning/claim/physical integration evidence
+  remains inherited from exact `0.1.5` below rather than silently attributed to
+  the new ZIP.
 - Public
   [`extension-v0.1.5`](https://github.com/kzahel/web-server-chrome/releases/tag/extension-v0.1.5)
   contains a 142,557-byte CI ZIP with SHA-256

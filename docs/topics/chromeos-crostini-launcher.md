@@ -13,11 +13,12 @@ static execution, install, and purge on the ARM64 Linux testbed; this is not a
 native ARM Chromebook claim. Exact `extension-v0.1.5` passes its store-package
 allowlist and warning-free physical install; the production-ID candidate
 passes contextual deny/re-request/claim and forced popup-to-tab fallback. The
-extension bundles setup/recovery and exposes **Use ChromeOS Linux**. The
-`0.1.6` source candidate presents Linux's no-Play full controls and Android's
-quick setup as peer choices. Full ChromeOS reboot/login, native ARM ChromeOS,
-rooted directory browsing, update-to-a-newer-release/rollback, and broader
-lifecycle/accessibility tests remain follow-up evidence.**
+extension bundles setup/recovery and exposes **Use ChromeOS Linux**. Public
+`extension-v0.1.6` presents Linux's no-Play full controls and Android's quick
+setup as peer choices and passes its exact CI package/test gates. Full ChromeOS
+reboot/login, native ARM ChromeOS, rooted directory browsing,
+update-to-a-newer-release/rollback, and broader lifecycle/accessibility tests
+remain follow-up evidence.**
 
 Last reconciled: **2026-08-02**.
 

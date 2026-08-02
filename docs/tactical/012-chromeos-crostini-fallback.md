@@ -13,8 +13,11 @@ guidance. Public
 `extension-v0.1.5` and its exact store ZIP pass package inspection, a warning-
 free fresh unpacked install, contextual deny/re-request/claim, bundled-guide
 rendering, and forced popup-to-normal-tab fallback on the Chromebook. The
-maintainer-assisted full ChromeOS reboot/login and a real later Crostini
-release update/rollback are the principal deferred lifecycle proofs.**
+public `extension-v0.1.6` copy correction passes its exact CI build, typecheck,
+42-test, 13-file package, checksum, and release gates; physical permission and
+controller evidence remains attributed to `0.1.5`. The maintainer-assisted
+full ChromeOS reboot/login and a real later Crostini release update/rollback
+are the principal deferred lifecycle proofs.**
 
 Last updated: **2026-08-02**.
 
@@ -415,6 +418,11 @@ the first publication candidate.
 - [x] Reconcile the popup, `/chromeos` website page, long Web Store listing,
       screenshots, changelog, and topic copy before cutting and submitting
       `extension-v0.1.6`.
+- [x] Tag and publish `extension-v0.1.6`; independently download and validate
+      its 142,629-byte, 13-file CI ZIP with SHA-256
+      `044ef38015abdf71a1adbb076adc8f845eaefd7ef39936e7d6a6b964d6947938`.
+      Extension CI run `30759152520`, main CI, and the matching website deploy
+      all passed.
 
 ## Implementation ledger
 
@@ -576,7 +584,7 @@ the first publication candidate.
 | LAN off | A second device cannot reach the server through the Chromebook LAN address |
 | LAN on | After the documented ChromeOS port entry, a second device fetches the exact fixture at the shown Chromebook IPv4 and port |
 | Lifecycle | Static semantics plus exact-release explicit start/fetch/stop, controller-only VM wake with content stopped, reset/reclaim, reinstall, and both uninstall modes pass. The live signed feed reports current; full reboot/logout, suspend/resume, collision, and a real newer-release update/reconnect/rollback transition remain |
-| Extension | Exact `extension-v0.1.5` passes its 13-file store allowlist and warning-free unpacked install; the production-ID candidate passes one-time claim, bearer token, contextual denial/re-request, setup tab, focused popup, forced normal-tab fallback, bundled offline guide, and local handoff |
+| Extension | Exact `extension-v0.1.6` passes its 13-file CI store allowlist and peer-choice/action-preserving-retry tests. Exact `0.1.5` passes warning-free unpacked install; its production-ID candidate passes one-time claim, bearer token, contextual denial/re-request, setup tab, focused popup, forced normal-tab fallback, bundled offline guide, and local handoff |
 | Unsupported | Managed/child/secondary/old-device copy directs users to another supported device without a dead loop |
 
 ## Release boundary

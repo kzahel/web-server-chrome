@@ -30,8 +30,10 @@ source uses a native Kotlin HTTP server; the Node/TypeScript CLI remains an
 independent implementation. GitHub release `android-v0.2.1` contains the
 signed native-Kotlin APK/AAB with the physically accepted ChromeOS LAN-address
 correction. The maintainer reports the exact Android `v0.2.1` and extension
-`v0.1.4` candidates submitted to their stores; production may still serve
-earlier artifacts until review and rollout finish.
+`v0.1.4` candidates submitted to their stores; public `extension-v0.1.6` is
+the tested replacement candidate with the ChromeOS Linux controller and
+corrected peer-choice copy. Production may still serve earlier artifacts until
+review and rollout finish.
 
 ## Architecture
 

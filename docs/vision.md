@@ -30,8 +30,8 @@ As of 2026-08-02:
 | Desktop release | Tauri/React controls; Rust server state and HTTP core | `v0.1.5`, complete signed release; recommended macOS app, Windows NSIS, and Linux AppImage update/server/extension paths accepted |
 | Desktop source | Same Rust-native runtime with AppImage-first Linux integration, Linux ARM64 artifacts, and package-aware updates | Published baseline is `v0.1.5`; RPM-native, MSI-elevated, and physical ARM64 product smoke remain claim-only gaps |
 | Android / ChromeOS source | Compose UI and native Kotlin HTTP/storage core | Kotlin cutover and ChromeOS LAN-address correction physically accepted; signed upload candidate published in GitHub release `android-v0.2.1` |
-| Android / ChromeOS Play artifact | A native Kotlin build was previously submitted; store delivery can still differ during review | `v0.2.1` AAB is ready for maintainer upload; Play-delivered validation remains open |
-| Chrome extension | MV3 launcher/status UI | Public `v0.1.5` GitHub candidate includes the ChromeOS Linux controller; `v0.1.6` source updates its package/store copy and peer Linux/Android chooser |
+| Android / ChromeOS Play artifact | The maintainer reports the native Kotlin `v0.2.1` AAB submitted; store delivery can still differ during review | Play-delivered validation remains open |
+| Chrome extension | MV3 launcher/status UI | Public `v0.1.6` GitHub candidate includes the ChromeOS Linux controller, peer Linux/Android chooser, corrected store summary, and action-preserving retry; Web Store upload remains maintainer-owned |
 | ChromeOS Linux choice | Extension control UI plus a small Rust Crostini launcher/controller | Public `crostini-v0.1.1`, update route, installer, website guide, x86_64 ChromeOS proof, ARM64 Linux proof, and extension controller are complete; lifecycle and native ARM ChromeOS gaps remain documented |
 | Legacy Chrome App | Chrome packaged-app APIs | Migration channel approaching end of life |
 

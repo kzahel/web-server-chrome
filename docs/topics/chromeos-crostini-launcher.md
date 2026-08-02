@@ -2,15 +2,18 @@
 
 Topic: chromeos-crostini-launcher
 
-Status: **the product shape and provisional user flow are accepted, and a
-physical x86_64 ChromeOS experiment proved that an installed non-terminal
-Linux `.desktop` entry can wake a fully stopped Crostini VM/container, start a
-user service, and open Chrome without opening Terminal. The accepted launch
-handoff is now a controller-served `penguin.linux.test` page that wakes the
-extension through external messaging, with controller host access requested
-only as an optional runtime permission. The production Rust controller,
-installer, extension control UI, ARM64 artifact, and full-reboot proof do not
-exist yet, so this remains a future option rather than a shipped fallback.**
+Status: **the product shape and provisional user flow are accepted. A physical
+x86_64 ChromeOS prototype now proves the full disposable launch handoff: an
+installed non-terminal Linux `.desktop` entry can wake a fully stopped
+Crostini VM/container, start one user service, open its local
+`penguin.linux.test` bridge, wake a dormant extension worker, and open or focus
+one extension controller surface without Terminal or Internet. Reliable
+repeat launch requires a brief transient graphical Linux splash; a completely
+windowless launcher became stale after its first host launch. The narrow
+extension bridge and optional runtime host-permission slice are implemented,
+but the production Rust controller/launcher, installer, setup/control UI,
+ARM64 artifact, packed-update warning proof, and full-reboot proof do not exist
+yet. This remains a future option rather than a shipped fallback.**
 
 Last reconciled: **2026-08-02**.
 
@@ -49,7 +52,9 @@ controller-served launch page --external message--> extension worker
 - A branded `Terminal=false` `.desktop` entry installed in Crostini is the
   post-install ChromeOS Launcher surface. ChromeOS, not the extension, can use
   that registered Linux app to wake a stopped VM/container and execute its
-  launcher command.
+  launcher command. The launcher helper briefly maps a branded **Opening 200
+  OK…** window, then closes it after the browser handoff so ChromeOS observes a
+  complete graphical-app lifecycle. The controller itself remains headless.
 - After the controller answers, the launcher opens its static
   `http://penguin.linux.test:<control-port>/launch-chromeos` page. That page
   sends one external message to wake the extension, whose service worker opens
@@ -158,14 +163,15 @@ After installation:
 
 1. The user clicks **200 OK Linux** in the ChromeOS Launcher.
 2. ChromeOS wakes the default Linux VM/container if it is stopped and runs the
-   non-terminal launch command.
-3. The command starts or focuses the single controller service and waits for
+   non-terminal launch helper, which briefly displays **Opening 200 OK…**.
+3. The helper starts or focuses the single controller service and waits for
    its exact readiness endpoint.
 4. It uses `xdg-open` on the controller's local
    `http://penguin.linux.test:<control-port>/launch-chromeos` page.
 5. That page sends an `open-linux-controller` external message to the exact
    production extension ID. The event wakes the Manifest V3 service worker,
-   which opens or focuses the bundled extension UI and then returns to idle.
+   which opens or focuses the bundled extension UI, closes the local bridge
+   tab, and then returns to idle. The transient Linux splash closes as well.
 6. On first use, the UI requests optional controller-host access with the
    explanation above. A denial leaves setup and recovery guidance available
    and does not affect the Android/desktop launcher paths.
@@ -322,12 +328,14 @@ Cold-path procedure and result:
    new launch, and opened the exact controller page in Chrome.
 5. No Terminal window was opened or kept alive.
 
-This proves the central `.desktop` wake mechanism after registration. It does
-not prove persistence after a full ChromeOS reboot/login, production Rust
-single-instance behavior, the local external-message bridge, update behavior,
-or other CPU architectures. The fixture, service, transferred files, and
-browser surface were removed, and the test VM was returned to its stopped
-state.
+This proves one registered `.desktop` cold activation. The later
+external-message experiment below found that a windowless user app did not
+remain reliably launchable after a second manual VM stop and established the
+transient graphical-window requirement. This first fixture does not prove
+persistence after a full ChromeOS reboot/login, production Rust
+single-instance behavior, update behavior, or other CPU architectures. Its
+service, transferred files, and browser surface were removed, and the test VM
+was returned to its stopped state.
 
 A follow-up physical check ran `xdg-open` on the installed extension's direct
 `chrome-extension://...` UI URL from `penguin`. ChromeOS Garcon reported
@@ -335,6 +343,68 @@ A follow-up physical check ran `xdg-open` on the installed extension's direct
 target opened. The product must use the accepted HTTP launch bridge rather than
 direct extension-scheme navigation. The Terminal surface used for that check
 was closed and the VM was stopped afterward.
+
+### External-message and optional-permission prototype
+
+On the same 2026-08-02 M150 testbed, a second disposable controller fixture on
+port `18182` served `/launch-chromeos` and `/health`. The unpacked production-ID
+extension included the exact `penguin.linux.test` external-message allowlist,
+a narrow launch-message validator, a bundled controller connection page, and
+an optional host permission requested only from a user-clicked button.
+
+Observed results:
+
+- the local bridge page called `runtime.sendMessage` and woke the extension,
+  which opened its bundled controller page and closed the bridge tab;
+- the first controller request showed exactly **“Read and change your data on
+  penguin.linux.test”** under Chrome's additional-permissions dialog;
+- after **Allow**, the extension fetched the exact product/protocol/instance
+  health response successfully. The fixture recorded no `Origin` header on
+  this host-permission-authorized request;
+- ChromeOS M150 showed no separate Local Network Access prompt for this
+  extension-origin `penguin.linux.test` request, including with Fetch's target
+  address space set to `local`;
+- after the controller tab and Terminal were closed, the extension worker was
+  inactive and `termina` was fully stopped. Clicking the installed Launcher
+  app woke Linux and the dormant worker, opened the controller page, and
+  reconnected without a Terminal window;
+- the extension opened a fresh controller tab and closed the Linux-owned
+  bridge tab, which avoids retaining the local bridge as the control surface;
+- the local bridge used no website resource, so the everyday handoff worked
+  without an `ok200.app` dependency.
+
+The first repeated-launch build exposed an important API boundary: without the
+warning-bearing `tabs` permission, `tabs.query()` omits URLs even for the
+extension's own tabs. The retained implementation uses
+`runtime.getContexts()` to find its own controller document, plus an in-flight
+guard, so it can focus one page without requesting browsing-history access.
+
+The launcher lifecycle needed a second round of testing. A direct windowless
+wrapper, a detached systemd one-shot, and both `StartupNotify=false` and
+`StartupNotify=true` desktop entries each launched correctly once. After the
+controller tab was closed and `termina` was stopped again, ChromeOS did not
+send a second `LaunchContainerApplication` request for those user apps, so they
+could not wake Linux a second time during the same login session. Detaching
+`xdg-open` was not enough.
+
+A fifth fresh desktop identity briefly mapped an `xmessage` window saying
+**Opening 200 OK Web Server…**, performed the same local bridge handoff, and
+closed the window automatically. That fixture passed two consecutive full
+`vmc stop termina` cycles: its launch log advanced from the first to the
+second run, each click restarted the VM/container, and each run ended with one
+controller service and one extension tab. `xmessage` is test scaffolding, not
+an accepted production dependency. The production Rust launcher must provide
+an equally small branded Wayland/X11 startup surface, or a later physical test
+must prove another reliable ChromeOS graphical-app lifecycle signal.
+
+This proves the disposable external-message, runtime-permission, health-check,
+dormant-worker, repeat stopped-VM, graphical-launcher lifecycle, and
+single-surface mechanics. It does **not** prove a packed install/update has
+unchanged warning text, permission behavior on older Chrome milestones, denial
+recovery after a fresh install, a production authenticated controller, full
+ChromeOS reboot/login, ARM64, or Internet-free first installation. The
+disposable extension, services, Launcher entries, and transferred fixtures
+were removed after testing.
 
 A separate earlier experiment found that a user `Terminal=true` desktop entry
 opened an empty Terminal rather than reliably executing its command. The
@@ -382,15 +452,16 @@ Before changing **Future option** to a supported public route:
       claimed Crostini baseline.
 - [ ] Test the source-controlled installer and uninstall path in fresh default
       Crostini environments on both architectures.
-- [ ] Install the real `.desktop` launcher and prove warm launch, stopped-VM
-      launch, and full ChromeOS reboot/login launch with one controller.
-- [ ] Prove the controller-served `penguin.linux.test` launch page can wake the
-      dormant extension worker and open/focus exactly one control UI from warm,
-      stopped-VM, and full-reboot states.
-- [ ] Prototype `externally_connectable`, optional host permission,
-      CORS/preflight, Chrome 142+ Local Network Access behavior, exact-origin
-      auto-claim, token persistence/rotation, port collisions, and controller
-      reset on the physical Chromebook.
+- [ ] Install the real `.desktop` launcher plus its transient branded startup
+      window and prove repeat warm launch, repeat stopped-VM launch, and full
+      ChromeOS reboot/login launch with one controller.
+- [ ] Repeat the now-proved disposable warm and stopped-VM launch handoff with
+      the production controller, then add full ChromeOS reboot/login proof.
+- [x] Prototype the exact `externally_connectable` launch, optional host
+      permission, extension health request, dormant-worker wake, Local Network
+      Access behavior, and single-surface focus on the physical Chromebook.
+- [ ] Add and prove exact-origin claim, token persistence/rotation, port
+      collisions, controller reset, and fresh-install permission denial.
 - [ ] Pack an update candidate and prove the local external-message allowlist
       adds no install/update warning; record the exact contextual optional-host
       and any Local Network Access prompts.
@@ -408,6 +479,7 @@ Before changing **Future option** to a supported public route:
 - [Set up Linux on a Chromebook](https://support.google.com/chromebook/answer/9145439)
 - [Linux on ChromeOS FAQ](https://developers.google.com/chromeos/app-development/develop/linux-on-chromeos-faq)
 - [ChromeOS Linux port forwarding](https://developers.google.com/chromeos/app-development/develop/port-forwarding)
+- [ChromiumOS Garcon application integration](https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/vm_tools/garcon/)
 - [Cross-origin network requests in Chrome extensions](https://developer.chrome.com/docs/extensions/develop/concepts/network-requests)
 - [Message passing with externally connectable pages](https://developer.chrome.com/docs/extensions/develop/concepts/messaging#external-webpage)
 - [Extension service worker lifecycle](https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/lifecycle)

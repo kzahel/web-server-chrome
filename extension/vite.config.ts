@@ -164,6 +164,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         app: resolve(__dirname, "src/ui/app.html"),
+        crostini: resolve(__dirname, "src/ui/crostini.html"),
         sw: resolve(__dirname, "src/sw.ts"),
       },
       output: {

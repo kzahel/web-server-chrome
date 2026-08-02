@@ -9,6 +9,12 @@ self.addEventListener("activate", () => {
   console.log("[SW] Activate event");
 });
 
+import {
+  CROSTINI_UI_PATH,
+  type CrostiniLaunch,
+  isCrostiniUiUrl,
+  parseCrostiniLaunch,
+} from "./lib/crostini-launch";
 import { getNativeConnection } from "./lib/native-connection";
 import { isChromeOs, shouldUseNativeMessaging } from "./lib/platform-routing";
 
@@ -118,9 +124,75 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 // ============================================================================
 
 const LEGACY_APP_ID = "ofhbbkphhbklhfoeikjpcbhemlocgigb";
+let crostiniUiOpening = false;
+
+async function openOrFocusCrostiniUi(
+  launch: CrostiniLaunch,
+  senderTab: chrome.tabs.Tab | undefined,
+) {
+  if (crostiniUiOpening) {
+    if (senderTab?.id !== undefined) await chrome.tabs.remove(senderTab.id);
+    return;
+  }
+  crostiniUiOpening = true;
+
+  const baseUrl = chrome.runtime.getURL(CROSTINI_UI_PATH);
+  const parameters = new URLSearchParams({
+    instanceId: launch.instanceId,
+    port: String(launch.port),
+  });
+  const targetUrl = `${baseUrl}?${parameters}`;
+
+  try {
+    const contexts =
+      typeof chrome.runtime.getContexts === "function"
+        ? await chrome.runtime.getContexts({ contextTypes: ["TAB"] })
+        : [];
+    const existing = contexts.find(
+      (context) =>
+        context.tabId !== undefined &&
+        isCrostiniUiUrl(context.documentUrl, baseUrl),
+    );
+    if (existing?.tabId !== undefined) {
+      await chrome.tabs.update(existing.tabId, {
+        active: true,
+        url: targetUrl,
+      });
+      if (existing.windowId !== undefined) {
+        await chrome.windows.update(existing.windowId, { focused: true });
+      }
+      if (senderTab?.id !== undefined && senderTab.id !== existing.tabId) {
+        await chrome.tabs.remove(senderTab.id);
+      }
+      return;
+    }
+
+    if (senderTab?.id !== undefined) {
+      await chrome.tabs.create({
+        active: true,
+        url: targetUrl,
+        windowId: senderTab.windowId,
+      });
+      await chrome.tabs.remove(senderTab.id);
+    } else {
+      await chrome.tabs.create({ url: targetUrl });
+    }
+  } catch (error) {
+    console.error("[SW] Failed to open Crostini controller UI:", error);
+  } finally {
+    crostiniUiOpening = false;
+  }
+}
 
 chrome.runtime.onMessageExternal.addListener(
   (message, sender, sendResponse) => {
+    const crostiniLaunch = parseCrostiniLaunch(message, sender.url);
+    if (crostiniLaunch) {
+      sendResponse({ accepted: true });
+      void openOrFocusCrostiniUi(crostiniLaunch, sender.tab);
+      return false;
+    }
+
     const isLegacyApp = sender.id === LEGACY_APP_ID;
     const isOk200Site = sender.url?.startsWith("https://ok200.app/");
 

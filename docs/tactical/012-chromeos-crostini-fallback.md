@@ -1,9 +1,11 @@
 # ChromeOS Crostini Fallback
 
-Status: **scoped; physical x86_64 feasibility now includes waking a fully
-stopped Crostini VM/container from a cached non-terminal Launcher app. The
-provisional install/everyday flow is accepted, but no supported controller,
-installer, extension control path, or release artifact ships yet.**
+Status: **scoped; physical x86_64 feasibility now includes the complete
+disposable offline handoff from a cached non-terminal Launcher app through a
+stopped Crostini VM and local external-message page into a dormant extension
+worker. The extension launch/optional-permission slice is implemented, but no
+supported Rust controller/graphical launcher helper, installer, setup/control
+product, or release artifact ships yet.**
 
 Last updated: **2026-08-02**.
 
@@ -38,8 +40,10 @@ the published Node CLI or the full desktop AppImage:
 - install per-user under `~/.local/bin` with a versioned, checksum-verifying
   `https://ok200.app/install-crostini.sh` script;
 - install a non-terminal `.desktop` launcher with the real 200 OK icon;
-- have a small launcher/controller start or focus one server process, wait for
-  its local control surface, and open it in Chrome;
+- have a small launcher helper briefly map a branded startup window, start or
+  focus the controller, wait for its local control surface, and open it in
+  Chrome. The controller stays headless, but the mapped window is required for
+  reliable repeat launches on the tested ChromeOS build;
 - default to a Linux-owned folder such as `~/Downloads`, which appears under
   **Linux files** in the ChromeOS Files app;
 - explain **Share with Linux** before accepting ChromeOS My Files or Drive
@@ -169,7 +173,8 @@ non-terminal wrapper successfully:
 A `Terminal=true` user-installed entry appeared in search but opened an empty
 Terminal instead of executing its command, while the distribution-owned Htop
 entry worked. Do not base the product on a terminal-mode desktop entry. The
-non-terminal controller/launcher path passed and is the recommended shape.
+non-terminal controller/launcher path passed once; the later repeat-cold test
+below refined the recommended shape to include a transient graphical window.
 
 A second disposable fixture tested the missing cold path. With all Terminal
 surfaces and the controller tab closed, `termina` stopped, and the fixture URL
@@ -187,6 +192,16 @@ Garcon with `Failure in OpenUrl`, `xdg-open` reported no available method, and
 no extension target opened. The production launcher must open its own
 `http://penguin.linux.test:<control-port>/launch-chromeos` page, which then
 wakes the extension through `runtime.sendMessage`.
+
+The external-message fixture then exposed a second lifecycle boundary. A
+direct windowless wrapper and a detached systemd launcher, with both startup
+notification settings, each launched once but did not receive another host
+`LaunchContainerApplication` request after the UI closed and the VM was
+stopped again. A fresh `Terminal=false` entry that mapped an auto-closing
+**Opening 200 OK Web Server…** test window passed two consecutive full stopped-
+VM launch cycles, each ending with one service and one extension controller
+tab. The production launcher therefore needs a tiny branded graphical startup
+surface; its controller can remain headless.
 
 The default Linux home is visible under **Linux files**. ChromeOS-owned folders
 must be shared with Linux before the server can read them. An MVP can safely
@@ -212,7 +227,8 @@ picker grants a persistent Linux filesystem path.
 - [ ] Add a source-controlled installer modeled on JSTorrent's Crostini
       installer: architecture selection, immutable release URL, checksum
       verification, per-user install, and `--uninstall`.
-- [ ] Install the branded icon and a non-terminal `.desktop` launcher.
+- [ ] Install the branded icon, a non-terminal `.desktop` launcher, and the
+      transient graphical startup helper proved necessary on M150.
 - [ ] Make repeated installation an idempotent update.
 - [ ] Remove only files owned by the installer and never delete served user
       content or the Crostini environment.
@@ -222,6 +238,13 @@ picker grants a persistent Linux filesystem path.
 - [x] Prove with a disposable physical fixture that a cached non-terminal
       ChromeOS Launcher app can wake a stopped VM/container, start one
       controller service, and open its local browser UI without Terminal.
+- [x] Prove with a second disposable fixture that the local page wakes a
+      dormant extension worker, hands off to the bundled controller page,
+      and reconnects after stopped-VM wake.
+- [x] Reject direct and detached windowless launcher commands after each
+      launched only once per ChromeOS login, then prove a transient mapped
+      startup window permits two consecutive stopped-VM launch cycles with one
+      controller tab and service each time.
 - [ ] Repeat warm, stopped-VM, and full-reboot/login tests with the production
       Rust controller and prove its local launch page wakes a dormant extension
       worker and focuses one extension control surface.
@@ -249,15 +272,17 @@ picker grants a persistent Linux filesystem path.
 - [ ] Add the **Use the Linux version** route and ChromeOS-specific control UI;
       do not claim direct launch or automatic controller detection until its
       physical protocol gates pass.
-- [ ] Add the exact `penguin.linux.test` launch-page origin to
+- [x] Add the exact `penguin.linux.test` launch-page origin to
       `externally_connectable`, accept only a narrow open/focus message, and
-      keep normal launch independent of `ok200.app` and Internet access.
-- [ ] Declare controller access under `optional_host_permissions` rather than
-      required host access, request it only after **Use the Linux version**,
-      and bundle contextual explanation and denial recovery.
+      keep normal launch independent of `ok200.app` and Internet access; the
+      physical M150 disposable handoff passed.
+- [x] Declare controller access under `optional_host_permissions` rather than
+      required host access, request it from a contextual controller page, and
+      physically record the exact additional-permission prompt and successful
+      health request.
 - [ ] Physically inspect a packed update for install/update warning changes and
-      record the exact optional-host and Chrome 142+ Local Network Access
-      prompts on the Stable Chromebook.
+      prove a fresh-install denial path. M150 showed no separate Local Network
+      Access prompt for the successful extension-origin controller request.
 - [ ] Test Android-installed, Play-enabled/app-absent, Play-disabled, and
       Crostini paths together so Crostini does not obscure the recommended
       Android route.
@@ -267,7 +292,7 @@ picker grants a persistent Linux filesystem path.
 | Gate | Required evidence |
 |---|---|
 | Install | Fresh default Debian Crostini on x86_64 and ARM64 installs one verified command without npm or developer mode |
-| Launcher | Disposable stopped-VM wake passed and direct `chrome-extension://` handoff failed on physical x86_64; the production local HTTP bridge must still pass running, stopped, and full-reboot/login launch and focus one extension control surface without Terminal |
+| Launcher | Disposable stopped-VM wake and two consecutive cold launches with a transient mapped startup window passed; windowless user launchers became stale after one host launch, and direct `chrome-extension://` handoff failed. The production graphical helper/local HTTP bridge must still pass repeat running, stopped, and full-reboot/login launch and focus one extension control surface without Terminal |
 | Files | Linux `~/Downloads` and one ChromeOS folder explicitly shared with Linux serve exact fixtures; unshared paths fail clearly |
 | Local browser | `localhost` or the accepted stable Crostini hostname reaches the server without a ChromeOS LAN port entry |
 | LAN off | A second device cannot reach the server through the Chromebook LAN address |

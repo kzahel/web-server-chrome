@@ -5,6 +5,7 @@
   "version": "0.1.4",
   "description": "Launch 200 OK Web Server on desktop or ChromeOS. The successor to Web Server for Chrome.",
   "permissions": ["nativeMessaging"],
+  "optional_host_permissions": ["http://penguin.linux.test/*"],
   "background": {
     "service_worker": "sw.js",
     "type": "module"
@@ -21,6 +22,10 @@
   },
   "externally_connectable": {
     "ids": ["ofhbbkphhbklhfoeikjpcbhemlocgigb"],
-    "matches": ["https://ok200.app/*", "http://local.ok200.app/*"]
+    "matches": [
+      "https://ok200.app/*",
+      "http://local.ok200.app/*",
+      "http://penguin.linux.test/*"
+    ]
   }
 }

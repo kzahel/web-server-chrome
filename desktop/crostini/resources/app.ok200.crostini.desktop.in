@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=200 OK Linux
+Comment=Open 200 OK Web Server for ChromeOS Linux
+Exec=@OK200_CROSTINI_BINARY@ launch
+Icon=app.ok200.crostini
+Terminal=false
+Categories=Network;Utility;
+StartupNotify=true
+StartupWMClass=app.ok200.crostini

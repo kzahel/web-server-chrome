@@ -3,9 +3,10 @@
 Status: **scoped; physical x86_64 feasibility now includes the complete
 disposable offline handoff from a cached non-terminal Launcher app through a
 stopped Crostini VM and local external-message page into a dormant extension
-worker. The extension launch/optional-permission slice is implemented, but no
-supported Rust controller/graphical launcher helper, installer, setup/control
-product, or release artifact ships yet.**
+worker. The extension launch/optional-permission slice and a checked-in
+pure-Rust graphical launcher/desktop template are implemented and physically
+validated. No supported Rust controller, installer, setup/control product, or
+release artifact ships yet.**
 
 Last updated: **2026-08-02**.
 
@@ -227,8 +228,12 @@ picker grants a persistent Linux filesystem path.
 - [ ] Add a source-controlled installer modeled on JSTorrent's Crostini
       installer: architecture selection, immutable release URL, checksum
       verification, per-user install, and `--uninstall`.
-- [ ] Install the branded icon, a non-terminal `.desktop` launcher, and the
-      transient graphical startup helper proved necessary on M150.
+- [x] Implement the small pure-Rust transient graphical helper and the
+      non-terminal `app.ok200.crostini.desktop.in` template. The helper is
+      DPI-aware, has failure/retry controls, and does not require GTK, Tauri,
+      `xmessage`, or Xlib at runtime.
+- [ ] Have the real installer install that helper, desktop entry, branded icon,
+      and controller unit idempotently.
 - [ ] Make repeated installation an idempotent update.
 - [ ] Remove only files owned by the installer and never delete served user
       content or the Crostini environment.
@@ -245,6 +250,11 @@ picker grants a persistent Linux filesystem path.
       launched only once per ChromeOS login, then prove a transient mapped
       startup window permits two consecutive stopped-VM launch cycles with one
       controller tab and service each time.
+- [x] Replace the `xmessage` scaffold with the checked-in Rust launcher and
+      physically prove its readable 230-DPI working/error surfaces,
+      failure-to-retry recovery, warm single-service reuse, and two consecutive
+      stopped-VM extension handoffs. Final host launch count advanced 16 → 17 →
+      18 and no launcher process remained after either handoff.
 - [ ] Repeat warm, stopped-VM, and full-reboot/login tests with the production
       Rust controller and prove its local launch page wakes a dormant extension
       worker and focuses one extension control surface.
@@ -257,6 +267,9 @@ picker grants a persistent Linux filesystem path.
 - [ ] Explain that the installed Launcher item wakes Linux, retain a
       Terminal-once recovery path, and prove behavior after a full ChromeOS
       reboot before finalizing systemd policy.
+- [ ] Make the transient launcher's failure recovery keyboard- and
+      screen-reader-accessible. ChromeOS exposed the raw X11 window and standard
+      close control, but not its custom-drawn body, in the automation tree.
 - [ ] Do not silently keep serving a folder after the user believes the app has
       stopped.
 
@@ -292,7 +305,7 @@ picker grants a persistent Linux filesystem path.
 | Gate | Required evidence |
 |---|---|
 | Install | Fresh default Debian Crostini on x86_64 and ARM64 installs one verified command without npm or developer mode |
-| Launcher | Disposable stopped-VM wake and two consecutive cold launches with a transient mapped startup window passed; windowless user launchers became stale after one host launch, and direct `chrome-extension://` handoff failed. The production graphical helper/local HTTP bridge must still pass repeat running, stopped, and full-reboot/login launch and focus one extension control surface without Terminal |
+| Launcher | Windowless user launchers became stale after one host launch, and direct `chrome-extension://` handoff failed. The checked-in pure-Rust helper passed readable failure/retry, warm reuse, and two consecutive stopped-VM launches through the local HTTP bridge into one extension surface. The installer plus production controller and full-reboot/login path remain unproved |
 | Files | Linux `~/Downloads` and one ChromeOS folder explicitly shared with Linux serve exact fixtures; unshared paths fail clearly |
 | Local browser | `localhost` or the accepted stable Crostini hostname reaches the server without a ChromeOS LAN port entry |
 | LAN off | A second device cannot reach the server through the Chromebook LAN address |

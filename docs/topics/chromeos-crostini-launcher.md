@@ -9,11 +9,14 @@ Crostini VM/container, start one user service, open its local
 `penguin.linux.test` bridge, wake a dormant extension worker, and open or focus
 one extension controller surface without Terminal or Internet. Reliable
 repeat launch requires a brief transient graphical Linux splash; a completely
-windowless launcher became stale after its first host launch. The narrow
-extension bridge and optional runtime host-permission slice are implemented,
-but the production Rust controller/launcher, installer, setup/control UI,
-ARM64 artifact, packed-update warning proof, and full-reboot proof do not exist
-yet. This remains a future option rather than a shipped fallback.**
+windowless launcher became stale after its first host launch. A checked-in
+pure-Rust graphical launcher and `.desktop` template now pass warm and two
+consecutive stopped-VM launches on the physical x86_64 testbed, including
+failure/retry and the extension handoff. The narrow extension bridge and
+optional runtime host-permission slice are also implemented, but the
+production Rust controller, installer, setup/control UI, ARM64 artifact,
+packed-update warning proof, and full-reboot proof do not exist yet. This
+remains a future option rather than a shipped fallback.**
 
 Last reconciled: **2026-08-02**.
 
@@ -55,6 +58,10 @@ controller-served launch page --external message--> extension worker
   launcher command. The launcher helper briefly maps a branded **Opening 200
   OK…** window, then closes it after the browser handoff so ChromeOS observes a
   complete graphical-app lifecycle. The controller itself remains headless.
+  The implemented helper lives in
+  [`desktop/crostini`](../../desktop/crostini), uses the X11 protocol directly
+  with DPI-aware embedded glyphs, and adds no GTK, Tauri, `xmessage`, or Xlib
+  runtime dependency.
 - After the controller answers, the launcher opens its static
   `http://penguin.linux.test:<control-port>/launch-chromeos` page. That page
   sends one external message to wake the extension, whose service worker opens
@@ -187,6 +194,36 @@ launcher, the bundled recovery text should also say:
 The user should not normally have to keep a Terminal window open. A full OS
 reboot requires the user to sign back into ChromeOS, but the installed Linux
 app is expected—not yet proved—to remain registered in the Launcher.
+
+## Implemented launcher contract
+
+The checked-in `ok200-crostini launch` command fixes the first executable
+contract while the controller remains unfinished:
+
+- map the `app.ok200.crostini` X11 window before starting any background work;
+- propagate `DESKTOP_STARTUP_ID` through `_NET_STARTUP_ID` and match the
+  `.desktop` entry's `StartupWMClass`;
+- queue `app.ok200.crostini-controller.service` with nonblocking
+  `systemctl --user start`, then poll rather than tying the window event loop to
+  systemd startup;
+- validate the exact product, protocol version, and safe instance identifier
+  at `127.0.0.1:20080/health` before opening anything;
+- use `xdg-open` on
+  `http://penguin.linux.test:20080/launch-chromeos` only after validation;
+- remain mapped for at least two seconds on success, then exit while the
+  controller service continues; and
+- remain open on failure with readable detail plus **Try Again** and **Close**.
+
+Port `20080` and the service name are provisional but now form one concrete
+integration target for the controller and installer. A process collision on
+that port fails closed because an unrelated or malformed health response is
+not opened as 200 OK. The controller must eventually own any persisted port
+migration rather than making the extension scan arbitrary listeners.
+
+The installer must render the checked-in `.desktop.in` template by replacing
+its binary placeholder with a validated absolute per-user path; desktop entry
+`Exec` fields do not expand `~` or `$HOME`. The physical fixture used that
+rendered absolute path.
 
 ## Accepted local launch bridge
 
@@ -393,9 +430,38 @@ closed the window automatically. That fixture passed two consecutive full
 `vmc stop termina` cycles: its launch log advanced from the first to the
 second run, each click restarted the VM/container, and each run ended with one
 controller service and one extension tab. `xmessage` is test scaffolding, not
-an accepted production dependency. The production Rust launcher must provide
-an equally small branded Wayland/X11 startup surface, or a later physical test
-must prove another reliable ChromeOS graphical-app lifecycle signal.
+an accepted production dependency. The checked-in Rust launcher described
+below now replaces that scaffold.
+
+The Rust replacement was built and exercised on the same physical M150,
+Debian 12 x86_64 environment. Its optimized, unstripped binary was 963,960
+bytes and `ldd` reported only libc, libgcc, the ELF loader, and the kernel
+VDSO. It talks to X11 through pure Rust and draws its own small bitmap surface,
+so the test did not depend on the installed `xmessage` binary or GUI toolkit
+packages.
+
+The first visual run exposed ChromeOS's 230-DPI X11 surface: unscaled X core
+fonts produced a tiny, poorly rendered window. The retained implementation
+derives its scale from the X screen's pixel and physical dimensions and embeds
+its glyphs. The resulting working and failure surfaces were readable at the
+Chromebook's current display scale. With the controller unit deliberately
+removed, the window stayed open with the systemd failure and both controls;
+after restoring the unit, **Try Again** started the controller and completed
+the browser handoff. ChromeOS's automation accessibility tree exposed the
+window and its standard close control but not the custom-drawn text or buttons;
+screen-reader and keyboard recovery therefore remain acceptance gaps.
+
+For the final binary, a warm activation reused the controller's existing PID,
+focused one extension controller tab, and left no launcher process. Two
+consecutive cold cycles began with `termina` fully stopped. The host's
+`LaunchContainerApplication` count advanced from 16 to 17 to 18; each cycle
+woke the VM/container, started one controller fixture service, opened one
+extension surface, and let the two-second launcher exit. The test used the
+checked-in extension bridge and a disposable Python controller that implemented
+the fixed health/page contract. It therefore proves the production-shaped Rust
+launcher, not the still-missing production controller. All disposable services,
+files, extension state, and build directories were removed, the VM was stopped,
+and the ChromeOS testbed returned 8/8 healthy.
 
 This proves the disposable external-message, runtime-permission, health-check,
 dormant-worker, repeat stopped-VM, graphical-launcher lifecycle, and
@@ -448,13 +514,18 @@ Before changing **Future option** to a supported public route:
 
 - [ ] Build the production Rust controller around `ok200-core` with persisted
       settings, explicit content-server lifecycle, readiness, and locking.
+- [x] Implement the pure-Rust, DPI-aware transient graphical launcher and
+      `.desktop` template without GTK, Tauri, `xmessage`, or Xlib runtime
+      dependencies; prove failure/retry, warm reuse, and two consecutive
+      stopped-VM extension handoffs on physical x86_64 ChromeOS.
 - [ ] Publish verified x86_64 and ARM64 binaries compatible with the oldest
       claimed Crostini baseline.
 - [ ] Test the source-controlled installer and uninstall path in fresh default
       Crostini environments on both architectures.
-- [ ] Install the real `.desktop` launcher plus its transient branded startup
-      window and prove repeat warm launch, repeat stopped-VM launch, and full
-      ChromeOS reboot/login launch with one controller.
+- [ ] Install the checked-in `.desktop` launcher and helper through the real
+      installer, repeat the proved warm/stopped paths with the production
+      controller, and prove full ChromeOS reboot/login launch with one
+      controller.
 - [ ] Repeat the now-proved disposable warm and stopped-VM launch handoff with
       the production controller, then add full ChromeOS reboot/login proof.
 - [x] Prototype the exact `externally_connectable` launch, optional host
@@ -469,6 +540,9 @@ Before changing **Future option** to a supported public route:
       clear rejection of an unshared path.
 - [ ] Test start/stop, logout, Linux shutdown, suspend/resume, port conflict,
       update, uninstall, and recovery without an unintended content listener.
+- [ ] Validate keyboard and screen-reader behavior for the transient launcher;
+      its current custom-drawn body is not exposed through ChromeOS's
+      automation accessibility tree.
 - [ ] Validate Chromebook-host IPv4 presentation and explicit content-port
       forwarding from a second LAN device; never forward the control API.
 - [ ] Validate the bundled setup/recovery instructions offline, including

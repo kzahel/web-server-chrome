@@ -175,6 +175,8 @@ development environment is model-dependent and Flex is x86_64-only.
 
 Chrome Web Store listing:
 
+- Paste-ready plain text with Web Store-safe Unicode bullets:
+  [`../chrome-web-store-listing.txt`](../chrome-web-store-listing.txt)
 - Name: **200 OK Web Server**
 - Summary: **Launch 200 OK on desktop or ChromeOS; set up and control its
   ChromeOS Linux server. Successor to Web Server for Chrome.**

@@ -99,6 +99,8 @@ for (const filePath of [manifestPath, packagePath]) {
 }
 NODE
 
+pnpm exec biome format --write "$MANIFEST" "$PACKAGE_JSON"
+
 "$SCRIPT_DIR/package-extension.sh" "$REPO_ROOT/extension/package.zip"
 node "$SCRIPT_DIR/validate-extension-package.mjs" \
   "$REPO_ROOT/extension/package.zip" --expected-version "$VERSION"

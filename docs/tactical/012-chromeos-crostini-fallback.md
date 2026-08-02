@@ -1,6 +1,6 @@
 # ChromeOS Crostini Fallback
 
-Status: **scoped; physical x86_64 feasibility now includes the complete
+Status: **active release closeout; physical x86_64 feasibility now includes the complete
 disposable offline handoff from a cached non-terminal Launcher app through a
 stopped Crostini VM and local external-message page into a dormant extension
 worker. The extension launch/optional-permission slice and a checked-in
@@ -13,7 +13,8 @@ start/localhost/stop, one routine popup, stopped-VM wake without content
 autostart, reset/reclaim, idempotent reinstall, preserve uninstall, and purge
 on M150. Signed static-artifact CI, the canonical manifest, verified bootstrap
 installer, ownership/previous/rollback transaction, CLI updater, and shared
-update-service route are now implemented in source. No signed public tag,
+update-service route and the bounded controller/extension update experience
+are now implemented in source. No signed public tag,
 deployed update route, physically exercised ARM64 artifact, packed extension
 candidate, or supported public route ships yet.**
 
@@ -289,17 +290,17 @@ supported user path until the later exact-release gates pass.
 
 ### R2 — finish the production controller update experience
 
-- [ ] Persist bounded update-check state and check only after the controller is
+- [x] Persist bounded update-check state and check only after the controller is
       already active, at most once per 24 hours with failure backoff. Never
       wake Crostini merely to check.
-- [ ] Expose authenticated update status plus an explicit update action to the
+- [x] Expose authenticated update status plus an explicit update action to the
       extension. Run replacement outside the controller service cgroup, return
       an accepted/pending response before restart, and never resume stopped
       content after replacement.
-- [ ] Add the recommended but explicit automatic-install preference. Install
+- [x] Add the recommended but explicit automatic-install preference. Install
       automatically only while content is stopped; otherwise leave the signed
       release pending until an explicit stop/restart decision.
-- [ ] Show current/available version, check/update progress, offline failure,
+- [x] Show current/available version, check/update progress, offline failure,
       and local rollback guidance in the extension control surface; cover the
       client/controller protocol with deterministic tests.
 
@@ -412,7 +413,7 @@ supported user path until the later exact-release gates pass.
 - [x] Extend the shared update-service source with a separate `/crostini`
       product and generic signed artifact-manifest response carrying the exact
       signed manifest/signature bytes. Production deployment remains open.
-- [ ] Check automatically only after on-demand controller start and at a
+- [x] Check automatically only after on-demand controller start and at a
       bounded daily cadence while active; offer manual update plus explicit
       automatic-install preference, defer install while content is served, and
       physically prove restart, reconnect, rollback, corruption, interruption,
@@ -515,7 +516,10 @@ supported user path until the later exact-release gates pass.
 
 ## Release boundary
 
-This tactical does not authorize a tag, website deployment, extension update,
-or release upload. The current submitted Android and extension releases remain
-valid without Crostini. Crostini becomes a public supported option only after
-the acceptance matrix passes on exact release artifacts.
+The maintainer explicitly authorized the active closeout above to implement,
+tag, deploy publication plumbing, and validate exact release artifacts. The
+maintainer still owns Chrome Web Store uploads. The current submitted Android
+and extension releases remain valid without Crostini; any changed extension is
+a separately versioned follow-up candidate rather than a silent replacement.
+Crostini becomes a public supported option only after the acceptance matrix
+passes on exact release artifacts.

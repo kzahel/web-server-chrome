@@ -33,6 +33,7 @@ export function CrostiniController() {
   const [status, setStatus] = useState<ControllerStatus | null>(null);
   const [settings, setSettings] = useState<ControllerSettings | null>(null);
   const [busy, setBusy] = useState(false);
+  const [updateMessage, setUpdateMessage] = useState("");
 
   const connect = useCallback(async () => {
     if (!launch || !client) {
@@ -141,6 +142,7 @@ export function CrostiniController() {
     if (!client || !token) return;
     setBusy(true);
     setDetail("");
+    setUpdateMessage("");
     try {
       const nextStatus = await action(client, token);
       setStatus(nextStatus);
@@ -171,6 +173,82 @@ export function CrostiniController() {
     void perform((activeClient, activeToken) =>
       activeClient.stopServer(activeToken),
     );
+  };
+
+  const checkUpdate = () => {
+    void perform((activeClient, activeToken) =>
+      activeClient.checkUpdate(activeToken),
+    );
+  };
+
+  const installUpdate = async () => {
+    if (!client || !token || !status) return;
+    const wasRunning = status.server.state !== "stopped";
+    if (
+      wasRunning &&
+      !window.confirm(
+        "Updating stops the web server and does not restart it automatically. Continue?",
+      )
+    ) {
+      return;
+    }
+
+    setBusy(true);
+    setDetail("");
+    setUpdateMessage("");
+    const previousVersion = status.version;
+    try {
+      if (wasRunning) {
+        const stopped = await client.stopServer(token);
+        setStatus(stopped);
+        setSettings(stopped.settings);
+      }
+      const scheduled = await client.installUpdate(token);
+      setStatus(scheduled);
+      setSettings(scheduled.settings);
+      if (scheduled.update.state !== "installing") {
+        setUpdateMessage("The Linux component is already current.");
+        return;
+      }
+      setUpdateMessage(
+        "Installing the signed update. The controller will briefly reconnect…",
+      );
+
+      for (let attempt = 0; attempt < 90; attempt += 1) {
+        await delay(1_000);
+        try {
+          const health = await client.health();
+          validateControllerHealth(health, status.instanceId);
+          const nextStatus = await client.status(token);
+          setStatus(nextStatus);
+          setSettings(nextStatus.settings);
+          if (nextStatus.version !== previousVersion) {
+            setUpdateMessage(
+              `Updated to Linux component v${nextStatus.version}. The web server remains stopped.`,
+            );
+            return;
+          }
+          if (nextStatus.update.state === "error") {
+            setDetail(
+              nextStatus.update.error || "The Linux component update failed.",
+            );
+            setUpdateMessage("");
+            return;
+          }
+        } catch {
+          // The controller is expected to disappear briefly during replacement.
+        }
+      }
+      setDetail(
+        "The update is taking longer than expected. Launch 200 OK Linux again, or run ‘ok200-crostini update’ in Terminal.",
+      );
+      setUpdateMessage("");
+    } catch (error) {
+      setDetail(error instanceof Error ? error.message : "Update failed.");
+      setUpdateMessage("");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -212,6 +290,8 @@ export function CrostiniController() {
             busy={busy}
             detail={detail}
             onChange={setSettings}
+            onCheckUpdate={checkUpdate}
+            onInstallUpdate={() => void installUpdate()}
             onRefresh={() =>
               void perform((activeClient, activeToken) =>
                 activeClient.status(activeToken),
@@ -222,6 +302,7 @@ export function CrostiniController() {
             onStop={stopServer}
             settings={settings}
             status={status}
+            updateMessage={updateMessage}
           />
         )}
         {state === "error" && (
@@ -254,22 +335,28 @@ function ControllerPanel({
   busy,
   detail,
   onChange,
+  onCheckUpdate,
+  onInstallUpdate,
   onRefresh,
   onSave,
   onStart,
   onStop,
   settings,
   status,
+  updateMessage,
 }: {
   busy: boolean;
   detail: string;
   onChange: (settings: ControllerSettings) => void;
+  onCheckUpdate: () => void;
+  onInstallUpdate: () => void;
   onRefresh: () => void;
   onSave: () => void;
   onStart: () => void;
   onStop: () => void;
   settings: ControllerSettings;
   status: ControllerStatus;
+  updateMessage: string;
 }) {
   const running = status.server.state === "running";
   const active = status.server.state !== "stopped";
@@ -389,6 +476,23 @@ function ControllerPanel({
             port 20080.
           </p>
         )}
+        <label style={checkboxStyle}>
+          <input
+            checked={settings.automaticUpdates}
+            type="checkbox"
+            onChange={(event) =>
+              onChange({
+                ...settings,
+                automaticUpdates: event.target.checked,
+              })
+            }
+          />
+          Automatically install Linux component updates (recommended)
+        </label>
+        <p style={hintStyle}>
+          Checks run only while Linux is already active. Automatic installation
+          waits until the web server is stopped.
+        </p>
       </fieldset>
 
       {detail && <p style={errorDetailStyle}>{detail}</p>}
@@ -426,8 +530,72 @@ function ControllerPanel({
           </button>
         )}
       </div>
+
+      <section style={updateSectionStyle}>
+        <div style={updateHeaderStyle}>
+          <div>
+            <strong>Linux component updates</strong>
+            <div style={mutedStyle}>{updateStatusLabel(status)}</div>
+          </div>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={onCheckUpdate}
+            style={secondaryButtonStyle}
+          >
+            {status.update.state === "checking" ? "Checking…" : "Check now"}
+          </button>
+        </div>
+        {status.update.state === "available" && (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={onInstallUpdate}
+            style={primaryButtonStyle}
+          >
+            Update to v{status.update.availableVersion}
+          </button>
+        )}
+        {status.update.state === "installing" && (
+          <p style={mutedStyle}>Installing and reconnecting…</p>
+        )}
+        {updateMessage && <p style={noticeStyle}>{updateMessage}</p>}
+        {status.update.error && (
+          <p style={errorDetailStyle}>{status.update.error}</p>
+        )}
+        <details style={detailsStyle}>
+          <summary>Update recovery</summary>
+          <p style={mutedStyle}>
+            If an update causes trouble, run <code>ok200-crostini rollback</code>{" "}
+            in Terminal. Rollback is local and does not need Internet access.
+          </p>
+        </details>
+      </section>
     </>
   );
+}
+
+function updateStatusLabel(status: ControllerStatus): string {
+  switch (status.update.state) {
+    case "available":
+      return `v${status.update.availableVersion} is available; currently v${status.version}.`;
+    case "checking":
+      return `Checking for an update; currently v${status.version}.`;
+    case "installing":
+      return `Installing an update; currently v${status.version}.`;
+    case "error":
+      return `Could not check for updates; currently v${status.version}.`;
+    default:
+      return status.update.lastCheckedAt
+        ? `v${status.version} is current. Last checked ${new Date(
+            status.update.lastCheckedAt * 1_000,
+          ).toLocaleString()}.`
+        : `Currently v${status.version}. An automatic check is pending.`;
+  }
+}
+
+function delay(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
 }
 
 function OfflineSetup({ compact = false }: { compact?: boolean }) {
@@ -625,6 +793,28 @@ const actionRowStyle = {
   flexWrap: "wrap" as const,
   gap: 10,
   marginTop: 20,
+};
+const updateSectionStyle = {
+  display: "grid",
+  gap: 12,
+  marginTop: 24,
+  paddingTop: 20,
+  borderTop: "1px solid #e2e8f0",
+};
+const updateHeaderStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: 14,
+};
+const noticeStyle = {
+  margin: 0,
+  padding: 10,
+  borderRadius: 8,
+  background: "#eaf7ef",
+  color: "#12663c",
+  fontSize: 13,
+  lineHeight: 1.45,
 };
 const primaryButtonStyle = {
   padding: "10px 15px",

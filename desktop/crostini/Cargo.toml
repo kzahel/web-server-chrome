@@ -11,12 +11,12 @@ dirs = { workspace = true }
 fs2 = "0.4.3"
 minisign-verify = "0.2.5"
 ok200-core = { path = "../core" }
-semver = "1.0.27"
+semver = { version = "1.0.27", features = ["serde"] }
 serde = { workspace = true }
 serde_json = { workspace = true }
 sha2 = "0.10.9"
 subtle = "2.6.1"
-tokio = { version = "1", features = ["fs", "macros", "net", "rt-multi-thread", "signal", "sync"] }
+tokio = { version = "1", features = ["fs", "macros", "net", "rt-multi-thread", "signal", "sync", "time"] }
 uuid = { workspace = true }
 
 [target.'cfg(target_os = "linux")'.dependencies]

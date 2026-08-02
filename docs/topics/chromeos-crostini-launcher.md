@@ -27,8 +27,10 @@ idempotently, and uninstalled with both preserve and purge behavior. Signed
 release delivery is now implemented in source: a fail-closed static-musl CI
 workflow, canonical signed artifact manifest, architecture-selecting bootstrap
 installer, formal ownership manifest, retained previous version, local
-rollback, CLI update check/install, and a separate update-service manifest
-route. No `crostini-v` tag or signed public artifact has run through that path,
+rollback, CLI update check/install, a separate update-service manifest route,
+bounded daily controller checks with failure backoff, authenticated manual
+install, explicit stopped-content automatic installation, extension progress,
+and reconnect handling. No `crostini-v` tag or signed public artifact has run through that path,
 the update-service route is not deployed, and ARM64/oldest-runtime, packed-
 update warning, directory-picker, host-address LAN, and full-reboot proofs
 remain open. This remains a future option rather than a shipped fallback.**
@@ -825,9 +827,10 @@ Before changing **Future option** to a supported public route:
       status/settings/start/stop, and reset; pass local and physical x86_64
       tests.
 - [ ] Add token rotation independent of reset, rooted directory browsing,
-      diagnostics/logs, and migrations. Signed CLI update/rollback and a strict
-      controller/extension protocol compatibility policy are implemented in
-      source but still need production artifact/reconnect proof.
+      diagnostics/logs, and migrations. Signed CLI and controller-driven
+      update/rollback plus a strict controller/extension protocol compatibility
+      policy are implemented in source but still need production
+      artifact/reconnect proof.
 - [x] Implement the pure-Rust, DPI-aware transient graphical launcher and
       `.desktop` template without GTK, Tauri, `xmessage`, or Xlib runtime
       dependencies; prove failure/retry, warm reuse, and two consecutive
@@ -847,6 +850,10 @@ Before changing **Future option** to a supported public route:
       the shared update service and CI, including exact asset selection,
       canonical manifest generation, local signature/hash/version verification,
       and current-version responses.
+- [x] Implement bounded, persisted controller update checks, authenticated
+      check/install APIs, explicit stopped-content automatic installation,
+      detached updater execution, extension progress/reconnect, offline errors,
+      and local rollback guidance with deterministic source tests.
 - [ ] Deploy that update-service route and prove the exact signed release's
       current, available, incompatible, corrupt, interrupted, rollback, and
       offline recovery cases.

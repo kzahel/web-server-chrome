@@ -9,6 +9,7 @@ import { CrostiniController, readLaunchParameters } from "./crostini";
 const INSTANCE_ID = "fixture-1";
 const CLAIM_CODE = "a".repeat(64);
 const SETTINGS = {
+  automaticUpdates: false,
   cors: false,
   directoryListing: true,
   lan: false,
@@ -170,6 +171,7 @@ function statusResponse(state: "stopped" | "running") {
     protocolVersion: 1,
     server: { state },
     settings: SETTINGS,
+    update: { state: "current" },
     version: "0.1.5",
   };
 }

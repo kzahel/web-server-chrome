@@ -96,4 +96,40 @@ describe("Crostini controller client", () => {
       "stop serving first",
     );
   });
+
+  it("uses authenticated POST requests for update checks and installs", async () => {
+    const fetchMock = vi.fn(
+      async (_input: RequestInfo | URL, _options?: RequestInit) =>
+        Response.json({
+          product: "ok200-crostini-controller",
+          protocolVersion: 1,
+          instanceId: "fixture-1",
+          version: "0.1.0",
+          settings: { automaticUpdates: false },
+          server: { state: "stopped" },
+          update: { state: "current" },
+        }),
+    );
+    const client = new CrostiniControllerClient(
+      20080,
+      fetchMock as typeof fetch,
+    );
+
+    await client.checkUpdate("secret-token");
+    await client.installUpdate("secret-token");
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock.mock.calls[0]?.[0]).toBe(
+      "http://penguin.linux.test:20080/api/update/check",
+    );
+    expect(fetchMock.mock.calls[1]?.[0]).toBe(
+      "http://penguin.linux.test:20080/api/update/install",
+    );
+    for (const [, options] of fetchMock.mock.calls) {
+      expect(options?.method).toBe("POST");
+      expect((options?.headers as Headers).get("Authorization")).toBe(
+        "Bearer secret-token",
+      );
+    }
+  });
 });

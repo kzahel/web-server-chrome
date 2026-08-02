@@ -13,3 +13,6 @@
   rollback to one retained previous version.
 - Add fail-closed static x86_64 and ARM64 release artifacts plus a signed
   architecture/checksum/protocol manifest.
+- Add bounded daily controller update checks, failure backoff, authenticated
+  check/install status, detached replacement, explicit automatic installation,
+  reconnect progress, and local rollback guidance in the extension UI.

@@ -30,6 +30,14 @@ enabling the unit or changing user lingering. Normal uninstall preserves
 settings; `uninstall --purge` removes controller identity/settings while both
 modes leave served content and ChromeOS sharing/forwarding state alone.
 
+While the controller is active, it checks its signed release channel at most
+daily, with one-hour failure backoff. The extension exposes check/install
+status, signed manual updates, and an explicit automatic-install preference.
+Automatic installation waits until content is stopped; manual installation
+also stops only after user confirmation, and neither path resumes serving
+after controller replacement. Installation runs in a separate transient
+systemd user unit so replacing the controller cannot kill its own updater.
+
 The release pipeline and update-service protocol are implemented in source,
 but no signed `crostini-v` release or public route is available yet. The
 source-only `install` command remains useful for development; a supported

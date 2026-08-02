@@ -2,7 +2,9 @@ use std::fmt;
 use std::fs::File;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::path::{Path, PathBuf};
+use std::process::Command;
 use std::sync::Arc;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use axum::body::Body;
 use axum::extract::State;
@@ -17,6 +19,7 @@ use axum::routing::{get, post, put};
 use axum::{Json, Router};
 use fs2::FileExt;
 use ok200_core::{canonicalize_serving_root, RunningServer, ServerConfig, ServerStatus};
+use semver::Version;
 use serde::{Deserialize, Serialize};
 use subtle::ConstantTimeEq;
 use tokio::net::TcpListener;
@@ -30,11 +33,17 @@ use crate::{
 
 const CONFIG_SCHEMA_VERSION: u16 = 1;
 const CONFIG_FILE_NAME: &str = "controller.json";
+const UPDATE_STATE_SCHEMA_VERSION: u16 = 1;
+const UPDATE_STATE_FILE_NAME: &str = "updates.json";
 const LOCK_FILE_NAME: &str = "controller.lock";
 const CONTROLLER_DIRECTORY_NAME: &str = "ok200-crostini";
 const DEFAULT_CONTENT_PORT: u16 = 8080;
 const MIN_CONTENT_PORT: u16 = 1024;
 const CHROMEOS_SHARED_ROOT: &str = "/mnt/chromeos";
+const UPDATE_SUCCESS_INTERVAL: Duration = Duration::from_secs(24 * 60 * 60);
+const UPDATE_FAILURE_BACKOFF: Duration = Duration::from_secs(60 * 60);
+const UPDATE_INSTALL_DELAY: Duration = Duration::from_millis(250);
+const MAX_UPDATE_ERROR_CHARS: usize = 512;
 
 #[derive(Debug)]
 pub struct ControllerError(String);
@@ -53,11 +62,25 @@ impl fmt::Display for ControllerError {
 
 impl std::error::Error for ControllerError {}
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct ControllerOptions {
     pub config_dir: PathBuf,
     pub home_dir: PathBuf,
     pub bind_address: SocketAddr,
+    update_backend: Arc<dyn UpdateBackend>,
+    automatic_update_checks: bool,
+}
+
+impl fmt::Debug for ControllerOptions {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("ControllerOptions")
+            .field("config_dir", &self.config_dir)
+            .field("home_dir", &self.home_dir)
+            .field("bind_address", &self.bind_address)
+            .field("automatic_update_checks", &self.automatic_update_checks)
+            .finish_non_exhaustive()
+    }
 }
 
 impl ControllerOptions {
@@ -67,10 +90,13 @@ impl ControllerOptions {
             .join(CONTROLLER_DIRECTORY_NAME);
         let home_dir = dirs::home_dir()
             .ok_or_else(|| ControllerError::new("could not determine the user home directory"))?;
+        let update_binary = home_dir.join(".local/bin/ok200-crostini");
         Ok(Self {
             config_dir,
             home_dir,
             bind_address: SocketAddr::from(([0, 0, 0, 0], CONTROLLER_PORT)),
+            update_backend: Arc::new(SystemUpdateBackend { update_binary }),
+            automatic_update_checks: true,
         })
     }
 }
@@ -95,6 +121,8 @@ pub struct ControllerSettings {
     pub directory_listing: bool,
     pub cors: bool,
     pub spa: bool,
+    #[serde(default)]
+    pub automatic_updates: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -106,13 +134,100 @@ struct PersistedController {
     settings: ControllerSettings,
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct PersistedUpdateState {
+    schema_version: u16,
+    last_attempt_unix_seconds: Option<u64>,
+    last_success_unix_seconds: Option<u64>,
+    available_version: Option<Version>,
+    last_error: Option<String>,
+}
+
+impl Default for PersistedUpdateState {
+    fn default() -> Self {
+        Self {
+            schema_version: UPDATE_STATE_SCHEMA_VERSION,
+            last_attempt_unix_seconds: None,
+            last_success_unix_seconds: None,
+            available_version: None,
+            last_error: None,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum UpdatePhase {
+    Idle,
+    Checking,
+    Installing,
+}
+
+#[derive(Debug)]
+struct UpdateRuntime {
+    persisted: PersistedUpdateState,
+    phase: UpdatePhase,
+}
+
+trait UpdateBackend: Send + Sync {
+    fn check(&self) -> Result<Option<Version>, String>;
+    fn install(&self) -> Result<(), String>;
+}
+
+#[derive(Debug)]
+struct SystemUpdateBackend {
+    update_binary: PathBuf,
+}
+
+impl UpdateBackend for SystemUpdateBackend {
+    fn check(&self) -> Result<Option<Version>, String> {
+        crate::release::check_for_update()
+            .map(|release| release.map(|release| release.manifest.version))
+    }
+
+    fn install(&self) -> Result<(), String> {
+        if !self.update_binary.is_file() {
+            return Err(format!(
+                "the installed updater was not found at {}; reinstall 200 OK Linux",
+                self.update_binary.display()
+            ));
+        }
+        let unit_name = format!("app.ok200.crostini-update-{}", Uuid::new_v4().simple());
+        let output = Command::new("systemd-run")
+            .args([
+                "--user",
+                "--wait",
+                "--collect",
+                "--quiet",
+                "--unit",
+                &unit_name,
+            ])
+            .arg(&self.update_binary)
+            .arg("update")
+            .output()
+            .map_err(|error| format!("could not start the detached updater: {error}"))?;
+        if output.status.success() {
+            return Ok(());
+        }
+        let detail = String::from_utf8_lossy(&output.stderr).trim().to_owned();
+        Err(if detail.is_empty() {
+            format!("detached updater failed with {}", output.status)
+        } else {
+            format!("detached updater failed: {detail}")
+        })
+    }
+}
+
 struct ControllerState {
     config_path: PathBuf,
+    update_state_path: PathBuf,
     home_dir: PathBuf,
     controller_port: u16,
     persisted: RwLock<PersistedController>,
     claim_code: Mutex<Option<String>>,
     content_server: Mutex<Option<RunningServer>>,
+    update: Mutex<UpdateRuntime>,
+    update_backend: Arc<dyn UpdateBackend>,
 }
 
 pub struct RunningController {
@@ -120,6 +235,7 @@ pub struct RunningController {
     state: Arc<ControllerState>,
     shutdown: Option<oneshot::Sender<()>>,
     task: Option<JoinHandle<Result<(), std::io::Error>>>,
+    update_task: Option<JoinHandle<()>>,
     _lock_file: File,
 }
 
@@ -128,7 +244,9 @@ impl RunningController {
         prepare_private_directory(&options.config_dir).await?;
         let lock_file = acquire_process_lock(&options.config_dir)?;
         let config_path = options.config_dir.join(CONFIG_FILE_NAME);
+        let update_state_path = options.config_dir.join(UPDATE_STATE_FILE_NAME);
         let persisted = load_or_create_config(&config_path, &options.home_dir).await?;
+        let update = load_update_state(&update_state_path).await;
         let claim_code = persisted.controller_token.is_none().then(random_secret);
         let listener = TcpListener::bind(options.bind_address)
             .await
@@ -143,11 +261,17 @@ impl RunningController {
         })?;
         let state = Arc::new(ControllerState {
             config_path,
+            update_state_path,
             home_dir: options.home_dir,
             controller_port: local_addr.port(),
             persisted: RwLock::new(persisted),
             claim_code: Mutex::new(claim_code),
             content_server: Mutex::new(None),
+            update: Mutex::new(UpdateRuntime {
+                persisted: update,
+                phase: UpdatePhase::Idle,
+            }),
+            update_backend: options.update_backend,
         });
 
         let app = controller_router(Arc::clone(&state));
@@ -159,12 +283,16 @@ impl RunningController {
                 })
                 .await
         });
+        let update_task = options
+            .automatic_update_checks
+            .then(|| tokio::spawn(automatic_update_loop(Arc::clone(&state))));
 
         Ok(Self {
             local_addr,
             state,
             shutdown: Some(shutdown),
             task: Some(task),
+            update_task,
             _lock_file: lock_file,
         })
     }
@@ -174,6 +302,9 @@ impl RunningController {
     }
 
     pub async fn stop(mut self) -> Result<(), ControllerError> {
+        if let Some(update_task) = self.update_task.take() {
+            update_task.abort();
+        }
         let content_server = self.state.content_server.lock().await.take();
         if let Some(server) = content_server {
             server.stop().await.map_err(|error| {
@@ -202,6 +333,11 @@ impl Drop for RunningController {
                 task.abort();
             }
         }
+        if let Some(update_task) = &self.update_task {
+            if !update_task.is_finished() {
+                update_task.abort();
+            }
+        }
     }
 }
 
@@ -212,6 +348,8 @@ fn controller_router(state: Arc<ControllerState>) -> Router {
         .route("/settings", put(update_settings))
         .route("/server/start", post(start_content_server))
         .route("/server/stop", post(stop_content_server))
+        .route("/update/check", post(check_for_controller_update))
+        .route("/update/install", post(install_controller_update))
         .fallback(api_not_found)
         .layer(middleware::from_fn(api_response_headers));
 
@@ -366,6 +504,7 @@ struct StatusResponse {
     version: &'static str,
     settings: ControllerSettings,
     server: ContentServerStatus,
+    update: ControllerUpdateStatus,
 }
 
 #[derive(Serialize)]
@@ -373,6 +512,15 @@ struct StatusResponse {
 struct ContentServerStatus {
     state: &'static str,
     url: Option<String>,
+    error: Option<String>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ControllerUpdateStatus {
+    state: &'static str,
+    available_version: Option<Version>,
+    last_checked_at: Option<u64>,
     error: Option<String>,
 }
 
@@ -416,6 +564,14 @@ async fn build_status(state: &ControllerState) -> StatusResponse {
             },
         },
     );
+    let update = state.update.lock().await;
+    let update_state = match update.phase {
+        UpdatePhase::Checking => "checking",
+        UpdatePhase::Installing => "installing",
+        UpdatePhase::Idle if update.persisted.available_version.is_some() => "available",
+        UpdatePhase::Idle if update.persisted.last_error.is_some() => "error",
+        UpdatePhase::Idle => "current",
+    };
     StatusResponse {
         product: CONTROLLER_PRODUCT,
         protocol_version: CONTROLLER_PROTOCOL_VERSION,
@@ -423,6 +579,12 @@ async fn build_status(state: &ControllerState) -> StatusResponse {
         version: env!("CARGO_PKG_VERSION"),
         settings: persisted.settings,
         server: content_status,
+        update: ControllerUpdateStatus {
+            state: update_state,
+            available_version: update.persisted.available_version.clone(),
+            last_checked_at: update.persisted.last_success_unix_seconds,
+            error: update.persisted.last_error.clone(),
+        },
     }
 }
 
@@ -451,6 +613,7 @@ async fn update_settings(
         .map_err(|error| ApiError::internal(error.to_string()))?;
     drop(persisted);
     drop(content_server);
+    maybe_install_available_update(Arc::clone(&state));
     Ok(Json(build_status(&state).await))
 }
 
@@ -502,7 +665,164 @@ async fn stop_content_server(
         .stop()
         .await
         .map_err(|error| ApiError::internal(error.to_string()))?;
+    maybe_install_available_update(Arc::clone(&state));
     Ok(Json(build_status(&state).await))
+}
+
+async fn check_for_controller_update(
+    State(state): State<Arc<ControllerState>>,
+    headers: HeaderMap,
+) -> ApiResult<Json<StatusResponse>> {
+    authorize(&state, &headers).await?;
+    run_update_check(&state).await?;
+    maybe_install_available_update(Arc::clone(&state));
+    Ok(Json(build_status(&state).await))
+}
+
+async fn install_controller_update(
+    State(state): State<Arc<ControllerState>>,
+    headers: HeaderMap,
+) -> ApiResult<Json<StatusResponse>> {
+    authorize(&state, &headers).await?;
+    if state.content_server.lock().await.is_some() {
+        return Err(ApiError::conflict(
+            "stop the content server before installing an update",
+        ));
+    }
+    {
+        let mut update = state.update.lock().await;
+        if update.phase != UpdatePhase::Idle {
+            return Err(ApiError::conflict(
+                "an update check or installation is already active",
+            ));
+        }
+        if update.persisted.available_version.is_none() {
+            drop(update);
+            run_update_check(&state).await?;
+            update = state.update.lock().await;
+        }
+        if update.persisted.available_version.is_none() {
+            drop(update);
+            return Ok(Json(build_status(&state).await));
+        }
+        update.phase = UpdatePhase::Installing;
+    }
+    spawn_update_install(Arc::clone(&state));
+    Ok(Json(build_status(&state).await))
+}
+
+async fn automatic_update_loop(state: Arc<ControllerState>) {
+    loop {
+        let delay = next_update_check_delay(&state).await;
+        tokio::time::sleep(delay).await;
+        let _ = run_update_check(&state).await;
+        maybe_install_available_update(Arc::clone(&state));
+    }
+}
+
+async fn next_update_check_delay(state: &ControllerState) -> Duration {
+    let now = unix_time_seconds();
+    let update = state.update.lock().await;
+    let interval = if update.persisted.last_error.is_some() {
+        UPDATE_FAILURE_BACKOFF
+    } else {
+        UPDATE_SUCCESS_INTERVAL
+    };
+    update
+        .persisted
+        .last_attempt_unix_seconds
+        .and_then(|attempt| interval.checked_sub(Duration::from_secs(now.saturating_sub(attempt))))
+        .unwrap_or(Duration::ZERO)
+}
+
+async fn run_update_check(state: &Arc<ControllerState>) -> ApiResult<()> {
+    {
+        let mut update = state.update.lock().await;
+        if update.phase != UpdatePhase::Idle {
+            return Err(ApiError::conflict(
+                "an update check or installation is already active",
+            ));
+        }
+        update.phase = UpdatePhase::Checking;
+        update.persisted.last_attempt_unix_seconds = Some(unix_time_seconds());
+        if let Err(error) = persist_update_state(&state.update_state_path, &update.persisted).await
+        {
+            update.phase = UpdatePhase::Idle;
+            return Err(ApiError::internal(error.to_string()));
+        }
+    }
+
+    let backend = Arc::clone(&state.update_backend);
+    let result = tokio::task::spawn_blocking(move || backend.check())
+        .await
+        .map_err(|error| ApiError::internal(format!("update check task failed: {error}")))?;
+    let now = unix_time_seconds();
+    let mut update = state.update.lock().await;
+    update.phase = UpdatePhase::Idle;
+    match result {
+        Ok(available_version) => {
+            update.persisted.last_success_unix_seconds = Some(now);
+            update.persisted.available_version = available_version;
+            update.persisted.last_error = None;
+        }
+        Err(error) => {
+            update.persisted.available_version = None;
+            update.persisted.last_error = Some(bounded_update_error(&error));
+        }
+    }
+    persist_update_state(&state.update_state_path, &update.persisted)
+        .await
+        .map_err(|error| ApiError::internal(error.to_string()))?;
+    Ok(())
+}
+
+fn maybe_install_available_update(state: Arc<ControllerState>) {
+    tokio::spawn(async move {
+        let automatic_updates = state.persisted.read().await.settings.automatic_updates;
+        if !automatic_updates || state.content_server.lock().await.is_some() {
+            return;
+        }
+        let mut update = state.update.lock().await;
+        if update.phase != UpdatePhase::Idle || update.persisted.available_version.is_none() {
+            return;
+        }
+        update.phase = UpdatePhase::Installing;
+        drop(update);
+        spawn_update_install(state);
+    });
+}
+
+fn spawn_update_install(state: Arc<ControllerState>) {
+    tokio::spawn(async move {
+        tokio::time::sleep(UPDATE_INSTALL_DELAY).await;
+        let backend = Arc::clone(&state.update_backend);
+        let result = tokio::task::spawn_blocking(move || backend.install()).await;
+        let failure = match result {
+            Ok(Ok(())) => None,
+            Ok(Err(error)) => Some(error),
+            Err(error) => Some(format!("update installation task failed: {error}")),
+        };
+        let mut update = state.update.lock().await;
+        update.phase = UpdatePhase::Idle;
+        if let Some(error) = failure {
+            update.persisted.last_error = Some(bounded_update_error(&error));
+        } else {
+            update.persisted.available_version = None;
+            update.persisted.last_error = None;
+        }
+        let _ = persist_update_state(&state.update_state_path, &update.persisted).await;
+    });
+}
+
+fn unix_time_seconds() -> u64 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or(Duration::ZERO)
+        .as_secs()
+}
+
+fn bounded_update_error(error: &str) -> String {
+    error.chars().take(MAX_UPDATE_ERROR_CHARS).collect()
 }
 
 fn validate_content_port(port: u16) -> ApiResult<()> {
@@ -721,6 +1041,7 @@ async fn load_or_create_config(
                     directory_listing: true,
                     cors: false,
                     spa: false,
+                    automatic_updates: false,
                 },
             };
             persist_config(config_path, &persisted).await?;
@@ -783,6 +1104,71 @@ async fn persist_config(
         })
 }
 
+async fn load_update_state(update_state_path: &Path) -> PersistedUpdateState {
+    let current = Version::parse(env!("CARGO_PKG_VERSION")).expect("package version must be valid");
+    match tokio::fs::read(update_state_path).await {
+        Ok(bytes) => match serde_json::from_slice::<PersistedUpdateState>(&bytes) {
+            Ok(mut persisted) if persisted.schema_version == UPDATE_STATE_SCHEMA_VERSION => {
+                if persisted
+                    .available_version
+                    .as_ref()
+                    .is_some_and(|available| available <= &current)
+                {
+                    persisted.available_version = None;
+                    persisted.last_error = None;
+                }
+                persisted
+            }
+            Ok(persisted) => PersistedUpdateState {
+                last_error: Some(format!(
+                    "update state uses unsupported schema {}; checks will retry safely",
+                    persisted.schema_version
+                )),
+                ..PersistedUpdateState::default()
+            },
+            Err(error) => PersistedUpdateState {
+                last_error: Some(bounded_update_error(&format!(
+                    "update state is invalid; checks will retry safely: {error}"
+                ))),
+                ..PersistedUpdateState::default()
+            },
+        },
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+            PersistedUpdateState::default()
+        }
+        Err(error) => PersistedUpdateState {
+            last_error: Some(bounded_update_error(&format!(
+                "could not read update state; checks will retry safely: {error}"
+            ))),
+            ..PersistedUpdateState::default()
+        },
+    }
+}
+
+async fn persist_update_state(
+    update_state_path: &Path,
+    persisted: &PersistedUpdateState,
+) -> Result<(), ControllerError> {
+    let bytes = serde_json::to_vec_pretty(persisted)
+        .map_err(|error| ControllerError::new(format!("could not encode update state: {error}")))?;
+    let temp_path = update_state_path.with_extension(format!("tmp-{}", Uuid::new_v4().simple()));
+    tokio::fs::write(&temp_path, bytes).await.map_err(|error| {
+        ControllerError::new(format!(
+            "could not write update state {}: {error}",
+            temp_path.display()
+        ))
+    })?;
+    set_private_file_permissions(&temp_path)?;
+    tokio::fs::rename(&temp_path, update_state_path)
+        .await
+        .map_err(|error| {
+            ControllerError::new(format!(
+                "could not replace update state {}: {error}",
+                update_state_path.display()
+            ))
+        })
+}
+
 fn valid_identifier(value: &str) -> bool {
     !value.is_empty()
         && value.len() <= 64
@@ -835,12 +1221,60 @@ fn set_private_file_permissions(_path: &Path) -> Result<(), ControllerError> {
 
 #[cfg(test)]
 mod tests {
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    use std::sync::Mutex as StdMutex;
+
     use tempfile::TempDir;
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
     use super::*;
 
+    struct FixtureUpdateBackend {
+        check_result: StdMutex<Result<Option<Version>, String>>,
+        install_result: StdMutex<Result<(), String>>,
+        install_calls: AtomicUsize,
+    }
+
+    impl FixtureUpdateBackend {
+        fn current() -> Arc<Self> {
+            Arc::new(Self {
+                check_result: StdMutex::new(Ok(None)),
+                install_result: StdMutex::new(Ok(())),
+                install_calls: AtomicUsize::new(0),
+            })
+        }
+
+        fn available(version: &str) -> Arc<Self> {
+            Arc::new(Self {
+                check_result: StdMutex::new(Ok(Some(
+                    Version::parse(version).expect("fixture version"),
+                ))),
+                install_result: StdMutex::new(Ok(())),
+                install_calls: AtomicUsize::new(0),
+            })
+        }
+    }
+
+    impl UpdateBackend for FixtureUpdateBackend {
+        fn check(&self) -> Result<Option<Version>, String> {
+            self.check_result.lock().expect("check result").clone()
+        }
+
+        fn install(&self) -> Result<(), String> {
+            self.install_calls.fetch_add(1, Ordering::SeqCst);
+            self.install_result.lock().expect("install result").clone()
+        }
+    }
+
     async fn fixture() -> (TempDir, RunningController) {
+        let backend = FixtureUpdateBackend::current();
+        let (temp, controller) = fixture_with_backend(backend).await;
+        (temp, controller)
+    }
+
+    async fn fixture_with_backend(
+        backend: Arc<FixtureUpdateBackend>,
+    ) -> (TempDir, RunningController) {
         let temp = tempfile::tempdir().expect("temp dir");
         let home = temp.path().join("home");
         tokio::fs::create_dir_all(&home).await.expect("home");
@@ -848,6 +1282,8 @@ mod tests {
             config_dir: temp.path().join("config"),
             home_dir: home,
             bind_address: SocketAddr::from(([127, 0, 0, 1], 0)),
+            update_backend: backend,
+            automatic_update_checks: false,
         })
         .await
         .expect("controller");
@@ -1029,6 +1465,8 @@ mod tests {
             config_dir: temp.path().join("config"),
             home_dir: temp.path().join("home"),
             bind_address: SocketAddr::from(([127, 0, 0, 1], 0)),
+            update_backend: FixtureUpdateBackend::current(),
+            automatic_update_checks: false,
         })
         .await;
         let Err(error) = second else {
@@ -1050,5 +1488,127 @@ mod tests {
         );
         assert!(validate_serving_root(&home, &home).await.is_err());
         assert!(validate_serving_root(&home, temp.path()).await.is_err());
+    }
+
+    #[tokio::test]
+    async fn update_api_persists_status_and_runs_installer_outside_request() {
+        let backend = FixtureUpdateBackend::available("0.2.0");
+        let (temp, controller) = fixture_with_backend(Arc::clone(&backend)).await;
+        let address = controller.local_addr();
+        let token = claim(address).await;
+        let check = format!(
+            "POST /api/update/check HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        );
+        let (status, _, body) = request(address, &check).await;
+        let checked: serde_json::Value = serde_json::from_slice(&body).expect("check json");
+        assert_eq!(status, 200);
+        assert_eq!(checked["update"]["state"], "available");
+        assert_eq!(checked["update"]["availableVersion"], "0.2.0");
+        assert_eq!(backend.install_calls.load(Ordering::SeqCst), 0);
+
+        let install = format!(
+            "POST /api/update/install HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        );
+        let (status, _, body) = request(address, &install).await;
+        let installing: serde_json::Value = serde_json::from_slice(&body).expect("install json");
+        assert_eq!(status, 200);
+        assert_eq!(installing["update"]["state"], "installing");
+        assert_eq!(backend.install_calls.load(Ordering::SeqCst), 0);
+
+        tokio::time::timeout(Duration::from_secs(2), async {
+            while backend.install_calls.load(Ordering::SeqCst) == 0 {
+                tokio::time::sleep(Duration::from_millis(20)).await;
+            }
+        })
+        .await
+        .expect("installer called");
+        let persisted: serde_json::Value = serde_json::from_slice(
+            &tokio::fs::read(temp.path().join("config/updates.json"))
+                .await
+                .expect("update state"),
+        )
+        .expect("update state json");
+        assert!(persisted["lastAttemptUnixSeconds"].as_u64().is_some());
+        assert!(persisted["lastSuccessUnixSeconds"].as_u64().is_some());
+        controller.stop().await.expect("stop");
+    }
+
+    #[tokio::test]
+    async fn automatic_update_waits_until_content_is_explicitly_stopped() {
+        let backend = FixtureUpdateBackend::available("0.2.0");
+        let (temp, controller) = fixture_with_backend(Arc::clone(&backend)).await;
+        let address = controller.local_addr();
+        let token = claim(address).await;
+        let root = temp.path().join("home/Downloads/200 OK");
+        let available_port = std::net::TcpListener::bind((Ipv4Addr::LOCALHOST, 0))
+            .expect("ephemeral listener")
+            .local_addr()
+            .expect("ephemeral address")
+            .port();
+        let settings = serde_json::json!({
+            "root": root,
+            "port": available_port,
+            "lan": false,
+            "directoryListing": true,
+            "cors": false,
+            "spa": false,
+            "automaticUpdates": true,
+        })
+        .to_string();
+        let save = format!(
+            "PUT /api/settings HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{settings}",
+            settings.len()
+        );
+        assert_eq!(request(address, &save).await.0, 200);
+        let start = format!(
+            "POST /api/server/start HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        );
+        assert_eq!(request(address, &start).await.0, 200);
+        let check = format!(
+            "POST /api/update/check HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        );
+        assert_eq!(request(address, &check).await.0, 200);
+        tokio::time::sleep(UPDATE_INSTALL_DELAY + Duration::from_millis(100)).await;
+        assert_eq!(backend.install_calls.load(Ordering::SeqCst), 0);
+
+        let stop = format!(
+            "POST /api/server/stop HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        );
+        assert_eq!(request(address, &stop).await.0, 200);
+        tokio::time::timeout(Duration::from_secs(2), async {
+            while backend.install_calls.load(Ordering::SeqCst) == 0 {
+                tokio::time::sleep(Duration::from_millis(20)).await;
+            }
+        })
+        .await
+        .expect("automatic installer called after stop");
+        controller.stop().await.expect("stop controller");
+    }
+
+    #[tokio::test]
+    async fn failed_update_check_is_non_fatal_and_backed_off() {
+        let backend = FixtureUpdateBackend::current();
+        *backend.check_result.lock().expect("check result") =
+            Err("fixture network unavailable".to_owned());
+        let (_temp, controller) = fixture_with_backend(backend).await;
+        let address = controller.local_addr();
+        let token = claim(address).await;
+        let check = format!(
+            "POST /api/update/check HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        );
+        let (status, _, body) = request(address, &check).await;
+        let checked: serde_json::Value = serde_json::from_slice(&body).expect("check json");
+        assert_eq!(status, 200);
+        assert_eq!(checked["update"]["state"], "error");
+        assert_eq!(checked["update"]["error"], "fixture network unavailable");
+        let delay = next_update_check_delay(&controller.state).await;
+        assert!(delay <= UPDATE_FAILURE_BACKOFF);
+        assert!(
+            delay
+                > UPDATE_FAILURE_BACKOFF
+                    .checked_sub(Duration::from_secs(5))
+                    .expect("shorter fixture duration")
+        );
+        controller.stop().await.expect("stop");
     }
 }

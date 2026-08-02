@@ -12,12 +12,20 @@ export type ControllerHealth = {
 };
 
 export type ControllerSettings = {
+  automaticUpdates: boolean;
   cors: boolean;
   directoryListing: boolean;
   lan: boolean;
   port: number;
   root: string;
   spa: boolean;
+};
+
+export type ControllerUpdateStatus = {
+  availableVersion?: string | null;
+  error?: string | null;
+  lastCheckedAt?: number | null;
+  state: "current" | "checking" | "available" | "installing" | "error";
 };
 
 export type ContentServerStatus = {
@@ -32,6 +40,7 @@ export type ControllerStatus = {
   protocolVersion: number;
   server: ContentServerStatus;
   settings: ControllerSettings;
+  update: ControllerUpdateStatus;
   version: string;
 };
 
@@ -92,6 +101,18 @@ export class CrostiniControllerClient {
 
   stopServer(token: string): Promise<ControllerStatus> {
     return this.authenticated<ControllerStatus>("/api/server/stop", token, {
+      method: "POST",
+    });
+  }
+
+  checkUpdate(token: string): Promise<ControllerStatus> {
+    return this.authenticated<ControllerStatus>("/api/update/check", token, {
+      method: "POST",
+    });
+  }
+
+  installUpdate(token: string): Promise<ControllerStatus> {
+    return this.authenticated<ControllerStatus>("/api/update/install", token, {
       method: "POST",
     });
   }

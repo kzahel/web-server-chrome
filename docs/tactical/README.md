@@ -16,7 +16,7 @@ decisions, evidence, or recommended next work changes.
 
 | Tactical | Status | Purpose |
 |---|---|---|
-| [`000-desktop-native-core-and-release-readiness.md`](000-desktop-native-core-and-release-readiness.md) | active parent; desktop `v0.1.5` accepted, store/legacy lane remains | Sequence release/signing hardening, desktop Rust-core migration, launcher fixes, and the final legacy Chrome App migration window |
+| [`000-desktop-native-core-and-release-readiness.md`](000-desktop-native-core-and-release-readiness.md) | historical parent record; continuing release/store work moved to 009 and 011 | Sequence the completed desktop Rust-core migration and original release/legacy dependency graph |
 | [`001-fail-closed-desktop-releases.md`](001-fail-closed-desktop-releases.md) | complete; `desktop-v0.1.4` tagged proof accepted | Stage signed desktop assets in a draft, validate completeness, and publish once |
 | [`002-standalone-rust-http-core.md`](002-standalone-rust-http-core.md) | complete | Build a Tauri-independent native HTTP core and development CLI |
 | [`003-native-desktop-control-surface.md`](003-native-desktop-control-surface.md) | complete; macOS smoke accepted | Cut the desktop control surface over to Rust state with native folder selection and safe lifecycle UX |
@@ -27,4 +27,4 @@ decisions, evidence, or recommended next work changes.
 | [`008-appimage-first-linux-distribution.md`](008-appimage-first-linux-distribution.md) | complete; signed `v0.1.5` direct/installer AppImage accepted | Make AppImage the verified per-user Linux default and repair its extension launch path |
 | [`009-release-confidence-closeout.md`](009-release-confidence-closeout.md) | desktop release lane complete; maintainer/store migration lane active | Separate agent-owned release gates from maintainer/device sign-off and record the final go/no-go ledger |
 | [`010-native-kotlin-android-server.md`](010-native-kotlin-android-server.md) | complete; QuickJS/JNI fully removed; phone/tablet AVD gates passed | Replace Android's former QuickJS/TypeScript runtime with one native Kotlin server and align the core desktop/Android feature contract |
-| [`011-extension-launcher-and-chromeos-network-readiness.md`](011-extension-launcher-and-chromeos-network-readiness.md) | active; extension publication blocked | Close launcher/store loose ends and make ChromeOS Android URLs truthful and externally usable |
+| [`011-extension-launcher-and-chromeos-network-readiness.md`](011-extension-launcher-and-chromeos-network-readiness.md) | active; source candidate physically accepted, final artifact/store proof open | Close launcher/store loose ends and make ChromeOS Android URLs truthful and externally usable |

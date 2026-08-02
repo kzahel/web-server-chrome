@@ -9,6 +9,7 @@ const DEV_HOST = "local.ok200.app";
 const EXTENSION_ID = "lpkjdhnmgkhaabhimpdinmdgejoaejic";
 const CHROME_ID_ALPHABET = "abcdefghijklmnop";
 const isChromeWebStoreBuild = process.env.SKIP_INJECT_KEY === "1";
+const buildOutDir = process.env.EXTENSION_OUT_DIR || "dist";
 
 function extensionIdFromPublicKey(base64Key: string): string {
   const digest = crypto
@@ -155,6 +156,8 @@ export default defineConfig({
     },
   },
   build: {
+    outDir: buildOutDir,
+    emptyOutDir: true,
     sourcemap: !isChromeWebStoreBuild,
     minify: false,
     sourcemapIgnoreList: false,

@@ -28,11 +28,13 @@ the root [`topics.md`](topics.md) log before reusing them across a series.
 
 - Desktop runtime: [`docs/topics/desktop-runtime.md`](docs/topics/desktop-runtime.md)
 - Android runtime: [`docs/topics/android-runtime.md`](docs/topics/android-runtime.md)
+- ChromeOS extension launcher:
+  [`docs/topics/chromeos-extension-launcher.md`](docs/topics/chromeos-extension-launcher.md)
 - Desktop CI, signing, and releases:
   [`docs/topics/desktop-release-readiness.md`](docs/topics/desktop-release-readiness.md)
 - Legacy Chrome App migration:
   [`docs/topics/legacy-app-migration.md`](docs/topics/legacy-app-migration.md)
-- Current implementation sequence:
-  [`docs/tactical/000-desktop-native-core-and-release-readiness.md`](docs/tactical/000-desktop-native-core-and-release-readiness.md)
 - Active release confidence closeout:
   [`docs/tactical/009-release-confidence-closeout.md`](docs/tactical/009-release-confidence-closeout.md)
+- Active ChromeOS launcher and network closeout:
+  [`docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md`](docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md)

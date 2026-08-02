@@ -23,8 +23,8 @@ Same author. Same mission. Modern architecture.
 
 ## Current Status
 
-The CLI server, Chrome extension, Android app, and an early desktop build have
-all shipped. Their runtimes are not currently unified:
+The CLI server, Chrome extension, Android app, and signed desktop `v0.1.5` have
+all shipped. Their runtimes are intentionally not unified:
 
 - the CLI uses the TypeScript engine on Node.js;
 - Android source uses a native Kotlin HTTP/storage core behind its Compose UI;
@@ -46,8 +46,9 @@ correction for the next Android candidate.
 See the living
 [product branding decision](docs/topics/product-branding.md),
 [desktop runtime decision](docs/topics/desktop-runtime.md),
-[Android runtime decision](docs/topics/android-runtime.md), and
-[Tactical 003](docs/tactical/003-native-desktop-control-surface.md).
+[Android runtime decision](docs/topics/android-runtime.md),
+[ChromeOS extension launcher decision](docs/topics/chromeos-extension-launcher.md), and
+[active extension/ChromeOS closeout](docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md).
 
 ## Install
 
@@ -93,9 +94,9 @@ npx ok200 ./dist --upload          # enable PUT/POST file uploads
 ## Roadmap
 
 ### Coming Soon
-- Complete exact-artifact desktop product smoke on Windows and Linux
-- Publish and accept the AppImage-first Linux follow-up
-- Expanded Chrome Extension + desktop helper integration
+- Publish the corrected Android ChromeOS address candidate
+- Publish the launcher-focused Chrome extension refresh and ChromeOS options page
+- Complete the final legacy Chrome App migration update
 - HTTPS with self-signed cert generation
 - HTTP Basic Auth
 - Range requests for media streaming

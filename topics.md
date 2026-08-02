@@ -24,3 +24,6 @@ Keep each string exact across its commit series so
 - `internet-exposure-and-port-mapping` — restore an explicit, safe, and
   independently verified public-listening option through UPnP and potentially
   NAT-PMP/PCP across the native desktop and Android runtimes.
+- `chromeos-extension-launcher` — keep the Chrome extension truthful across
+  Android/Play availability states, preserve reliable install alternatives,
+  and establish any future Crostini route through physical evidence.

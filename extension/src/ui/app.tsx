@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom/client";
+import type React from "react";
+import { useEffect, useState } from "react";
 import {
+  CHROMEOS_HELP_URL,
   CHROMEOS_INTENT_URL,
-  isChromeOs,
+  DESKTOP_DOWNLOAD_URL,
   PLAY_STORE_URL,
+  type PlatformRoute,
+  PRODUCT_URL,
+  platformRoute,
 } from "../lib/platform-routing";
 
-const PRODUCT_URL = "https://ok200.app/#platforms";
 const FEEDBACK_URL = "https://ok200.app/feedback";
 const SOURCE_URL = "https://github.com/kzahel/web-server-chrome";
 
@@ -17,6 +20,7 @@ type AppState =
   | "launched"
   | "not-installed"
   | "chromeos"
+  | "unsupported"
   | "error";
 
 async function getPlatformOS(): Promise<string> {
@@ -25,8 +29,9 @@ async function getPlatformOS(): Promise<string> {
   });
 }
 
-function App() {
+export function App() {
   const [state, setState] = useState<AppState>("loading");
+  const [route, setRoute] = useState<PlatformRoute | null>(null);
   const [error, setError] = useState("");
   const [hostVersion, setHostVersion] = useState("");
 
@@ -35,9 +40,16 @@ function App() {
 
     async function init() {
       const os = await getPlatformOS();
+      const nextRoute = platformRoute(os);
+      if (!cancelled) setRoute(nextRoute);
 
-      if (isChromeOs(os)) {
+      if (nextRoute === "chromeos") {
         if (!cancelled) setState("chromeos");
+        return;
+      }
+
+      if (nextRoute === "unsupported") {
+        if (!cancelled) setState("unsupported");
         return;
       }
 
@@ -118,6 +130,9 @@ function App() {
     });
   };
 
+  const handleRetry =
+    route === "chromeos" ? handleChromeOsLaunch : handleLaunch;
+
   return (
     <div
       style={{
@@ -159,7 +174,7 @@ function App() {
 
       {state === "launched" && (
         <p style={{ color: "#22c55e", margin: 0, fontWeight: 500 }}>
-          App launched!
+          {route === "chromeos" ? "Opening Android app..." : "App launched!"}
         </p>
       )}
 
@@ -169,7 +184,7 @@ function App() {
             Serve any folder over HTTP. Install the desktop app to get started.
           </p>
           <a
-            href={PRODUCT_URL}
+            href={DESKTOP_DOWNLOAD_URL}
             target="_blank"
             rel="noopener noreferrer"
             style={primaryLink}
@@ -182,16 +197,27 @@ function App() {
       {state === "chromeos" && (
         <>
           <p style={{ color: "#666", margin: "0 0 12px", fontSize: 13 }}>
-            On ChromeOS, launch the 200 OK Web Server Android app to serve files
-            locally.
+            Already installed? Open the 200 OK Android app and confirm the
+            ChromeOS prompt. Otherwise use the install options—Android apps and
+            Google Play aren&apos;t available on every Chromebook.
           </p>
           <button
             type="button"
             onClick={handleChromeOsLaunch}
             style={primaryButton}
           >
-            Open Android App
+            Open installed Android app
           </button>
+          <div style={{ marginTop: 8 }}>
+            <a
+              href={CHROMEOS_HELP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={secondaryActionLink}
+            >
+              Install or other ChromeOS options
+            </a>
+          </div>
           <div style={{ marginTop: 8 }}>
             <a
               href={PLAY_STORE_URL}
@@ -199,9 +225,25 @@ function App() {
               rel="noopener noreferrer"
               style={secondaryLink}
             >
-              View on Google Play
+              Google Play
             </a>
           </div>
+        </>
+      )}
+
+      {state === "unsupported" && (
+        <>
+          <p style={{ color: "#666", margin: "0 0 12px", fontSize: 13 }}>
+            This Chrome platform does not have a supported 200 OK launcher path.
+          </p>
+          <a
+            href={PRODUCT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={primaryLink}
+          >
+            See supported platforms
+          </a>
         </>
       )}
 
@@ -210,7 +252,7 @@ function App() {
           <p style={{ color: "#ef4444", margin: "0 0 12px", fontSize: 13 }}>
             {error}
           </p>
-          <button type="button" onClick={handleLaunch} style={secondaryButton}>
+          <button type="button" onClick={handleRetry} style={secondaryButton}>
             Try Again
           </button>
         </>
@@ -297,10 +339,8 @@ const secondaryLink: React.CSSProperties = {
   textDecoration: "none",
 };
 
-const root = document.getElementById("root");
-if (!root) throw new Error("Root element not found");
-ReactDOM.createRoot(root).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
+const secondaryActionLink: React.CSSProperties = {
+  ...secondaryButton,
+  display: "inline-block",
+  textDecoration: "none",
+};

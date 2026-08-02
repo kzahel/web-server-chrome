@@ -1,12 +1,33 @@
 # Changelog
 
-## Unreleased
+## [0.1.4]
+
+### Added
+- Launch the Android app on ChromeOS through its `ok200://launch` intent, with
+  permanent Google Play and ChromeOS-options links.
+- Explain Android/Google Play availability limits and unsupported-platform
+  alternatives without claiming that the extension can detect Play state.
+- Set the expectation that ChromeOS may ask the user to confirm 200 OK in an
+  **Open with** prompt on first launch.
+- Cover ChromeOS launch, retry, missing desktop app, and unsupported platform
+  behavior with popup-level tests.
+
+### Fixed
+- Retry the Android intent after a ChromeOS launch error instead of attempting
+  unsupported desktop native messaging.
+- Send missing desktop-app users directly to the signed download page.
+- Build extension ZIPs from an empty store-safe staging directory and reject
+  development keys/origins, source maps, unexpected files, excess permissions,
+  and tag/version mismatches in CI.
 
 ### Changed
 - Adopt the 200 OK Web Server product name and explain the extension's launcher
   role while retaining the legacy name in successor copy.
 - Replace the stale desktop-app destination with the canonical product site.
 - Add stable Feedback & support and Source · MIT links to the popup.
+- Separate **Open installed Android app** from the guaranteed HTTPS
+  installation/options route instead of pretending the extension can determine
+  which route applies.
 
 ## [0.1.3]
 

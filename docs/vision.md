@@ -64,7 +64,9 @@ surface. One application-scoped controller owns UI, foreground service,
 notification, boot, wake-lock, low-battery, and power-observation paths. SAF and
 optional all-files roots remain supported. ChromeOS uses the Android application
 as the server; the Chrome extension launches its custom `ok200` scheme through
-an Android intent with a Play Store fallback.
+a best-effort Android intent. Because an ordinary extension cannot detect Play
+or app-installation state, it also exposes a separate HTTPS options route with
+the exact Play listing and non-Android alternatives.
 
 Desktop and Android intentionally have separate Rust and Kotlin implementations.
 Their common feature/HTTP contract is maintained through tests, not a shared
@@ -177,9 +179,11 @@ After the replacement and release path are dependable:
 
 - [Desktop runtime topic](topics/desktop-runtime.md)
 - [Android runtime topic](topics/android-runtime.md)
+- [ChromeOS extension launcher topic](topics/chromeos-extension-launcher.md)
 - [Internet exposure and port mapping topic](topics/internet-exposure-and-port-mapping.md)
 - [Desktop release/signing topic](topics/desktop-release-readiness.md)
 - [Legacy migration topic](topics/legacy-app-migration.md)
-- [Tactical 000: implementation sequence](tactical/000-desktop-native-core-and-release-readiness.md)
+- [Tactical 000: historical desktop implementation sequence](tactical/000-desktop-native-core-and-release-readiness.md)
+- [Tactical 011: active extension and ChromeOS closeout](tactical/011-extension-launcher-and-chromeos-network-readiness.md)
 - [`research/`](research/) — historical comparisons and proposals; not
   automatically current decisions

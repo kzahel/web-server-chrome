@@ -24,6 +24,9 @@ status. Do not create a topic for every small standalone change.
 - [`android-runtime.md`](android-runtime.md) — native Kotlin HTTP/storage
   implementation, Android lifecycle and Advanced controls, compatibility
   contract, evidence, and release gaps.
+- [`chromeos-extension-launcher.md`](chromeos-extension-launcher.md) — public
+  detection limits, Android/Play fallback contract, unsupported-device
+  messaging, Crostini direction, and physical/store validation gates.
 - [`internet-exposure-and-port-mapping.md`](internet-exposure-and-port-mapping.md)
   — accepted future UPnP roadmap, public-exposure safety contract, native
   runtime ownership, and ChromeOS multi-NAT constraints.

@@ -1,14 +1,15 @@
 # Extension Launcher and ChromeOS Network Readiness
 
-Status: **active; the ChromeOS URL source fix passes physical validation.
-Extension publication remains blocked on launcher/artifact cleanup and
-store-delivered proof.**
+Status: **active; the ChromeOS URL source fix and exact extension source
+candidate pass physical validation. The owned options-page deployment, final
+release-version artifact, and store-delivered proof remain open.**
 
-Last updated: **2026-08-01**.
+Last updated: **2026-08-02**.
 
 Related continuing concerns:
 
 - [Android runtime](../topics/android-runtime.md)
+- [ChromeOS extension launcher](../topics/chromeos-extension-launcher.md)
 - [Legacy Chrome App migration](../topics/legacy-app-migration.md)
 - [Desktop release readiness](../topics/desktop-release-readiness.md)
 - [Release confidence closeout](009-release-confidence-closeout.md)
@@ -36,11 +37,11 @@ is installed. The remaining blockers are narrower but user-visible:
 | Area | Current result | Release consequence |
 |---|---|---|
 | Desktop native launch | Pass on accepted `v0.1.5` packages | Keep this route |
-| ChromeOS launch with Android installed | Pass from unpacked candidate to one app task | Keep the intent route |
-| ChromeOS launch without Android installed | Fail: the intent reached Play, but visible Play UI stayed on its generic home | Replace or harden the primary fallback |
+| ChromeOS launch with Android installed | Exact source candidate offers the system **Open with** confirmation, then opens one app task | Keep the intent route and explain the confirmation |
+| ChromeOS without Android installed | Previous intent fallback reached generic Play or a blank intent tab; source now separates **Open installed Android app** from a prominent owned HTTPS options route | Deploy and prove the options page before release |
 | ChromeOS server reachability over IPv4 | Pass at the Chromebook's physical LAN IPv4 and selected port | Preserve ChromeOS automatic forwarding |
 | Android URL shown on ChromeOS | Source fix passes: no ARC URL, honest Chromebook IPv4 instructions, reachable bracketed IPv6, and loopback | Include it in the next Android candidate and prove store delivery |
-| Extension artifact hygiene | Source candidate is clean only through the tag workflow; local packaging can inject development material | Repair packaging and CI |
+| Extension artifact hygiene | Exact `0.1.3` source candidate passes local inspection; local and CI packaging share the same path | Prove the later `0.1.4` release-version ZIP and digest |
 | Store delivery | Not yet proved for the new extension or Play `v0.2.0` | Required before broad migration messaging |
 
 ## Accepted product boundaries
@@ -48,6 +49,8 @@ is installed. The remaining blockers are narrower but user-visible:
 1. The extension is a launcher, status, and install-discovery surface. The
    desktop or Android app owns the server.
 2. ChromeOS uses the Android app. Native messaging remains a desktop-only path.
+   The extension cannot use private ChromeOS APIs to detect Play availability
+   or Android installation state; it must present uncertainty honestly.
 3. A numeric address is presented as a LAN address only when another device on
    that LAN can use it.
 4. A reachable IPv6 URL supplements the IPv4 URL or instruction; it never
@@ -222,6 +225,12 @@ and a small extension allowlist. The store extension cannot rely on it.
 
 - [Chromium `system.network` permission availability](https://chromium.googlesource.com/chromium/src/+/main/extensions/common/api/_permission_features.json)
 
+ChromeOS application availability has the same public/private boundary. The
+store extension can identify `cros` through `runtime.getPlatformInfo`, but the
+internal `chromeosInfoPrivate.playStoreStatus` API is allowlisted. The accepted
+intent, fallback, unsupported-device, and future Crostini behavior now lives in
+[`chromeos-extension-launcher.md`](../topics/chromeos-extension-launcher.md).
+
 #### 4. Accepted manual IPv4 behavior
 
 The implemented ChromeOS UI hides Android-owned IPv4 addresses and says that
@@ -233,43 +242,44 @@ on-device URL. This is less convenient than automatic discovery but true.
 
 ### E1 — make the extension a complete launcher
 
-- [ ] Send the desktop missing-app action directly to `/download` instead of
+- [x] Send the desktop missing-app action directly to `/download` instead of
       the general platform section.
-- [ ] Keep ChromeOS out of native messaging and retain the packaged
+- [x] Keep ChromeOS out of native messaging and retain the packaged
       `ok200://launch` intent.
-- [ ] Make the ChromeOS retry/error action retry the Android route, not the
+- [x] Make the ChromeOS retry/error action retry the Android route, not the
       desktop native-message handler.
-- [ ] Replace the no-app primary fallback with a route that visibly lands on
-      the exact app listing. Prefer a stable `ok200.app` ChromeOS install page
-      that can offer both intent and explicit Play links if direct intent
-      fallback remains inconsistent.
-- [ ] Preserve an explicit secondary Google Play link.
-- [ ] Add tests for installed-app intent construction, no-app fallback,
+- [x] Replace the ambiguous no-app fallback promise with distinct actions:
+      **Open installed Android app** is best effort, while the prominent
+      `ok200.app/chromeos` HTTPS route owns installation, explicit Play,
+      unsupported-device alternatives, and honest Crostini status.
+- [x] Preserve explicit secondary ChromeOS-options and Google Play links.
+- [x] Add tests for installed-app intent construction, no-app options,
       ChromeOS retry, desktop launch, and unsupported platform behavior.
 
 ### E2 — make the extension artifact publishable
 
-- [ ] Assign the next extension version; `0.1.4` is the expected next value
+- [x] Assign the next extension version; `0.1.4` is the expected next value
       unless a store-side version already consumed it.
-- [ ] Expand `extension/CHANGELOG.md` to cover ChromeOS intent launch,
-      fallback, launcher copy, desktop destination, and packaging fixes.
-- [ ] Make `scripts/package-extension.sh` use the store-safe build mode,
+- [x] Expand `extension/CHANGELOG.md` to cover ChromeOS intent launch, the
+      explicit options route, launcher copy, desktop destination, and packaging
+      fixes.
+- [x] Make `scripts/package-extension.sh` use the store-safe build mode,
       recreate the ZIP from an empty destination, and reject development keys,
       localhost origins, and source maps.
-- [ ] Run extension routing tests in the extension-specific CI workflow.
-- [ ] Inspect the produced ZIP in CI: version, minimal permissions, expected
+- [x] Run extension routing tests in the extension-specific CI workflow.
+- [x] Inspect the produced ZIP in CI: version, minimal permissions, expected
       files, no development key/origin/maps, and tag-to-manifest version match.
-- [ ] Retain the tag workflow's `SKIP_INJECT_KEY=1` behavior.
+- [x] Retain the tag workflow's `SKIP_INJECT_KEY=1` behavior.
 
 ### E3 — align public copy and install surfaces
 
 - [ ] Update the Chrome Web Store name, short description, overview, and
       screenshots to describe a launcher, not an in-extension server.
-- [ ] Remove website copy saying the new listing “will be updated once ready”
-      once the accepted store version is actually delivered.
-- [ ] Replace any claim that “all features” live in the extension with the
+- [x] Remove website copy saying the new listing “will be updated once ready”
+      and replace it with the current launcher/platform split.
+- [x] Replace any claim that “all features” live in the extension with the
       extension-plus-native-app platform split.
-- [ ] Confirm all desktop links resolve to accepted `v0.1.5` installers and the
+- [x] Confirm all desktop links resolve to accepted `v0.1.5` installers and the
       Linux default remains AppImage.
 - [ ] Confirm the Play listing reflects the accepted branding and delivered
       Android version before claiming it does.
@@ -338,10 +348,12 @@ on-device URL. This is less convenient than automatic discovery but true.
 
 ### P1 — publish and prove the launcher destination
 
-- [ ] Engineering: inspect one exact final extension ZIP and record its digest.
-- [ ] Engineering: install that ZIP unpacked on physical ChromeOS and repeat
-      installed-app, one-task, no-app, Play-link, and server reachability
-      checks.
+- [x] Engineering: inspect an exact source-candidate ZIP and record its digest.
+- [x] Engineering: install that ZIP unpacked on physical ChromeOS and repeat
+      installed-app, one-task, no-app options, and Play-link checks. Server
+      reachability remains covered by the Android validation above.
+- [ ] Engineering: after authorized versioning, inspect the exact `0.1.4`
+      release ZIP and record its digest.
 - [ ] Maintainer: upload that exact ZIP to the Chrome Web Store.
 - [ ] Maintainer/device proof: verify the updated extension arrives through
       store delivery on an existing controlled profile.
@@ -362,8 +374,8 @@ on-device URL. This is less convenient than automatic discovery but true.
 | ChromeOS IPv4 | Physical Chromebook plus second IPv4 client | No ARC URL shown; advertised/manual Chromebook URL remains present and fetches the exact file even when IPv6 is available |
 | ChromeOS IPv6 | Physical Chromebook plus second IPv6 client | Additional bracketed Android IPv6 URL fetches exact file when available |
 | ChromeOS mDNS | Deferred future convenience | Not a gate for the basic address correction |
-| Launcher with app | Store extension plus Play app | One click opens/focuses one Android task |
-| Launcher without app | Store extension, app absent | Primary and explicit fallback visibly reach the exact Play listing |
+| Launcher with app | Store extension plus Play app | Intent offers 200 OK in ChromeOS's system confirmation, then opens/focuses one Android task |
+| Launcher without app | Store extension, app absent | Prominent HTTPS options route opens independently of the intent and exposes the exact Play listing |
 | Store delivery | Existing controlled installs | Served versions and artifacts match the accepted candidates |
 
 ## Evidence recorded on 2026-08-01
@@ -401,6 +413,46 @@ on-device URL. This is less convenient than automatic discovery but true.
 - The pre-existing JSTorrent `1.0.23` app and data were not replaced. Temporary
   audit apps, APKs, roots, and the running 200 OK server were removed; the
   original JSTorrent package remained at its original install/update times.
+
+## Source evidence recorded on 2026-08-02
+
+- Public extension APIs expose the `cros` platform class but not Android app or
+  Play availability. Chromium's `chromeosInfoPrivate.playStoreStatus` exists
+  only behind an allowlisted private permission, so the product contract now
+  explicitly forbids pretending to detect it.
+- The earlier missing-app physical test uninstalled 200 OK but did not disable
+  Google Play. The new ChromeOS topic records Play-disabled/unsupported and
+  managed-policy states separately and prohibits destructive Play removal on a
+  data-bearing profile merely to complete the matrix.
+- An exact store-safe source package reproduced a second missing-app behavior:
+  ChromeOS left the extension-created `intent:` tab blank and ignored its
+  encoded HTTPS fallback. A timed tab replacement was rejected because it can
+  replace the tab while the user is still responding to ChromeOS's **Open
+  with** prompt. Source instead makes the installed-app and guaranteed HTTPS
+  options paths separate explicit choices and leaves the system prompt alone.
+- Exact source-candidate ZIP `0.1.3`, SHA-256
+  `0000c1194ed65f576c7fc56ecbf3412393c64635c053c332ddac7e447e04fd46`,
+  passed the package inspector and was installed unpacked on Stable ChromeOS.
+  With 200 OK installed, the package displayed ChromeOS's **Open with** chooser
+  naming 200 OK; confirming **Open** launched exactly
+  `app.ok200.android/.MainActivity`, and the intent tab closed.
+- After removing only the sideloaded 200 OK app, while preserving
+  `com.android.vending`, the same package's prominent options action opened
+  exactly `https://ok200.app/chromeos` and its Play action opened the exact
+  `app.ok200.android` listing. Production `/chromeos` still returns 404, so
+  deployment remains a publication gate even though the source-built page
+  passed physical visual review.
+- Popup-level tests now cover permanent ChromeOS options/Play links, absence of
+  native messaging, Android-route retry, direct desktop download, and an
+  unsupported platform. Pure route/intent tests cover all supported desktop
+  values and the exact owned options route.
+- The generated ChromeOS options page explains model/account limitations,
+  another-device alternatives, and Crostini as unproven future work. The stale
+  website “once ready” and universal-feature claims are removed in source.
+- Local store packaging builds in fresh temporary staging, emits no key,
+  localhost origin, source map, or source file, and passes an allowlisted-file,
+  permission, origin, and manifest inspector for both directory and ZIP. The
+  extension workflow runs the same package path and enforces tag/version match.
 
 ## Completion criteria
 

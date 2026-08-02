@@ -15,8 +15,10 @@ Last reconciled: **2026-08-01**.
 The accepted plan, implementation sequence, and detailed emulator evidence are
 recorded in
 [Tactical 010](../tactical/010-native-kotlin-android-server.md). This topic owns
-continuing Android runtime truth after that bounded tactical. Extension-launcher
-cleanup and the active ChromeOS address/discovery work are sequenced in
+continuing Android runtime truth after that bounded tactical. ChromeOS
+extension detection, fallback, and future Crostini behavior are owned by
+[`chromeos-extension-launcher.md`](chromeos-extension-launcher.md), with active
+implementation sequencing in
 [Tactical 011](../tactical/011-extension-launcher-and-chromeos-network-readiness.md).
 Future UPnP/public-listening work is owned separately by
 [`internet-exposure-and-port-mapping.md`](internet-exposure-and-port-mapping.md).

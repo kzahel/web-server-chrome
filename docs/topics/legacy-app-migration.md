@@ -20,6 +20,8 @@ split live in
 [Tactical 009](../tactical/009-release-confidence-closeout.md).
 Extension-launcher cleanup and the ChromeOS Android address/discovery gate live
 in [Tactical 011](../tactical/011-extension-launcher-and-chromeos-network-readiness.md).
+The durable ChromeOS Android/Play uncertainty and fallback contract lives in
+[`chromeos-extension-launcher.md`](chromeos-extension-launcher.md).
 Current-product and legacy-name usage is governed by
 [`product-branding.md`](product-branding.md).
 Google's current Chrome App support policy is documented in
@@ -141,9 +143,10 @@ communication channel. The updater can deliver the Rust core later.
 ## Pre-send acceptance
 
 - `ok200.app/migrate` gives correct platform-specific instructions.
-- ChromeOS extension behavior launches `ok200://launch`; with the app absent,
-  its primary fallback visibly reaches the exact Google Play listing rather
-  than only opening the Play home surface.
+- ChromeOS extension behavior offers `ok200://launch` for an already-installed
+  app; because an ordinary extension cannot detect Play or Android installation
+  state, a separate prominent HTTPS action reaches an owned options page with
+  the exact Play listing and honest non-Android alternatives.
 - The Android app does not present an ARC-private address as a LAN URL; its
   advertised or documented ChromeOS address fetches a known file from a second
   device.

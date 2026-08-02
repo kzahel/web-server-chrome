@@ -1,6 +1,6 @@
 # 000: Desktop Native Core and Release Readiness
 
-Status: **active parent plan.** Documentation baseline, Phase A1
+Status: **historical parent execution record.** Documentation baseline, Phase A1
 implementation, standalone Rust core, and native desktop control surface
 implementation completed 2026-07-28. macOS product smoke is accepted in
 [`004-portrait-desktop-polish-and-directory-listing.md`](004-portrait-desktop-polish-and-directory-listing.md);
@@ -17,8 +17,9 @@ The final evidence gates and agent-versus-maintainer ownership split are
 recorded in
 [`009-release-confidence-closeout.md`](009-release-confidence-closeout.md).
 The complete `desktop-v0.1.5` tagged release and exact recommended-path
-acceptance are recorded in Tactical 009. This parent remains active only for
-the store-delivered ChromeOS/Android and final legacy migration lane.
+acceptance are recorded in Tactical 009. Continuing store/legacy work is now
+owned by Tacticals 009 and 011 and the linked topic documents; this older plan
+must not override them.
 
 Topics:
 
@@ -32,7 +33,12 @@ Living state and decisions:
 - [`../topics/desktop-release-readiness.md`](../topics/desktop-release-readiness.md)
 - [`../topics/legacy-app-migration.md`](../topics/legacy-app-migration.md)
 
-## Objective
+## Original objective
+
+This section records the 2026-07-28 baseline and is not current runtime
+guidance. Android's embedded JavaScript runtime was subsequently deleted in
+full; current Android truth lives in
+[`../topics/android-runtime.md`](../topics/android-runtime.md).
 
 Deliver a trustworthy lightweight desktop replacement for the legacy Chrome
 App while the final legacy update channel is still available:
@@ -41,7 +47,7 @@ App while the final legacy update channel is still available:
   status, logs, tray, updater, and native messaging;
 - move desktop HTTP execution into a small Rust core shared across Windows,
   macOS, and Linux;
-- defer the working Android QuickJS implementation and the Node/TypeScript CLI;
+- defer the then-current Android implementation and the Node/TypeScript CLI;
 - make CI, signing, notarization, updater metadata, and release publication fail
   closed;
 - fix migration-facing launcher, links, and copy; and

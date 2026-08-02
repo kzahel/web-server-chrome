@@ -16,3 +16,5 @@ tmp/
 .yep/
 wsc-crx/
 legacy-app.zip
+extension/*.zip
+extension/*.zip.sha256

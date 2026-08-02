@@ -8,12 +8,18 @@ on:
     paths:
       - 'extension/**'
       - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - 'scripts/package-extension.sh'
+      - 'scripts/validate-extension-package.mjs'
       - '.github/workflows/extension-ci.yml'
   pull_request:
     branches: [main]
     paths:
       - 'extension/**'
       - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - 'scripts/package-extension.sh'
+      - 'scripts/validate-extension-package.mjs'
       - '.github/workflows/extension-ci.yml'
 
 jobs:
@@ -38,13 +44,19 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build extension
         run: pnpm run build
 
       - name: Typecheck
         run: pnpm run typecheck
+
+      - name: Test launcher routing and popup behavior
+        run: pnpm run test
+
+      - name: Build and inspect store-safe package
+        run: ../scripts/package-extension.sh "$PWD/ok200-extension.zip"
 
   release:
     needs: build
@@ -71,19 +83,20 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Build extension (no key for CWS)
-        run: SKIP_INJECT_KEY=1 pnpm run build
-
-      - name: Package extension
-        run: |
-          cd dist
-          zip -r ../ok200-extension.zip .
+      - name: Build and inspect store-safe package
+        run: ../scripts/package-extension.sh "$PWD/ok200-extension.zip"
 
       - name: Extract version from tag
         id: version
         run: echo "VERSION=${GITHUB_REF_NAME#extension-v}" >> $GITHUB_OUTPUT
+
+      - name: Verify package version and write checksum
+        run: |
+          node ../scripts/validate-extension-package.mjs ok200-extension.zip \
+            --expected-version "${GITHUB_REF_NAME#extension-v}"
+          sha256sum ok200-extension.zip > ok200-extension.zip.sha256
 
       - name: Extract changelog
         run: |
@@ -97,4 +110,6 @@ jobs:
         with:
           name: Extension v${{ steps.version.outputs.VERSION }}
           body_path: /tmp/release-notes.md
-          files: extension/ok200-extension.zip
+          files: |
+            extension/ok200-extension.zip
+            extension/ok200-extension.zip.sha256

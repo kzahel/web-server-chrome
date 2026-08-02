@@ -4,10 +4,12 @@ Read [docs/vision.md](docs/vision.md) first for product intent. For current
 architecture and implementation direction, read
 [docs/topics/desktop-runtime.md](docs/topics/desktop-runtime.md),
 [docs/topics/android-runtime.md](docs/topics/android-runtime.md), and
-[docs/tactical/000-desktop-native-core-and-release-readiness.md](docs/tactical/000-desktop-native-core-and-release-readiness.md).
+[docs/topics/chromeos-extension-launcher.md](docs/topics/chromeos-extension-launcher.md).
 For the active final release gate and the split between agent-owned and
 maintainer/device checks, read
-[docs/tactical/009-release-confidence-closeout.md](docs/tactical/009-release-confidence-closeout.md).
+[docs/tactical/009-release-confidence-closeout.md](docs/tactical/009-release-confidence-closeout.md)
+and
+[docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md](docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md).
 
 ## Quick Context
 
@@ -43,6 +45,9 @@ lifecycle, permission, background, wake, boot, and battery policy.
 Do not recreate the deleted generic TypeScript native-I/O architecture.
 Android and desktop own their Kotlin and Rust implementations respectively;
 keep Node imports in `packages/engine` within its Node adapter.
+ChromeOS launcher detection limits, Android/Play fallbacks, and the future
+Crostini decision are owned by
+[`docs/topics/chromeos-extension-launcher.md`](docs/topics/chromeos-extension-launcher.md).
 
 ## Cross-Project Context
 
@@ -212,12 +217,16 @@ All components follow the same release pattern:
 ### Extension Releases
 
 ```bash
+./scripts/release-extension.sh <version> --check
 ./scripts/release-extension.sh <version>
 ```
 
-- Updates `extension/public/manifest.json`
+- `--check` runs typechecking, popup/routing tests, and store-safe ZIP
+  construction without changing tracked files, committing, tagging, or pushing.
+- Updates `extension/public/manifest.json` and `extension/package.json`
 - Creates tag: `extension-v{version}`
-- CI creates GitHub Release with ZIP attachment
+- CI independently runs extension tests, rejects development material or
+  manifest/tag mismatch, and creates a GitHub Release with ZIP and checksum
 - **Manual step:** Download ZIP from GitHub Release and upload to Chrome Web Store
 - Changelog: `extension/CHANGELOG.md`
 

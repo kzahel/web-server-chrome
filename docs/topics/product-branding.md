@@ -77,6 +77,10 @@ inside or is intended only for Chrome.
 The extension is a launcher/status surface, not the HTTP server. Its current
 name is **200 OK Web Server**, with its Chrome-extension role and legacy
 relationship explained in description and migration copy.
+ChromeOS availability and fallback claims must also follow
+[`chromeos-extension-launcher.md`](chromeos-extension-launcher.md); branding
+must not conceal that Android apps and Google Play are unavailable on some
+Chromebooks or accounts.
 
 ## Surface contract
 

@@ -6,6 +6,7 @@ import path from "node:path";
 
 const LEGACY_APP_ID = "ofhbbkphhbklhfoeikjpcbhemlocgigb";
 const PRODUCTION_SITE_MATCH = "https://ok200.app/*";
+const CROSTINI_CONTROLLER_MATCH = "http://penguin.linux.test/*";
 const EXPECTED_DESCRIPTION =
   "Launch 200 OK Web Server on desktop or ChromeOS. The successor to Web Server for Chrome.";
 const EXPECTED_ICONS = {
@@ -21,6 +22,7 @@ const REQUIRED_FILES = new Set([
   "icons/ok-128.png",
   "manifest.json",
   "src/ui/app.html",
+  "src/ui/crostini.html",
   "sw.js",
 ]);
 
@@ -76,8 +78,13 @@ assert(
 );
 assert(!Object.hasOwn(manifest, "key"), "manifest contains a development key");
 assert(
+  JSON.stringify(manifest.optional_host_permissions) ===
+    JSON.stringify([CROSTINI_CONTROLLER_MATCH]),
+  "optional host permissions must contain only the Crostini controller",
+);
+assert(
   !Object.hasOwn(manifest, "host_permissions"),
-  "manifest contains unexpected host permissions",
+  "manifest contains required host permissions",
 );
 assert(
   !Object.hasOwn(manifest, "content_scripts"),
@@ -114,7 +121,7 @@ assert(
 );
 assert(
   JSON.stringify(manifest.externally_connectable?.matches) ===
-    JSON.stringify([PRODUCTION_SITE_MATCH]),
+    JSON.stringify([PRODUCTION_SITE_MATCH, CROSTINI_CONTROLLER_MATCH]),
   "unexpected externally_connectable matches",
 );
 if (expectedVersion) {

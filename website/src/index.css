@@ -169,6 +169,7 @@ footer a:hover {
 
 .footer-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 24px;
   justify-content: center;
   margin-bottom: 16px;

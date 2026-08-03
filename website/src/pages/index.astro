@@ -2,11 +2,16 @@
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const chromeWebStoreUrl =
+  "https://chromewebstore.google.com/detail/web-server-for-chrome/lpkjdhnmgkhaabhimpdinmdgejoaejic";
+const googlePlayUrl =
+  "https://play.google.com/store/apps/details?id=app.ok200.android";
 ---
 
 <BaseLayout
   title="200 OK Web Server — Successor to Web Server for Chrome"
-  description="200 OK Web Server is the lightweight cross-platform successor to Web Server for Chrome, rebuilt by the original author for desktop, Android, ChromeOS, and the command line."
+  description="200 OK Web Server is the lightweight cross-platform successor to Web Server for Chrome, rebuilt by the original author for desktop, Android, and ChromeOS."
 >
   <Header activePage="home" />
 
@@ -14,9 +19,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <section class="hero">
       <div class="container">
         <img src="/logo-256.png" alt="200 OK!" class="hero-logo">
-        <h1>Serve files locally.<br>From any device.</h1>
+        <h1>Serve files locally.<br>On the device you use.</h1>
         <div class="hero-badge">From the creator of Web Server for Chrome (200k+ users)</div>
-        <p>200 OK Web Server carries the original Web Server for Chrome workflow forward across desktop, Android, ChromeOS, and the command line.</p>
+        <p>200 OK Web Server carries the original Web Server for Chrome workflow forward across desktop, Android, and ChromeOS.</p>
         <div class="hero-actions">
           <a href="/download" class="hero-cta">Download for desktop</a>
           <a href="#platforms" class="hero-cta-secondary">See all platforms</a>
@@ -51,41 +56,41 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     <section id="platforms" class="platforms">
       <div class="container">
-        <h2>Every platform. One simple workflow.</h2>
-        <p class="section-subtitle">Choose a folder, start the server, and share its URL. Each platform uses the native runtime that fits it.</p>
+        <h2>Choose the version for your device.</h2>
+        <p class="section-subtitle">Choose a folder, start the server, and share its URL. Each supported platform has a focused native experience.</p>
         <div class="platform-grid">
-          <div class="platform-card">
+          <a class="platform-card" href="/download">
             <div class="platform-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
             </div>
             <h3>Desktop</h3>
-            <p>Tauri app for Mac, Windows, and Linux. ~10MB install — not 100MB+ Electron.</p>
-            <a href="/download" class="platform-status status-ready">Download</a>
-          </div>
-          <div class="platform-card">
-            <div class="platform-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" y1="8" x2="12" y2="8"/><line x1="3.95" y1="6.06" x2="8.54" y2="14"/><line x1="10.88" y1="21.94" x2="15.46" y2="14"/></svg>
-            </div>
-            <h3>Chrome Extension</h3>
-            <p>Familiar browser presence that launches the desktop or Android server app.</p>
-            <span class="platform-status status-ready">Available Now</span>
-          </div>
-          <div class="platform-card">
+            <p>A lightweight app for macOS, Windows, and Linux with native Rust serving.</p>
+            <span class="platform-action">Download desktop <span aria-hidden="true">→</span></span>
+          </a>
+          <a class="platform-card" href={googlePlayUrl}>
             <div class="platform-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
             </div>
-            <h3>Android / ChromeOS</h3>
-            <p>Native Android app with a responsive Jetpack Compose UI.</p>
-            <span class="platform-status status-ready">Available Now</span>
-          </div>
-          <div class="platform-card">
+            <h3>Android</h3>
+            <p>A native Android app with responsive controls and reliable background options.</p>
+            <span class="platform-action">Get the Android app <span aria-hidden="true">→</span></span>
+          </a>
+          <a class="platform-card" href="/chromeos">
             <div class="platform-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" y1="8" x2="12" y2="8"/><line x1="3.95" y1="6.06" x2="8.54" y2="14"/><line x1="10.88" y1="21.94" x2="15.46" y2="14"/></svg>
             </div>
-            <h3>CLI</h3>
-            <p>Drop-in replacement for <code>python -m http.server</code>. Works today.</p>
-            <span class="platform-status status-ready">Available Now</span>
-          </div>
+            <h3>ChromeOS</h3>
+            <p>Choose the quick Android route or the no-Play Linux version with extension controls.</p>
+            <span class="platform-action">Compare ChromeOS options <span aria-hidden="true">→</span></span>
+          </a>
+          <a class="platform-card" href={chromeWebStoreUrl}>
+            <div class="platform-icon">
+              <img src="/logo-128.png" alt="" class="platform-logo">
+            </div>
+            <h3>Chrome Extension</h3>
+            <p>Launch the desktop app or set up and control the ChromeOS Linux server.</p>
+            <span class="platform-action">Install the extension <span aria-hidden="true">→</span></span>
+          </a>
         </div>
       </div>
     </section>
@@ -108,19 +113,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
           <div class="feature-card">
             <h3>CORS headers</h3>
-            <p>Enable cross-origin requests with a single flag.</p>
-          </div>
-          <div class="feature-card">
-            <h3>File uploads</h3>
-            <p>Accept PUT/POST file uploads for quick sharing.</p>
+            <p>Enable cross-origin requests with one straightforward setting.</p>
           </div>
           <div class="feature-card">
             <h3>ETag caching</h3>
             <p>Automatic ETag generation and 304 Not Modified responses.</p>
           </div>
+          <div class="feature-card">
+            <h3>Range requests</h3>
+            <p>Seek and stream large files without downloading them from the beginning.</p>
+          </div>
         </div>
 
-        <h3 class="coming-soon-heading">Coming Soon</h3>
+        <h3 class="coming-soon-heading">On the roadmap</h3>
         <div class="feature-grid">
           <div class="feature-card coming-soon">
             <h3>HTTPS</h3>
@@ -128,11 +133,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </div>
           <div class="feature-card coming-soon">
             <h3>HTTP Basic Auth</h3>
-            <p>Password-protect your server with a single flag.</p>
-          </div>
-          <div class="feature-card coming-soon">
-            <h3>Range requests</h3>
-            <p>Serve media files with seeking and streaming support.</p>
+            <p>Protect access to served files with a username and password.</p>
           </div>
           <div class="feature-card coming-soon">
             <h3>QR code</h3>
@@ -146,40 +147,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             <h3>Reverse proxy</h3>
             <p>Proxy API requests to a backend server during development.</p>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="cli" class="cli">
-      <div class="container">
-        <h2>CLI</h2>
-        <div class="code-block">
-          <code>npx ok200</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># serve current directory on :8080</span><br>
-          <code>npx ok200 ./dist</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># serve a specific directory</span><br>
-          <code>npx ok200 --port 3000</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># custom port</span><br>
-          <code>npx ok200 --host 0.0.0.0</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># expose on LAN</span><br>
-          <code>npx ok200 ./dist --spa --cors</code>&nbsp;&nbsp;&nbsp;<span class="code-comment"># SPA mode with CORS</span><br>
-          <code>npx ok200 ./dist --upload</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># enable file uploads</span>
-        </div>
-        <div class="cli-options">
-          <table>
-            <thead>
-              <tr>
-                <th>Flag</th>
-                <th>Description</th>
-                <th>Default</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td><code>--port, -p</code></td><td>Port to listen on</td><td>8080</td></tr>
-              <tr><td><code>--host, -H</code></td><td>Host to bind</td><td>127.0.0.1</td></tr>
-              <tr><td><code>--cors</code></td><td>Enable CORS headers</td><td>off</td></tr>
-              <tr><td><code>--spa</code></td><td>Serve index.html for missing paths</td><td>off</td></tr>
-              <tr><td><code>--upload</code></td><td>Enable file uploads via PUT/POST</td><td>off</td></tr>
-              <tr><td><code>--no-listing</code></td><td>Disable directory listing</td><td>off</td></tr>
-              <tr><td><code>--quiet, -q</code></td><td>Suppress request logging</td><td>off</td></tr>
-            </tbody>
-          </table>
+          <div class="feature-card coming-soon">
+            <h3>Multiple servers</h3>
+            <p>Run more than one independently configured server at a time.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -201,7 +172,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
               <tr><td>Original author</td><td class="yes">Yes</td><td class="no">No</td></tr>
               <tr><td>Install size</td><td class="yes">~10MB (Tauri)</td><td class="no">100MB+ (Electron)</td></tr>
               <tr><td>Android / ChromeOS</td><td class="yes">Yes</td><td class="no">No</td></tr>
-              <tr><td>CLI tool</td><td class="yes">Yes</td><td class="no">No</td></tr>
               <tr><td>Open source</td><td class="yes">MIT</td><td class="yes">MIT</td></tr>
             </tbody>
           </table>
@@ -215,8 +185,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <div class="migration-content">
           <p>The original Web Server for Chrome was a Chrome App used by 200,000+ people. Google discontinued Chrome Apps, so its original author is carrying the familiar workflow forward as 200 OK Web Server.</p>
           <ul>
-            <li>The Chrome extension is a launcher; the desktop or Android app runs the server.</li>
-            <li>ChromeOS support uses the Android app when the Chromebook supports Android apps and Google Play is enabled. <a href="/chromeos">See ChromeOS options.</a></li>
+            <li>The Chrome extension launches the desktop app and controls the ChromeOS Linux version; it does not serve files itself.</li>
+            <li>ChromeOS users can choose Android through Google Play or the Linux version on compatible devices. <a href="/chromeos">Compare ChromeOS options.</a></li>
             <li>Feature availability differs by platform. Feature parity is a direction, not a claim that every legacy option is already present.</li>
           </ul>
           <p>The original Chrome App source code is preserved in the <a href="https://github.com/kzahel/web-server-chrome/tree/legacy">legacy branch</a>.</p>
@@ -290,16 +260,33 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   .platform-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
   }
 
   .platform-card {
+    align-items: center;
     background: var(--bg-secondary);
     border: 1px solid var(--border);
     border-radius: 12px;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
     padding: 24px;
     text-align: center;
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s, background-color 0.2s;
+  }
+
+  .platform-card:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .platform-card:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
   }
 
   .platform-icon {
@@ -314,36 +301,29 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   .platform-card p {
     color: var(--text-secondary);
+    flex: 1;
     font-size: 13px;
-    margin-bottom: 12px;
+    margin-bottom: 18px;
+    max-width: 270px;
   }
 
-  .platform-card code {
-    font-size: 12px;
-    background: var(--bg-tertiary);
-    padding: 2px 6px;
-    border-radius: 4px;
+  .platform-logo {
+    border-radius: 50%;
+    display: block;
+    height: 32px;
+    width: 32px;
   }
 
-  .platform-status {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 10px;
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .status-ready {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
-  }
-
-  .status-dev {
-    background: rgba(248, 210, 3, 0.15);
+  .platform-action {
+    align-items: center;
+    background: rgba(248, 210, 3, 0.14);
+    border-radius: 999px;
     color: var(--accent);
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 700;
+    gap: 6px;
+    padding: 6px 12px;
   }
 
   /* Features */
@@ -392,56 +372,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     margin: 40px 0 20px;
     color: var(--text-secondary);
     font-size: 18px;
-  }
-
-  /* CLI */
-  .cli {
-    padding: 60px 0;
-    border-top: 1px solid var(--border);
-  }
-
-  .cli h2 {
-    font-size: 28px;
-    margin-bottom: 24px;
-    text-align: center;
-  }
-
-  .code-comment {
-    color: var(--text-secondary);
-    opacity: 0.6;
-  }
-
-  .cli-options {
-    margin-top: 24px;
-  }
-
-  .cli-options table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-
-  .cli-options th,
-  .cli-options td {
-    padding: 10px 12px;
-    text-align: left;
-    border: 1px solid var(--border);
-  }
-
-  .cli-options th {
-    background: var(--bg-tertiary);
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-
-  .cli-options td {
-    color: var(--text-secondary);
-  }
-
-  .cli-options code {
-    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
-    font-size: 13px;
-    color: var(--accent);
   }
 
   /* Competition */
@@ -675,7 +605,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
 
     .platform-grid {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
     }
   }
 </style>

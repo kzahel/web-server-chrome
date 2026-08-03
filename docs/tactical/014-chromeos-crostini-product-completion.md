@@ -5,9 +5,10 @@ first physically reviewed product-UI checkpoint: controller-backed folder
 browsing, automatic shared-folder discovery, default stop-on-close lifetime, a
 server switch, a polished portrait control surface, and local/LAN URL actions
 are implemented. This is source-fixture evidence, not a signed release
-candidate or full matrix closeout. Uninstall/Launcher behavior, broader
-lifecycle/accessibility coverage, exact release artifacts, and reliable
-wake-before-capture remain open.**
+candidate or full matrix closeout. The testbed now has a wake/retry capture
+implementation and the old shelf residue is classified, but sleeping-display
+proof, the clean uninstall matrix, broader lifecycle/accessibility coverage,
+and exact release artifacts remain open.**
 
 Last updated: **2026-08-03**.
 
@@ -83,9 +84,9 @@ easy to overlook during protocol and release validation:
   and copied feedback, and LAN mode does not produce a complete, copyable
   Chromebook URL.
 - A post-capture purge removed the installed Linux files but a **200 OK Linux**
-  shelf item remained. Earlier testing saw removal from Launcher search, so the
-  distinction between a user pin, Garcon registration, and stale application
-  cache is unresolved.
+  shelf item remained. Follow-up inspection classified it as an orphaned
+  Crostini launch placeholder rather than a user pin, Garcon registration, or
+  still-installed application.
 - The physical testbed's EGL capture failed while the display was asleep with
   `No active CRTC found on any DRM device`. Native keyboard screenshot capture
   succeeded because the keyboard path woke the display. Routine capture should
@@ -362,18 +363,18 @@ as that URL.
       separately: Launcher search result, app list/registry state, pinned shelf
       item, desktop-file presence, Garcon cache, and click behavior before and
       after normal uninstall and `--purge`.
-- [ ] Determine whether the remaining icon is a preserved user pin, delayed
+- [x] Determine whether the remaining icon is a preserved user pin, delayed
       Garcon propagation, an installer-owned duplicate entry, or a cache bug.
       Do not call all of these states a stale Launcher entry.
 - [ ] Audit installer/uninstaller ordering: stop service, remove desktop entry
       and icons, update desktop/icon databases where present, notify/reload the
       user service manager, allow ChromeOS registration to settle, and remove
       versioned binaries without a broken intermediate launcher.
-- [ ] If ChromeOS provides no supported way for Linux uninstall to remove a
-      user pin, design and physically prove an explicit in-product **Uninstall
-      and remove Launcher shortcut** preparation flow or clear unpin step while
-      the helper still exists. Do not leave a silently dead icon and call it
-      success.
+- [ ] Prove a true user-pinned shelf item separately from the now-classified
+      orphaned launch placeholder. If ChromeOS provides no supported way for
+      Linux uninstall to remove a user pin, design and physically prove an
+      explicit in-product preparation flow or clear unpin step while the helper
+      still exists. Do not leave a silently dead icon and call it success.
 - [ ] Test normal uninstall, purge, reinstall over preserved settings, repeated
       uninstall, container stopped/restarted, full ChromeOS reboot/login, and
       both pinned and unpinned states.
@@ -393,17 +394,17 @@ This phase changes the separate ChromeOS testbed repository under
 
 - [ ] Reproduce awake and display-asleep captures with the standard testbed
       command and retain the exact `No active CRTC` diagnostic as a fixture.
-- [ ] Add a bounded capture preflight that detects an inactive display and
+- [x] Add a bounded capture preflight that detects an inactive display and
       wakes it with a non-destructive keyboard action before retrying EGL, or
       automatically selects the already-proved native keyboard capture path.
-- [ ] Wait only as long as display activation needs, then verify a non-empty,
+- [x] Wait only as long as display activation needs, then verify a non-empty,
       current frame. Do not hide permissions, SSH, Chrome, encoder, or unrelated
       DRM failures behind an unconditional fallback.
-- [ ] Make the chosen method and fallback visible in command output so a slow
+- [x] Make the chosen method and fallback visible in command output so a slow
       capture can be diagnosed immediately.
-- [ ] Add regression coverage or a deterministic fake for no-active-CRTC,
+- [x] Add regression coverage or a deterministic fake for no-active-CRTC,
       retry success, retry failure, and already-awake behavior.
-- [ ] Update the testbed skill/runbook so future screenshot tasks use the fixed
+- [x] Update the testbed skill/runbook so future screenshot tasks use the fixed
       path without rediscovering the wake requirement.
 - [ ] Link the testbed commit and an awake/asleep timing comparison in this
       tactical's evidence ledger.
@@ -517,6 +518,22 @@ port/content probes as phases close.
   two-row grid with one flex-aligned icon/copy group; both the selected Linux
   and selected Chromebook states were physically checked at the portrait
   width.
+- **2026-08-03 shelf/testbed closeout slice:** testbed commits `945b37d` and
+  `2692d19` implement exact no-active-CRTC wake/retry, method reporting, and
+  four deterministic tests; the deployed awake path produced a nonempty
+  3840×2160 EGL frame and doctor passed 8/8. The post-fix sleeping physical
+  timing remains open because no safe deterministic display-off hook was used.
+  Product commit `8be44e5` makes controller stop mandatory during uninstall
+  except for an already-absent unit and adds bundled asynchronous Launcher
+  guidance. Linux strict Clippy, 30 Crostini tests, and the release build passed
+  in Debian 12; extension typecheck, build, Biome, and all 46 tests passed. App
+  Service and shelf menus classified the residue as unpinned orphaned launch
+  placeholders; a matching X11 lifecycle cleared both the real and old probe
+  placeholders. The test-only registration and diagnostics were removed,
+  while exact source-built 200 OK Linux 0.1.1 and the matching production-ID
+  unpacked extension 0.1.6 were left installed, claimed, connected, stopped,
+  and ready for maintainer review. No physical uninstall was rerun after
+  `8be44e5`.
 
 ## Completion definition
 

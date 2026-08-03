@@ -22,8 +22,9 @@ and shared-Chromebook folder browsing, automatic share discovery, a polished
 switch-based popup, and local/LAN URL actions. This is a source-fixture UI
 checkpoint, not a new signed release. Full ChromeOS reboot/login, native ARM
 ChromeOS, complete folder/lifecycle/accessibility matrices,
-update-to-a-newer-release/rollback, clean pinned-shelf uninstall behavior,
-wake-aware testbed capture, and exact release-candidate evidence remain open.**
+update-to-a-newer-release/rollback, a clean end-to-end uninstall matrix,
+sleeping-display proof for the wake-aware testbed capture, and exact
+release-candidate evidence remain open.**
 
 Last reconciled: **2026-08-03**.
 
@@ -668,20 +669,27 @@ than disposable controller/popup fixtures:
   claimed identity. `uninstall --purge` then removed settings/pairing while
   again preserving the served root, and ChromeOS removed the app from search.
 
-A 2026-08-03 follow-up capture cleanup found a narrower unresolved state:
-after purge removed the installed files, a **200 OK Linux** item remained on
-the shelf. This does not invalidate the earlier search-removal observation and
-is not yet proof of a stale Garcon registration; ChromeOS may have retained a
-user pin independently of Launcher search. Tactical 014 requires separate
-inspection of search registration, shelf pinning, cache propagation, and click
-behavior, followed by a supported uninstall experience that does not strand an
-unexplained dead item.
+A 2026-08-03 follow-up classified the narrower post-cleanup shelf state. App
+Service marked both **200 OK Linux** and the older **200 OK Cold Start Probe**
+as `UninstalledByUser`; installed desktop files, binaries, and processes were
+absent. Both shelf menus offered **Pin** and **Open**, not **Unpin** or **Close**,
+so these were neither installed Launcher registrations nor user pins. They were
+orphaned Crostini launch placeholders left after test actions attempted to open
+removed application identities. Restarting Chrome alone did not clear Ash's
+shelf state. Re-registering each exact desktop identity and letting one matching
+X11 window map and close completed the pending lifecycle; both placeholders
+then disappeared, after which the test-only registration was removed again.
+The real product and production-ID extension were reinstalled and left
+connected for maintainer review. Tactical 014 retains a clean
+install/uninstall/reinstall matrix because this diagnosis does not prove every
+concurrent-launch or full-reboot edge.
 
-All installed files, extension state, transferred source/build trees, and the
-empty test serve root were removed afterward; the VM was stopped and the
-testbed returned 8/8 healthy. This was source-built evidence before a public
-artifact existed; the exact-release evidence below supersedes its delivery
-gaps.
+After the original source-fixture pass, all installed files, extension state,
+transferred source/build trees, and the empty test serve root were removed; the
+VM was stopped and the testbed returned 8/8 healthy. That was source-built
+evidence before a public artifact existed; the exact-release evidence below
+supersedes its delivery gaps. The later diagnostic follow-up described above
+intentionally left the current source-built review fixture installed.
 
 ### Pre-release plumbing validation
 
@@ -867,6 +875,15 @@ tokens, and update metadata after an explicit warning. Neither mode changes
 the account linger setting, deletes a served root, unshares ChromeOS folders,
 removes the Linux environment, or silently edits ChromeOS content-port
 forwarding entries.
+
+Uninstall now fails closed if the controller cannot be stopped, except for the
+idempotent already-absent-unit case. Bundled guidance tells users to close the
+control and transient launcher windows, wait for ChromeOS's asynchronous
+Launcher removal, and not reopen a loading shelf placeholder during that
+transaction. Linux has no supported API for deleting Ash's runtime shelf
+objects; the product must prevent the known race and retain explicit restart
+recovery rather than mislabeling an orphaned launch spinner as an installed app
+or user pin.
 
 Port collision, unsupported architecture, missing Linux integration,
 permission denial, corrupt configuration, update failure, and broken current

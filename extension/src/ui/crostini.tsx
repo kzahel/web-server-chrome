@@ -1380,6 +1380,13 @@ function OfflineSetup({ compact = false }: { compact?: boolean }) {
           <code> uninstall --purge</code> only to remove pairing and controller
           settings too.
         </p>
+        <p>
+          Close the 200 OK controls and any <strong>Opening 200 OK…</strong>
+          window before uninstalling. ChromeOS removes the Launcher entry
+          asynchronously; wait for it to disappear before stopping Linux. If an
+          unpinned loading icon remains, do not reopen it—restart ChromeOS to
+          clear that shelf placeholder.
+        </p>
       </details>
     </div>
   );

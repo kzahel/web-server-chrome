@@ -189,9 +189,7 @@ mod platform {
         let paths = InstallPaths::system()?;
         let install_lock = acquire_install_lock(&paths)?;
         verify_ownership_manifest_if_present(&paths)?;
-        let _ = Command::new("systemctl")
-            .args(["--user", "stop", CONTROLLER_SERVICE])
-            .output();
+        stop_controller_for_uninstall()?;
 
         remove_file_if_present(&paths.desktop_file)?;
         remove_file_if_present(&paths.service_file)?;
@@ -220,6 +218,9 @@ mod platform {
         }
 
         println!("Removed 200 OK Linux application files.");
+        println!(
+            "ChromeOS removes its Launcher entry asynchronously. Do not reopen a loading 200 OK shortcut while removal settles."
+        );
         if purge {
             println!("Controller settings, pairing data, and update state were also removed.");
         } else {
@@ -229,6 +230,33 @@ mod platform {
             );
         }
         Ok(())
+    }
+
+    fn stop_controller_for_uninstall() -> Result<(), String> {
+        let output = Command::new("systemctl")
+            .args(["--user", "stop", CONTROLLER_SERVICE])
+            .output()
+            .map_err(|error| format!("could not stop the controller before uninstall: {error}"))?;
+        if output.status.success() {
+            return Ok(());
+        }
+
+        let detail = String::from_utf8_lossy(&output.stderr).trim().to_owned();
+        if service_is_already_absent(&detail) {
+            return Ok(());
+        }
+        Err(if detail.is_empty() {
+            format!(
+                "could not stop the controller before uninstall (exit {})",
+                output.status
+            )
+        } else {
+            format!("could not stop the controller before uninstall: {detail}")
+        })
+    }
+
+    fn service_is_already_absent(detail: &str) -> bool {
+        detail.contains("not loaded") || detail.contains("not found")
     }
 
     pub fn stop_controller_for_reset() -> Result<(), String> {
@@ -608,6 +636,17 @@ mod platform {
             assert!(reject_downgrade(Some(current), &Version::new(1, 2, 3)).is_ok());
             assert!(reject_downgrade(Some(current), &Version::new(1, 3, 0)).is_ok());
             assert!(reject_downgrade(None, &Version::new(0, 1, 0)).is_ok());
+        }
+
+        #[test]
+        fn repeated_uninstall_accepts_an_already_absent_service() {
+            assert!(service_is_already_absent(
+                "Failed to stop app.ok200.service: Unit app.ok200.service not loaded."
+            ));
+            assert!(service_is_already_absent(
+                "Unit app.ok200.service not found."
+            ));
+            assert!(!service_is_already_absent("Access denied"));
         }
     }
 }

@@ -29,6 +29,9 @@ service. It starts the controller for that explicit setup session without
 enabling the unit or changing user lingering. Normal uninstall preserves
 settings; `uninstall --purge` removes controller identity/settings while both
 modes leave served content and ChromeOS sharing/forwarding state alone.
+Before uninstalling, close the extension controls and any transient launcher
+window. ChromeOS removes the Launcher registration asynchronously; do not click
+a leftover loading shelf placeholder while that removal settles.
 
 While the controller is active, it checks its signed release channel at most
 daily, with one-hour failure backoff. The extension exposes check/install

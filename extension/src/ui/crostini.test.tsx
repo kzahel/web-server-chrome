@@ -72,6 +72,9 @@ describe("Crostini controller UI", () => {
     expect(document.body.textContent).toContain(
       "Never forward controller port 20080",
     );
+    expect(document.body.textContent).toContain(
+      "wait for it to disappear before stopping Linux",
+    );
     expect(document.body.textContent).not.toContain("not published yet");
   });
 

@@ -8,7 +8,7 @@ use serde::Deserialize;
 
 pub const APPLICATION_ID: &str = "app.ok200.crostini";
 pub const CONTROLLER_PRODUCT: &str = "ok200-crostini-controller";
-pub const CONTROLLER_PROTOCOL_VERSION: u16 = 1;
+pub const CONTROLLER_PROTOCOL_VERSION: u16 = 2;
 pub const CONTROLLER_PORT: u16 = 20_080;
 pub const CONTROLLER_SERVICE: &str = "app.ok200.crostini-controller.service";
 pub const PRODUCTION_EXTENSION_ID: &str = "lpkjdhnmgkhaabhimpdinmdgejoaejic";
@@ -269,7 +269,7 @@ mod tests {
 
     #[test]
     fn parses_expected_health_response() {
-        let body = br#"{"product":"ok200-crostini-controller","protocolVersion":1,"instanceId":"fixture-1"}"#;
+        let body = br#"{"product":"ok200-crostini-controller","protocolVersion":2,"instanceId":"fixture-1"}"#;
         let mut response = b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n".to_vec();
         response.extend_from_slice(body);
 

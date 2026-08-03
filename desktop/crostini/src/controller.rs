@@ -1,10 +1,11 @@
+use std::collections::HashMap;
 use std::fmt;
 use std::fs::File;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::Arc;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use axum::body::Body;
 use axum::extract::State;
@@ -44,6 +45,10 @@ const UPDATE_SUCCESS_INTERVAL: Duration = Duration::from_hours(24);
 const UPDATE_FAILURE_BACKOFF: Duration = Duration::from_hours(1);
 const UPDATE_INSTALL_DELAY: Duration = Duration::from_millis(250);
 const MAX_UPDATE_ERROR_CHARS: usize = 512;
+const UI_SESSION_TTL: Duration = Duration::from_secs(75);
+const UI_SESSION_SWEEP_INTERVAL: Duration = Duration::from_secs(5);
+const LINUX_FILES_ROOT_ID: &str = "linux-files";
+const SHARED_CHROMEOS_ROOT_ID: &str = "shared-chromeos";
 
 #[derive(Debug)]
 pub struct ControllerError(String);
@@ -67,6 +72,7 @@ pub struct ControllerOptions {
     pub config_dir: PathBuf,
     pub home_dir: PathBuf,
     pub bind_address: SocketAddr,
+    shared_root: PathBuf,
     update_backend: Arc<dyn UpdateBackend>,
     automatic_update_checks: bool,
 }
@@ -78,6 +84,7 @@ impl fmt::Debug for ControllerOptions {
             .field("config_dir", &self.config_dir)
             .field("home_dir", &self.home_dir)
             .field("bind_address", &self.bind_address)
+            .field("shared_root", &self.shared_root)
             .field("automatic_update_checks", &self.automatic_update_checks)
             .finish_non_exhaustive()
     }
@@ -95,6 +102,7 @@ impl ControllerOptions {
             config_dir,
             home_dir,
             bind_address: SocketAddr::from(([0, 0, 0, 0], CONTROLLER_PORT)),
+            shared_root: PathBuf::from(CHROMEOS_SHARED_ROOT),
             update_backend: Arc::new(SystemUpdateBackend { update_binary }),
             automatic_update_checks: true,
         })
@@ -123,6 +131,8 @@ pub struct ControllerSettings {
     pub spa: bool,
     #[serde(default)]
     pub automatic_updates: bool,
+    #[serde(default)]
+    pub keep_serving_on_close: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -222,11 +232,13 @@ struct ControllerState {
     config_path: PathBuf,
     update_state_path: PathBuf,
     home_dir: PathBuf,
+    shared_root: PathBuf,
     controller_port: u16,
     persisted: RwLock<PersistedController>,
     claim_code: Mutex<Option<String>>,
     content_server: Mutex<Option<RunningServer>>,
     update: Mutex<UpdateRuntime>,
+    ui_sessions: Mutex<HashMap<String, Instant>>,
     update_backend: Arc<dyn UpdateBackend>,
 }
 
@@ -236,6 +248,7 @@ pub struct RunningController {
     shutdown: Option<oneshot::Sender<()>>,
     task: Option<JoinHandle<Result<(), std::io::Error>>>,
     update_task: Option<JoinHandle<()>>,
+    session_task: Option<JoinHandle<()>>,
     _lock_file: File,
 }
 
@@ -263,6 +276,7 @@ impl RunningController {
             config_path,
             update_state_path,
             home_dir: options.home_dir,
+            shared_root: options.shared_root,
             controller_port: local_addr.port(),
             persisted: RwLock::new(persisted),
             claim_code: Mutex::new(claim_code),
@@ -271,6 +285,7 @@ impl RunningController {
                 persisted: update,
                 phase: UpdatePhase::Idle,
             }),
+            ui_sessions: Mutex::new(HashMap::new()),
             update_backend: options.update_backend,
         });
 
@@ -286,6 +301,7 @@ impl RunningController {
         let update_task = options
             .automatic_update_checks
             .then(|| tokio::spawn(automatic_update_loop(Arc::clone(&state))));
+        let session_task = Some(tokio::spawn(ui_session_loop(Arc::clone(&state))));
 
         Ok(Self {
             local_addr,
@@ -293,6 +309,7 @@ impl RunningController {
             shutdown: Some(shutdown),
             task: Some(task),
             update_task,
+            session_task,
             _lock_file: lock_file,
         })
     }
@@ -304,6 +321,9 @@ impl RunningController {
     pub async fn stop(mut self) -> Result<(), ControllerError> {
         if let Some(update_task) = self.update_task.take() {
             update_task.abort();
+        }
+        if let Some(session_task) = self.session_task.take() {
+            session_task.abort();
         }
         let content_server = self.state.content_server.lock().await.take();
         if let Some(server) = content_server {
@@ -338,6 +358,11 @@ impl Drop for RunningController {
                 update_task.abort();
             }
         }
+        if let Some(session_task) = &self.session_task {
+            if !session_task.is_finished() {
+                session_task.abort();
+            }
+        }
     }
 }
 
@@ -346,6 +371,13 @@ fn controller_router(state: Arc<ControllerState>) -> Router {
         .route("/claim", post(claim_controller))
         .route("/status", get(controller_status))
         .route("/settings", put(update_settings))
+        .route("/session/open", post(open_ui_session))
+        .route("/session/heartbeat", post(heartbeat_ui_session))
+        .route("/session/close", post(close_ui_session))
+        .route("/folders/roots", get(folder_roots))
+        .route("/folders/list", post(list_folders))
+        .route("/folders/create", post(create_folder))
+        .route("/folders/select", post(select_folder))
         .route("/server/start", post(start_content_server))
         .route("/server/stop", post(stop_content_server))
         .route("/update/check", post(check_for_controller_update))
@@ -524,11 +556,218 @@ struct ControllerUpdateStatus {
     error: Option<String>,
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct UiSessionRequest {
+    session_id: String,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct UiSessionResponse {
+    session_id: String,
+    expires_in_seconds: u64,
+    status: StatusResponse,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct FolderRootsResponse {
+    roots: Vec<FolderRootResponse>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct FolderRootResponse {
+    id: &'static str,
+    name: &'static str,
+    available: bool,
+}
+
+#[derive(Clone, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct FolderRequest {
+    root_id: String,
+    #[serde(default)]
+    path: Vec<String>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct CreateFolderRequest {
+    root_id: String,
+    #[serde(default)]
+    path: Vec<String>,
+    name: String,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct FolderListingResponse {
+    root_id: String,
+    root_name: &'static str,
+    path: Vec<String>,
+    display_path: String,
+    can_select: bool,
+    entries: Vec<FolderEntryResponse>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct FolderEntryResponse {
+    name: String,
+}
+
 async fn controller_status(
     State(state): State<Arc<ControllerState>>,
     headers: HeaderMap,
 ) -> ApiResult<Json<StatusResponse>> {
     authorize(&state, &headers).await?;
+    Ok(Json(build_status(&state).await))
+}
+
+async fn open_ui_session(
+    State(state): State<Arc<ControllerState>>,
+    headers: HeaderMap,
+) -> ApiResult<Json<UiSessionResponse>> {
+    authorize(&state, &headers).await?;
+    let session_id = random_secret();
+    state
+        .ui_sessions
+        .lock()
+        .await
+        .insert(session_id.clone(), Instant::now());
+    Ok(Json(UiSessionResponse {
+        session_id,
+        expires_in_seconds: UI_SESSION_TTL.as_secs(),
+        status: build_status(&state).await,
+    }))
+}
+
+async fn heartbeat_ui_session(
+    State(state): State<Arc<ControllerState>>,
+    headers: HeaderMap,
+    Json(request): Json<UiSessionRequest>,
+) -> ApiResult<Json<UiSessionResponse>> {
+    authorize(&state, &headers).await?;
+    let mut sessions = state.ui_sessions.lock().await;
+    if sessions
+        .get(&request.session_id)
+        .is_some_and(|last_seen| last_seen.elapsed() > UI_SESSION_TTL)
+    {
+        sessions.remove(&request.session_id);
+    }
+    let last_seen = sessions
+        .get_mut(&request.session_id)
+        .ok_or_else(|| ApiError::conflict("control session expired; reconnect to 200 OK"))?;
+    *last_seen = Instant::now();
+    drop(sessions);
+    Ok(Json(UiSessionResponse {
+        session_id: request.session_id,
+        expires_in_seconds: UI_SESSION_TTL.as_secs(),
+        status: build_status(&state).await,
+    }))
+}
+
+async fn close_ui_session(
+    State(state): State<Arc<ControllerState>>,
+    headers: HeaderMap,
+    Json(request): Json<UiSessionRequest>,
+) -> ApiResult<Json<StatusResponse>> {
+    authorize(&state, &headers).await?;
+    state.ui_sessions.lock().await.remove(&request.session_id);
+    stop_content_if_unattended(&state).await?;
+    Ok(Json(build_status(&state).await))
+}
+
+async fn folder_roots(
+    State(state): State<Arc<ControllerState>>,
+    headers: HeaderMap,
+) -> ApiResult<Json<FolderRootsResponse>> {
+    authorize(&state, &headers).await?;
+    Ok(Json(FolderRootsResponse {
+        roots: vec![
+            FolderRootResponse {
+                id: LINUX_FILES_ROOT_ID,
+                name: "Linux files",
+                available: directory_exists(&state.home_dir).await,
+            },
+            FolderRootResponse {
+                id: SHARED_CHROMEOS_ROOT_ID,
+                name: "Shared Chromebook folders",
+                available: directory_exists(&state.shared_root).await,
+            },
+        ],
+    }))
+}
+
+async fn list_folders(
+    State(state): State<Arc<ControllerState>>,
+    headers: HeaderMap,
+    Json(request): Json<FolderRequest>,
+) -> ApiResult<Json<FolderListingResponse>> {
+    authorize(&state, &headers).await?;
+    Ok(Json(build_folder_listing(&state, &request).await?))
+}
+
+async fn create_folder(
+    State(state): State<Arc<ControllerState>>,
+    headers: HeaderMap,
+    Json(request): Json<CreateFolderRequest>,
+) -> ApiResult<Json<FolderListingResponse>> {
+    authorize(&state, &headers).await?;
+    validate_path_component(&request.name)?;
+    let parent_request = FolderRequest {
+        root_id: request.root_id,
+        path: request.path,
+    };
+    let parent = resolve_folder(&state, &parent_request, true).await?;
+    let created = parent.join(&request.name);
+    tokio::fs::create_dir(&created).await.map_err(|error| {
+        ApiError::conflict(format!(
+            "could not create folder '{}': {error}",
+            request.name
+        ))
+    })?;
+    let canonical_created = tokio::fs::canonicalize(&created)
+        .await
+        .map_err(|error| ApiError::internal(format!("could not verify new folder: {error}")))?;
+    if canonical_created.parent() != Some(parent.as_path()) {
+        return Err(ApiError::bad_request(
+            "the new folder resolved outside its selected parent",
+        ));
+    }
+    Ok(Json(build_folder_listing(&state, &parent_request).await?))
+}
+
+async fn select_folder(
+    State(state): State<Arc<ControllerState>>,
+    headers: HeaderMap,
+    Json(request): Json<FolderRequest>,
+) -> ApiResult<Json<StatusResponse>> {
+    authorize(&state, &headers).await?;
+    if request.path.is_empty() {
+        return Err(ApiError::bad_request(
+            "choose a folder inside this location",
+        ));
+    }
+    let content_server = state.content_server.lock().await;
+    if content_server.is_some() {
+        return Err(ApiError::conflict(
+            "stop the content server before changing folders",
+        ));
+    }
+    let root = resolve_folder(&state, &request, false).await?;
+    let root = validate_serving_root(&state.home_dir, &state.shared_root, &root)
+        .await
+        .map_err(ApiError::bad_request)?;
+    let mut persisted = state.persisted.write().await;
+    persisted.settings.root = root;
+    persist_config(&state.config_path, &persisted)
+        .await
+        .map_err(|error| ApiError::internal(error.to_string()))?;
+    drop(persisted);
+    drop(content_server);
     Ok(Json(build_status(&state).await))
 }
 
@@ -602,7 +841,7 @@ async fn update_settings(
     }
     validate_content_port(settings.port)?;
     let mut settings = settings;
-    settings.root = validate_serving_root(&state.home_dir, &settings.root)
+    settings.root = validate_serving_root(&state.home_dir, &state.shared_root, &settings.root)
         .await
         .map_err(ApiError::bad_request)?;
 
@@ -613,6 +852,7 @@ async fn update_settings(
         .map_err(|error| ApiError::internal(error.to_string()))?;
     drop(persisted);
     drop(content_server);
+    stop_content_if_unattended(&state).await?;
     maybe_install_available_update(Arc::clone(&state));
     Ok(Json(build_status(&state).await))
 }
@@ -620,15 +860,17 @@ async fn update_settings(
 async fn start_content_server(
     State(state): State<Arc<ControllerState>>,
     headers: HeaderMap,
+    Json(request): Json<UiSessionRequest>,
 ) -> ApiResult<Json<StatusResponse>> {
     authorize(&state, &headers).await?;
+    require_active_ui_session(&state, &request.session_id).await?;
     let mut content_server = state.content_server.lock().await;
     if content_server.is_some() {
         return Err(ApiError::conflict("content server is already active"));
     }
     let settings = state.persisted.read().await.settings.clone();
     validate_content_port(settings.port)?;
-    let canonical_root = validate_serving_root(&state.home_dir, &settings.root)
+    let canonical_root = validate_serving_root(&state.home_dir, &state.shared_root, &settings.root)
         .await
         .map_err(ApiError::bad_request)?;
 
@@ -825,6 +1067,169 @@ fn bounded_update_error(error: &str) -> String {
     error.chars().take(MAX_UPDATE_ERROR_CHARS).collect()
 }
 
+async fn ui_session_loop(state: Arc<ControllerState>) {
+    loop {
+        tokio::time::sleep(UI_SESSION_SWEEP_INTERVAL).await;
+        {
+            let mut sessions = state.ui_sessions.lock().await;
+            sessions.retain(|_, last_seen| last_seen.elapsed() <= UI_SESSION_TTL);
+        }
+        let _ = stop_content_if_unattended(&state).await;
+    }
+}
+
+async fn require_active_ui_session(state: &ControllerState, session_id: &str) -> ApiResult<()> {
+    let mut sessions = state.ui_sessions.lock().await;
+    let active = sessions
+        .get(session_id)
+        .is_some_and(|last_seen| last_seen.elapsed() <= UI_SESSION_TTL);
+    if active {
+        return Ok(());
+    }
+    sessions.remove(session_id);
+    Err(ApiError::conflict(
+        "control session expired; reconnect to 200 OK",
+    ))
+}
+
+async fn stop_content_if_unattended(state: &Arc<ControllerState>) -> ApiResult<()> {
+    let sessions = state.ui_sessions.lock().await;
+    if !sessions.is_empty() {
+        return Ok(());
+    }
+    let mut content_server = state.content_server.lock().await;
+    if state.persisted.read().await.settings.keep_serving_on_close {
+        return Ok(());
+    }
+    let server = content_server.take();
+    drop(content_server);
+    drop(sessions);
+    if let Some(server) = server {
+        server
+            .stop()
+            .await
+            .map_err(|error| ApiError::internal(error.to_string()))?;
+        maybe_install_available_update(Arc::clone(state));
+    }
+    Ok(())
+}
+
+async fn directory_exists(path: &Path) -> bool {
+    tokio::fs::metadata(path)
+        .await
+        .is_ok_and(|metadata| metadata.is_dir())
+}
+
+fn folder_root(state: &ControllerState, root_id: &str) -> ApiResult<(&'static str, PathBuf)> {
+    match root_id {
+        LINUX_FILES_ROOT_ID => Ok(("Linux files", state.home_dir.clone())),
+        SHARED_CHROMEOS_ROOT_ID => Ok(("Shared Chromebook folders", state.shared_root.clone())),
+        _ => Err(ApiError::bad_request("unknown folder location")),
+    }
+}
+
+fn validate_path_component(component: &str) -> ApiResult<()> {
+    if component.is_empty()
+        || component == "."
+        || component == ".."
+        || component.contains('/')
+        || component.contains('\0')
+    {
+        return Err(ApiError::bad_request("folder name is invalid"));
+    }
+    Ok(())
+}
+
+async fn resolve_folder(
+    state: &ControllerState,
+    request: &FolderRequest,
+    allow_root: bool,
+) -> ApiResult<PathBuf> {
+    let (root_name, root) = folder_root(state, &request.root_id)?;
+    for component in &request.path {
+        validate_path_component(component)?;
+    }
+    let canonical_root = tokio::fs::canonicalize(&root).await.map_err(|error| {
+        if request.root_id == SHARED_CHROMEOS_ROOT_ID {
+            ApiError::not_found(
+                "No shared Chromebook folders are available yet. Share a folder with Linux in Files, then try again.",
+            )
+        } else {
+            ApiError::internal(format!("could not open {root_name}: {error}"))
+        }
+    })?;
+    let target = request
+        .path
+        .iter()
+        .fold(canonical_root.clone(), |path, component| {
+            path.join(component)
+        });
+    let canonical_target = tokio::fs::canonicalize(&target)
+        .await
+        .map_err(|error| ApiError::not_found(format!("folder is no longer available: {error}")))?;
+    if !canonical_target.starts_with(&canonical_root)
+        || (!allow_root && canonical_target == canonical_root)
+    {
+        return Err(ApiError::bad_request(
+            "folder resolved outside the selected location",
+        ));
+    }
+    let metadata = tokio::fs::metadata(&canonical_target)
+        .await
+        .map_err(|error| ApiError::not_found(format!("folder is no longer available: {error}")))?;
+    if !metadata.is_dir() {
+        return Err(ApiError::bad_request("selected entry is not a folder"));
+    }
+    Ok(canonical_target)
+}
+
+async fn build_folder_listing(
+    state: &ControllerState,
+    request: &FolderRequest,
+) -> ApiResult<FolderListingResponse> {
+    let (root_name, _) = folder_root(state, &request.root_id)?;
+    let folder = resolve_folder(state, request, true).await?;
+    let mut directory = tokio::fs::read_dir(&folder)
+        .await
+        .map_err(|error| ApiError::forbidden(format!("could not read folder: {error}")))?;
+    let mut entries = Vec::new();
+    while let Some(entry) = directory
+        .next_entry()
+        .await
+        .map_err(|error| ApiError::internal(format!("could not read folder entry: {error}")))?
+    {
+        let file_type = entry.file_type().await.map_err(|error| {
+            ApiError::internal(format!("could not inspect folder entry: {error}"))
+        })?;
+        if !file_type.is_dir() {
+            continue;
+        }
+        let name = entry.file_name().to_string_lossy().into_owned();
+        if validate_path_component(&name).is_ok() {
+            entries.push(FolderEntryResponse { name });
+        }
+    }
+    entries.sort_by(|left, right| {
+        left.name
+            .to_lowercase()
+            .cmp(&right.name.to_lowercase())
+            .then_with(|| left.name.cmp(&right.name))
+    });
+    let display_path = if request.path.is_empty() {
+        root_name.to_owned()
+    } else {
+        format!("{root_name} / {}", request.path.join(" / "))
+    };
+    Ok(FolderListingResponse {
+        root_id: request.root_id.clone(),
+        root_name,
+        path: request.path.clone(),
+        display_path,
+        can_select: !request.path.is_empty(),
+        entries,
+    })
+}
+
 fn validate_content_port(port: u16) -> ApiResult<()> {
     if port < MIN_CONTENT_PORT {
         return Err(ApiError::bad_request(format!(
@@ -839,21 +1244,28 @@ fn validate_content_port(port: u16) -> ApiResult<()> {
     Ok(())
 }
 
-async fn validate_serving_root(home_dir: &Path, root: &Path) -> Result<PathBuf, String> {
+async fn validate_serving_root(
+    home_dir: &Path,
+    shared_root: &Path,
+    root: &Path,
+) -> Result<PathBuf, String> {
     let canonical_root = canonicalize_serving_root(root)
         .await
         .map_err(|error| error.to_string())?;
     let canonical_home = tokio::fs::canonicalize(home_dir)
         .await
         .map_err(|error| format!("could not validate home directory: {error}"))?;
-    let shared_root = Path::new(CHROMEOS_SHARED_ROOT);
+    let canonical_shared = tokio::fs::canonicalize(shared_root).await.ok();
     let is_home_child =
         canonical_root.starts_with(&canonical_home) && canonical_root != canonical_home;
-    let is_shared_child = canonical_root.starts_with(shared_root) && canonical_root != shared_root;
+    let is_shared_child = canonical_shared
+        .as_ref()
+        .is_some_and(|shared| canonical_root.starts_with(shared) && canonical_root != *shared);
     if !is_home_child && !is_shared_child {
         return Err(format!(
-            "serve root must be inside {} or a ChromeOS folder shared under {CHROMEOS_SHARED_ROOT}",
-            canonical_home.display()
+            "serve root must be inside {} or a ChromeOS folder shared under {}",
+            canonical_home.display(),
+            shared_root.display()
         ));
     }
     Ok(canonical_root)
@@ -1042,6 +1454,7 @@ async fn load_or_create_config(
                     cors: false,
                     spa: false,
                     automatic_updates: false,
+                    keep_serving_on_close: false,
                 },
             };
             persist_config(config_path, &persisted).await?;
@@ -1282,6 +1695,7 @@ mod tests {
             config_dir: temp.path().join("config"),
             home_dir: home,
             bind_address: SocketAddr::from(([127, 0, 0, 1], 0)),
+            shared_root: temp.path().join("shared"),
             update_backend: backend,
             automatic_update_checks: false,
         })
@@ -1356,6 +1770,20 @@ mod tests {
         claim["controllerToken"].as_str().expect("token").to_owned()
     }
 
+    async fn open_session(address: SocketAddr, token: &str) -> String {
+        let session_request = format!(
+            "POST /api/session/open HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        );
+        let (status, _, body) = request(address, &session_request).await;
+        assert_eq!(status, 200);
+        let response: serde_json::Value =
+            serde_json::from_slice(&body).expect("session response json");
+        response["sessionId"]
+            .as_str()
+            .expect("session id")
+            .to_owned()
+    }
+
     #[tokio::test]
     async fn creates_private_config_and_public_health() {
         let (temp, controller) = fixture().await;
@@ -1406,6 +1834,7 @@ mod tests {
         let (temp, controller) = fixture().await;
         let address = controller.local_addr();
         let token = claim(address).await;
+        let session_id = open_session(address, &token).await;
         let root = temp.path().join("home/Downloads/200 OK");
         tokio::fs::write(root.join("hello.txt"), b"controller fixture")
             .await
@@ -1430,8 +1859,10 @@ mod tests {
         );
         assert_eq!(request(address, &update).await.0, 200);
 
+        let start_body = serde_json::json!({ "sessionId": session_id }).to_string();
         let start = format!(
-            "POST /api/server/start HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+            "POST /api/server/start HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{start_body}",
+            start_body.len()
         );
         let (status, _, body) = request(address, &start).await;
         let started: serde_json::Value = serde_json::from_slice(&body).expect("start json");
@@ -1459,12 +1890,162 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn folder_api_browses_creates_and_selects_confined_directories() {
+        let (temp, controller) = fixture().await;
+        let address = controller.local_addr();
+        let token = claim(address).await;
+        let roots = format!(
+            "GET /api/folders/roots HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nConnection: close\r\n\r\n"
+        );
+        let (status, _, body) = request(address, &roots).await;
+        assert_eq!(status, 200);
+        let roots: serde_json::Value = serde_json::from_slice(&body).expect("roots json");
+        assert_eq!(roots["roots"][0]["id"], LINUX_FILES_ROOT_ID);
+        assert_eq!(roots["roots"][0]["available"], true);
+        assert_eq!(roots["roots"][1]["available"], false);
+
+        let create_body = serde_json::json!({
+            "rootId": LINUX_FILES_ROOT_ID,
+            "path": ["Downloads"],
+            "name": "Sites",
+        })
+        .to_string();
+        let create = format!(
+            "POST /api/folders/create HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{create_body}",
+            create_body.len()
+        );
+        let (status, _, body) = request(address, &create).await;
+        assert_eq!(status, 200);
+        let listing: serde_json::Value = serde_json::from_slice(&body).expect("listing json");
+        assert_eq!(listing["displayPath"], "Linux files / Downloads");
+        assert!(listing["entries"]
+            .as_array()
+            .expect("entries")
+            .iter()
+            .any(|entry| entry["name"] == "Sites"));
+
+        let select_body = serde_json::json!({
+            "rootId": LINUX_FILES_ROOT_ID,
+            "path": ["Downloads", "Sites"],
+        })
+        .to_string();
+        let select = format!(
+            "POST /api/folders/select HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{select_body}",
+            select_body.len()
+        );
+        let (status, _, body) = request(address, &select).await;
+        assert_eq!(status, 200);
+        let selected: serde_json::Value = serde_json::from_slice(&body).expect("selected json");
+        let expected_root = std::fs::canonicalize(temp.path().join("home/Downloads/Sites"))
+            .expect("canonical selected root");
+        assert_eq!(
+            selected["settings"]["root"],
+            expected_root.to_string_lossy().as_ref()
+        );
+
+        let invalid_body = serde_json::json!({
+            "rootId": LINUX_FILES_ROOT_ID,
+            "path": [".."],
+        })
+        .to_string();
+        let invalid = format!(
+            "POST /api/folders/list HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{invalid_body}",
+            invalid_body.len()
+        );
+        assert_eq!(request(address, &invalid).await.0, 400);
+        controller.stop().await.expect("stop controller");
+    }
+
+    #[tokio::test]
+    async fn final_ui_session_close_stops_content_unless_background_is_enabled() {
+        let (temp, controller) = fixture().await;
+        let address = controller.local_addr();
+        let token = claim(address).await;
+        let session_id = open_session(address, &token).await;
+        let available = std::net::TcpListener::bind((Ipv4Addr::LOCALHOST, 0))
+            .expect("ephemeral listener")
+            .local_addr()
+            .expect("ephemeral address")
+            .port();
+        let settings_body = serde_json::json!({
+            "root": temp.path().join("home/Downloads/200 OK"),
+            "port": available,
+            "lan": false,
+            "directoryListing": true,
+            "cors": false,
+            "spa": false,
+            "keepServingOnClose": false,
+        })
+        .to_string();
+        let settings = format!(
+            "PUT /api/settings HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{settings_body}",
+            settings_body.len()
+        );
+        assert_eq!(request(address, &settings).await.0, 200);
+
+        let start_body = serde_json::json!({ "sessionId": session_id }).to_string();
+        let start = format!(
+            "POST /api/server/start HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{start_body}",
+            start_body.len()
+        );
+        assert_eq!(request(address, &start).await.0, 200);
+
+        let close = format!(
+            "POST /api/session/close HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{start_body}",
+            start_body.len()
+        );
+        let (status, _, body) = request(address, &close).await;
+        assert_eq!(status, 200);
+        let closed: serde_json::Value = serde_json::from_slice(&body).expect("closed json");
+        assert_eq!(closed["server"]["state"], "stopped");
+
+        let background_session = open_session(address, &token).await;
+        let background_settings_body = serde_json::json!({
+            "root": temp.path().join("home/Downloads/200 OK"),
+            "port": available,
+            "lan": false,
+            "directoryListing": true,
+            "cors": false,
+            "spa": false,
+            "keepServingOnClose": true,
+        })
+        .to_string();
+        let background_settings = format!(
+            "PUT /api/settings HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{background_settings_body}",
+            background_settings_body.len()
+        );
+        assert_eq!(request(address, &background_settings).await.0, 200);
+        let background_start_body =
+            serde_json::json!({ "sessionId": background_session }).to_string();
+        let background_start = format!(
+            "POST /api/server/start HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{background_start_body}",
+            background_start_body.len()
+        );
+        assert_eq!(request(address, &background_start).await.0, 200);
+        let background_close = format!(
+            "POST /api/session/close HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{background_start_body}",
+            background_start_body.len()
+        );
+        let (_, _, body) = request(address, &background_close).await;
+        let background_closed: serde_json::Value =
+            serde_json::from_slice(&body).expect("background close json");
+        assert_eq!(background_closed["server"]["state"], "running");
+
+        let stop = format!(
+            "POST /api/server/stop HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        );
+        assert_eq!(request(address, &stop).await.0, 200);
+        controller.stop().await.expect("stop controller");
+    }
+
+    #[tokio::test]
     async fn controller_lock_rejects_a_second_process() {
         let (temp, controller) = fixture().await;
         let second = RunningController::start(ControllerOptions {
             config_dir: temp.path().join("config"),
             home_dir: temp.path().join("home"),
             bind_address: SocketAddr::from(([127, 0, 0, 1], 0)),
+            shared_root: temp.path().join("shared"),
             update_backend: FixtureUpdateBackend::current(),
             automatic_update_checks: false,
         })
@@ -1483,11 +2064,21 @@ mod tests {
         let allowed = home.join("Downloads");
         tokio::fs::create_dir_all(&allowed).await.expect("allowed");
         assert_eq!(
-            validate_serving_root(&home, &allowed).await.expect("valid"),
+            validate_serving_root(&home, &temp.path().join("shared"), &allowed)
+                .await
+                .expect("valid"),
             std::fs::canonicalize(&allowed).expect("canonical")
         );
-        assert!(validate_serving_root(&home, &home).await.is_err());
-        assert!(validate_serving_root(&home, temp.path()).await.is_err());
+        assert!(
+            validate_serving_root(&home, &temp.path().join("shared"), &home)
+                .await
+                .is_err()
+        );
+        assert!(
+            validate_serving_root(&home, &temp.path().join("shared"), temp.path())
+                .await
+                .is_err()
+        );
     }
 
     #[tokio::test]
@@ -1539,6 +2130,7 @@ mod tests {
         let (temp, controller) = fixture_with_backend(Arc::clone(&backend)).await;
         let address = controller.local_addr();
         let token = claim(address).await;
+        let session_id = open_session(address, &token).await;
         let root = temp.path().join("home/Downloads/200 OK");
         let available_port = std::net::TcpListener::bind((Ipv4Addr::LOCALHOST, 0))
             .expect("ephemeral listener")
@@ -1560,8 +2152,10 @@ mod tests {
             settings.len()
         );
         assert_eq!(request(address, &save).await.0, 200);
+        let start_body = serde_json::json!({ "sessionId": session_id }).to_string();
         let start = format!(
-            "POST /api/server/start HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+            "POST /api/server/start HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{start_body}",
+            start_body.len()
         );
         assert_eq!(request(address, &start).await.0, 200);
         let check = format!(

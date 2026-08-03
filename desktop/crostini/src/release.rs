@@ -535,7 +535,7 @@ mod tests {
              tag=crostini-v0.1.0\n\
              repository={RELEASE_REPOSITORY}\n\
              source_commit=0123456789abcdef0123456789abcdef01234567\n\
-             controller_protocol=1\n\
+             controller_protocol=2\n\
              extension_protocol_min=1\n\
              extension_protocol_max=1\n\
              runtime={RELEASE_RUNTIME}\n\

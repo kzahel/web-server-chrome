@@ -1,7 +1,7 @@
 import { controllerOrigin } from "./crostini-launch";
 
 export const CONTROLLER_PRODUCT = "ok200-crostini-controller";
-export const CONTROLLER_PROTOCOL_VERSION = 1;
+export const CONTROLLER_PROTOCOL_VERSION = 2;
 
 export type ControllerHealth = {
   claimed: boolean;
@@ -15,10 +15,26 @@ export type ControllerSettings = {
   automaticUpdates: boolean;
   cors: boolean;
   directoryListing: boolean;
+  keepServingOnClose: boolean;
   lan: boolean;
   port: number;
   root: string;
   spa: boolean;
+};
+
+export type FolderRoot = {
+  available: boolean;
+  id: string;
+  name: string;
+};
+
+export type FolderListing = {
+  canSelect: boolean;
+  displayPath: string;
+  entries: Array<{ name: string }>;
+  path: string[];
+  rootId: string;
+  rootName: string;
 };
 
 export type ControllerUpdateStatus = {
@@ -42,6 +58,12 @@ export type ControllerStatus = {
   settings: ControllerSettings;
   update: ControllerUpdateStatus;
   version: string;
+};
+
+export type ControllerSession = {
+  expiresInSeconds: number;
+  sessionId: string;
+  status: ControllerStatus;
 };
 
 type ClaimResponse = {
@@ -82,6 +104,84 @@ export class CrostiniControllerClient {
     return this.authenticated<ControllerStatus>("/api/status", token);
   }
 
+  openSession(token: string): Promise<ControllerSession> {
+    return this.authenticated<ControllerSession>("/api/session/open", token, {
+      method: "POST",
+    });
+  }
+
+  heartbeatSession(
+    token: string,
+    sessionId: string,
+  ): Promise<ControllerSession> {
+    return this.authenticated<ControllerSession>(
+      "/api/session/heartbeat",
+      token,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      },
+    );
+  }
+
+  closeSession(
+    token: string,
+    sessionId: string,
+    keepalive = false,
+  ): Promise<ControllerStatus> {
+    return this.authenticated<ControllerStatus>("/api/session/close", token, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId }),
+      keepalive,
+    });
+  }
+
+  folderRoots(token: string): Promise<{ roots: FolderRoot[] }> {
+    return this.authenticated<{ roots: FolderRoot[] }>(
+      "/api/folders/roots",
+      token,
+    );
+  }
+
+  listFolders(
+    token: string,
+    rootId: string,
+    path: string[],
+  ): Promise<FolderListing> {
+    return this.authenticated<FolderListing>("/api/folders/list", token, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rootId, path }),
+    });
+  }
+
+  createFolder(
+    token: string,
+    rootId: string,
+    path: string[],
+    name: string,
+  ): Promise<FolderListing> {
+    return this.authenticated<FolderListing>("/api/folders/create", token, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rootId, path, name }),
+    });
+  }
+
+  selectFolder(
+    token: string,
+    rootId: string,
+    path: string[],
+  ): Promise<ControllerStatus> {
+    return this.authenticated<ControllerStatus>("/api/folders/select", token, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rootId, path }),
+    });
+  }
+
   updateSettings(
     token: string,
     settings: ControllerSettings,
@@ -93,9 +193,11 @@ export class CrostiniControllerClient {
     });
   }
 
-  startServer(token: string): Promise<ControllerStatus> {
+  startServer(token: string, sessionId: string): Promise<ControllerStatus> {
     return this.authenticated<ControllerStatus>("/api/server/start", token, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId }),
     });
   }
 

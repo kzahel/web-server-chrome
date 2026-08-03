@@ -30,6 +30,7 @@ export function CrostiniController() {
   );
   const [detail, setDetail] = useState("");
   const [token, setToken] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [status, setStatus] = useState<ControllerStatus | null>(null);
   const [settings, setSettings] = useState<ControllerSettings | null>(null);
   const [busy, setBusy] = useState(false);
@@ -68,7 +69,8 @@ export function CrostiniController() {
         );
       }
 
-      const nextStatus = await client.status(controllerToken);
+      const session = await client.openSession(controllerToken);
+      const nextStatus = session.status;
       validateControllerHealth(
         {
           claimed: true,
@@ -80,6 +82,7 @@ export function CrostiniController() {
         launch.instanceId,
       );
       setToken(controllerToken);
+      setSessionId(session.sessionId);
       setStatus(nextStatus);
       setSettings(nextStatus.settings);
       setState("connected");
@@ -111,6 +114,38 @@ export function CrostiniController() {
       },
     );
   }, [connect, launch]);
+
+  useEffect(() => {
+    if (!client || !token || !sessionId) return;
+    let released = false;
+    const release = () => {
+      if (released) return;
+      released = true;
+      void client.closeSession(token, sessionId, true).catch(() => undefined);
+    };
+    const heartbeat = window.setInterval(() => {
+      void client
+        .heartbeatSession(token, sessionId)
+        .then((session) => {
+          setStatus(session.status);
+          setSettings(session.status.settings);
+        })
+        .catch((error) => {
+          setDetail(
+            error instanceof Error
+              ? error.message
+              : "The Linux control session expired.",
+          );
+          setState("error");
+        });
+    }, 20_000);
+    window.addEventListener("pagehide", release);
+    return () => {
+      window.clearInterval(heartbeat);
+      window.removeEventListener("pagehide", release);
+      release();
+    };
+  }, [client, sessionId, token]);
 
   const requestPermission = () => {
     chrome.permissions.request(
@@ -162,10 +197,10 @@ export function CrostiniController() {
   };
 
   const startServer = () => {
-    if (!settings) return;
+    if (!settings || !sessionId) return;
     void perform(async (activeClient, activeToken) => {
       await activeClient.updateSettings(activeToken, settings);
-      return activeClient.startServer(activeToken);
+      return activeClient.startServer(activeToken, sessionId);
     });
   };
 

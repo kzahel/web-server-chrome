@@ -17,7 +17,7 @@ describe("Crostini controller client", () => {
           claimed: false,
           instanceId: "fixture-1",
           product: "ok200-crostini-controller",
-          protocolVersion: 1,
+          protocolVersion: 2,
           version: "0.1.5",
         }),
       );
@@ -36,7 +36,7 @@ describe("Crostini controller client", () => {
       ) =>
         Response.json({
           product: "ok200-crostini-controller",
-          protocolVersion: 1,
+          protocolVersion: 2,
           instanceId: "fixture-1",
           version: "0.1.5",
           settings: {},
@@ -72,7 +72,7 @@ describe("Crostini controller client", () => {
           claimed: true,
           instanceId: "someone-else",
           product: "ok200-crostini-controller",
-          protocolVersion: 1,
+          protocolVersion: 2,
           version: "0.1.5",
         },
         "fixture-1",
@@ -92,7 +92,7 @@ describe("Crostini controller client", () => {
       ) as typeof fetch,
     );
 
-    await expect(client.startServer("token")).rejects.toThrow(
+    await expect(client.startServer("token", "session-1")).rejects.toThrow(
       "stop serving first",
     );
   });
@@ -102,7 +102,7 @@ describe("Crostini controller client", () => {
       async (_input: RequestInfo | URL, _options?: RequestInit) =>
         Response.json({
           product: "ok200-crostini-controller",
-          protocolVersion: 1,
+          protocolVersion: 2,
           instanceId: "fixture-1",
           version: "0.1.0",
           settings: { automaticUpdates: false },
@@ -127,6 +127,61 @@ describe("Crostini controller client", () => {
     );
     for (const [, options] of fetchMock.mock.calls) {
       expect(options?.method).toBe("POST");
+      expect((options?.headers as Headers).get("Authorization")).toBe(
+        "Bearer secret-token",
+      );
+    }
+  });
+
+  it("uses authenticated session and folder capabilities", async () => {
+    const fetchMock = vi.fn(
+      async (_input: RequestInfo | URL, _options?: RequestInit) =>
+        Response.json({}),
+    );
+    const client = new CrostiniControllerClient(
+      20080,
+      fetchMock as typeof fetch,
+    );
+
+    await client.openSession("secret-token");
+    await client.heartbeatSession("secret-token", "session-1");
+    await client.folderRoots("secret-token");
+    await client.listFolders("secret-token", "linux-files", ["Downloads"]);
+    await client.createFolder(
+      "secret-token",
+      "linux-files",
+      ["Downloads"],
+      "Sites",
+    );
+    await client.selectFolder("secret-token", "linux-files", [
+      "Downloads",
+      "Sites",
+    ]);
+    await client.startServer("secret-token", "session-1");
+    await client.closeSession("secret-token", "session-1", true);
+
+    expect(fetchMock.mock.calls.map(([url]) => url)).toEqual([
+      "http://penguin.linux.test:20080/api/session/open",
+      "http://penguin.linux.test:20080/api/session/heartbeat",
+      "http://penguin.linux.test:20080/api/folders/roots",
+      "http://penguin.linux.test:20080/api/folders/list",
+      "http://penguin.linux.test:20080/api/folders/create",
+      "http://penguin.linux.test:20080/api/folders/select",
+      "http://penguin.linux.test:20080/api/server/start",
+      "http://penguin.linux.test:20080/api/session/close",
+    ]);
+    expect(fetchMock.mock.calls[4]?.[1]?.body).toBe(
+      JSON.stringify({
+        rootId: "linux-files",
+        path: ["Downloads"],
+        name: "Sites",
+      }),
+    );
+    expect(fetchMock.mock.calls[6]?.[1]?.body).toBe(
+      JSON.stringify({ sessionId: "session-1" }),
+    );
+    expect(fetchMock.mock.calls[7]?.[1]?.keepalive).toBe(true);
+    for (const [, options] of fetchMock.mock.calls) {
       expect((options?.headers as Headers).get("Authorization")).toBe(
         "Bearer secret-token",
       );

@@ -12,6 +12,7 @@ const SETTINGS = {
   automaticUpdates: false,
   cors: false,
   directoryListing: true,
+  keepServingOnClose: false,
   lan: false,
   port: 8080,
   root: "/home/test/Downloads/200 OK",
@@ -107,12 +108,18 @@ describe("Crostini controller UI", () => {
           claimed: false,
           instanceId: INSTANCE_ID,
           product: "ok200-crostini-controller",
-          protocolVersion: 1,
+          protocolVersion: 2,
           version: "0.1.5",
         }),
       )
       .mockResolvedValueOnce(jsonResponse({ controllerToken: "secret-token" }))
-      .mockResolvedValueOnce(jsonResponse(statusResponse("stopped")));
+      .mockResolvedValueOnce(
+        jsonResponse({
+          expiresInSeconds: 75,
+          sessionId: "session-1",
+          status: statusResponse("stopped"),
+        }),
+      );
     vi.stubGlobal("fetch", fetchMock);
 
     await renderController();
@@ -128,7 +135,7 @@ describe("Crostini controller UI", () => {
       "http://penguin.linux.test:20080/api/claim",
     );
     expect(fetchMock.mock.calls[2]?.[0]).toBe(
-      "http://penguin.linux.test:20080/api/status",
+      "http://penguin.linux.test:20080/api/session/open",
     );
   });
 
@@ -157,7 +164,7 @@ describe("Crostini controller UI", () => {
           claimed: true,
           instanceId: INSTANCE_ID,
           product: "ok200-crostini-controller",
-          protocolVersion: 1,
+          protocolVersion: 2,
           version: "0.1.5",
         }),
       ),
@@ -187,7 +194,7 @@ function statusResponse(state: "stopped" | "running") {
   return {
     instanceId: INSTANCE_ID,
     product: "ok200-crostini-controller",
-    protocolVersion: 1,
+    protocolVersion: 2,
     server: { state },
     settings: SETTINGS,
     update: { state: "current" },

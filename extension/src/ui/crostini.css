@@ -645,6 +645,13 @@ input:disabled {
   background: #ffe229;
 }
 
+.button-primary:disabled {
+  border-color: var(--border);
+  background: var(--surface-muted);
+  color: var(--text-tertiary);
+  box-shadow: none;
+}
+
 .button-secondary {
   border-color: var(--border-strong);
   background: var(--surface-raised);

@@ -1205,7 +1205,9 @@ async fn build_folder_listing(
             continue;
         }
         let name = entry.file_name().to_string_lossy().into_owned();
-        if validate_path_component(&name).is_ok() {
+        if validate_path_component(&name).is_ok()
+            && !folder_entry_is_hidden(&request.root_id, &request.path, &name)
+        {
             entries.push(FolderEntryResponse { name });
         }
     }
@@ -1228,6 +1230,11 @@ async fn build_folder_listing(
         can_select: !request.path.is_empty(),
         entries,
     })
+}
+
+fn folder_entry_is_hidden(root_id: &str, path: &[String], name: &str) -> bool {
+    name.starts_with('.')
+        || (root_id == SHARED_CHROMEOS_ROOT_ID && path.is_empty() && name == "fonts")
 }
 
 fn validate_content_port(port: u16) -> ApiResult<()> {
@@ -1903,6 +1910,44 @@ mod tests {
         assert_eq!(roots["roots"][0]["id"], LINUX_FILES_ROOT_ID);
         assert_eq!(roots["roots"][0]["available"], true);
         assert_eq!(roots["roots"][1]["available"], false);
+
+        tokio::fs::create_dir_all(temp.path().join("home/.cache"))
+            .await
+            .expect("hidden Linux folder");
+        tokio::fs::create_dir_all(temp.path().join("shared/fonts"))
+            .await
+            .expect("ChromeOS system fonts mount");
+        tokio::fs::create_dir_all(temp.path().join("shared/MyFiles"))
+            .await
+            .expect("shared Chromebook files");
+
+        for (root_id, visible_name) in [
+            (LINUX_FILES_ROOT_ID, "Downloads"),
+            (SHARED_CHROMEOS_ROOT_ID, "MyFiles"),
+        ] {
+            let list_body = serde_json::json!({
+                "rootId": root_id,
+                "path": [],
+            })
+            .to_string();
+            let list = format!(
+                "POST /api/folders/list HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {token}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{list_body}",
+                list_body.len()
+            );
+            let (status, _, body) = request(address, &list).await;
+            assert_eq!(status, 200);
+            let listing: serde_json::Value =
+                serde_json::from_slice(&body).expect("root listing json");
+            let entry_names = listing["entries"]
+                .as_array()
+                .expect("entries")
+                .iter()
+                .map(|entry| entry["name"].as_str().expect("entry name"))
+                .collect::<Vec<_>>();
+            assert!(entry_names.contains(&visible_name));
+            assert!(entry_names.iter().all(|name| !name.starts_with('.')));
+            assert!(!entry_names.contains(&"fonts"));
+        }
 
         let create_body = serde_json::json!({
             "rootId": LINUX_FILES_ROOT_ID,

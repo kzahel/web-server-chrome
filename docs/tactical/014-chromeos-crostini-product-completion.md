@@ -4,11 +4,13 @@ Status: **active parent sequencing tactical. Current `main` has reached the
 first physically reviewed product-UI checkpoint: controller-backed folder
 browsing, automatic shared-folder discovery, default stop-on-close lifetime, a
 server switch, a polished portrait control surface, and local/LAN URL actions
-are implemented. This is source-fixture evidence, not a signed release
-candidate or full matrix closeout. The testbed now has a wake/retry capture
-implementation and the old shelf residue is classified, but sleeping-display
-proof, the clean uninstall matrix, broader lifecycle/accessibility coverage,
-and exact release artifacts remain open.**
+are implemented. The primary server control is now compact and sticky, and
+locked settings explain their stop-to-edit requirement when activated. This is
+source-fixture evidence, not a signed release candidate or full matrix
+closeout. The testbed now has a wake/retry capture implementation and the old
+shelf residue is classified, but sleeping-display proof, the clean uninstall
+matrix, broader lifecycle/accessibility coverage, and exact release artifacts
+remain open.**
 
 Last updated: **2026-08-03**.
 
@@ -289,6 +291,10 @@ refreshing in the ordinary case, or escaping controller confinement.
       About without hiding an available security/update action.
 - [x] Keep full setup, Share with Linux, recovery, reset, rollback, and
       uninstall guidance reachable from the connected UI.
+- [x] Keep the primary server state and switch in reach with a compact sticky
+      control while longer LAN and advanced content scrolls. A locked setting
+      remains focusable and reports the stop-to-edit reason when activated
+      instead of silently ignoring touch or keyboard input.
 - [ ] Support the 460×750 popup, smaller ChromeOS display settings, and normal-
       tab fallback without clipped controls, horizontal scrolling, or tiny
       targets. Preserve one focused routine surface.
@@ -534,6 +540,21 @@ port/content probes as phases close.
   unpacked extension 0.1.6 were left installed, claimed, connected, stopped,
   and ready for maintainer review. No physical uninstall was rerun after
   `8be44e5`.
+- **2026-08-03 compact-control and LAN follow-up:** commit `de022ca` reduces
+  routine surface and row spacing, keeps the server card sticky in the
+  460×750 control window, and turns inert native-disabled settings into
+  mutation-safe `aria-disabled` controls with a visible stop-to-edit notice.
+  Typecheck, production build, Biome, and all 47 extension tests passed. The
+  exact unpacked build was deployed on the M150 fixture; physical running-LAN
+  review confirmed the switch remains reachable at maximum scroll, the entered
+  Chromebook IPv4 stays adjacent to the **Other devices** copy/open URL, and
+  activating the locked folder control displays the explanatory notice.
+  Crostini exposed only `100.115.92.206/28` and gateway `100.115.92.193`.
+  Comparison with JSTorrent confirmed that it derives LAN sharing from native
+  host interfaces while UPnP returns the router's public address; neither path
+  supplies ChromeOS's host IPv4 from this guest. The current Chromium
+  `chrome.system.network` API remains platform-app-only, so the persisted manual
+  Chromebook IPv4 field is retained rather than guessing.
 
 ## Completion definition
 

@@ -19,9 +19,10 @@ setup as peer choices and passes its exact CI package/test gates. Current
 unreleased `main` now implements and physically exercises protocol-2
 controller sessions, default close-to-stop lifetime, controller-backed Linux
 and shared-Chromebook folder browsing, automatic share discovery, a polished
-switch-based popup, and local/LAN URL actions. This is a source-fixture UI
-checkpoint, not a new signed release. Full ChromeOS reboot/login, native ARM
-ChromeOS, complete folder/lifecycle/accessibility matrices,
+switch-based popup, compact sticky server control, actionable setting locks,
+and local/LAN URL actions. This is a source-fixture UI checkpoint, not a new
+signed release. Full ChromeOS reboot/login, native ARM ChromeOS, complete
+folder/lifecycle/accessibility matrices,
 update-to-a-newer-release/rollback, a clean end-to-end uninstall matrix,
 sleeping-display proof for the wake-aware testbed capture, and exact
 release-candidate evidence remain open.**
@@ -771,6 +772,19 @@ separate future concern owned by
 [`internet-exposure-and-port-mapping.md`](internet-exposure-and-port-mapping.md)
 and does not replace ChromeOS's explicit Crostini port-forwarding gate.
 
+A 2026-08-03 comparison with JSTorrent confirmed that its LAN-sharing URL and
+UPnP result come from different mechanisms. JSTorrent selects a LAN address
+from the native host's network interfaces and default route; UPnP separately
+reports the router's public WAN address and manages router mappings. On the
+physical M150 fixture, 200 OK's Crostini environment exposed only
+`100.115.92.206/28` with default gateway `100.115.92.193`. Interface, route,
+ARP, or UPnP inspection inside that guest therefore cannot recover the
+Chromebook host's Wi-Fi IPv4. Chromium's `chrome.system.network` could enumerate
+the host adapters, but current Chromium restricts that API to deprecated
+platform apps rather than Manifest V3 extensions. The validated, persisted
+Chromebook IPv4 field remains the honest supported fallback; it must not be
+silently filled with a guest or public address.
+
 ## Update, uninstall, and recovery contract
 
 ### Installer and file ownership
@@ -1001,6 +1015,8 @@ must remain explicit:
 - [Request optional permissions at runtime](https://developer.chrome.com/docs/extensions/reference/api/permissions)
 - [Chrome Local Network Access prompt](https://developer.chrome.com/blog/local-network-access)
 - [Chrome windows API](https://developer.chrome.com/docs/extensions/reference/api/windows)
+- [Chrome platform-app system.network API](https://developer.chrome.com/docs/apps/reference/system/network)
+- [Chromium extension API feature restrictions](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/extensions/common/api/_api_features.json)
 
 ## Release boundary
 

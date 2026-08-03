@@ -20,8 +20,9 @@ unreleased `main` now implements and physically exercises protocol-2
 controller sessions, default close-to-stop lifetime, controller-backed Linux
 and shared-Chromebook folder browsing, automatic share discovery, a polished
 switch-based popup, compact sticky server control, actionable setting locks,
-and local/LAN URL actions. This is a source-fixture UI checkpoint, not a new
-signed release. Full ChromeOS reboot/login, native ARM ChromeOS, complete
+automatic Chromebook-address discovery, and local/LAN URL actions. This is a
+source-fixture UI checkpoint, not a new signed release. Full ChromeOS
+reboot/login, native ARM ChromeOS, complete
 folder/lifecycle/accessibility matrices,
 update-to-a-newer-release/rollback, a clean end-to-end uninstall matrix,
 sleeping-display proof for the wake-aware testbed capture, and exact
@@ -765,25 +766,39 @@ as the user-facing LAN address. The accepted flow is:
 3. instruct the user to add that same TCP port under **Settings -> About
    ChromeOS -> Developers -> Linux development environment -> Port
    forwarding**; and
-4. show the Chromebook host's IPv4 address and forwarded content port.
+4. detect the Chromebook host's IPv4 in the extension control page, retain an
+   editable manual fallback, and show that address with the forwarded content
+   port.
 
 The control port remains local and is never forwarded. Automatic UPnP is a
 separate future concern owned by
 [`internet-exposure-and-port-mapping.md`](internet-exposure-and-port-mapping.md)
 and does not replace ChromeOS's explicit Crostini port-forwarding gate.
 
-A 2026-08-03 comparison with JSTorrent confirmed that its LAN-sharing URL and
-UPnP result come from different mechanisms. JSTorrent selects a LAN address
-from the native host's network interfaces and default route; UPnP separately
-reports the router's public WAN address and manages router mappings. On the
-physical M150 fixture, 200 OK's Crostini environment exposed only
-`100.115.92.206/28` with default gateway `100.115.92.193`. Interface, route,
-ARP, or UPnP inspection inside that guest therefore cannot recover the
-Chromebook host's Wi-Fi IPv4. Chromium's `chrome.system.network` could enumerate
-the host adapters, but current Chromium restricts that API to deprecated
-platform apps rather than Manifest V3 extensions. The validated, persisted
-Chromebook IPv4 field remains the honest supported fallback; it must not be
-silently filled with a guest or public address.
+The first 2026-08-03 JSTorrent comparison described its address source too
+loosely. JSTorrent's Manifest V3 client does not enumerate ChromeOS adapters.
+Its `DaemonEngineManager` fetches `/network/interfaces` and `/network/gateway`
+from its connected I/O daemon. On ChromeOS that is normally the Android
+companion at `100.115.92.2`; the companion enumerates its own interfaces with
+Java `NetworkInterface` and reads `/proc/net/route`. UPnP is a separate router
+mapping path whose external-address result is the router's WAN address, not the
+Chromebook's private Wi-Fi address.
+
+The Crostini process still cannot derive the ChromeOS host address through its
+own ordinary routing data. On the physical M150 fixture it had
+`100.115.92.206/28`; TTL-limited probes returned `100.115.92.193`, then the
+ChromeOS VM-side `100.115.92.25`, then router `192.168.1.1`. Those hops identify
+routers, not the translated caller address `192.168.1.106`. SSDP discovery from
+the guest returned no router, and unprivileged raw ICMP was unavailable.
+
+The Manifest V3 extension page itself provides the supported answer without a
+private Chrome API. A local-only `RTCPeerConnection` with an empty ICE-server
+list exposed host candidates `100.115.92.25`, `192.168.1.106`, and a global
+IPv6 address on the same fixture. 200 OK now discards loopback, link-local, and
+`100.115.*` candidates, prefers a private IPv4, and composes the LAN URL from
+the result. The editable, persisted IPv4 field remains a fallback and explicit
+override if WebRTC exposure changes, a VPN creates ambiguity, or detection is
+otherwise unavailable. It must never be silently filled with a guest address.
 
 ## Update, uninstall, and recovery contract
 
@@ -995,8 +1010,10 @@ must remain explicit:
 - [ ] Validate keyboard and screen-reader behavior for the transient launcher;
       its current custom-drawn body is not exposed through ChromeOS's
       automation accessibility tree.
-- [ ] Validate Chromebook-host IPv4 presentation and explicit content-port
-      forwarding from a second LAN device; never forward the control API.
+- [x] Validate Chromebook-host IPv4 presentation and explicit content-port
+      forwarding from a second LAN device; never forward the control API. The
+      physical MV3 page detected `192.168.1.106`; the external Mac fetched the
+      same content bytes as Crostini through port `8080`.
 - [ ] Validate the bundled setup/recovery instructions offline, including
       unsupported, policy-blocked, and ChromeOS Flex wording. The exact ZIP's
       install/Launcher/Linux-files/LAN/update/uninstall guide passes on the

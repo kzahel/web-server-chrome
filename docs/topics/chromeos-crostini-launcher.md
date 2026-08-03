@@ -75,13 +75,13 @@ controller-served launch page --external message--> extension worker
 - A branded `Terminal=false` `.desktop` entry installed in Crostini is the
   post-install ChromeOS Launcher surface. ChromeOS, not the extension, can use
   that registered Linux app to wake a stopped VM/container and execute its
-  launcher command. The launcher helper briefly maps a branded **Opening 200
-  OK…** window, then closes it after the browser handoff so ChromeOS observes a
-  complete graphical-app lifecycle. The controller itself remains headless.
-  The implemented helper lives in
+  launcher command. The launcher helper briefly maps a quiet branded
+  **Launching…** window, then closes it after the browser handoff so ChromeOS
+  observes a complete graphical-app lifecycle. The controller itself remains
+  headless. The implemented helper lives in
   [`desktop/crostini`](../../desktop/crostini), uses the X11 protocol directly
-  with DPI-aware embedded glyphs, and adds no GTK, Tauri, `xmessage`, or Xlib
-  runtime dependency.
+  with DPI-aware pure-Rust font rasterization, and adds no GTK, Tauri,
+  `xmessage`, or Xlib runtime dependency.
 - After the controller answers, the launcher opens its static
   `http://penguin.linux.test:<control-port>/launch-chromeos` page. That page
   sends one external message to wake the extension, whose service worker opens
@@ -220,7 +220,7 @@ After installation:
 
 1. The user clicks **200 OK Linux** in the ChromeOS Launcher.
 2. ChromeOS wakes the default Linux VM/container if it is stopped and runs the
-   non-terminal launch helper, which briefly displays **Opening 200 OK…**.
+   non-terminal launch helper, which briefly displays **Launching…**.
 3. The helper starts or focuses the single controller service and waits for
    its exact readiness endpoint.
 4. It uses `xdg-open` on the controller's local
@@ -561,18 +561,20 @@ controller service and one extension tab. `xmessage` is test scaffolding, not
 an accepted production dependency. The checked-in Rust launcher described
 below now replaces that scaffold.
 
-The Rust replacement was built and exercised on the same physical M150,
-Debian 12 x86_64 environment. Its optimized, unstripped binary was 963,960
+The original Rust replacement was built and exercised on the same physical
+M150, Debian 12 x86_64 environment. Its optimized, unstripped binary was 963,960
 bytes and `ldd` reported only libc, libgcc, the ELF loader, and the kernel
 VDSO. It talks to X11 through pure Rust and draws its own small bitmap surface,
 so the test did not depend on the installed `xmessage` binary or GUI toolkit
 packages.
 
 The first visual run exposed ChromeOS's 230-DPI X11 surface: unscaled X core
-fonts produced a tiny, poorly rendered window. The retained implementation
-derives its scale from the X screen's pixel and physical dimensions and embeds
-its glyphs. The resulting working and failure surfaces were readable at the
-Chromebook's current display scale. With the controller unit deliberately
+fonts produced a tiny, poorly rendered window. The implementation derives its
+scale from the X screen's pixel and physical dimensions. The current normal
+surface is a compact 320×96 logical-pixel **Launching…** card and rasterizes an
+installed ChromeOS Noto Sans font through pure Rust, with embedded glyphs only
+as a fallback. Actionable failures expand to the existing detail and retry
+surface. With the controller unit deliberately
 removed, the window stayed open with the systemd failure and both controls;
 after restoring the unit, **Try Again** started the controller and completed
 the browser handoff. ChromeOS's automation accessibility tree exposed the

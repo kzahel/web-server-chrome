@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  detectChromeOsLanIpv4Address,
+  validIpv4,
+} from "../lib/chromeos-lan-address";
+import {
   type ControllerSettings,
   type ControllerStatus,
   CrostiniControllerClient,
@@ -916,11 +920,43 @@ function UrlCard({ label, url }: { label: string; url: string }) {
 
 function LanAccessCard({ status }: { status: ControllerStatus }) {
   const storageKey = `ok200-crostini-lan-host:${status.instanceId}`;
-  const [address, setAddress] = useState(
-    () => localStorage.getItem(storageKey) ?? "",
+  const [manualAddress, setManualAddress] = useState<string | null>(() =>
+    localStorage.getItem(storageKey),
   );
+  const [detectedAddress, setDetectedAddress] = useState<string | null>(null);
+  const [detecting, setDetecting] = useState(true);
+  const detectionGeneration = useRef(0);
+  const address = manualAddress ?? detectedAddress ?? "";
   const host = validIpv4(address) ? address : null;
   const url = host ? `http://${host}:${status.settings.port}/` : null;
+
+  const detectAddress = useCallback(async () => {
+    const generation = detectionGeneration.current + 1;
+    detectionGeneration.current = generation;
+    setDetecting(true);
+    const detected = await detectChromeOsLanIpv4Address();
+    if (detectionGeneration.current !== generation) return;
+    setDetectedAddress(detected);
+    setDetecting(false);
+  }, []);
+
+  useEffect(() => {
+    void detectAddress();
+    return () => {
+      detectionGeneration.current += 1;
+    };
+  }, [detectAddress]);
+
+  const addressHelp =
+    manualAddress !== null
+      ? validIpv4(manualAddress)
+        ? "Using your saved address. Clear it to use automatic detection."
+        : "Enter a complete IPv4 address."
+      : detecting
+        ? "Detecting this Chromebook’s address…"
+        : detectedAddress
+          ? "Detected automatically from ChromeOS."
+          : "Automatic detection was unavailable. Find it in your connected Wi-Fi details.";
 
   return (
     <section className="surface lan-surface">
@@ -944,19 +980,44 @@ function LanAccessCard({ status }: { status: ControllerStatus }) {
           <span>2</span>
           <div className="lan-address-field">
             <label htmlFor="chromebook-address">Chromebook IPv4 address</label>
-            <input
-              id="chromebook-address"
-              value={address}
-              inputMode="decimal"
-              placeholder="192.168.1.42"
-              aria-invalid={address.length > 0 && !host}
-              onChange={(event) => {
-                const value = event.target.value.trim();
-                setAddress(value);
-                if (validIpv4(value)) localStorage.setItem(storageKey, value);
-              }}
-            />
-            <small>Find it in your connected Wi-Fi network details.</small>
+            <div className="lan-address-input">
+              <input
+                id="chromebook-address"
+                value={address}
+                inputMode="decimal"
+                placeholder={detecting ? "Detecting…" : "192.168.1.42"}
+                aria-invalid={address.length > 0 && !host}
+                onChange={(event) => {
+                  const value = event.target.value.trim();
+                  if (!value) {
+                    setManualAddress(null);
+                    localStorage.removeItem(storageKey);
+                    return;
+                  }
+                  setManualAddress(value);
+                  if (validIpv4(value)) {
+                    localStorage.setItem(storageKey, value);
+                  } else {
+                    localStorage.removeItem(storageKey);
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className="icon-button detect-address-button"
+                aria-label="Detect Chromebook address again"
+                title="Detect again"
+                disabled={detecting}
+                onClick={() => {
+                  setManualAddress(null);
+                  localStorage.removeItem(storageKey);
+                  void detectAddress();
+                }}
+              >
+                <RefreshIcon />
+              </button>
+            </div>
+            <small aria-live="polite">{addressHelp}</small>
           </div>
         </li>
       </ol>
@@ -1394,17 +1455,6 @@ function delay(milliseconds: number): Promise<void> {
 function folderName(path: string): string {
   const components = path.split("/").filter(Boolean);
   return components[components.length - 1] || "Choose a folder";
-}
-
-function validIpv4(value: string): boolean {
-  const parts = value.split(".");
-  return (
-    parts.length === 4 &&
-    parts.every(
-      (part) =>
-        /^\d{1,3}$/.test(part) && Number(part) >= 0 && Number(part) <= 255,
-    )
-  );
 }
 
 function OfflineSetup({ compact = false }: { compact?: boolean }) {

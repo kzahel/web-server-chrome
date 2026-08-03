@@ -773,10 +773,35 @@ input[aria-disabled="true"] {
   font-weight: 650;
 }
 
+.lan-address-input {
+  display: flex;
+  max-width: 276px;
+  align-items: center;
+  gap: 5px;
+}
+
 .lan-address-field input {
   width: min(100%, 230px);
+  min-width: 0;
   padding: 8px 10px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.detect-address-button {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-color: var(--border);
+  background: var(--surface-raised);
+}
+
+.detect-address-button .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.detect-address-button:disabled .icon {
+  animation: spin 0.8s linear infinite;
 }
 
 .lan-address-field small {

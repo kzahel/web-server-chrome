@@ -324,6 +324,55 @@ describe("Crostini controller UI", () => {
     );
   });
 
+  it("detects the Chromebook LAN address and ignores ChromeOS guest interfaces", async () => {
+    installChromeMock(true);
+    installLanAddressProbe(["100.115.92.25", "192.168.1.106"]);
+    const running = {
+      ...statusResponse("running"),
+      server: { state: "running", url: "http://localhost:8080" },
+      settings: { ...SETTINGS, lan: true },
+    };
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValueOnce(
+          jsonResponse({
+            claimed: false,
+            instanceId: INSTANCE_ID,
+            product: "ok200-crostini-controller",
+            protocolVersion: 2,
+            version: "0.1.5",
+          }),
+        )
+        .mockResolvedValueOnce(
+          jsonResponse({ controllerToken: "secret-token" }),
+        )
+        .mockResolvedValueOnce(
+          jsonResponse({
+            expiresInSeconds: 75,
+            sessionId: "session-1",
+            status: running,
+          }),
+        ),
+    );
+
+    await renderController();
+    await settle();
+
+    const address = document.querySelector<HTMLInputElement>(
+      "#chromebook-address",
+    );
+    expect(address?.value).toBe("192.168.1.106");
+    expect(document.body.textContent).toContain(
+      "Detected automatically from ChromeOS.",
+    );
+    expect(document.body.textContent).toContain("http://192.168.1.106:8080/");
+    expect(document.body.textContent).not.toContain(
+      "http://100.115.92.25:8080/",
+    );
+  });
+
   it("explains why running-server settings cannot be changed", async () => {
     installChromeMock(true);
     const running = {
@@ -437,6 +486,48 @@ function installChromeMock(permissionGranted: boolean) {
     },
   });
   lastError = undefined;
+}
+
+function installLanAddressProbe(addresses: string[]) {
+  vi.stubGlobal(
+    "RTCPeerConnection",
+    class {
+      private listener:
+        | ((event: {
+            candidate: { address: string; candidate: string } | null;
+          }) => void)
+        | null = null;
+
+      addEventListener(
+        _type: string,
+        listener: (event: {
+          candidate: { address: string; candidate: string } | null;
+        }) => void,
+      ) {
+        this.listener = listener;
+      }
+
+      close() {}
+
+      createDataChannel() {}
+
+      async createOffer() {
+        return { sdp: "", type: "offer" as const };
+      }
+
+      async setLocalDescription() {
+        for (const address of addresses) {
+          this.listener?.({
+            candidate: {
+              address,
+              candidate: `candidate:1 1 udp 1 ${address} 40000 typ host`,
+            },
+          });
+        }
+        this.listener?.({ candidate: null });
+      }
+    },
+  );
 }
 
 async function renderController() {

@@ -513,7 +513,10 @@ port/content probes as phases close.
   ChromeOS reported the requested 460×750 outer window, the compact control
   layout remained legible, and the stacked two-root folder dialog fit without
   horizontal scrolling. Setup, claim, and popup-failure recovery still use a
-  normal tab.
+  normal tab. Follow-up `dc3bb5e` replaced the location selector's implicit
+  two-row grid with one flex-aligned icon/copy group; both the selected Linux
+  and selected Chromebook states were physically checked at the portrait
+  width.
 
 ## Completion definition
 

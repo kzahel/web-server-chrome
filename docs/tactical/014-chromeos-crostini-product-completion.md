@@ -4,10 +4,11 @@ Status: **active parent sequencing tactical. Current `main` has reached the
 first physically reviewed product-UI checkpoint: controller-backed folder
 browsing, automatic shared-folder discovery, default stop-on-close lifetime, a
 server switch, a polished portrait control surface, automatic Chromebook-host
-address discovery, and local/LAN URL actions are implemented. The primary
-server control is now compact and sticky, and locked settings explain their
-stop-to-edit requirement when activated. This is source-fixture evidence, not
-a signed release candidate or full matrix closeout. The testbed now has a
+address discovery, local/LAN URL actions, and a compact system-font Linux
+launch handoff are implemented. The primary server control is now compact and
+sticky, and locked settings explain their stop-to-edit requirement when
+activated. This is source-fixture evidence, not a signed release candidate or
+full matrix closeout. The testbed now has a
 wake/retry capture implementation and the old shelf residue is classified, but
 sleeping-display proof, the clean uninstall matrix, broader
 lifecycle/accessibility coverage, and exact release artifacts remain open.**
@@ -575,6 +576,22 @@ port/content probes as phases close.
   production-ID reload. The controller was reopened and left running with the
   automatically detected address. The follow-up removes the manual-address UI
   entirely and clears legacy saved overrides.
+- **2026-08-03 transient-launcher polish:** commit `02c498a` replaces the
+  technical multi-step status copy and large bitmap working surface with a
+  320×96 logical-pixel **Launching…** card. It uses ChromeOS Noto Sans through
+  a pure-Rust rasterizer, a small branded progress mark, and no GTK/Xlib GUI
+  dependency; actionable failures still expand to the detailed retry/close
+  surface. Strict Linux Clippy, all 32 Linux-target Crostini tests, the release
+  build, and the full local Rust workspace passed. The exact committed source
+  was built in x86_64 Debian 12 Crostini and captured on M150 through the
+  wake-aware EGL path. The capture-only environment delayed `xdg-open` so the
+  two-second transient surface remained above the already-open controller;
+  production timing and handoff were not changed. The source fixture was
+  installed in place without uninstalling or purging, and the installed binary
+  matched SHA-256
+  `0c9be29c0ec18520a123f7cbda7e59b93ea04f4766ea85d7cae3f45ccbd8fd1a`.
+  The authenticated controller health endpoint and the correct systemd user
+  unit remained active after installation.
 
 ## Completion definition
 

@@ -14,6 +14,8 @@ and
 [docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md](docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md).
 The scoped Play-free ChromeOS Linux fallback lives in
 [docs/tactical/012-chromeos-crostini-fallback.md](docs/tactical/012-chromeos-crostini-fallback.md).
+The active ChromeOS Linux product-completion plan lives in
+[docs/tactical/014-chromeos-crostini-product-completion.md](docs/tactical/014-chromeos-crostini-product-completion.md).
 
 ## Quick Context
 

@@ -16,19 +16,22 @@ passes contextual deny/re-request/claim and forced popup-to-tab fallback. The
 extension bundles setup/recovery and exposes **Use ChromeOS Linux**. Public
 `extension-v0.1.6` presents Linux's no-Play full controls and Android's quick
 setup as peer choices and passes its exact CI package/test gates. Full ChromeOS
-reboot/login, native ARM ChromeOS, rooted directory browsing,
-update-to-a-newer-release/rollback, and broader lifecycle/accessibility tests
-remain follow-up evidence.**
+reboot/login, native ARM ChromeOS, controller-backed directory browsing,
+polished cross-platform-parity controls, default close-to-stop lifetime,
+update-to-a-newer-release/rollback, clean pinned-shelf uninstall behavior, and
+broader lifecycle/accessibility tests remain follow-up work and evidence.**
 
-Last reconciled: **2026-08-02**.
+Last reconciled: **2026-08-03**.
 
-The bounded implementation and acceptance ledger lives in
-[Tactical 012](../tactical/012-chromeos-crostini-fallback.md). The parent
-extension's Android/Play routing and unsupported-device messaging remain owned
-by [`chromeos-extension-launcher.md`](chromeos-extension-launcher.md). The
-server implementation should reuse the Tauri-independent Rust boundary owned
-by [`desktop-runtime.md`](desktop-runtime.md), without installing the desktop
-Tauri application.
+The released fallback's implementation and acceptance ledger lives in
+[Tactical 012](../tactical/012-chromeos-crostini-fallback.md). The active
+product-completion and physical-acceptance plan lives in
+[Tactical 014](../tactical/014-chromeos-crostini-product-completion.md). The
+parent extension's Android/Play routing and unsupported-device messaging remain
+owned by [`chromeos-extension-launcher.md`](chromeos-extension-launcher.md).
+The server implementation should reuse the Tauri-independent Rust boundary
+owned by [`desktop-runtime.md`](desktop-runtime.md), without installing the
+desktop Tauri application.
 
 ## Product decision
 
@@ -81,6 +84,12 @@ controller-served launch page --external message--> extension worker
   The controller can remain available while Linux is running, but the content
   server starts only after an explicit user action or an independently
   accepted opt-in auto-start setting.
+- The server's primary control is an accessible on/off switch, consistent with
+  the desktop and Android applications. Closing the final extension control
+  surface stops the content server by default. **Keep serving when controls
+  close** is an explicit preference and defaults off; a controller-owned
+  authenticated session lease or equivalent mechanism enforces the default
+  even when Chrome or the extension exits without a cleanup callback.
 - The controller service is installed as a static on-demand systemd user unit:
   no `[Install]` target, `systemctl enable`, or `loginctl enable-linger`. The
   ChromeOS Launcher helper explicitly starts it. `Restart=always` may keep an
@@ -168,13 +177,21 @@ flow to prototype:
    provide explicit status, reset-controller, and token-rotation recovery.
 8. When connected, the extension changes from install guidance to the
    ChromeOS control UI. The initial root is a safe Linux-owned folder such as
-   `~/Downloads`; choosing a ChromeOS folder first explains **Share with
-   Linux** and validates the translated `/mnt/chromeos/...` path.
-9. The user explicitly presses **Start server**. The UI shows both the local
-   browser URL and, only when LAN mode is enabled, the Chromebook host address
-   plus ChromeOS's separate Linux port-forwarding instructions.
-10. Terminal may be closed after installation. The controller and server
-    continue according to the displayed state while the Crostini session is
+   `~/Downloads/200 OK`. A controller-backed picker browses friendly **Linux
+   files** and **Shared Chromebook folders** roots instead of asking the user
+   to type a path.
+9. Choosing a ChromeOS-owned folder explains **Share with Linux** in context.
+   When the user returns from Files, the waiting picker rechecks automatically
+   and presents the newly shared folder; a manual **Check again** action is only
+   a recovery fallback.
+10. The user explicitly turns on the server switch. The UI shows an actionable
+    local URL and, only when LAN mode is enabled and the Chromebook host address
+    is known, a copyable LAN URL plus ChromeOS's separate Linux port-forwarding
+    instructions.
+11. Terminal may be closed after installation. Closing the transient Launcher
+    helper has no effect on content. Closing the final extension control UI
+    stops serving by default; **Keep serving when controls close** is the
+    visible, explicit opt-in for a run that should continue while Crostini is
     running.
 
 Provisional setup copy:
@@ -406,9 +423,19 @@ warning-minimizing choice.
 The implemented React surface follows this tab/popup split and reuses neither
 the desktop Tauri shell nor Android Compose. Its first slice exposes a validated
 root text field, content port, localhost/LAN bind, directory listing, CORS, SPA,
-start/stop, status, version, local URL, permission copy, reset guidance, and
-offline setup/recovery summary. A safe rooted directory browser, Chromebook
-IPv4 display, richer diagnostics, updates, and final install copy remain.
+start/stop buttons, manual status refresh, version/update state, a local URL,
+permission copy, reset guidance, and an offline setup/recovery summary. This is
+a functional protocol surface, not the accepted finished UX.
+
+The finished surface follows the desktop and Android information hierarchy:
+canonical branding and icons, a status card with an accessible server switch,
+a controller-backed folder picker, automatic visible-session status sync,
+open/copy URL actions, predictable stopped-state setting commits, a visible
+server-lifetime choice, responsive popup/tab layouts, dark mode, and contextual
+ChromeOS help. A generic **Refresh**, raw path entry, and separate ambiguous
+**Save settings** action are not normal-operation affordances. Uncommon updater,
+diagnostic, reset, rollback, and uninstall actions remain reachable under an
+appropriate advanced/help surface.
 
 Minimum controls:
 
@@ -421,9 +448,14 @@ Minimum controls:
 - automatic-update preference, manual update/rollback, version,
   logs/diagnostics, reset, and uninstall instructions.
 
-The controller can implement a local filesystem browser rooted in approved
-Linux/shared locations. A browser directory picker in the extension cannot by
-itself grant the Linux daemon a stable filesystem path.
+The controller must implement the local filesystem browser rooted in approved
+Linux/shared locations. It exposes friendly root IDs plus relative entries,
+canonicalizes list/create/select/start operations, and installs only an
+accepted directory into server settings. Linux home and `/mnt/chromeos` are
+browse sentinels but are not selectable server roots. The picker automatically
+re-lists a waiting shared-folder view when its window regains focus and at a
+bounded interval while visible. A browser directory picker in the extension
+cannot by itself grant the Linux daemon a stable filesystem path.
 
 ## Physical launcher experiment
 
@@ -629,6 +661,15 @@ than disposable controller/popup fixtures:
   settings and served root without changing linger. Reinstall retained the
   claimed identity. `uninstall --purge` then removed settings/pairing while
   again preserving the served root, and ChromeOS removed the app from search.
+
+A 2026-08-03 follow-up capture cleanup found a narrower unresolved state:
+after purge removed the installed files, a **200 OK Linux** item remained on
+the shelf. This does not invalidate the earlier search-removal observation and
+is not yet proof of a stale Garcon registration; ChromeOS may have retained a
+user pin independently of Launcher search. Tactical 014 requires separate
+inspection of search registration, shelf pinning, cache propagation, and click
+behavior, followed by a supported uninstall experience that does not strand an
+unexplained dead item.
 
 All installed files, extension state, transferred source/build trees, and the
 empty test serve root were removed afterward; the VM was stopped and the

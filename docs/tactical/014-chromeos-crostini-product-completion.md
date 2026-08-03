@@ -568,7 +568,12 @@ port/content probes as phases close.
   Crostini loopback fetches returned identical SHA-256
   `f46c16dc543df8be799fbf1e66ef4aa5ba99ed9df80bc5933048dba2de0cbc75`.
   Workspace typecheck, production build, Biome, and all 52 extension tests
-  passed.
+  passed. Deployment also exposed that the repository helper still targeted a
+  dead Crostini SSH path and an inactive unpacked directory. Commit `1473fca`
+  delegates to the authoritative ChromeOS testbed, targets the active
+  `200-ok-extension` directory, and passed an end-to-end build, transfer, and
+  production-ID reload. The controller was reopened and left running with the
+  automatically detected address and no saved override.
 
 ## Completion definition
 

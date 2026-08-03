@@ -21,6 +21,11 @@ the independent Rust desktop and Kotlin Android runtimes in
 - **Progressive disclosure.** Multi-server, advanced settings — there but not in your face.
 - **One page per server.** All controls and settings for one server live on a single scrollable screen. No drilling into a separate settings page for per-server config.
 - **App-level settings are separate.** Global stuff (boot behavior, power management) lives behind a gear icon, not mixed in with per-server options.
+- **The main UI is canonical.** Every app option and every action needed to
+  manage or exit the desktop app is reachable from its main window. Native,
+  menu-bar, and system-tray menus are optional shortcut surfaces only; they
+  never own exclusive controls. This remains true when the user hides an icon
+  or a Linux desktop does not provide a usable tray.
 
 ## Future Responsive Layout Exploration
 
@@ -145,7 +150,23 @@ Settings changes while the server is running take effect on the next request (no
 
 Accessed via the gear icon in the toolbar (phone) or sidebar header (tablet/desktop). Opens a separate page.
 
-- **Start on boot** — launch app and auto-start servers that were running when app last closed
+The desktop surface must include all of its current app-level controls:
+
+- **Start at Login** — launch the desktop application after login
+- **Run in Background** — keep the application available when its window is closed
+- **Show Icon in Menu Bar** (macOS) / **Show Icon in System Tray**
+  (Windows and Linux) — default on, but optional on every platform
+- **Check for Updates** — run a manual update check and show its result in the app
+- **Quit** — explicitly exit when closing the window would otherwise hide it
+
+Native application menus and tray/status-icon menus may duplicate these items
+for speed. They are never a prerequisite for discovering, changing, or
+recovering a setting. Relaunching from the platform's normal app launcher must
+restore the existing window even when the icon is hidden.
+
+Potential later app-level settings include:
+
+- **Start on boot** — launch the app and auto-start servers that were running when the app last closed
 - **Auto-shutdown** — stop servers after N minutes of inactivity (default: off or 15 min)
 - **Battery optimization** — prompt to exclude from battery optimization (Android)
 - **Theme** — system / light / dark

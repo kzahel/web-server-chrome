@@ -1,16 +1,12 @@
+use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Mutex;
 use tauri::{
-    menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem, SubmenuBuilder},
+    menu::{CheckMenuItem, Menu, MenuItem, MenuItemKind, PredefinedMenuItem, SubmenuBuilder},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     Emitter, Manager, WebviewWindowBuilder,
 };
 use tauri_plugin_autostart::ManagerExt as AutostartManagerExt;
-
-#[cfg(target_os = "macos")]
-use std::collections::HashMap;
-#[cfg(target_os = "macos")]
-use tauri::menu::MenuItemKind;
 
 mod headless_updater;
 mod native_host;
@@ -43,9 +39,8 @@ struct Settings {
     autostart: bool,
     #[serde(default = "default_true")]
     run_in_background: bool,
-    /// Show tray icon in macOS menu bar. Ignored on other platforms.
-    #[serde(default = "default_true")]
-    show_in_menu_bar: bool,
+    #[serde(default = "default_true", alias = "show_in_menu_bar")]
+    show_tray_icon: bool,
 }
 
 impl Default for Settings {
@@ -53,8 +48,44 @@ impl Default for Settings {
         Self {
             autostart: false,
             run_in_background: true,
-            show_in_menu_bar: true,
+            show_tray_icon: true,
         }
+    }
+}
+
+#[derive(serde::Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+struct DesktopSettings {
+    autostart: bool,
+    run_in_background: bool,
+    show_tray_icon: bool,
+    tray_icon_label: &'static str,
+}
+
+impl From<&Settings> for DesktopSettings {
+    fn from(settings: &Settings) -> Self {
+        Self {
+            autostart: settings.autostart,
+            run_in_background: settings.run_in_background,
+            show_tray_icon: settings.show_tray_icon,
+            tray_icon_label: tray_icon_label(),
+        }
+    }
+}
+
+#[derive(serde::Deserialize, Clone, Copy)]
+#[serde(rename_all = "camelCase")]
+struct DesktopSettingsPatch {
+    autostart: Option<bool>,
+    run_in_background: Option<bool>,
+    show_tray_icon: Option<bool>,
+}
+
+fn tray_icon_label() -> &'static str {
+    if cfg!(target_os = "macos") {
+        "Show Icon in Menu Bar"
+    } else {
+        "Show Icon in System Tray"
     }
 }
 
@@ -67,13 +98,14 @@ fn load_settings(app: &tauri::AppHandle) -> Settings {
         .unwrap_or_default()
 }
 
-fn save_settings(app: &tauri::AppHandle, settings: &Settings) {
+fn save_settings(app: &tauri::AppHandle, settings: &Settings) -> Result<(), String> {
     let data_dir = app.path().app_data_dir().expect("no app data directory");
-    std::fs::create_dir_all(&data_dir).ok();
+    std::fs::create_dir_all(&data_dir)
+        .map_err(|error| format!("create settings directory: {error}"))?;
     let path = data_dir.join("settings.json");
-    if let Ok(json) = serde_json::to_string_pretty(settings) {
-        std::fs::write(&path, json).ok();
-    }
+    let json = serde_json::to_string_pretty(settings)
+        .map_err(|error| format!("serialize settings: {error}"))?;
+    std::fs::write(&path, json).map_err(|error| format!("save settings: {error}"))
 }
 
 // -- Sidecar resolution --
@@ -163,13 +195,11 @@ fn show_main_window<R: tauri::Runtime>(app: &tauri::AppHandle<R>) {
     }
 }
 
-// -- macOS menu/tray check item sync --
+// -- Native menu/tray check item sync --
 
-#[cfg(target_os = "macos")]
 struct CheckItemSync(HashMap<String, Vec<CheckMenuItem<tauri::Wry>>>);
 
-/// Keep `CheckMenuItems` in sync across app menu and tray menu on macOS.
-#[cfg(target_os = "macos")]
+/// Keep shortcut checkmarks in sync with the canonical settings state.
 fn sync_check_items(app: &tauri::AppHandle, id: &str, checked: bool) {
     if let Some(sync) = app.try_state::<CheckItemSync>() {
         if let Some(items) = sync.0.get(id) {
@@ -178,6 +208,78 @@ fn sync_check_items(app: &tauri::AppHandle, id: &str, checked: bool) {
             }
         }
     }
+}
+
+fn update_desktop_settings(
+    app: &tauri::AppHandle,
+    patch: DesktopSettingsPatch,
+) -> Result<DesktopSettings, String> {
+    let state = app.state::<Mutex<Settings>>();
+    let mut settings = state.lock().unwrap();
+
+    if let Some(autostart) = patch.autostart {
+        if autostart != settings.autostart {
+            if autostart {
+                app.autolaunch()
+                    .enable()
+                    .map_err(|error| format!("enable Start at Login: {error}"))?;
+            } else {
+                app.autolaunch()
+                    .disable()
+                    .map_err(|error| format!("disable Start at Login: {error}"))?;
+            }
+            settings.autostart = autostart;
+        }
+    }
+    if let Some(run_in_background) = patch.run_in_background {
+        settings.run_in_background = run_in_background;
+    }
+    if let Some(show_tray_icon) = patch.show_tray_icon {
+        settings.show_tray_icon = show_tray_icon;
+    }
+
+    save_settings(app, &settings)?;
+    let result = DesktopSettings::from(&*settings);
+    drop(settings);
+
+    sync_check_items(app, "autostart", result.autostart);
+    sync_check_items(app, "run-in-background", result.run_in_background);
+    sync_check_items(app, "show-tray-icon", result.show_tray_icon);
+    if let Some(tray) = app.tray_by_id("tray") {
+        if let Err(error) = tray.set_visible(result.show_tray_icon) {
+            eprintln!("failed to change tray icon visibility: {error}");
+        }
+    }
+    let _ = app.emit("desktop-settings-changed", result.clone());
+
+    Ok(result)
+}
+
+#[tauri::command]
+#[allow(clippy::needless_pass_by_value)] // Tauri command extractors are owned values.
+fn desktop_settings_get(state: tauri::State<'_, Mutex<Settings>>) -> DesktopSettings {
+    DesktopSettings::from(&*state.lock().unwrap())
+}
+
+#[tauri::command]
+#[allow(clippy::needless_pass_by_value)] // Tauri command extractors are owned values.
+fn desktop_settings_update(
+    app: tauri::AppHandle,
+    patch: DesktopSettingsPatch,
+) -> Result<DesktopSettings, String> {
+    update_desktop_settings(&app, patch)
+}
+
+#[tauri::command]
+#[allow(clippy::needless_pass_by_value)] // Tauri command extractors are owned values.
+fn desktop_check_for_updates(app: tauri::AppHandle) {
+    let _ = app.emit("check-for-updates", ());
+}
+
+#[tauri::command]
+#[allow(clippy::needless_pass_by_value)] // Tauri command extractors are owned values.
+fn desktop_quit(app: tauri::AppHandle) {
+    app.exit(0);
 }
 
 // -- Menu event handler --
@@ -192,43 +294,51 @@ fn handle_menu_event(app: &tauri::AppHandle, event_id: &str) {
             let _ = app.emit("check-for-updates", ());
         }
         "autostart" => {
-            let state = app.state::<Mutex<Settings>>();
-            let mut s = state.lock().unwrap();
-            s.autostart = !s.autostart;
-            let checked = s.autostart;
-            if checked {
-                let _ = app.autolaunch().enable();
-            } else {
-                let _ = app.autolaunch().disable();
+            let autostart = !app.state::<Mutex<Settings>>().lock().unwrap().autostart;
+            if let Err(error) = update_desktop_settings(
+                app,
+                DesktopSettingsPatch {
+                    autostart: Some(autostart),
+                    run_in_background: None,
+                    show_tray_icon: None,
+                },
+            ) {
+                eprintln!("failed to change Start at Login: {error}");
             }
-            save_settings(app, &s);
-            drop(s);
-            #[cfg(target_os = "macos")]
-            sync_check_items(app, "autostart", checked);
         }
         "run-in-background" => {
-            let state = app.state::<Mutex<Settings>>();
-            let mut s = state.lock().unwrap();
-            s.run_in_background = !s.run_in_background;
-            #[cfg(target_os = "macos")]
-            let checked = s.run_in_background;
-            save_settings(app, &s);
-            drop(s);
-            #[cfg(target_os = "macos")]
-            sync_check_items(app, "run-in-background", checked);
-        }
-        "show-in-menu-bar" => {
-            let state = app.state::<Mutex<Settings>>();
-            let mut s = state.lock().unwrap();
-            s.show_in_menu_bar = !s.show_in_menu_bar;
-            let visible = s.show_in_menu_bar;
-            save_settings(app, &s);
-            drop(s);
-            if let Some(tray) = app.tray_by_id("tray") {
-                let _ = tray.set_visible(visible);
+            let run_in_background = !app
+                .state::<Mutex<Settings>>()
+                .lock()
+                .unwrap()
+                .run_in_background;
+            if let Err(error) = update_desktop_settings(
+                app,
+                DesktopSettingsPatch {
+                    autostart: None,
+                    run_in_background: Some(run_in_background),
+                    show_tray_icon: None,
+                },
+            ) {
+                eprintln!("failed to change Run in Background: {error}");
             }
-            #[cfg(target_os = "macos")]
-            sync_check_items(app, "show-in-menu-bar", visible);
+        }
+        "show-tray-icon" => {
+            let show_tray_icon = !app
+                .state::<Mutex<Settings>>()
+                .lock()
+                .unwrap()
+                .show_tray_icon;
+            if let Err(error) = update_desktop_settings(
+                app,
+                DesktopSettingsPatch {
+                    autostart: None,
+                    run_in_background: None,
+                    show_tray_icon: Some(show_tray_icon),
+                },
+            ) {
+                eprintln!("failed to change tray icon visibility: {error}");
+            }
         }
         "quit" => {
             app.exit(0);
@@ -262,6 +372,10 @@ pub fn run() {
             server_control::server_start,
             server_control::server_stop,
             server_control::server_pick_root,
+            desktop_settings_get,
+            desktop_settings_update,
+            desktop_check_for_updates,
+            desktop_quit,
         ])
         .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
             if args.iter().any(|arg| arg == "--quit-for-uninstall") {
@@ -356,18 +470,15 @@ pub fn run() {
                 let builder = SubmenuBuilder::new(app, "Settings")
                     .item(&autostart_i)
                     .item(&background_i);
-                #[cfg(target_os = "macos")]
-                let builder = {
-                    let show_in_menu_bar_i = CheckMenuItem::with_id(
-                        app,
-                        "show-in-menu-bar",
-                        "Show Icon in Menu Bar",
-                        true,
-                        settings.show_in_menu_bar,
-                        None::<&str>,
-                    )?;
-                    builder.item(&show_in_menu_bar_i)
-                };
+                let show_tray_icon_i = CheckMenuItem::with_id(
+                    app,
+                    "show-tray-icon",
+                    tray_icon_label(),
+                    true,
+                    settings.show_tray_icon,
+                    None::<&str>,
+                )?;
+                let builder = builder.item(&show_tray_icon_i);
                 Ok(builder.build()?)
             };
 
@@ -432,8 +543,7 @@ pub fn run() {
                 )?
             };
 
-            // Collect CheckMenuItems for macOS sync
-            #[cfg(target_os = "macos")]
+            // Collect native and tray shortcut checkmarks for state sync.
             {
                 let mut sync_map: HashMap<String, Vec<CheckMenuItem<tauri::Wry>>> = HashMap::new();
                 fn collect_checks(
@@ -483,9 +593,8 @@ pub fn run() {
                 })
                 .build(app)?;
 
-            // Hide tray icon if user disabled it (macOS only)
-            #[cfg(target_os = "macos")]
-            if !settings.show_in_menu_bar {
+            // Respect the persisted visibility choice on every desktop.
+            if !settings.show_tray_icon {
                 if let Some(tray) = app.tray_by_id("tray") {
                     let _ = tray.set_visible(false);
                 }
@@ -542,7 +651,7 @@ mod tests {
         let s = Settings::default();
         assert!(!s.autostart);
         assert!(s.run_in_background);
-        assert!(s.show_in_menu_bar);
+        assert!(s.show_tray_icon);
     }
 
     #[test]
@@ -552,8 +661,15 @@ mod tests {
         let s: Settings = serde_json::from_str(json).unwrap();
         assert!(s.autostart);
         assert!(!s.run_in_background);
-        // show_in_menu_bar should get its default (true)
-        assert!(s.show_in_menu_bar);
+        // show_tray_icon should get its default (true)
+        assert!(s.show_tray_icon);
+    }
+
+    #[test]
+    fn test_settings_migrates_show_in_menu_bar() {
+        let json = r#"{"show_in_menu_bar": false}"#;
+        let s: Settings = serde_json::from_str(json).unwrap();
+        assert!(!s.show_tray_icon);
     }
 
     #[test]
@@ -561,13 +677,13 @@ mod tests {
         let s = Settings {
             autostart: true,
             run_in_background: false,
-            show_in_menu_bar: false,
+            show_tray_icon: false,
         };
         let json = serde_json::to_string(&s).unwrap();
         let parsed: Settings = serde_json::from_str(&json).unwrap();
         assert_eq!(parsed.autostart, s.autostart);
         assert_eq!(parsed.run_in_background, s.run_in_background);
-        assert_eq!(parsed.show_in_menu_bar, s.show_in_menu_bar);
+        assert_eq!(parsed.show_tray_icon, s.show_tray_icon);
     }
 
     #[test]
@@ -575,7 +691,7 @@ mod tests {
         let s: Settings = serde_json::from_str("{}").unwrap();
         assert!(!s.autostart);
         assert!(s.run_in_background);
-        assert!(s.show_in_menu_bar);
+        assert!(s.show_tray_icon);
     }
 
     #[test]

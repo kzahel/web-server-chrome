@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Added
+
+- Add a canonical in-app settings panel with Start at Login, Run in
+  Background, tray or menu-bar icon visibility, manual update checking, and
+  Quit controls.
+
+### Changed
+
+- Make icon visibility configurable on Windows and Linux as well as macOS,
+  while retaining native and tray menu items as synchronized shortcuts.
+
 ## [0.1.5]
 
 ### Added

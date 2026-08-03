@@ -5,9 +5,10 @@ import { ServerPage } from "./ServerPage";
 
 interface LayoutProps {
   notification?: ReactNode;
+  headerAction?: ReactNode;
 }
 
-export function Layout({ notification }: LayoutProps) {
+export function Layout({ notification, headerAction }: LayoutProps) {
   return (
     <div className="flex h-screen flex-col overflow-y-auto bg-[#f5f5f3] text-gray-900 dark:bg-[#0d0d0d] dark:text-gray-100">
       <header className="border-b border-gray-300/80 bg-white/95 px-3 py-2.5 backdrop-blur dark:border-[#333] dark:bg-[#1a1a1a]/95">
@@ -26,6 +27,7 @@ export function Layout({ notification }: LayoutProps) {
               Desktop
             </p>
           </div>
+          {headerAction && <div className="ml-auto">{headerAction}</div>}
         </div>
       </header>
       {notification && (

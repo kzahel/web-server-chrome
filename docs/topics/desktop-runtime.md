@@ -81,6 +81,33 @@ stream file bytes, or keep the server alive. Closing or reloading the webview
 must not accidentally stop a server that is configured to remain in the
 background.
 
+### Main-window settings rule
+
+The desktop main window is the canonical, always-available control surface.
+Every persistent app option and every action needed to manage or exit the app
+must be reachable there. Native application menus and tray/status-icon menus
+may mirror those controls as convenient shortcuts, but they must never be the
+only route to a setting or action. Product behavior and recoverability must not
+depend on a tray implementation being visible or supported by the desktop
+environment.
+
+This is a hard cross-platform product rule. At minimum, the main window must
+expose **Start at Login**, **Run in Background**, icon visibility, a manual
+update check, and an explicit way to quit the application. Icon visibility is
+an option on every desktop platform: **Show Icon in Menu Bar** on macOS and
+**Show Icon in System Tray** on Windows and Linux. Launching the app again from
+the Dock, Start menu, application launcher, or equivalent must restore the
+existing main window even when that icon is hidden.
+
+Desktop source now satisfies this rule through a main-window app-settings
+panel and typed Tauri settings commands. The panel exposes every mirrored
+setting plus manual update and Quit actions. Icon visibility is persisted and
+applied on all three desktop platforms, with migration from the earlier
+macOS-only key; menu and tray checkmarks follow the same state. Public `v0.1.5`
+predates this work. Linux tray availability also varies by desktop shell and
+StatusNotifier/AppIndicator integration, so packaged validation must include a
+workflow with no tray surface.
+
 “Shared Rust core” means one native core reused across macOS, Windows, and
 Linux, including the ChromeOS Linux controller. Android JNI and a separately
 released Rust CLI are not requirements or current directions. The small core
@@ -271,6 +298,11 @@ Implementation and release sequencing are recorded in
 
 ## Known gaps
 
+- Source implements the app-level settings/accessibility rule above and passes
+  TypeScript, Rust, and persistence-migration tests. Packaged Windows, macOS,
+  and Linux UI validation remains open, including hiding and restoring the
+  tray icon and operating Linux without a usable tray surface. Public `v0.1.5`
+  retains the earlier menu-owned controls.
 - Exact public `v0.1.5` Windows NSIS update and clean-install paths pass
   Authenticode inspection, external start/serve/stop, configuration retention,
   native-host framing, production-extension launch/focus with one process, and

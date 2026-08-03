@@ -3,7 +3,7 @@
 Status: **active parent sequencing tactical. Current `main` has reached the
 first physically reviewed product-UI checkpoint: controller-backed folder
 browsing, automatic shared-folder discovery, default stop-on-close lifetime, a
-server switch, a polished 700×750 control surface, and local/LAN URL actions
+server switch, a polished portrait control surface, and local/LAN URL actions
 are implemented. This is source-fixture evidence, not a signed release
 candidate or full matrix closeout. Uninstall/Launcher behavior, broader
 lifecycle/accessibility coverage, exact release artifacts, and reliable
@@ -288,7 +288,7 @@ refreshing in the ordinary case, or escaping controller confinement.
       About without hiding an available security/update action.
 - [x] Keep full setup, Share with Linux, recovery, reset, rollback, and
       uninstall guidance reachable from the connected UI.
-- [ ] Support the 700×750 popup, smaller ChromeOS display settings, and normal-
+- [ ] Support the 460×750 popup, smaller ChromeOS display settings, and normal-
       tab fallback without clipped controls, horizontal scrolling, or tiny
       targets. Preserve one focused routine surface.
 - [ ] Add visual regression screenshots for the principal stopped, running,
@@ -444,7 +444,7 @@ long SSH/debug detour. Awake capture is not regressed.
 | Local URL | Local row opens, copies, confirms copy, and disappears or disables when stopped |
 | LAN URL | UI gives the exact content-port steps and a copyable Chromebook-host URL; a second device fetches the exact fixture |
 | Draft safety | Status sync, reconnect, picker refresh, update check, and validation errors never discard an unrelated settings draft |
-| Window modes | 700×750 popup, small display, and normal-tab fallback remain usable and focus one routine surface |
+| Window modes | 460×750 popup, small display, and normal-tab fallback remain usable and focus one routine surface |
 | Uninstall | Search/app registration clears; pinned behavior is explicitly resolved; served folder, sharing, forwarding, and linger are untouched |
 | Reboot/recovery | Full logout/reboot, stopped-VM Launcher wake, offline help, and Terminal-once recovery behave as documented |
 | Screenshot | Standard testbed capture succeeds from both awake and asleep display states with diagnostic method output |

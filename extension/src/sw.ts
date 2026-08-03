@@ -10,6 +10,7 @@ self.addEventListener("activate", () => {
 });
 
 import {
+  CROSTINI_POPUP_SIZE,
   CROSTINI_UI_PATH,
   type CrostiniLaunch,
   isCrostiniUiUrl,
@@ -181,10 +182,10 @@ async function openOrFocusCrostiniUi(
       try {
         const popup = await chrome.windows.create({
           focused: true,
-          height: 750,
+          height: CROSTINI_POPUP_SIZE.height,
           type: "popup",
           url: targetUrl,
-          width: 700,
+          width: CROSTINI_POPUP_SIZE.width,
         });
         if (!popup)
           throw new Error("Chrome did not create a controller window");

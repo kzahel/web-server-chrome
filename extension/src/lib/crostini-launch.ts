@@ -2,6 +2,7 @@ export const CROSTINI_HOST = "penguin.linux.test";
 export const CROSTINI_LAUNCH_PATH = "/launch-chromeos";
 export const CROSTINI_HOST_PERMISSION = `http://${CROSTINI_HOST}/*`;
 export const CROSTINI_UI_PATH = "src/ui/crostini.html";
+export const CROSTINI_POPUP_SIZE = { height: 750, width: 460 } as const;
 
 export type CrostiniLaunch = {
   claimed: boolean;

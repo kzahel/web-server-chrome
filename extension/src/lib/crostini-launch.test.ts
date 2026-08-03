@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   CROSTINI_HOST_PERMISSION,
+  CROSTINI_POPUP_SIZE,
   controllerOrigin,
   isCrostiniUiUrl,
   parseCrostiniLaunch,
@@ -15,6 +16,10 @@ const request = {
 };
 
 describe("Crostini launch bridge", () => {
+  it("uses the accepted portrait control window", () => {
+    expect(CROSTINI_POPUP_SIZE).toEqual({ height: 750, width: 460 });
+  });
+
   it("accepts the exact local launch page and matching controller port", () => {
     expect(
       parseCrostiniLaunch(

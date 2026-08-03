@@ -413,7 +413,9 @@ modes rather than squeeze setup into the current toolbar-action popup:
 - first install, permission, claim, recovery, and long-form help use a normal
   extension tab; and
 - routine connected operation uses a persistent dedicated browser window from
-  `chrome.windows.create({type: "popup"})`, initially around 700×750 pixels.
+  `chrome.windows.create({type: "popup"})`, initially 460×750 pixels. This is
+  deliberately close to the desktop application's 410×700 portrait window,
+  while leaving room for Chrome's frame and the folder dialog.
 
 This dedicated browser window is not the toolbar-action popup that disappears
 when focus changes. The service worker should locate the existing extension

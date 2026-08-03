@@ -4,12 +4,15 @@ import {
   type ControllerStatus,
   CrostiniControllerClient,
   controllerTokenKey,
+  type FolderListing,
+  type FolderRoot,
   validateControllerHealth,
 } from "../lib/crostini-controller";
 import {
   CROSTINI_HOST_PERMISSION,
   type CrostiniLaunch,
 } from "../lib/crostini-launch";
+import "./crostini.css";
 
 type ControllerState =
   | "setup"
@@ -18,6 +21,8 @@ type ControllerState =
   | "connecting"
   | "connected"
   | "error";
+
+type ServerPending = "starting" | "stopping" | null;
 
 export function CrostiniController() {
   const launch = useMemo(readLaunchParameters, []);
@@ -32,8 +37,8 @@ export function CrostiniController() {
   const [token, setToken] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [status, setStatus] = useState<ControllerStatus | null>(null);
-  const [settings, setSettings] = useState<ControllerSettings | null>(null);
   const [busy, setBusy] = useState(false);
+  const [serverPending, setServerPending] = useState<ServerPending>(null);
   const [updateMessage, setUpdateMessage] = useState("");
 
   const connect = useCallback(async () => {
@@ -70,21 +75,19 @@ export function CrostiniController() {
       }
 
       const session = await client.openSession(controllerToken);
-      const nextStatus = session.status;
       validateControllerHealth(
         {
           claimed: true,
-          instanceId: nextStatus.instanceId,
-          product: nextStatus.product,
-          protocolVersion: nextStatus.protocolVersion,
-          version: nextStatus.version,
+          instanceId: session.status.instanceId,
+          product: session.status.product,
+          protocolVersion: session.status.protocolVersion,
+          version: session.status.version,
         },
         launch.instanceId,
       );
       setToken(controllerToken);
       setSessionId(session.sessionId);
-      setStatus(nextStatus);
-      setSettings(nextStatus.settings);
+      setStatus(session.status);
       setState("connected");
     } catch (error) {
       setDetail(
@@ -118,30 +121,36 @@ export function CrostiniController() {
   useEffect(() => {
     if (!client || !token || !sessionId) return;
     let released = false;
+    let syncing = false;
     const release = () => {
       if (released) return;
       released = true;
       void client.closeSession(token, sessionId, true).catch(() => undefined);
     };
-    const heartbeat = window.setInterval(() => {
-      void client
-        .heartbeatSession(token, sessionId)
-        .then((session) => {
-          setStatus(session.status);
-          setSettings(session.status.settings);
-        })
-        .catch((error) => {
-          setDetail(
-            error instanceof Error
-              ? error.message
-              : "The Linux control session expired.",
-          );
-          setState("error");
-        });
-    }, 20_000);
+    const sync = async () => {
+      if (syncing || released) return;
+      syncing = true;
+      try {
+        const session = await client.heartbeatSession(token, sessionId);
+        setStatus(session.status);
+      } catch (error) {
+        setDetail(
+          error instanceof Error
+            ? error.message
+            : "The Linux control session expired.",
+        );
+        setState("error");
+      } finally {
+        syncing = false;
+      }
+    };
+    const heartbeat = window.setInterval(() => void sync(), 15_000);
+    const syncWhenFocused = () => void sync();
+    window.addEventListener("focus", syncWhenFocused);
     window.addEventListener("pagehide", release);
     return () => {
       window.clearInterval(heartbeat);
+      window.removeEventListener("focus", syncWhenFocused);
       window.removeEventListener("pagehide", release);
       release();
     };
@@ -174,40 +183,49 @@ export function CrostiniController() {
       activeToken: string,
     ) => Promise<ControllerStatus>,
   ) => {
-    if (!client || !token) return;
+    if (!client || !token) return null;
     setBusy(true);
     setDetail("");
     setUpdateMessage("");
     try {
       const nextStatus = await action(client, token);
       setStatus(nextStatus);
-      setSettings(nextStatus.settings);
+      return nextStatus;
     } catch (error) {
       setDetail(error instanceof Error ? error.message : "Action failed.");
+      return null;
     } finally {
       setBusy(false);
     }
   };
 
-  const saveSettings = () => {
-    if (!settings) return;
+  const changeSettings = (partial: Partial<ControllerSettings>) => {
+    if (!status) return;
     void perform((activeClient, activeToken) =>
-      activeClient.updateSettings(activeToken, settings),
+      activeClient.updateSettings(activeToken, {
+        ...status.settings,
+        ...partial,
+      }),
     );
   };
 
-  const startServer = () => {
-    if (!settings || !sessionId) return;
-    void perform(async (activeClient, activeToken) => {
-      await activeClient.updateSettings(activeToken, settings);
-      return activeClient.startServer(activeToken, sessionId);
-    });
-  };
-
-  const stopServer = () => {
-    void perform((activeClient, activeToken) =>
-      activeClient.stopServer(activeToken),
-    );
+  const toggleServer = async () => {
+    if (!client || !token || !sessionId || !status || serverPending) return;
+    const running = status.server.state === "running";
+    setServerPending(running ? "stopping" : "starting");
+    setDetail("");
+    try {
+      const nextStatus = running
+        ? await client.stopServer(token)
+        : await client.startServer(token, sessionId);
+      setStatus(nextStatus);
+    } catch (error) {
+      setDetail(
+        error instanceof Error ? error.message : "Server action failed.",
+      );
+    } finally {
+      setServerPending(null);
+    }
   };
 
   const checkUpdate = () => {
@@ -234,13 +252,10 @@ export function CrostiniController() {
     const previousVersion = status.version;
     try {
       if (wasRunning) {
-        const stopped = await client.stopServer(token);
-        setStatus(stopped);
-        setSettings(stopped.settings);
+        setStatus(await client.stopServer(token));
       }
       const scheduled = await client.installUpdate(token);
       setStatus(scheduled);
-      setSettings(scheduled.settings);
       if (scheduled.update.state !== "installing") {
         setUpdateMessage("The Linux component is already current.");
         return;
@@ -254,18 +269,19 @@ export function CrostiniController() {
         try {
           const health = await client.health();
           validateControllerHealth(health, status.instanceId);
-          const nextStatus = await client.status(token);
-          setStatus(nextStatus);
-          setSettings(nextStatus.settings);
-          if (nextStatus.version !== previousVersion) {
+          const session = await client.openSession(token);
+          setSessionId(session.sessionId);
+          setStatus(session.status);
+          if (session.status.version !== previousVersion) {
             setUpdateMessage(
-              `Updated to Linux component v${nextStatus.version}. The web server remains stopped.`,
+              `Updated to Linux component v${session.status.version}. The web server remains stopped.`,
             );
             return;
           }
-          if (nextStatus.update.state === "error") {
+          if (session.status.update.state === "error") {
             setDetail(
-              nextStatus.update.error || "The Linux component update failed.",
+              session.status.update.error ||
+                "The Linux component update failed.",
             );
             setUpdateMessage("");
             return;
@@ -287,346 +303,990 @@ export function CrostiniController() {
   };
 
   return (
-    <main style={pageStyle}>
-      <section style={cardStyle}>
-        <header style={headerStyle}>
-          <img src="../../icons/ok-48.png" width={48} height={48} alt="" />
-          <div>
-            <div style={eyebrowStyle}>ChromeOS Linux</div>
-            <h1 style={headingStyle}>200 OK Web Server</h1>
-          </div>
-        </header>
+    <main className="crostini-page">
+      <div className="crostini-shell">
+        <ProductHeader connected={state === "connected"} />
 
-        {state === "setup" && <OfflineSetup />}
-        {state === "checking-permission" && <p>Checking Linux access…</p>}
-        {state === "connecting" && <p>Connecting to your Linux controller…</p>}
+        {state === "setup" && (
+          <section className="surface setup-surface">
+            <OfflineSetup />
+          </section>
+        )}
+        {state === "checking-permission" && (
+          <LoadingSurface label="Checking Linux access…" />
+        )}
+        {state === "connecting" && (
+          <LoadingSurface label="Connecting to your Linux controller…" />
+        )}
         {state === "permission-required" && (
-          <>
-            <p style={bodyStyle}>
-              Allow 200 OK to communicate with your Chromebook&apos;s Linux
-              environment at <code>penguin.linux.test</code>. This private
-              address stays on your Chromebook.
-            </p>
+          <section className="surface permission-surface">
+            <div className="surface-icon surface-icon-accent">
+              <LinkIcon />
+            </div>
+            <div>
+              <h2>Connect to Linux</h2>
+              <p>
+                Allow 200 OK to communicate with your Chromebook&apos;s Linux
+                environment at <code>penguin.linux.test</code>. This private
+                address stays on your Chromebook.
+              </p>
+            </div>
             <button
               type="button"
               onClick={requestPermission}
-              style={primaryButtonStyle}
+              className="button button-primary"
             >
-              Allow Linux controller access
+              Allow Linux access
             </button>
-            <details style={detailsStyle}>
+            <details className="disclosure">
               <summary>Linux setup and recovery</summary>
               <OfflineSetup compact />
             </details>
-          </>
+          </section>
         )}
-        {state === "connected" && status && settings && (
+        {state === "connected" && status && client && token && (
           <ControllerPanel
             busy={busy}
+            client={client}
             detail={detail}
-            onChange={setSettings}
+            onChangeSettings={changeSettings}
             onCheckUpdate={checkUpdate}
             onInstallUpdate={() => void installUpdate()}
-            onRefresh={() =>
-              void perform((activeClient, activeToken) =>
-                activeClient.status(activeToken),
-              )
-            }
-            onSave={saveSettings}
-            onStart={startServer}
-            onStop={stopServer}
-            settings={settings}
+            onStatus={setStatus}
+            onToggleServer={() => void toggleServer()}
+            serverPending={serverPending}
             status={status}
+            token={token}
             updateMessage={updateMessage}
           />
         )}
         {state === "error" && (
-          <>
-            <p style={errorStyle}>Could not connect to the Linux controller</p>
-            <p style={bodyStyle}>{detail}</p>
+          <section className="surface error-surface" role="alert">
+            <div className="surface-icon surface-icon-error">
+              <WarningIcon />
+            </div>
+            <div>
+              <h2>Couldn&apos;t connect to Linux</h2>
+              <p>{detail}</p>
+            </div>
             <button
               type="button"
               onClick={() => void connect()}
-              style={primaryButtonStyle}
+              className="button button-primary"
             >
+              <RefreshIcon />
               Try again
             </button>
-            <details style={detailsStyle}>
+            <details className="disclosure">
               <summary>Linux setup and recovery</summary>
               <OfflineSetup compact />
             </details>
-          </>
+          </section>
         )}
 
         {state === "permission-required" && detail && (
-          <p style={errorDetailStyle}>{detail}</p>
+          <div className="inline-alert" role="alert">
+            {detail}
+          </div>
         )}
-      </section>
+      </div>
     </main>
+  );
+}
+
+function ProductHeader({ connected }: { connected: boolean }) {
+  return (
+    <header className="product-header">
+      <img src="../../icons/ok-48.png" width={44} height={44} alt="" />
+      <div className="product-title">
+        <h1>200 OK</h1>
+        <span>Web Server for ChromeOS Linux</span>
+      </div>
+      {connected && (
+        <div className="connection-pill">
+          <span aria-hidden="true" />
+          Linux connected
+        </div>
+      )}
+    </header>
+  );
+}
+
+function LoadingSurface({ label }: { label: string }) {
+  return (
+    <section className="surface loading-surface" aria-live="polite">
+      <span className="spinner" aria-hidden="true" />
+      <p>{label}</p>
+    </section>
   );
 }
 
 function ControllerPanel({
   busy,
+  client,
   detail,
-  onChange,
+  onChangeSettings,
   onCheckUpdate,
   onInstallUpdate,
-  onRefresh,
-  onSave,
-  onStart,
-  onStop,
-  settings,
+  onStatus,
+  onToggleServer,
+  serverPending,
   status,
+  token,
   updateMessage,
 }: {
   busy: boolean;
+  client: CrostiniControllerClient;
   detail: string;
-  onChange: (settings: ControllerSettings) => void;
+  onChangeSettings: (partial: Partial<ControllerSettings>) => void;
   onCheckUpdate: () => void;
   onInstallUpdate: () => void;
-  onRefresh: () => void;
-  onSave: () => void;
-  onStart: () => void;
-  onStop: () => void;
-  settings: ControllerSettings;
+  onStatus: (status: ControllerStatus) => void;
+  onToggleServer: () => void;
+  serverPending: ServerPending;
   status: ControllerStatus;
+  token: string;
   updateMessage: string;
 }) {
+  const [pickerOpen, setPickerOpen] = useState(false);
   const running = status.server.state === "running";
-  const active = status.server.state !== "stopped";
-  const stateLabel =
-    status.server.state === "error"
-      ? "Server error"
+  const active = running || serverPending === "starting";
+  const settingsLocked = running || serverPending !== null || busy;
+  const stateLabel = serverPending
+    ? serverPending === "starting"
+      ? "Starting"
+      : "Stopping"
+    : status.server.state === "error"
+      ? "Error"
       : running
-        ? "Serving"
+        ? "Running"
         : status.server.state === "stopping"
           ? "Stopping"
           : "Stopped";
+  const stateDetail = running
+    ? status.settings.keepServingOnClose
+      ? "Serving continues when this window closes"
+      : "Serving stops when this window closes"
+    : status.server.error || "Choose a folder, then turn the server on";
+
   return (
-    <>
-      <div style={statusRowStyle}>
-        <div>
-          <div style={running ? successStyle : stoppedStyle}>{stateLabel}</div>
-          <div style={mutedStyle}>Linux component v{status.version}</div>
+    <div className="controller-stack">
+      <section
+        className={`surface server-surface ${running ? "is-running" : ""}`}
+        aria-live="polite"
+      >
+        <div className="surface-icon surface-icon-accent">
+          <PowerIcon />
+        </div>
+        <div className="server-copy">
+          <div className="section-label">Web server</div>
+          <div className="server-state">{stateLabel}</div>
+          <p>{stateDetail}</p>
         </div>
         <button
           type="button"
-          disabled={busy}
-          onClick={onRefresh}
-          style={secondaryButtonStyle}
+          role="switch"
+          aria-checked={active}
+          aria-label={running ? "Stop web server" : "Start web server"}
+          title={running ? "Stop web server" : "Start web server"}
+          className="server-switch"
+          disabled={busy || serverPending !== null}
+          onClick={onToggleServer}
+          data-testid="server-toggle"
         >
-          Refresh
+          <span />
         </button>
-      </div>
+      </section>
 
       {status.server.url && (
+        <UrlCard label="This Chromebook" url={status.server.url} />
+      )}
+
+      <section className="surface settings-surface">
+        <div className="section-heading">
+          <div>
+            <div className="section-label">Content</div>
+            <h2>Folder and address</h2>
+          </div>
+          {settingsLocked && (
+            <span className="locked-note">Stop to make changes</span>
+          )}
+        </div>
+
+        <button
+          type="button"
+          className="folder-control"
+          disabled={settingsLocked}
+          onClick={() => setPickerOpen(true)}
+          data-testid="choose-folder"
+        >
+          <span className="setting-icon">
+            <FolderIcon />
+          </span>
+          <span className="folder-copy">
+            <strong>{folderName(status.settings.root)}</strong>
+            <span title={status.settings.root}>{status.settings.root}</span>
+          </span>
+          <span className="folder-action">Change</span>
+          <ChevronRightIcon />
+        </button>
+
+        <div className="setting-row port-row">
+          <span className="setting-icon">
+            <GlobeIcon />
+          </span>
+          <label htmlFor="content-port">
+            <strong>Port</strong>
+            <span>Used in the server address</span>
+          </label>
+          <PortInput
+            disabled={settingsLocked}
+            onCommit={(port) => onChangeSettings({ port })}
+            value={status.settings.port}
+          />
+        </div>
+
+        <SettingSwitch
+          checked={status.settings.lan}
+          description="Allow ChromeOS to forward this port to your network"
+          disabled={settingsLocked}
+          icon={<NetworkIcon />}
+          label="Available on local network"
+          onChange={(lan) => onChangeSettings({ lan })}
+        />
+      </section>
+
+      {status.settings.lan && <LanAccessCard status={status} />}
+
+      <section className="surface behavior-surface">
+        <div className="section-heading compact-heading">
+          <div>
+            <div className="section-label">Server lifetime</div>
+            <h2>When controls close</h2>
+          </div>
+        </div>
+        <SettingSwitch
+          checked={status.settings.keepServingOnClose}
+          description={
+            status.settings.keepServingOnClose
+              ? "The server keeps running until you stop it or Linux shuts down"
+              : "The server stops after the final 200 OK control window closes"
+          }
+          disabled={settingsLocked}
+          icon={<WindowIcon />}
+          label="Keep serving when controls close"
+          onChange={(keepServingOnClose) =>
+            onChangeSettings({ keepServingOnClose })
+          }
+        />
+      </section>
+
+      {(detail || status.server.error) && (
+        <div className="inline-alert" role="alert">
+          <WarningIcon />
+          <span>{detail || status.server.error}</span>
+        </div>
+      )}
+
+      <details className="surface advanced-surface">
+        <summary>
+          <span className="summary-icon">
+            <SettingsIcon />
+          </span>
+          <span>
+            <strong>Advanced</strong>
+            <small>Directory behavior, access, and updates</small>
+          </span>
+          <ChevronDownIcon />
+        </summary>
+        <div className="advanced-content">
+          <SettingSwitch
+            checked={status.settings.directoryListing}
+            description="Show an index when a folder has no index file"
+            disabled={settingsLocked}
+            label="Directory listings"
+            onChange={(directoryListing) =>
+              onChangeSettings({ directoryListing })
+            }
+          />
+          <SettingSwitch
+            checked={status.settings.spa}
+            description="Serve index.html for routes that do not match a file"
+            disabled={settingsLocked}
+            label="Single-page app fallback"
+            onChange={(spa) => onChangeSettings({ spa })}
+          />
+          <SettingSwitch
+            checked={status.settings.cors}
+            description="Allow pages on other origins to request these files"
+            disabled={settingsLocked}
+            label="Cross-origin requests"
+            onChange={(cors) => onChangeSettings({ cors })}
+          />
+          <SettingSwitch
+            checked={status.settings.automaticUpdates}
+            description="Install signed Linux component updates while stopped"
+            disabled={settingsLocked}
+            label="Automatic Linux updates"
+            onChange={(automaticUpdates) =>
+              onChangeSettings({ automaticUpdates })
+            }
+          />
+
+          <div className="update-panel">
+            <div>
+              <strong>Linux component v{status.version}</strong>
+              <p>{updateStatusLabel(status)}</p>
+            </div>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onCheckUpdate}
+              className="button button-secondary button-small"
+            >
+              <RefreshIcon />
+              {status.update.state === "checking" ? "Checking…" : "Check now"}
+            </button>
+          </div>
+          {status.update.state === "available" && (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onInstallUpdate}
+              className="button button-primary"
+            >
+              Update to v{status.update.availableVersion}
+            </button>
+          )}
+          {updateMessage && <p className="notice-copy">{updateMessage}</p>}
+          {status.update.error && (
+            <p className="error-copy">{status.update.error}</p>
+          )}
+        </div>
+      </details>
+
+      <details className="help-disclosure">
+        <summary>Setup, sharing, and recovery</summary>
+        <OfflineSetup compact />
+      </details>
+
+      <footer className="controller-footer">
+        <span>Linux component v{status.version}</span>
+        <span aria-hidden="true">•</span>
+        <span>Controller port 20080 stays private</span>
+      </footer>
+
+      {pickerOpen && (
+        <FolderPicker
+          client={client}
+          currentRoot={status.settings.root}
+          onClose={() => setPickerOpen(false)}
+          onSelected={(nextStatus) => {
+            onStatus(nextStatus);
+            setPickerOpen(false);
+          }}
+          token={token}
+        />
+      )}
+    </div>
+  );
+}
+
+function PortInput({
+  disabled,
+  onCommit,
+  value,
+}: {
+  disabled: boolean;
+  onCommit: (port: number) => void;
+  value: number;
+}) {
+  const [draft, setDraft] = useState(String(value));
+  const [error, setError] = useState(false);
+
+  useEffect(() => setDraft(String(value)), [value]);
+
+  const commit = () => {
+    const port = Number(draft);
+    if (
+      !Number.isInteger(port) ||
+      port < 1024 ||
+      port > 65_535 ||
+      port === 20_080
+    ) {
+      setError(true);
+      setDraft(String(value));
+      return;
+    }
+    setError(false);
+    if (port !== value) onCommit(port);
+  };
+
+  return (
+    <input
+      id="content-port"
+      className={error ? "port-input has-error" : "port-input"}
+      disabled={disabled}
+      inputMode="numeric"
+      min={1024}
+      max={65_535}
+      type="number"
+      value={draft}
+      aria-invalid={error}
+      aria-label="Content port"
+      onBlur={commit}
+      onChange={(event) => setDraft(event.target.value)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") event.currentTarget.blur();
+      }}
+    />
+  );
+}
+
+function SettingSwitch({
+  checked,
+  description,
+  disabled,
+  icon,
+  label,
+  onChange,
+}: {
+  checked: boolean;
+  description: string;
+  disabled: boolean;
+  icon?: React.ReactNode;
+  label: string;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <div className="setting-row switch-row">
+      {icon && <span className="setting-icon">{icon}</span>}
+      <div className="setting-copy">
+        <strong>{label}</strong>
+        <span>{description}</span>
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
+        className="mini-switch"
+        disabled={disabled}
+        onClick={() => onChange(!checked)}
+      >
+        <span />
+      </button>
+    </div>
+  );
+}
+
+function UrlCard({ label, url }: { label: string; url: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1_800);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <section className="surface url-surface">
+      <div className="surface-icon surface-icon-success">
+        <GlobeIcon />
+      </div>
+      <div className="url-copy">
+        <div className="section-label">{label}</div>
+        <a href={url} target="_blank" rel="noreferrer" title="Open server">
+          {url}
+        </a>
+      </div>
+      <div className="url-actions">
         <a
-          href={status.server.url}
+          className="icon-button"
+          href={url}
           target="_blank"
           rel="noreferrer"
-          style={serverUrlStyle}
+          aria-label="Open server URL"
+          title="Open"
         >
-          {status.server.url}
+          <ExternalLinkIcon />
         </a>
-      )}
-
-      <fieldset disabled={busy || active} style={fieldsetStyle}>
-        <label style={labelStyle}>
-          Folder to serve
-          <input
-            aria-label="Folder to serve"
-            value={settings.root}
-            onChange={(event) =>
-              onChange({ ...settings, root: event.target.value })
-            }
-            style={inputStyle}
-          />
-        </label>
-        <p style={hintStyle}>
-          Use a folder under Linux files, or share a ChromeOS folder with Linux
-          first and enter its <code>/mnt/chromeos/…</code> path.
-        </p>
-        <label style={labelStyle}>
-          Port
-          <input
-            aria-label="Port"
-            min={1024}
-            max={65535}
-            type="number"
-            value={settings.port}
-            onChange={(event) =>
-              onChange({ ...settings, port: Number(event.target.value) })
-            }
-            style={inputStyle}
-          />
-        </label>
-        <label style={checkboxStyle}>
-          <input
-            checked={settings.directoryListing}
-            type="checkbox"
-            onChange={(event) =>
-              onChange({
-                ...settings,
-                directoryListing: event.target.checked,
-              })
-            }
-          />
-          Show directory listings
-        </label>
-        <label style={checkboxStyle}>
-          <input
-            checked={settings.spa}
-            type="checkbox"
-            onChange={(event) =>
-              onChange({ ...settings, spa: event.target.checked })
-            }
-          />
-          Single-page app fallback
-        </label>
-        <label style={checkboxStyle}>
-          <input
-            checked={settings.cors}
-            type="checkbox"
-            onChange={(event) =>
-              onChange({ ...settings, cors: event.target.checked })
-            }
-          />
-          Allow cross-origin requests
-        </label>
-        <label style={checkboxStyle}>
-          <input
-            checked={settings.lan}
-            type="checkbox"
-            onChange={(event) =>
-              onChange({ ...settings, lan: event.target.checked })
-            }
-          />
-          Listen for Chromebook LAN forwarding
-        </label>
-        {settings.lan && (
-          <p style={warningStyle}>
-            LAN access still requires adding TCP port {settings.port} in
-            ChromeOS Linux port-forwarding settings. Never forward controller
-            port 20080.
-          </p>
-        )}
-        <label style={checkboxStyle}>
-          <input
-            checked={settings.automaticUpdates}
-            type="checkbox"
-            onChange={(event) =>
-              onChange({
-                ...settings,
-                automaticUpdates: event.target.checked,
-              })
-            }
-          />
-          Automatically install Linux component updates (recommended)
-        </label>
-        <p style={hintStyle}>
-          Checks run only while Linux is already active. Automatic installation
-          waits until the web server is stopped.
-        </p>
-      </fieldset>
-
-      {detail && <p style={errorDetailStyle}>{detail}</p>}
-      {status.server.error && (
-        <p style={errorDetailStyle}>{status.server.error}</p>
-      )}
-      <div style={actionRowStyle}>
-        {active ? (
-          <button
-            type="button"
-            disabled={busy}
-            onClick={onStop}
-            style={stopButtonStyle}
-          >
-            {busy ? "Stopping…" : "Stop server"}
-          </button>
-        ) : (
-          <button
-            type="button"
-            disabled={busy}
-            onClick={onStart}
-            style={primaryButtonStyle}
-          >
-            {busy ? "Starting…" : "Start server"}
-          </button>
-        )}
-        {!active && (
-          <button
-            type="button"
-            disabled={busy}
-            onClick={onSave}
-            style={secondaryButtonStyle}
-          >
-            Save settings
-          </button>
-        )}
+        <button
+          type="button"
+          className="icon-button"
+          aria-label={copied ? "URL copied" : "Copy server URL"}
+          title={copied ? "Copied" : "Copy"}
+          onClick={() => void copy()}
+        >
+          {copied ? <CheckIcon /> : <CopyIcon />}
+        </button>
       </div>
+      {copied && <output className="copy-toast">Copied</output>}
+    </section>
+  );
+}
 
-      <section style={updateSectionStyle}>
-        <div style={updateHeaderStyle}>
+function LanAccessCard({ status }: { status: ControllerStatus }) {
+  const storageKey = `ok200-crostini-lan-host:${status.instanceId}`;
+  const [address, setAddress] = useState(
+    () => localStorage.getItem(storageKey) ?? "",
+  );
+  const host = validIpv4(address) ? address : null;
+  const url = host ? `http://${host}:${status.settings.port}/` : null;
+
+  return (
+    <section className="surface lan-surface">
+      <div className="section-heading compact-heading">
+        <div>
+          <div className="section-label">Local network</div>
+          <h2>Finish ChromeOS forwarding</h2>
+        </div>
+        <span className="step-pill">2 steps</span>
+      </div>
+      <ol className="lan-steps">
+        <li>
+          <span>1</span>
+          <p>
+            In ChromeOS Settings, open{" "}
+            <strong>Developers → Linux → Port forwarding</strong> and add TCP
+            port {status.settings.port}.
+          </p>
+        </li>
+        <li>
+          <span>2</span>
+          <div className="lan-address-field">
+            <label htmlFor="chromebook-address">Chromebook IPv4 address</label>
+            <input
+              id="chromebook-address"
+              value={address}
+              inputMode="decimal"
+              placeholder="192.168.1.42"
+              aria-invalid={address.length > 0 && !host}
+              onChange={(event) => {
+                const value = event.target.value.trim();
+                setAddress(value);
+                if (validIpv4(value)) localStorage.setItem(storageKey, value);
+              }}
+            />
+            <small>Find it in your connected Wi-Fi network details.</small>
+          </div>
+        </li>
+      </ol>
+      {url && status.server.state === "running" && (
+        <UrlCard label="Other devices" url={url} />
+      )}
+      <p className="security-note">
+        <LockIcon /> Controller port 20080 stays on this Chromebook and should
+        never be forwarded.
+      </p>
+    </section>
+  );
+}
+
+function FolderPicker({
+  client,
+  currentRoot,
+  onClose,
+  onSelected,
+  token,
+}: {
+  client: CrostiniControllerClient;
+  currentRoot: string;
+  onClose: () => void;
+  onSelected: (status: ControllerStatus) => void;
+  token: string;
+}) {
+  const preferredRoot = currentRoot.startsWith("/mnt/chromeos/")
+    ? "shared-chromeos"
+    : "linux-files";
+  const [roots, setRoots] = useState<FolderRoot[]>([]);
+  const [rootId, setRootId] = useState(preferredRoot);
+  const [listing, setListing] = useState<FolderListing | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [newFolderOpen, setNewFolderOpen] = useState(false);
+  const [newFolderName, setNewFolderName] = useState("");
+
+  const loadListing = useCallback(
+    async (nextRootId: string, path: string[]) => {
+      setLoading(true);
+      setError("");
+      try {
+        const next = await client.listFolders(token, nextRootId, path);
+        setRootId(nextRootId);
+        setListing(next);
+      } catch (caught) {
+        setListing(null);
+        setError(
+          caught instanceof Error ? caught.message : "Could not open folder.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [client, token],
+  );
+
+  const refreshRoots = useCallback(
+    async (openPreferred = false) => {
+      try {
+        const next = await client.folderRoots(token);
+        setRoots(next.roots);
+        const selectedId = openPreferred ? preferredRoot : rootId;
+        const selected = next.roots.find((root) => root.id === selectedId);
+        if (selected?.available) {
+          const path =
+            !openPreferred && listing?.rootId === selectedId
+              ? listing.path
+              : [];
+          await loadListing(selectedId, path);
+        } else {
+          setRootId(selectedId);
+          setListing(null);
+          setLoading(false);
+        }
+      } catch (caught) {
+        setError(
+          caught instanceof Error
+            ? caught.message
+            : "Could not read folder locations.",
+        );
+        setLoading(false);
+      }
+    },
+    [
+      client,
+      listing?.path,
+      listing?.rootId,
+      loadListing,
+      preferredRoot,
+      rootId,
+      token,
+    ],
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+    const initialize = async () => {
+      setLoading(true);
+      try {
+        const next = await client.folderRoots(token);
+        if (cancelled) return;
+        setRoots(next.roots);
+        const selected = next.roots.find((root) => root.id === preferredRoot);
+        if (selected?.available) {
+          await loadListing(preferredRoot, []);
+        } else {
+          setRootId(preferredRoot);
+          setListing(null);
+          setLoading(false);
+        }
+      } catch (caught) {
+        if (cancelled) return;
+        setError(
+          caught instanceof Error
+            ? caught.message
+            : "Could not read folder locations.",
+        );
+        setLoading(false);
+      }
+    };
+    void initialize();
+    return () => {
+      cancelled = true;
+    };
+  }, [client, loadListing, preferredRoot, token]);
+
+  const selectedRoot = roots.find((root) => root.id === rootId);
+  const waitingForShare =
+    rootId === "shared-chromeos" && selectedRoot?.available === false;
+
+  useEffect(() => {
+    const refresh = () => void refreshRoots(false);
+    window.addEventListener("focus", refresh);
+    const interval = waitingForShare
+      ? window.setInterval(refresh, 2_500)
+      : undefined;
+    return () => {
+      window.removeEventListener("focus", refresh);
+      if (interval !== undefined) window.clearInterval(interval);
+    };
+  }, [refreshRoots, waitingForShare]);
+
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [onClose]);
+
+  const chooseRoot = (root: FolderRoot) => {
+    setRootId(root.id);
+    setListing(null);
+    setError("");
+    if (root.available) void loadListing(root.id, []);
+  };
+
+  const createFolder = async () => {
+    if (!listing || !newFolderName.trim()) return;
+    setLoading(true);
+    setError("");
+    try {
+      const next = await client.createFolder(
+        token,
+        listing.rootId,
+        listing.path,
+        newFolderName.trim(),
+      );
+      setListing(next);
+      setNewFolderName("");
+      setNewFolderOpen(false);
+    } catch (caught) {
+      setError(
+        caught instanceof Error ? caught.message : "Could not create folder.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const selectCurrent = async () => {
+    if (!listing?.canSelect) return;
+    setLoading(true);
+    setError("");
+    try {
+      onSelected(
+        await client.selectFolder(token, listing.rootId, listing.path),
+      );
+    } catch (caught) {
+      setError(
+        caught instanceof Error ? caught.message : "Could not select folder.",
+      );
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="dialog-backdrop" role="presentation">
+      <section
+        className="folder-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="folder-dialog-title"
+      >
+        <header className="dialog-header">
           <div>
-            <strong>Linux component updates</strong>
-            <div style={mutedStyle}>{updateStatusLabel(status)}</div>
+            <div className="section-label">Content</div>
+            <h2 id="folder-dialog-title">Choose a folder</h2>
           </div>
           <button
             type="button"
-            disabled={busy}
-            onClick={onCheckUpdate}
-            style={secondaryButtonStyle}
+            className="icon-button"
+            onClick={onClose}
+            aria-label="Close folder picker"
+            title="Close"
           >
-            {status.update.state === "checking" ? "Checking…" : "Check now"}
+            <CloseIcon />
           </button>
+        </header>
+
+        <div className="root-tabs" role="tablist" aria-label="Folder locations">
+          {roots.map((root) => (
+            <button
+              key={root.id}
+              type="button"
+              role="tab"
+              aria-selected={root.id === rootId}
+              className={root.id === rootId ? "root-tab is-active" : "root-tab"}
+              onClick={() => chooseRoot(root)}
+            >
+              {root.id === "linux-files" ? <LaptopIcon /> : <ChromeIcon />}
+              <span>{root.name}</span>
+              {!root.available && <small>Not shared yet</small>}
+            </button>
+          ))}
         </div>
-        {status.update.state === "available" && (
+
+        {listing && (
+          <nav className="breadcrumbs" aria-label="Current folder">
+            <button
+              type="button"
+              onClick={() => void loadListing(listing.rootId, [])}
+            >
+              {listing.rootName}
+            </button>
+            {listing.path.map((component, index) => (
+              <span key={listing.path.slice(0, index + 1).join("/")}>
+                <ChevronRightIcon />
+                <button
+                  type="button"
+                  onClick={() =>
+                    void loadListing(
+                      listing.rootId,
+                      listing.path.slice(0, index + 1),
+                    )
+                  }
+                >
+                  {component}
+                </button>
+              </span>
+            ))}
+          </nav>
+        )}
+
+        <div className="folder-browser">
+          {loading && (
+            <div className="browser-message">
+              <span className="spinner" aria-hidden="true" />
+              <p>Opening folder…</p>
+            </div>
+          )}
+          {!loading && waitingForShare && (
+            <div className="share-helper">
+              <div className="surface-icon surface-icon-accent">
+                <FolderIcon />
+              </div>
+              <h3>Share a Chromebook folder with Linux</h3>
+              <ol>
+                <li>Open the ChromeOS Files app.</li>
+                <li>Right-click the folder you want to serve.</li>
+                <li>
+                  Choose <strong>Share with Linux</strong>, then return here.
+                </li>
+              </ol>
+              <p className="waiting-copy">
+                <span className="pulse-dot" aria-hidden="true" />
+                Waiting for a shared folder…
+              </p>
+              <button
+                type="button"
+                className="button button-secondary button-small"
+                onClick={() => void refreshRoots(false)}
+              >
+                <RefreshIcon />
+                Check again
+              </button>
+            </div>
+          )}
+          {!loading && !waitingForShare && error && (
+            <div className="browser-message browser-error" role="alert">
+              <WarningIcon />
+              <p>{error}</p>
+              <button
+                type="button"
+                className="button button-secondary button-small"
+                onClick={() => void refreshRoots(false)}
+              >
+                Try again
+              </button>
+            </div>
+          )}
+          {!loading && listing && listing.entries.length === 0 && !error && (
+            <div className="browser-message">
+              <FolderIcon />
+              <p>This folder has no subfolders.</p>
+            </div>
+          )}
+          {!loading && listing && listing.entries.length > 0 && !error && (
+            <div className="folder-list">
+              {listing.entries.map((entry) => (
+                <button
+                  type="button"
+                  key={entry.name}
+                  onClick={() =>
+                    void loadListing(listing.rootId, [
+                      ...listing.path,
+                      entry.name,
+                    ])
+                  }
+                >
+                  <span className="folder-row-icon">
+                    <FolderIcon />
+                  </span>
+                  <span>{entry.name}</span>
+                  <ChevronRightIcon />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {newFolderOpen && listing && (
+          <div className="new-folder-row">
+            <FolderPlusIcon />
+            <input
+              aria-label="New folder name"
+              placeholder="New folder name"
+              value={newFolderName}
+              onChange={(event) => setNewFolderName(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") void createFolder();
+                if (event.key === "Escape") setNewFolderOpen(false);
+              }}
+            />
+            <button
+              type="button"
+              className="button button-primary button-small"
+              disabled={!newFolderName.trim()}
+              onClick={() => void createFolder()}
+            >
+              Create
+            </button>
+          </div>
+        )}
+
+        <footer className="dialog-footer">
           <button
             type="button"
-            disabled={busy}
-            onClick={onInstallUpdate}
-            style={primaryButtonStyle}
+            className="button button-secondary"
+            disabled={!listing || loading}
+            onClick={() => setNewFolderOpen(true)}
           >
-            Update to v{status.update.availableVersion}
+            <FolderPlusIcon />
+            New folder
           </button>
-        )}
-        {status.update.state === "installing" && (
-          <p style={mutedStyle}>Installing and reconnecting…</p>
-        )}
-        {updateMessage && <p style={noticeStyle}>{updateMessage}</p>}
-        {status.update.error && (
-          <p style={errorDetailStyle}>{status.update.error}</p>
-        )}
-        <details style={detailsStyle}>
-          <summary>Update recovery</summary>
-          <p style={mutedStyle}>
-            If an update causes trouble, run{" "}
-            <code>ok200-crostini rollback</code> in Terminal. Rollback is local
-            and does not need Internet access.
-          </p>
-        </details>
+          <span className="dialog-spacer" />
+          <button
+            type="button"
+            className="button button-quiet"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="button button-primary"
+            disabled={!listing?.canSelect || loading}
+            onClick={() => void selectCurrent()}
+          >
+            Choose this folder
+          </button>
+        </footer>
       </section>
-    </>
+    </div>
   );
 }
 
 function updateStatusLabel(status: ControllerStatus): string {
   switch (status.update.state) {
     case "available":
-      return `v${status.update.availableVersion} is available; currently v${status.version}.`;
+      return `v${status.update.availableVersion} is available.`;
     case "checking":
-      return `Checking for an update; currently v${status.version}.`;
+      return "Checking for a signed update…";
     case "installing":
-      return `Installing an update; currently v${status.version}.`;
+      return "Installing and reconnecting…";
     case "error":
-      return `Could not check for updates; currently v${status.version}.`;
+      return "The last update check failed.";
     default:
       return status.update.lastCheckedAt
-        ? `v${status.version} is current. Last checked ${new Date(
+        ? `Current · checked ${new Date(
             status.update.lastCheckedAt * 1_000,
-          ).toLocaleString()}.`
-        : `Currently v${status.version}. An automatic check is pending.`;
+          ).toLocaleDateString()}`
+        : "Current · automatic check pending";
   }
 }
 
@@ -634,72 +1294,79 @@ function delay(milliseconds: number): Promise<void> {
   return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
 }
 
+function folderName(path: string): string {
+  const components = path.split("/").filter(Boolean);
+  return components[components.length - 1] || "Choose a folder";
+}
+
+function validIpv4(value: string): boolean {
+  const parts = value.split(".");
+  return (
+    parts.length === 4 &&
+    parts.every(
+      (part) =>
+        /^\d{1,3}$/.test(part) && Number(part) >= 0 && Number(part) <= 255,
+    )
+  );
+}
+
 function OfflineSetup({ compact = false }: { compact?: boolean }) {
   return (
-    <div style={compact ? compactSetupStyle : bodyStyle}>
-      {!compact && <h2 style={subheadingStyle}>Set up the Linux version</h2>}
-      <ol style={stepsStyle}>
+    <div className={compact ? "setup-copy is-compact" : "setup-copy"}>
+      {!compact && <h2>Set up the Linux version</h2>}
+      <ol className="setup-steps">
         <li>
           Open ChromeOS Settings → About ChromeOS → Developers → Linux
           development environment and choose <strong>Set up</strong>.
         </li>
         <li>Open Terminal once after Linux finishes installing.</li>
         <li>
-          Install the 200 OK Linux component with the verified installer:
-          <code style={commandStyle}>
+          Install the verified 200 OK Linux component:
+          <code className="command-block">
             curl -fsSL https://ok200.app/install-crostini.sh | bash
           </code>
-          <span style={{ ...mutedStyle, display: "block" }}>
-            The installer selects the x86_64 or ARM64 release, verifies its
-            signed manifest, and installs only for your Linux user. It does not
-            use sudo or start the web server automatically.
-          </span>
+          <small>
+            The installer verifies the signed release, installs only for your
+            Linux user, and leaves the web server stopped.
+          </small>
         </li>
         <li>
-          After installation, launch <strong>200 OK Linux</strong> from the
-          ChromeOS Launcher whenever you want to use it after a reboot.
-        </li>
-        <li>
-          If the Launcher item cannot wake Linux, open Terminal once, wait for
-          its prompt, close it, and try <strong>200 OK Linux</strong> again.
+          Open <strong>200 OK Linux</strong> from the ChromeOS Launcher.
         </li>
       </ol>
-      <p style={mutedStyle}>
-        If the Linux setting is unavailable, your Chromebook, profile, or
-        administrator may not allow Linux applications.
+      <p>
+        If the Launcher cannot wake Linux, open Terminal once, wait for its
+        prompt, close it, and try again.
       </p>
-      <details style={detailsStyle}>
-        <summary>Folders under Linux files</summary>
-        <p style={mutedStyle}>
-          The default folder is <code>~/Downloads/200 OK</code>. To serve a
-          Chromebook folder, right-click it in the Files app, choose
-          <strong> Share with Linux</strong>, then enter its
-          <code> /mnt/chromeos/…</code> path in the controller. Unshared
-          ChromeOS folders are intentionally unavailable to Linux.
+      <details className="nested-disclosure">
+        <summary>Sharing Chromebook folders</summary>
+        <p>
+          In Files, right-click the folder and choose{" "}
+          <strong>Share with Linux</strong>. The 200 OK folder picker detects
+          the new share when you return.
         </p>
       </details>
-      <details style={detailsStyle}>
+      <details className="nested-disclosure">
         <summary>Reach the server from another device</summary>
-        <p style={mutedStyle}>
-          First start the server. Then open ChromeOS Settings → About ChromeOS →
-          Developers → Linux development environment → Port forwarding, add the
-          content port shown in the controller (8080 by default) as TCP, and
-          turn it on. Use your Chromebook&apos;s Wi-Fi IPv4 address from its
-          network details. Never forward controller port 20080.
+        <p>
+          Turn on <strong>Available on local network</strong>, then add the
+          content port under ChromeOS Settings → Developers → Linux → Port
+          forwarding. Use the Chromebook&apos;s Wi-Fi IPv4 address. Never
+          forward controller port 20080.
         </p>
       </details>
-      <details style={detailsStyle}>
-        <summary>Update, rollback, and uninstall commands</summary>
-        <code style={commandStyle}>
+      <details className="nested-disclosure">
+        <summary>Update, rollback, and uninstall</summary>
+        <code className="command-block">
           ok200-crostini check-update{"\n"}
           ok200-crostini update{"\n"}
           ok200-crostini rollback{"\n"}
           ok200-crostini uninstall
         </code>
-        <p style={mutedStyle}>
-          Uninstall preserves settings. Use <code>uninstall --purge</code> only
-          when you also want to remove pairing and controller settings. Served
-          folders are never deleted.
+        <p>
+          Uninstall preserves settings and never deletes a served folder. Use
+          <code> uninstall --purge</code> only to remove pairing and controller
+          settings too.
         </p>
       </details>
     </div>
@@ -732,164 +1399,190 @@ export function readLaunchParameters(): CrostiniLaunch | null {
   return { claimed, claimCode, instanceId, port };
 }
 
-const pageStyle = {
-  minHeight: "100vh",
-  boxSizing: "border-box" as const,
-  margin: 0,
-  padding: "clamp(18px, 5vw, 48px) 16px",
-  background: "#f4f7fb",
-  color: "#172033",
-  fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
-};
+type IconProps = { className?: string };
 
-const cardStyle = {
-  maxWidth: 620,
-  margin: "0 auto",
-  padding: "clamp(20px, 4vw, 30px)",
-  border: "1px solid #dfe5ee",
-  borderRadius: 18,
-  background: "white",
-  boxShadow: "0 16px 40px rgba(25, 39, 63, 0.08)",
-};
+function SvgIcon({
+  children,
+  className,
+}: IconProps & { children: React.ReactNode }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={className ? `icon ${className}` : "icon"}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {children}
+    </svg>
+  );
+}
 
-const headerStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: 14,
-  marginBottom: 24,
-};
+function PowerIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M12 2v10" />
+      <path d="M18.4 6.6a9 9 0 1 1-12.8 0" />
+    </SvgIcon>
+  );
+}
 
-const eyebrowStyle = {
-  color: "#60708a",
-  fontSize: 12,
-  fontWeight: 700,
-  letterSpacing: "0.08em",
-  textTransform: "uppercase" as const,
-};
+function FolderIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M3 6.5a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8.5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    </SvgIcon>
+  );
+}
 
-const headingStyle = { margin: "3px 0 0", fontSize: 25 };
-const subheadingStyle = { margin: "0 0 12px", fontSize: 19 };
-const bodyStyle = { color: "#4d5b70", lineHeight: 1.55 };
-const mutedStyle = { color: "#77849a", fontSize: 13, lineHeight: 1.45 };
-const compactSetupStyle = { ...bodyStyle, fontSize: 14, marginTop: 14 };
-const stepsStyle = { paddingLeft: 22, lineHeight: 1.55 };
-const successStyle = { color: "#16824a", fontSize: 18, fontWeight: 700 };
-const stoppedStyle = { color: "#526174", fontSize: 18, fontWeight: 700 };
-const errorStyle = { color: "#bd2f2f", fontSize: 18, fontWeight: 700 };
-const errorDetailStyle = { color: "#a92626", fontSize: 13, lineHeight: 1.45 };
-const warningStyle = {
-  padding: 10,
-  borderRadius: 8,
-  background: "#fff7d6",
-  color: "#665700",
-  fontSize: 13,
-  lineHeight: 1.45,
-};
-const detailsStyle = { marginTop: 18, color: "#4d5b70" };
-const commandStyle = {
-  display: "block",
-  boxSizing: "border-box" as const,
-  margin: "8px 0",
-  padding: "10px 12px",
-  borderRadius: 8,
-  background: "#edf2f7",
-  color: "#172033",
-  fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace",
-  fontSize: 12,
-  lineHeight: 1.5,
-  overflowWrap: "anywhere" as const,
-  whiteSpace: "pre-wrap" as const,
-};
-const statusRowStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  gap: 16,
-  marginBottom: 16,
-};
-const serverUrlStyle = {
-  display: "block",
-  marginBottom: 16,
-  color: "#1d58b7",
-  overflowWrap: "anywhere" as const,
-};
-const fieldsetStyle = {
-  display: "grid",
-  gap: 12,
-  margin: 0,
-  padding: 0,
-  border: 0,
-};
-const labelStyle = {
-  display: "grid",
-  gap: 5,
-  color: "#354258",
-  fontSize: 13,
-  fontWeight: 650,
-};
-const inputStyle = {
-  boxSizing: "border-box" as const,
-  width: "100%",
-  padding: "9px 10px",
-  border: "1px solid #cbd5e1",
-  borderRadius: 8,
-  color: "#172033",
-  font: "inherit",
-};
-const hintStyle = { ...mutedStyle, margin: "-5px 0 1px" };
-const checkboxStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: 8,
-  color: "#354258",
-  fontSize: 14,
-};
-const actionRowStyle = {
-  display: "flex",
-  flexWrap: "wrap" as const,
-  gap: 10,
-  marginTop: 20,
-};
-const updateSectionStyle = {
-  display: "grid",
-  gap: 12,
-  marginTop: 24,
-  paddingTop: 20,
-  borderTop: "1px solid #e2e8f0",
-};
-const updateHeaderStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  gap: 14,
-};
-const noticeStyle = {
-  margin: 0,
-  padding: 10,
-  borderRadius: 8,
-  background: "#eaf7ef",
-  color: "#12663c",
-  fontSize: 13,
-  lineHeight: 1.45,
-};
-const primaryButtonStyle = {
-  padding: "10px 15px",
-  border: 0,
-  borderRadius: 9,
-  background: "#f8d203",
-  color: "#1a1a1a",
-  cursor: "pointer",
-  fontSize: 14,
-  fontWeight: 700,
-};
-const secondaryButtonStyle = {
-  ...primaryButtonStyle,
-  border: "1px solid #cbd5e1",
-  background: "white",
-  color: "#354258",
-};
-const stopButtonStyle = {
-  ...primaryButtonStyle,
-  background: "#bd2f2f",
-  color: "white",
-};
+function FolderPlusIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <path d="M12 10v6M9 13h6" />
+    </SvgIcon>
+  );
+}
+
+function GlobeIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+    </SvgIcon>
+  );
+}
+
+function NetworkIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M5 12.5a10 10 0 0 1 14 0M8 15.5a6 6 0 0 1 8 0M11 18.5a2 2 0 0 1 2 0" />
+    </SvgIcon>
+  );
+}
+
+function WindowIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M3 8h18M7 6h.01M10 6h.01" />
+    </SvgIcon>
+  );
+}
+
+function SettingsIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1z" />
+    </SvgIcon>
+  );
+}
+
+function CopyIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <rect x="8" y="8" width="11" height="11" rx="2" />
+      <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+    </SvgIcon>
+  );
+}
+
+function ExternalLinkIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M14 4h6v6M12 12l8-8" />
+      <path d="M20 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5" />
+    </SvgIcon>
+  );
+}
+
+function CheckIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="m5 12 4 4L19 6" />
+    </SvgIcon>
+  );
+}
+
+function CloseIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="m6 6 12 12M18 6 6 18" />
+    </SvgIcon>
+  );
+}
+
+function RefreshIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M20 6v5h-5M4 18v-5h5" />
+      <path d="M18.4 9A7 7 0 0 0 6.3 6.3L4 11M20 13l-2.3 4.7A7 7 0 0 1 5.6 15" />
+    </SvgIcon>
+  );
+}
+
+function WarningIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M10.3 3.7 2.5 17.2A2 2 0 0 0 4.2 20h15.6a2 2 0 0 0 1.7-2.8L13.7 3.7a2 2 0 0 0-3.4 0z" />
+      <path d="M12 9v4M12 17h.01" />
+    </SvgIcon>
+  );
+}
+
+function LinkIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1" />
+      <path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1" />
+    </SvgIcon>
+  );
+}
+
+function LockIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <rect x="5" y="10" width="14" height="10" rx="2" />
+      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+    </SvgIcon>
+  );
+}
+
+function LaptopIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <rect x="4" y="4" width="16" height="12" rx="2" />
+      <path d="M2 20h20M9 16v4M15 16v4" />
+    </SvgIcon>
+  );
+}
+
+function ChromeIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="3.5" />
+      <path d="M12 8.5h8M8.8 14 5 7.5M15.2 14 11 21" />
+    </SvgIcon>
+  );
+}
+
+function ChevronRightIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="m9 18 6-6-6-6" />
+    </SvgIcon>
+  );
+}
+
+function ChevronDownIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="m6 9 6 6 6-6" />
+    </SvgIcon>
+  );
+}

@@ -65,7 +65,7 @@ describe("Crostini controller UI", () => {
     expect(document.body.textContent).toContain(
       "curl -fsSL https://ok200.app/install-crostini.sh | bash",
     );
-    expect(document.body.textContent).toContain("Folders under Linux files");
+    expect(document.body.textContent).toContain("Sharing Chromebook folders");
     expect(document.body.textContent).toContain(
       "Reach the server from another device",
     );
@@ -126,7 +126,12 @@ describe("Crostini controller UI", () => {
     await settle();
 
     expect(document.body.textContent).toContain("Stopped");
-    expect(document.body.textContent).toContain("Start server");
+    const serverToggle = document.querySelector(
+      '[data-testid="server-toggle"]',
+    );
+    expect(serverToggle?.getAttribute("role")).toBe("switch");
+    expect(serverToggle?.getAttribute("aria-label")).toBe("Start web server");
+    expect(document.body.textContent).not.toContain("Start server");
     expect(localStorage.getItem(controllerTokenKey(INSTANCE_ID))).toBe(
       "secret-token",
     );
@@ -176,6 +181,118 @@ describe("Crostini controller UI", () => {
     expect(document.body.textContent).toContain("already paired");
     expect(document.body.textContent).toContain(
       "ok200-crostini reset-controller",
+    );
+  });
+
+  it("opens the controller-backed folder picker", async () => {
+    installChromeMock(true);
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        jsonResponse({
+          claimed: false,
+          instanceId: INSTANCE_ID,
+          product: "ok200-crostini-controller",
+          protocolVersion: 2,
+          version: "0.1.5",
+        }),
+      )
+      .mockResolvedValueOnce(jsonResponse({ controllerToken: "secret-token" }))
+      .mockResolvedValueOnce(
+        jsonResponse({
+          expiresInSeconds: 75,
+          sessionId: "session-1",
+          status: statusResponse("stopped"),
+        }),
+      )
+      .mockResolvedValueOnce(
+        jsonResponse({
+          roots: [
+            { available: true, id: "linux-files", name: "Linux files" },
+            {
+              available: false,
+              id: "shared-chromeos",
+              name: "Shared Chromebook folders",
+            },
+          ],
+        }),
+      )
+      .mockResolvedValueOnce(
+        jsonResponse({
+          canSelect: false,
+          displayPath: "Linux files",
+          entries: [{ name: "Downloads" }, { name: "Projects" }],
+          path: [],
+          rootId: "linux-files",
+          rootName: "Linux files",
+        }),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await renderController();
+    await settle();
+    const choose = document.querySelector<HTMLButtonElement>(
+      '[data-testid="choose-folder"]',
+    );
+    await act(async () => choose?.click());
+    await settle();
+
+    expect(document.body.textContent).toContain("Choose a folder");
+    expect(document.body.textContent).toContain("Shared Chromebook folders");
+    expect(document.body.textContent).toContain("Downloads");
+    expect(document.body.textContent).toContain("Projects");
+    expect(fetchMock.mock.calls[3]?.[0]).toBe(
+      "http://penguin.linux.test:20080/api/folders/roots",
+    );
+    expect(fetchMock.mock.calls[4]?.[0]).toBe(
+      "http://penguin.linux.test:20080/api/folders/list",
+    );
+  });
+
+  it("starts through the server switch and shows the running URL", async () => {
+    installChromeMock(true);
+    const running = {
+      ...statusResponse("running"),
+      server: { state: "running", url: "http://localhost:8080" },
+    };
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        jsonResponse({
+          claimed: false,
+          instanceId: INSTANCE_ID,
+          product: "ok200-crostini-controller",
+          protocolVersion: 2,
+          version: "0.1.5",
+        }),
+      )
+      .mockResolvedValueOnce(jsonResponse({ controllerToken: "secret-token" }))
+      .mockResolvedValueOnce(
+        jsonResponse({
+          expiresInSeconds: 75,
+          sessionId: "session-1",
+          status: statusResponse("stopped"),
+        }),
+      )
+      .mockResolvedValueOnce(jsonResponse(running));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await renderController();
+    await settle();
+    const toggle = document.querySelector<HTMLButtonElement>(
+      '[data-testid="server-toggle"]',
+    );
+    await act(async () => toggle?.click());
+    await settle();
+
+    expect(document.body.textContent).toContain("Running");
+    expect(document.body.textContent).toContain("http://localhost:8080");
+    expect(toggle?.getAttribute("aria-checked")).toBe("true");
+    expect(fetchMock.mock.calls[3]?.[0]).toBe(
+      "http://penguin.linux.test:20080/api/server/start",
+    );
+    expect(fetchMock.mock.calls[3]?.[1]?.body).toBe(
+      JSON.stringify({ sessionId: "session-1" }),
     );
   });
 });

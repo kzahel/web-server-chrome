@@ -1,6 +1,6 @@
 [package]
 name = "ok200-crostini"
-version = "0.1.1"
+version = "0.1.2"
 edition.workspace = true
 description = "ChromeOS Linux launcher and controller for 200 OK Web Server"
 

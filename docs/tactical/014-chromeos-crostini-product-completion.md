@@ -1,18 +1,21 @@
 # ChromeOS Crostini Product Completion
 
 Status: **active parent sequencing tactical. Current `main` has reached the
-first physically reviewed product-UI checkpoint: controller-backed folder
-browsing, automatic shared-folder discovery, default stop-on-close lifetime, a
+first physically reviewed product-UI checkpoint and local release preparation.
+Controller-backed folder browsing, automatic shared-folder discovery,
+default stop-on-close lifetime, a
 server switch, a polished portrait control surface, automatic Chromebook-host
 address discovery, local/LAN URL actions, and a compact system-font Linux
 launch handoff are implemented. The primary server control is now compact and
 sticky, and locked settings explain their stop-to-edit requirement when
-activated. This is source-fixture evidence, not a signed release candidate or
-full matrix closeout. Its normal preserve-uninstall/reinstall and full
+activated. Local, unpushed `crostini-v0.1.2` and `extension-v0.1.7` tags pass
+their source/package gates, but the signed Crostini artifacts and full matrix
+closeout still require post-push work. The source fixture's normal
+preserve-uninstall/reinstall and full
 ChromeOS reboot/login handoff now pass physically. The testbed has a wake/retry
 capture implementation and the old shelf residue is classified, but sleeping-
 display proof, the public-artifact purge/pin matrix, broader lifecycle and
-accessibility coverage, and exact release artifacts remain open.**
+accessibility coverage, and signed-artifact physical evidence remain open.**
 
 Last updated: **2026-08-03**.
 
@@ -621,6 +624,22 @@ port/content probes as phases close.
   This closes the source-fixture full-reboot and normal preserve-uninstall path;
   public-artifact purge, a true pinned shelf item, logout, and suspend/resume
   remain open.
+- **2026-08-03 local patch-release preparation:** changelog preparation commit
+  `1f731b3` records the paired user-visible release scope. The Crostini
+  `0.1.2` gate passed formatting, strict Clippy, 20 Rust tests, two canonical
+  release-manifest tests, and bootstrap installer integrity; local tag
+  `crostini-v0.1.2` points to version commit `2b41ec1`. The extension `0.1.7`
+  gate passed typecheck, all 52 tests, production build, and store-package
+  validation. That validation first exposed and then, in commit `fc05262`,
+  closed a release allowlist gap for Vite's compiled CSS asset without allowing
+  other package files. Local tag `extension-v0.1.7` points to version commit
+  `e7c08f3` and contains the Crostini tag in its history. Its exact 153,754-byte,
+  14-file ZIP reports manifest version `0.1.7`, passes the store-safe validator,
+  and has SHA-256
+  `89afed7ea6af0d1c8a83c05c611f4751a7c21b4aa2df27b99b2cc10db1be0137`.
+  Neither tag is pushed or public. Crostini's signed x86_64/ARM64 artifacts,
+  post-workflow inspection, public feed coordination, Chrome Web Store upload,
+  and exact-artifact physical checks remain separate follow-up work.
 
 ## Completion definition
 

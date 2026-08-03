@@ -3,9 +3,11 @@
 Status: **active; the ChromeOS URL fix passes physical validation, the owned
 options page is live, and exact signed Android `0.2.1` and extension `0.1.4`
 GitHub release artifacts pass inspection. The maintainer reports both store
-submissions complete; review, rollout, and store-delivered proof remain open.**
+submissions complete; review, rollout, and store-delivered proof remain open.
+Separately, local unpushed `extension-v0.1.7` packages the completed Crostini
+control-surface follow-up; its public release and store upload remain open.**
 
-Last updated: **2026-08-02**.
+Last updated: **2026-08-03**.
 
 Related continuing concerns:
 

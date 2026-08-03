@@ -15,19 +15,20 @@ allowlist and warning-free physical install; the production-ID candidate
 passes contextual deny/re-request/claim and forced popup-to-tab fallback. The
 extension bundles setup/recovery and exposes **Use ChromeOS Linux**. Public
 `extension-v0.1.6` presents Linux's no-Play full controls and Android's quick
-setup as peer choices and passes its exact CI package/test gates. Current
-unreleased `main` now implements and physically exercises protocol-2
-controller sessions, default close-to-stop lifetime, controller-backed Linux
-and shared-Chromebook folder browsing, automatic share discovery, a polished
-switch-based popup, compact sticky server control, actionable setting locks,
-automatic Chromebook-address discovery, and local/LAN URL actions. This is a
-source-fixture UI checkpoint, not a new signed release. The same source fixture
-now also passes normal preserve-uninstall/reinstall, a full ChromeOS
-reboot/login, and repeated single-controller Launcher handoff with content kept
-stopped. Native ARM ChromeOS, complete folder/lifecycle/accessibility matrices,
-update-to-a-newer-release/rollback, the public-artifact uninstall/pin matrix,
-sleeping-display proof for the wake-aware testbed capture, and exact release-
-candidate evidence remain open.**
+setup as peer choices and passes its exact CI package/test gates. Local,
+unpushed `crostini-v0.1.2` and `extension-v0.1.7` tags now contain the
+protocol-2 controller sessions, default close-to-stop lifetime,
+controller-backed Linux and shared-Chromebook folder browsing, automatic share
+discovery, polished switch-based popup, compact sticky server control,
+actionable setting locks, automatic Chromebook-address discovery, and
+local/LAN URL actions. Their source and package preflights pass; the exact
+extension ZIP is recorded, while signed Crostini artifacts still require the
+tag workflow. The same source fixture passes normal preserve-uninstall/reinstall,
+a full ChromeOS reboot/login, and repeated single-controller Launcher handoff
+with content kept stopped. Native ARM ChromeOS, complete
+folder/lifecycle/accessibility matrices, update-to-a-newer-release/rollback,
+the public-artifact uninstall/pin matrix, sleeping-display proof for the
+wake-aware testbed capture, and signed-artifact physical evidence remain open.**
 
 Last reconciled: **2026-08-03**.
 

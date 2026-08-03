@@ -18,8 +18,11 @@ candidate passes contextual denial/re-request and forced normal-tab fallback.
 Public `extension-v0.1.6` presents Linux and Android as peer choices, updates
 the package description and store copy, and keeps failed Linux setup retries
 on the Linux route. Its exact CI ZIP passes independent store-package inspection; the
-website's matching chooser and guide copy are deployed. Chrome Web Store upload
-remains maintainer-owned.**
+website's matching chooser and guide copy are deployed. Local, unpushed
+`extension-v0.1.7` adds the polished protocol-2 Linux controls and has a
+153,754-byte, 14-file exact ZIP that passes the store-package gate with SHA-256
+`89afed7ea6af0d1c8a83c05c611f4751a7c21b4aa2df27b99b2cc10db1be0137`.
+Chrome Web Store upload remains maintainer-owned.**
 
 Last reconciled: **2026-08-03**.
 

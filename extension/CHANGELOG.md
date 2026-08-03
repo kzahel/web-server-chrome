@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.1.7]
+
+### Added
+- Add a controller-backed folder picker for Linux files and ChromeOS folders,
+  including **Share with Linux** guidance and automatic refresh when returning
+  from the Files app.
+- Add UI-session lifecycle controls that stop serving when the final control
+  window closes by default, with an explicit background-serving option.
+- Add open and copy actions for local and LAN URLs, with automatic Chromebook
+  LAN IPv4 discovery instead of manual address entry.
+
+### Changed
+- Replace the form-like ChromeOS Linux screen with a polished, portrait control
+  surface centered on a server on/off switch.
+- Keep a compact server control pinned at the top while settings and status
+  scroll beneath it.
+- Save editable settings automatically and explain why controls are locked when
+  the server must be stopped first.
+
 ## [0.1.6]
 
 ### Changed

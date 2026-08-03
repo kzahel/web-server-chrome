@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## [0.1.2]
+
+- Add authenticated UI sessions that stop the content server when the final
+  control window closes by default, with an explicit option to keep serving in
+  the background.
+- Add controller-owned folder browsing and selection for Linux files and
+  ChromeOS folders shared with Linux, while preserving canonical path
+  confinement.
+- Replace the noisy launcher window with a compact system-font launching state
+  while retaining actionable recovery details when startup fails.
+- Stop the controller during uninstall and explain ChromeOS's asynchronous
+  Launcher and shelf cleanup without removing preserved server data.
+
 ## [0.1.1]
 
 - Publish the first completed signed ChromeOS Linux release after restoring

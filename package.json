@@ -7,8 +7,8 @@
   "workspaces": [
     "packages/*",
     "desktop/tauri-app",
-    "apps/*",
-    "extension"
+    "extension",
+    "website"
   ],
   "scripts": {
     "build": "pnpm -r build",

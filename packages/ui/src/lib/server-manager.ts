@@ -43,13 +43,7 @@ export interface StartOptions {
   acknowledgeRisk?: boolean;
 }
 
-export interface DirectoryListing {
-  path: string;
-  entries: Array<{ name: string; isDirectory: boolean }>;
-}
-
 export interface ServerManager {
-  listServers(): Promise<ManagedServerInfo[]>;
   getServer(id: string): Promise<ManagedServerInfo | undefined>;
   updateServer(
     id: string,
@@ -62,5 +56,4 @@ export interface ServerManager {
   subscribe?(
     listener: (server: ManagedServerInfo) => void,
   ): Promise<() => void>;
-  browseDirectory?(path: string): Promise<DirectoryListing>;
 }

@@ -1,10 +1,17 @@
 # UI Design
 
-Cross-platform UI design for 200 OK. Same design language on Android (Jetpack Compose), desktop (Tauri/HTML), and eventually iOS. The layout adapts by screen width, not by platform.
+Cross-platform visual design for 200 OK across Android (Jetpack Compose),
+desktop (Tauri/HTML), and potentially iOS. This document includes future
+responsive directions; implemented layouts remain platform-specific.
 
-Architecture status: the visual design remains useful. The original
-cross-platform TypeScript engine assumptions are superseded by the independent
-Rust desktop and Kotlin Android runtimes in
+Status: **visual principles and future layout exploration.** The implemented
+desktop product is a single-server portrait control surface; the responsive
+sidebar, server switcher, and multi-server wireframes below are not current
+behavior. Their unused React scaffolding was removed after the Node CLI and
+remote UI retired.
+
+The original cross-platform TypeScript engine assumptions are superseded by
+the independent Rust desktop and Kotlin Android runtimes in
 [`topics/desktop-runtime.md`](topics/desktop-runtime.md) and
 [`topics/android-runtime.md`](topics/android-runtime.md).
 
@@ -15,7 +22,7 @@ Rust desktop and Kotlin Android runtimes in
 - **One page per server.** All controls and settings for one server live on a single scrollable screen. No drilling into a separate settings page for per-server config.
 - **App-level settings are separate.** Global stuff (boot behavior, power management) lives behind a gear icon, not mixed in with per-server options.
 
-## Screen Layout
+## Future Responsive Layout Exploration
 
 ### Phone (< 600dp)
 
@@ -154,7 +161,6 @@ details:
 
 ```typescript
 interface ServerManager {
-  listServers(): Promise<ServerInfo[]>
   updateServer(id: string, config: Partial<ServerConfig>): Promise<ServerInfo>
   startServer(id: string): Promise<ServerInfo>
   stopServer(id: string): Promise<ServerInfo>
@@ -189,6 +195,6 @@ latent shared-UI behavior.
 ### Desktop (Tauri)
 - Embeds the shared React controls in a webview
 - Uses `TauriServerManager` commands/events rather than an HTTP management API
-- Always shows sidebar layout (window is wide enough)
+- Currently uses one portrait, single-server control page without a sidebar
 - System tray support for background mode
 - Native file picker via Tauri dialog API

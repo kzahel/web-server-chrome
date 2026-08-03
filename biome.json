@@ -42,10 +42,7 @@
       }
     },
     {
-      "includes": [
-        "packages/ui/src/index.css",
-        "desktop/tauri-app/src/index.css"
-      ],
+      "includes": ["desktop/tauri-app/src/index.css"],
       "linter": {
         "rules": {
           "suspicious": {

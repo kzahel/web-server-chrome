@@ -49,10 +49,6 @@ function toServerInfo(snapshot: NativeServerSnapshot): ManagedServerInfo {
 }
 
 export class TauriServerManager implements ServerManager {
-  async listServers(): Promise<ManagedServerInfo[]> {
-    return [await this.getDefaultServer()];
-  }
-
   async getServer(id: string): Promise<ManagedServerInfo | undefined> {
     if (id !== "default") return undefined;
     return this.getDefaultServer();

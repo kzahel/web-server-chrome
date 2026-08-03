@@ -39,7 +39,7 @@ for (const required of REQUIRED_FILES) {
   assert(uniqueEntries.has(required), `missing required file: ${required}`);
 }
 
-let assetCount = 0;
+let scriptAssetCount = 0;
 for (const entry of entries) {
   assert(
     !entry.startsWith("/") && !entry.includes(".."),
@@ -56,12 +56,15 @@ for (const entry of entries) {
   );
   if (REQUIRED_FILES.has(entry)) continue;
   if (/^assets\/[A-Za-z0-9_-]+\.js$/.test(entry)) {
-    assetCount += 1;
+    scriptAssetCount += 1;
+    continue;
+  }
+  if (/^assets\/[A-Za-z0-9_-]+\.css$/.test(entry)) {
     continue;
   }
   throw new Error(`unexpected package file: ${entry}`);
 }
-assert(assetCount > 0, "missing compiled JavaScript assets");
+assert(scriptAssetCount > 0, "missing compiled JavaScript assets");
 
 const manifestText = packageReader.readText("manifest.json");
 const manifest = JSON.parse(manifestText);

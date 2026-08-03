@@ -1110,8 +1110,10 @@ function FolderPicker({
               onClick={() => chooseRoot(root)}
             >
               {root.id === "linux-files" ? <LaptopIcon /> : <ChromeIcon />}
-              <span>{root.name}</span>
-              {!root.available && <small>Not shared yet</small>}
+              <span className="root-tab-copy">
+                <span>{root.name}</span>
+                {!root.available && <small>Not shared yet</small>}
+              </span>
             </button>
           ))}
         </div>

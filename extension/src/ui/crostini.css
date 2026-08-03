@@ -819,9 +819,8 @@ input:disabled {
 }
 
 .root-tab {
-  display: grid;
+  display: flex;
   min-height: 54px;
-  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 9px;
   padding: 8px 10px;
@@ -841,22 +840,30 @@ input:disabled {
 }
 
 .root-tab > .icon {
-  grid-row: span 2;
   width: 21px;
   height: 21px;
 }
 
-.root-tab span {
+.root-tab-copy {
+  display: grid;
+  min-width: 0;
+  align-content: center;
+  gap: 2px;
+}
+
+.root-tab-copy > span {
   overflow: hidden;
   font-size: 12px;
   font-weight: 650;
+  line-height: 1.2;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.root-tab small {
+.root-tab-copy small {
   color: var(--text-tertiary);
   font-size: 9px;
+  line-height: 1.2;
 }
 
 .breadcrumbs {

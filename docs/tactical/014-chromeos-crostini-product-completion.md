@@ -506,6 +506,14 @@ port/content probes as phases close.
   not a session-close product failure. Keyboard capture was used explicitly;
   wake-aware standard capture remains Phase G. No signed/public artifact claim
   is made from this fixture.
+- **2026-08-03 portrait-window correction:** commit `5b98706` changes the
+  routine popup from the original 700×750 protocol fixture to 460×750, close
+  to the desktop application's 410×700 portrait window. The exact unpacked
+  extension passed typecheck, build, Biome, and 46 tests. On the M150 fixture,
+  ChromeOS reported the requested 460×750 outer window, the compact control
+  layout remained legible, and the stacked two-root folder dialog fit without
+  horizontal scrolling. Setup, claim, and popup-failure recovery still use a
+  normal tab.
 
 ## Completion definition
 

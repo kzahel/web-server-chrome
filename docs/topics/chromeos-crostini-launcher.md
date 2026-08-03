@@ -15,11 +15,15 @@ allowlist and warning-free physical install; the production-ID candidate
 passes contextual deny/re-request/claim and forced popup-to-tab fallback. The
 extension bundles setup/recovery and exposes **Use ChromeOS Linux**. Public
 `extension-v0.1.6` presents Linux's no-Play full controls and Android's quick
-setup as peer choices and passes its exact CI package/test gates. Full ChromeOS
-reboot/login, native ARM ChromeOS, controller-backed directory browsing,
-polished cross-platform-parity controls, default close-to-stop lifetime,
-update-to-a-newer-release/rollback, clean pinned-shelf uninstall behavior, and
-broader lifecycle/accessibility tests remain follow-up work and evidence.**
+setup as peer choices and passes its exact CI package/test gates. Current
+unreleased `main` now implements and physically exercises protocol-2
+controller sessions, default close-to-stop lifetime, controller-backed Linux
+and shared-Chromebook folder browsing, automatic share discovery, a polished
+switch-based popup, and local/LAN URL actions. This is a source-fixture UI
+checkpoint, not a new signed release. Full ChromeOS reboot/login, native ARM
+ChromeOS, complete folder/lifecycle/accessibility matrices,
+update-to-a-newer-release/rollback, clean pinned-shelf uninstall behavior,
+wake-aware testbed capture, and exact release-candidate evidence remain open.**
 
 Last reconciled: **2026-08-03**.
 

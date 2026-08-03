@@ -1,13 +1,13 @@
 # ChromeOS Crostini Product Completion
 
-Status: **active parent sequencing tactical. The public ChromeOS Linux lane is
-functional, but its controller UI is still an engineering control panel rather
-than a finished 200 OK application. This record owns the product-completion
-work: a controller-backed folder picker, automatic shared-folder discovery,
-default stop-on-close lifetime, a server switch, desktop/Android-quality visual
-design, usable local and LAN URLs, clean uninstall/Launcher behavior, and
-reliable physical screenshot capture. No item is accepted from source review
-alone; user-visible behavior requires the physical ChromeOS evidence below.**
+Status: **active parent sequencing tactical. Current `main` has reached the
+first physically reviewed product-UI checkpoint: controller-backed folder
+browsing, automatic shared-folder discovery, default stop-on-close lifetime, a
+server switch, a polished 700×750 control surface, and local/LAN URL actions
+are implemented. This is source-fixture evidence, not a signed release
+candidate or full matrix closeout. Uninstall/Launcher behavior, broader
+lifecycle/accessibility coverage, exact release artifacts, and reliable
+wake-before-capture remain open.**
 
 Last updated: **2026-08-03**.
 
@@ -178,21 +178,21 @@ Product polish must preserve these existing boundaries:
 
 ## Phase A - lock the control and lifetime contracts
 
-- [ ] Add protocol types and migrations for the lifetime preference. New and
+- [x] Add protocol types and migrations for the lifetime preference. New and
       existing configurations default to **stop when controls close** unless a
       prior explicit background preference exists.
-- [ ] Define authenticated acquire/renew/release semantics for a visible
+- [x] Define authenticated acquire/renew/release semantics for a visible
       control session. Associate a run with the session/lifetime decision that
       started it instead of treating any controller process as permission to
       serve forever.
-- [ ] Stop the content listener after the final non-background session expires.
+- [x] Stop the content listener after the final non-background session expires.
       Support multiple/replaced UI contexts without stopping while one valid
       control surface remains.
-- [ ] Use a bounded grace period for popup-to-tab conversion, extension reload,
+- [x] Use a bounded grace period for popup-to-tab conversion, extension reload,
       navigation, and controller update reconnect. Record the chosen timing and
       why it is long enough for real ChromeOS without hiding a closed UI for
       minutes.
-- [ ] Ensure an explicit switch-off always stops immediately, independent of
+- [x] Ensure an explicit switch-off always stops immediately, independent of
       lifetime mode or lease state.
 - [ ] Keep **Keep serving when controls close** conspicuous while running and
       explain that Linux must remain running. Changing it to off while no
@@ -213,20 +213,20 @@ content reachable until the user stops it or Linux stops.
 
 ### Controller capability
 
-- [ ] Add authenticated filesystem roots, directory listing, folder creation,
+- [x] Add authenticated filesystem roots, directory listing, folder creation,
       and selection endpoints. Use stable root identifiers such as
       `linux-files` and `shared-chromeos`, plus relative entry identifiers;
       do not make the UI concatenate trusted absolute paths.
 - [ ] Return display name, kind, selectable state, and a non-sensitive display
       breadcrumb. Return only the metadata needed by the picker.
-- [ ] Make home and `/mnt/chromeos` navigation sentinels non-selectable while
+- [x] Make home and `/mnt/chromeos` navigation sentinels non-selectable while
       allowing their children. Explain empty and missing shared roots without
       exposing an internal error dump.
 - [ ] Canonicalize on list, create, select, settings commit, and server start.
       Reject traversal, root selection, non-directories, broken links, links or
       races that escape confinement, permission denial, and paths that vanish
       after selection.
-- [ ] Preserve existing canonical-path settings through migration. The
+- [x] Preserve existing canonical-path settings through migration. The
       controller remains the authority that translates an accepted picker
       selection into persisted server configuration.
 - [ ] Rate-limit or bound enumeration and return deterministic ordering. Large,
@@ -234,22 +234,22 @@ content reachable until the user stops it or Linux stops.
 
 ### Picker experience
 
-- [ ] Replace the raw path field with a folder card and **Choose…**/**Change…**
+- [x] Replace the raw path field with a folder card and **Choose…**/**Change…**
       affordance. Show a friendly folder name first and the canonical path only
       as secondary detail or diagnostics.
 - [ ] Provide breadcrumbs, parent navigation, folder rows with icons, empty,
       loading, error, and permission-denied states, keyboard navigation, and a
       **New folder** action consistent with Android/desktop capability.
-- [ ] When no ChromeOS share is visible, show concise steps:
+- [x] When no ChromeOS share is visible, show concise steps:
       open Files, right-click the desired folder, choose **Share with Linux**,
       then return to 200 OK. If ChromeOS exposes a safe supported way to open
       Files, offer it; otherwise do not fake that capability.
-- [ ] Re-list when the control window regains focus and poll only while the
+- [x] Re-list when the control window regains focus and poll only while the
       explicit waiting state is visible. Stop polling when the picker closes.
       Preserve the current browse position and announce a newly visible share.
-- [ ] Keep **Check again** as recovery for delayed Garcon/mount propagation.
+- [x] Keep **Check again** as recovery for delayed Garcon/mount propagation.
       Do not require a round trip through the setup wizard.
-- [ ] Lock the picker while the content server is running and provide the same
+- [x] Lock the picker while the content server is running and provide the same
       actionable stop-to-edit explanation as other settings.
 - [ ] Add UI tests for both roots, nested navigation, create/select/cancel,
       automatic share appearance, lost share, empty/error/loading states,
@@ -261,32 +261,32 @@ refreshing in the ordinary case, or escaping controller confinement.
 
 ## Phase C - polished application control surface
 
-- [ ] Establish a small extension design system using the canonical 200 OK
+- [x] Establish a small extension design system using the canonical 200 OK
       icon/wordmark, product yellow, semantic status colors, spacing, type,
       buttons, icon buttons, switches, cards, focus rings, and light/dark
       tokens. Avoid one-off inline style objects for the finished surface.
-- [ ] Rebuild the routine window around a compact product header, server status
+- [x] Rebuild the routine window around a compact product header, server status
       card, folder card, URL card, basic settings, collapsed Advanced section,
       and secondary Help/About/Update actions.
-- [ ] Replace **Start server**/**Stop server** with the accessible switch.
+- [x] Replace **Start server**/**Stop server** with the accessible switch.
       Preserve the established async state machine and disable duplicate input
       during transitions.
-- [ ] Match desktop/Android control order and terminology where the feature is
+- [x] Match desktop/Android control order and terminology where the feature is
       shared. Keep ChromeOS-only sharing and port-forwarding guidance adjacent
       to the controls it explains.
-- [ ] Use clear icons for folder, server/power, open, copy, network, settings,
+- [x] Use clear icons for folder, server/power, open, copy, network, settings,
       refresh/retry, update, help, and errors. Decorative icons are hidden from
       accessibility APIs; icon-only buttons have names and tooltips.
-- [ ] Remove the global manual **Refresh** from normal operation. Synchronize
+- [x] Remove the global manual **Refresh** from normal operation. Synchronize
       status automatically while the control surface is visible, using bounded
       polling or controller events that do not create persistent Manifest V3
       background work.
-- [ ] Remove the ambiguous global **Save settings** workflow. Commit valid
+- [x] Remove the ambiguous global **Save settings** workflow. Commit valid
       stopped-state changes predictably, preserve per-field drafts while the
       user is typing, and show inline validation or a saved/error state.
-- [ ] Move updater internals and uncommon server behavior under Advanced or
+- [x] Move updater internals and uncommon server behavior under Advanced or
       About without hiding an available security/update action.
-- [ ] Keep full setup, Share with Linux, recovery, reset, rollback, and
+- [x] Keep full setup, Share with Linux, recovery, reset, rollback, and
       uninstall guidance reachable from the connected UI.
 - [ ] Support the 700×750 popup, smaller ChromeOS display settings, and normal-
       tab fallback without clipped controls, horizontal scrolling, or tiny
@@ -303,17 +303,17 @@ surface is recognizably the same 200 OK product as desktop and Android.
 
 ## Phase D - local and LAN URL completion
 
-- [ ] Show the local running URL in a dedicated row with **Open** and **Copy**
+- [x] Show the local running URL in a dedicated row with **Open** and **Copy**
       actions, tooltip/accessibility names, and visible **Copied** feedback.
-- [ ] Keep URL state live across start, stop, port changes, reconnect, and
+- [x] Keep URL state live across start, stop, port changes, reconnect, and
       update. Never leave an actionable URL visible after the listener stops.
-- [ ] Present **Available on local network** as an explicit setting, not a
+- [x] Present **Available on local network** as an explicit setting, not a
       guarantee that ChromeOS port forwarding is already configured.
-- [ ] When LAN is enabled, guide the user through adding the exact content port
+- [x] When LAN is enabled, guide the user through adding the exact content port
       under **Settings -> About ChromeOS -> Developers -> Linux development
       environment -> Port forwarding**. Make the warning against forwarding
       controller port `20080` clear but secondary.
-- [ ] Perform one bounded implementation spike for a supported Chromebook host
+- [x] Perform one bounded implementation spike for a supported Chromebook host
       IPv4 source. Reject private/undocumented Chrome APIs and Crostini guest
       addresses. If no reliable public source exists, add a validated,
       persisted **Chromebook IPv4 address** field with instructions for finding
@@ -488,6 +488,24 @@ port/content probes as phases close.
   purge removed installed files, while a 200 OK shelf item remained visible.
   The item was not yet classified as a pin, search registration, or Garcon
   cache entry, so this is a reproduction lead rather than a root-cause claim.
+- **2026-08-03 source-fixture UI checkpoint:** commits `08ed3a8`, `2d5097a`,
+  `d4e9e64`, and `01aa236` implement the protocol-2 UI-session lease,
+  confined folder capabilities, polished control surface, and physical-review
+  corrections. The extension passed typecheck, build, Biome, and 45 tests; the
+  Crostini package passed formatting, strict Clippy, and 20 tests. Testbed
+  doctor passed 8/8. The controller was built from the exact committed source
+  inside x86_64 Debian 12 Crostini and paired with the matching unpacked
+  extension on M150 ChromeOS. The 700×750 popup physically showed the stopped
+  switch, default-off lifetime option, running `http://localhost:8080` URL,
+  and the two-root picker. Review removed Linux dot directories and ChromeOS's
+  internal `fonts` mount, renamed `MyFiles` to **My files**, and disabled
+  invalid root actions. A physical title-bar touch closed the final control
+  window and a container-side port probe immediately reported port 8080
+  unreachable. An accessibility `doDefault` action had earlier claimed to
+  close the window without doing so; that was a testbed input false positive,
+  not a session-close product failure. Keyboard capture was used explicitly;
+  wake-aware standard capture remains Phase G. No signed/public artifact claim
+  is made from this fixture.
 
 ## Completion definition
 

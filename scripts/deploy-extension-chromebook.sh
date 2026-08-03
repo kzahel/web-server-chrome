@@ -4,62 +4,30 @@
 # Run from dev laptop, not from Crostini.
 #
 # Prerequisites:
-#   - SSH access: ssh chromebook works
-#   - CDP tunnel active: ssh -L 9222:127.0.0.1:9222 chromebook
-#   - Extension loaded once from ~/Downloads/crostini-shared/wsc-extension/
+#   - ChromeOS testbed checkout and a healthy `bin/chromeos doctor`
+#   - Extension loaded once from ~/Downloads/200-ok-extension/
 #
 # Usage:
 #   ./scripts/deploy-extension-chromebook.sh
 #
-set -e
+set -euo pipefail
 cd "$(dirname "$0")/.."
 
-CHROMEBOOK_HOST="${CHROMEBOOK_HOST:-chromebook}"
-REMOTE_PATH="/mnt/chromeos/MyFiles/Downloads/crostini-shared/wsc-extension"
+CHROMEOS_TESTBED_CLI="${CHROMEOS_TESTBED_CLI:-$HOME/code/chromeos-testbed/bin/chromeos}"
+CHROMEOS_EXTENSION_NAME="${CHROMEOS_EXTENSION_NAME:-200-ok-extension}"
+EXTENSION_ID="lpkjdhnmgkhaabhimpdinmdgejoaejic"
 
-# Warn if running from Crostini
-if [[ -f /etc/apt/sources.list.d/cros.list ]]; then
-    echo "Warning: Running from Crostini. This script is meant for external dev machines."
-    echo "   Press Ctrl+C to cancel, or wait 3s to continue anyway..."
-    sleep 3
+if [[ ! -x "$CHROMEOS_TESTBED_CLI" ]]; then
+    echo "ChromeOS testbed CLI not found: $CHROMEOS_TESTBED_CLI" >&2
+    echo "Set CHROMEOS_TESTBED_CLI to the checkout's bin/chromeos path." >&2
+    exit 1
 fi
 
 echo "Building extension..."
-cd extension
-pnpm build
-cd ..
+pnpm --dir extension build
 
-echo "Deploying to $CHROMEBOOK_HOST:$REMOTE_PATH/"
+"$CHROMEOS_TESTBED_CLI" deploy-ext "$PWD/extension/dist" \
+    --name "$CHROMEOS_EXTENSION_NAME" \
+    --reload "$EXTENSION_ID"
 
-# Create target directory if needed
-ssh "$CHROMEBOOK_HOST" "mkdir -p '$REMOTE_PATH'"
-
-rsync -av --delete \
-    --exclude='.git' \
-    --exclude='node_modules' \
-    extension/dist/ \
-    "$CHROMEBOOK_HOST:$REMOTE_PATH/"
-
-# Reload extension via CDP if tunnel is active
-CDP_PORT="${CDP_PORT:-9222}"
-if nc -z localhost "$CDP_PORT" 2>/dev/null; then
-    echo "Reloading extension via CDP..."
-    python3 -c "
-import json
-import urllib.request
-import websocket
-
-# Get targets
-targets = json.loads(urllib.request.urlopen('http://localhost:$CDP_PORT/json').read())
-sw = next((t for t in targets if t.get('type') == 'service_worker' and 'lpkjdhnmgkhaabhimpdinmdgejoaejic' in t.get('url', '')), None)
-if sw:
-    ws = websocket.create_connection(sw['webSocketDebuggerUrl'])
-    ws.send(json.dumps({'id': 1, 'method': 'Runtime.evaluate', 'params': {'expression': 'chrome.runtime.reload()'}}))
-    ws.close()
-    print('Extension reloaded')
-else:
-    print('Service worker not found, skipping reload')
-" 2>/dev/null || echo "CDP reload failed (websocket-client not installed?), manual reload may be needed"
-fi
-
-echo "Done! Extension deployed."
+echo "Done! Extension deployed to ChromeOS Downloads/$CHROMEOS_EXTENSION_NAME/."

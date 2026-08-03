@@ -210,7 +210,7 @@ describe("Crostini controller UI", () => {
           roots: [
             { available: true, id: "linux-files", name: "Linux files" },
             {
-              available: false,
+              available: true,
               id: "shared-chromeos",
               name: "Shared Chromebook folders",
             },
@@ -225,6 +225,16 @@ describe("Crostini controller UI", () => {
           path: [],
           rootId: "linux-files",
           rootName: "Linux files",
+        }),
+      )
+      .mockResolvedValueOnce(
+        jsonResponse({
+          canSelect: false,
+          displayPath: "Shared Chromebook folders",
+          entries: [{ name: "MyFiles" }],
+          path: [],
+          rootId: "shared-chromeos",
+          rootName: "Shared Chromebook folders",
         }),
       );
     vi.stubGlobal("fetch", fetchMock);
@@ -245,6 +255,20 @@ describe("Crostini controller UI", () => {
       "http://penguin.linux.test:20080/api/folders/roots",
     );
     expect(fetchMock.mock.calls[4]?.[0]).toBe(
+      "http://penguin.linux.test:20080/api/folders/list",
+    );
+
+    const shared = [
+      ...document.querySelectorAll<HTMLButtonElement>('[role="tab"]'),
+    ].find((button) =>
+      button.textContent?.includes("Shared Chromebook folders"),
+    );
+    await act(async () => shared?.click());
+    await settle();
+
+    expect(document.body.textContent).toContain("My files");
+    expect(document.body.textContent).not.toContain("MyFiles");
+    expect(fetchMock.mock.calls[5]?.[0]).toBe(
       "http://penguin.linux.test:20080/api/folders/list",
     );
   });

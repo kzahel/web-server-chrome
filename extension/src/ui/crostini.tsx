@@ -1004,6 +1004,11 @@ function FolderPicker({
   const waitingForShare =
     rootId === "shared-chromeos" && selectedRoot?.available === false;
 
+  const folderLabel = (component: string, depth: number) =>
+    rootId === "shared-chromeos" && depth === 0 && component === "MyFiles"
+      ? "My files"
+      : component;
+
   useEffect(() => {
     const refresh = () => void refreshRoots(false);
     window.addEventListener("focus", refresh);
@@ -1131,7 +1136,7 @@ function FolderPicker({
                     )
                   }
                 >
-                  {component}
+                  {folderLabel(component, index)}
                 </button>
               </span>
             ))}
@@ -1207,7 +1212,7 @@ function FolderPicker({
                   <span className="folder-row-icon">
                     <FolderIcon />
                   </span>
-                  <span>{entry.name}</span>
+                  <span>{folderLabel(entry.name, listing.path.length)}</span>
                   <ChevronRightIcon />
                 </button>
               ))}
@@ -1243,7 +1248,12 @@ function FolderPicker({
           <button
             type="button"
             className="button button-secondary"
-            disabled={!listing || loading}
+            disabled={
+              !listing ||
+              loading ||
+              (listing.rootId === "shared-chromeos" &&
+                listing.path.length === 0)
+            }
             onClick={() => setNewFolderOpen(true)}
           >
             <FolderPlusIcon />

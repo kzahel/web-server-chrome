@@ -8,10 +8,11 @@ address discovery, local/LAN URL actions, and a compact system-font Linux
 launch handoff are implemented. The primary server control is now compact and
 sticky, and locked settings explain their stop-to-edit requirement when
 activated. This is source-fixture evidence, not a signed release candidate or
-full matrix closeout. The testbed now has a
-wake/retry capture implementation and the old shelf residue is classified, but
-sleeping-display proof, the clean uninstall matrix, broader
-lifecycle/accessibility coverage, and exact release artifacts remain open.**
+full matrix closeout. Its normal preserve-uninstall/reinstall and full
+ChromeOS reboot/login handoff now pass physically. The testbed has a wake/retry
+capture implementation and the old shelf residue is classified, but sleeping-
+display proof, the public-artifact purge/pin matrix, broader lifecycle and
+accessibility coverage, and exact release artifacts remain open.**
 
 Last updated: **2026-08-03**.
 
@@ -592,6 +593,34 @@ port/content probes as phases close.
   `0c9be29c0ec18520a123f7cbda7e59b93ea04f4766ea85d7cae3f45ccbd8fd1a`.
   The authenticated controller health endpoint and the correct systemd user
   unit remained active after installation.
+- **2026-08-03 source-fixture uninstall and reboot matrix:** the exact installed
+  `02c498a` binary had SHA-256
+  `0c9be29c0ec18520a123f7cbda7e59b93ea04f4766ea85d7cae3f45ccbd8fd1a`
+  on M150 ChromeOS with x86_64 Debian 12 Crostini. A normal uninstall stopped
+  controller and content, removed the binary/version tree, desktop entry,
+  icon, and static unit, and removed the **Installed App** search result plus
+  Linux shelf icon within about five seconds. Controller identity
+  `eb392215c3d143099581cf216c0d4a24`, mode-0600 settings, update state, the
+  shared WSC root, and account `Linger=yes` remained byte-for-byte unchanged.
+  Reinstalling the saved exact binary restored one static controller process,
+  retained the claim, and intentionally did not resume the previous content
+  run. Garcon removed registration faster than it restored it: the reinstalled
+  search result was still absent near 15 seconds and present by about 30
+  seconds. A fully stopped `termina` then reopened the one stopped controller
+  surface from Launcher in 13 seconds.
+
+  A subsequent full Chromebook reboot restored root SSH in about 36 seconds
+  and stopped at the expected profile sign-in screen; the maintainer entered
+  the PIN physically, so no credential entered agent logs or commands. After
+  login, `termina`, control port `20080`, and content port `8080` were all still
+  stopped. Launcher search retained **200 OK Linux**; its first click woke Linux
+  and reopened the same claimed controller in 12 seconds. A repeated click
+  left exactly one controller browser target and one controller process. The
+  installed hash, controller/settings/update hashes, shared root, config mode,
+  and linger state still matched baseline, while content remained stopped.
+  This closes the source-fixture full-reboot and normal preserve-uninstall path;
+  public-artifact purge, a true pinned shelf item, logout, and suspend/resume
+  remain open.
 
 ## Completion definition
 

@@ -21,12 +21,13 @@ controller sessions, default close-to-stop lifetime, controller-backed Linux
 and shared-Chromebook folder browsing, automatic share discovery, a polished
 switch-based popup, compact sticky server control, actionable setting locks,
 automatic Chromebook-address discovery, and local/LAN URL actions. This is a
-source-fixture UI checkpoint, not a new signed release. Full ChromeOS
-reboot/login, native ARM ChromeOS, complete
-folder/lifecycle/accessibility matrices,
-update-to-a-newer-release/rollback, a clean end-to-end uninstall matrix,
-sleeping-display proof for the wake-aware testbed capture, and exact
-release-candidate evidence remain open.**
+source-fixture UI checkpoint, not a new signed release. The same source fixture
+now also passes normal preserve-uninstall/reinstall, a full ChromeOS
+reboot/login, and repeated single-controller Launcher handoff with content kept
+stopped. Native ARM ChromeOS, complete folder/lifecycle/accessibility matrices,
+update-to-a-newer-release/rollback, the public-artifact uninstall/pin matrix,
+sleeping-display proof for the wake-aware testbed capture, and exact release-
+candidate evidence remain open.**
 
 Last reconciled: **2026-08-03**.
 
@@ -973,7 +974,7 @@ must remain explicit:
       static unit through the self-install transaction; repeat warm and fully
       stopped-VM handoff with the production controller and one extension
       surface.
-- [ ] Prove the installed app and one-controller behavior after a full ChromeOS
+- [x] Prove the installed app and one-controller behavior after a full ChromeOS
       reboot/login rather than only a manual VM stop/start.
 - [x] Prove that a static `Restart=always` user unit remains inactive across a
       VM restart until explicitly started, survives Terminal close after start,

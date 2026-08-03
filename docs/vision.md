@@ -16,17 +16,16 @@ The replacement is a family of small platform surfaces:
 - an Android application that is also the ChromeOS server path;
 - a Chrome extension that provides familiar browser presence and launches the
   correct installed application; and
-- a CLI for terminal users.
+- a small ChromeOS Linux launcher/controller for users without Google Play.
 
 The extension is not itself the HTTP server.
 
 ## Current state
 
-As of 2026-08-02:
+As of 2026-08-03:
 
 | Surface | Runtime | Released state |
 |---|---|---|
-| CLI | TypeScript engine on Node.js | `v0.1.1` |
 | Desktop release | Tauri/React controls; Rust server state and HTTP core | `v0.1.5`, complete signed release; recommended macOS app, Windows NSIS, and Linux AppImage update/server/extension paths accepted |
 | Desktop source | Same Rust-native runtime with AppImage-first Linux integration, Linux ARM64 artifacts, and package-aware updates | Published baseline is `v0.1.5`; RPM-native, MSI-elevated, and physical ARM64 product smoke remain claim-only gaps |
 | Android / ChromeOS source | Compose UI and native Kotlin HTTP/storage core | Kotlin cutover and ChromeOS LAN-address correction physically accepted; signed upload candidate published in GitHub release `android-v0.2.1` |
@@ -75,11 +74,11 @@ embedded runtime. The currently published Android `v0.1.2` remains the earlier
 artifact until a separately approved Play release. See
 [`topics/android-runtime.md`](topics/android-runtime.md).
 
-### CLI
+### Repository development executable
 
-The CLI keeps the TypeScript engine and Node adapters. It remains useful and
-provides a behavioral reference, but it does not dictate the desktop runtime.
-A Rust CLI may be reconsidered only as a separate product decision.
+`desktop/core/src/main.rs` remains a small way to exercise the Rust HTTP core
+without Tauri. It is repository-only development and smoke tooling, not an
+independently packaged, published, or versioned CLI product.
 
 ### Extension
 
@@ -98,8 +97,9 @@ host the server. It also placed the desktop HTTP engine, parser, filesystem
 orchestration, and socket event flow in the Tauri webview. That architecture
 added JavaScript/webview runtime work to a product whose main promise is a tiny
 local server, without delivering a current product requirement. The embedded
-Android runtime and its JNI/native-I/O modules are fully deleted from current
-source; both desktop and Android now use their platform-native server cores.
+Android runtime, JNI/native-I/O modules, unpublished Node CLI, and now-stranded
+TypeScript engine are fully deleted from current source. Desktop and Android
+use their platform-native server cores.
 
 The desktop application already includes Rust through Tauri. A direct Rust
 server provides a simpler ownership boundary and should materially reduce
@@ -171,9 +171,9 @@ After the replacement and release path are dependable:
 ## Non-goals for the current campaign
 
 - Proving a reusable Transistor JavaScript socket/filesystem architecture.
-- Unifying desktop, Android, and CLI behind one runtime implementation.
+- Unifying desktop and Android behind one runtime implementation.
 - Publishing the Kotlin Android cutover as part of the desktop/legacy campaign.
-- Rewriting the CLI solely for language uniformity.
+- Publishing the Rust core development executable as a general-purpose CLI.
 - Removing the Tauri webview.
 - Expanding UDP/UPnP, proxying, or other power features before the basic server
   and release gate are solid.

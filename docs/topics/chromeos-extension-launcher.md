@@ -21,7 +21,7 @@ on the Linux route. Its exact CI ZIP passes independent store-package inspection
 website's matching chooser and guide copy are deployed. Chrome Web Store upload
 remains maintainer-owned.**
 
-Last reconciled: **2026-08-02**.
+Last reconciled: **2026-08-03**.
 
 Implementation and release sequencing live in
 [Tactical 011](../tactical/011-extension-launcher-and-chromeos-network-readiness.md).
@@ -147,8 +147,8 @@ installation. The launcher opens a controller-served
 narrow external message; routine launch does not require the website or
 background polling. The extension requests controller host access only as an
 optional runtime permission after the user chooses Linux. The website mirrors
-the setup guide but is not its only copy. The Node/npm CLI and full AppImage
-are not the recommended fallback.
+the setup guide but is not its only copy. The retired Node/npm CLI proof and
+full AppImage are not the recommended fallback.
 
 [`chromeos-crostini-launcher.md`](chromeos-crostini-launcher.md) owns the
 install/everyday user flows, offline-content requirement,

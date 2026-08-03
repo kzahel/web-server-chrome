@@ -96,6 +96,9 @@ async fn serves_files_indexes_mime_and_head_over_real_sockets() {
     tokio::fs::write(root.path().join("sub/data.json"), br#"{"ok":true}"#)
         .await
         .expect("write JSON");
+    tokio::fs::write(root.path().join("café.txt"), "unicode")
+        .await
+        .expect("write UTF-8 filename");
 
     let server = RunningServer::start(test_config(root.path()))
         .await
@@ -122,6 +125,46 @@ async fn serves_files_indexes_mime_and_head_over_real_sockets() {
     assert_eq!(head.status, 200);
     assert!(head.body.is_empty());
     assert_eq!(head.header("content-length"), Some("11"));
+
+    let utf8 = request(&server, &close_request("GET", "/caf%C3%A9.txt", &[])).await;
+    assert_eq!(utf8.status, 200);
+    assert_eq!(utf8.text(), "unicode");
+
+    let missing_head = request(&server, &close_request("HEAD", "/missing.txt", &[])).await;
+    assert_eq!(missing_head.status, 404);
+    assert!(missing_head.body.is_empty());
+
+    server.stop().await.expect("stop server");
+}
+
+#[tokio::test]
+async fn reuses_http_1_1_connections() {
+    let root = TempDir::new().expect("temporary root");
+    tokio::fs::write(root.path().join("value.txt"), "value")
+        .await
+        .expect("write file");
+    let server = RunningServer::start(test_config(root.path()))
+        .await
+        .expect("start server");
+    let mut stream = TcpStream::connect(server.local_addr())
+        .await
+        .expect("connect to test server");
+    stream
+        .write_all(
+            b"GET /value.txt HTTP/1.1\r\nHost: localhost\r\n\r\n\
+              GET /value.txt HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n",
+        )
+        .await
+        .expect("write pipelined requests");
+
+    let mut bytes = Vec::new();
+    timeout(Duration::from_secs(2), stream.read_to_end(&mut bytes))
+        .await
+        .expect("response timeout")
+        .expect("read responses");
+    let responses = String::from_utf8_lossy(&bytes);
+    assert_eq!(responses.matches("HTTP/1.1 200 OK").count(), 2);
+    assert_eq!(responses.matches("value").count(), 2);
 
     server.stop().await.expect("stop server");
 }

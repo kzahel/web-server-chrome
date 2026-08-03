@@ -31,7 +31,7 @@ class KotlinHttpServerTest {
 
     @Test
     fun servesFilesHeadCachingAndRanges() {
-        val root = rootWithFiles("hello.txt" to "0123456789")
+        val root = rootWithFiles("hello.txt" to "0123456789", "café.txt" to "unicode")
         val server = start(root)
 
         val get = request(server, "GET", "/hello.txt")
@@ -46,6 +46,14 @@ class KotlinHttpServerTest {
         assertEquals(200, head.status)
         assertEquals("10", head.header("content-length"))
         assertTrue(head.body.isEmpty())
+
+        val utf8 = request(server, "GET", "/caf%C3%A9.txt")
+        assertEquals(200, utf8.status)
+        assertEquals("unicode", utf8.text())
+
+        val missingHead = request(server, "HEAD", "/missing.txt", readBody = false)
+        assertEquals(404, missingHead.status)
+        assertTrue(missingHead.body.isEmpty())
 
         val cached = request(server, "GET", "/hello.txt", mapOf("If-None-Match" to etag))
         assertEquals(304, cached.status)

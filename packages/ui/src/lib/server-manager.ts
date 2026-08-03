@@ -5,14 +5,6 @@ export interface ServerConfig {
   cors: boolean;
   spa: boolean;
   directoryListing: boolean;
-  quiet: boolean;
-  upload: boolean;
-  requestTimeoutMs: number;
-  maxRequestBodySize: number;
-  tls?: {
-    cert: Uint8Array;
-    key: Uint8Array;
-  };
 }
 
 export type ServerStatus =

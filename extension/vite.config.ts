@@ -150,11 +150,6 @@ export default defineConfig({
       return relativeSourcePath.includes("node_modules");
     },
   },
-  resolve: {
-    alias: {
-      "@ok200/engine": resolve(__dirname, "../packages/engine/src/index.ts"),
-    },
-  },
   build: {
     outDir: buildOutDir,
     emptyOutDir: true,

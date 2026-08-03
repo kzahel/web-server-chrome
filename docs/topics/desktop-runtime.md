@@ -14,7 +14,7 @@ package-aware updater refuses MSI/DEB/RPM cross-package replacement. Remaining
 desktop work is limited to subjective UI checks and secondary-package or
 physical-ARM64 claims.**
 
-Last reconciled: **2026-08-01**.
+Last reconciled: **2026-08-03**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
@@ -33,6 +33,8 @@ The accepted AppImage-first repair and distribution path are recorded in
 [Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
 The final release-confidence gates and manual sign-off boundary are recorded
 in [Tactical 009](../tactical/009-release-confidence-closeout.md).
+Retirement of the unpublished Node CLI and stranded TypeScript engine is
+recorded in [Tactical 013](../tactical/013-retire-typescript-cli.md).
 Future UPnP/public-listening work is owned by
 [`internet-exposure-and-port-mapping.md`](internet-exposure-and-port-mapping.md).
 Current product naming is governed by
@@ -46,13 +48,13 @@ This topic owns:
 - ownership of desktop HTTP behavior, configuration, and lifecycle;
 - what remains in the Tauri webview;
 - compatibility during the desktop migration; and
-- the relationship between desktop, Android, the CLI, and the extension.
+- the relationship between desktop, Android, ChromeOS Linux, and the extension.
 
 It does not require one runtime implementation across every product. In
 particular, it does not reopen the Transistor/embedded-JavaScript architecture
 experiment. Android has separately adopted a Kotlin core under
-[`android-runtime.md`](android-runtime.md); the CLI keeps its Node/TypeScript
-implementation.
+[`android-runtime.md`](android-runtime.md); the unpublished Node/TypeScript
+implementation has been retired.
 
 ## Product decision
 
@@ -80,8 +82,9 @@ must not accidentally stop a server that is configured to remain in the
 background.
 
 “Shared Rust core” means one native core reused across macOS, Windows, and
-Linux. Android JNI and a Rust CLI are not requirements or current directions;
-either would need a separate product decision.
+Linux, including the ChromeOS Linux controller. Android JNI and a separately
+released Rust CLI are not requirements or current directions. The small core
+executable remains repository-only development and smoke tooling.
 
 ## Current implementation
 
@@ -93,7 +96,7 @@ either would need a separate product decision.
 | Android source | Compose UI; Kotlin owns HTTP, storage adapters, and Android lifecycle policy | Native cutover complete and AVD-validated | Keep broadly compatible through the cross-runtime contract in `android-runtime.md` |
 | Android GitHub release `v0.2.1` | Compose UI and native Kotlin implementation | Signed APK/AAB published with the physically accepted ChromeOS LAN-address correction | Exact candidate reportedly submitted to Play; prove the final served build separately |
 | Android Play production | May still serve an earlier artifact during review | `v0.2.1` submitted but not yet accepted as store-delivered | Maintainer owns Play review and rollout; prove the final served build separately |
-| CLI `v0.1.1` | Node.js runs the TypeScript engine and Node adapters | Published developer CLI | Keep independent; do not make it block desktop |
+| Retired Node CLI tag `v0.1.1` | Node.js ran the TypeScript engine and Node adapters | npm publication failed; no package or GitHub release was published | Preserve tag/history only; source and release lane removed by Tactical 013 |
 | Chrome extension `v0.1.4` candidate | MV3 service worker and popup | Launcher/status surface; exact candidate reportedly submitted to the Chrome Web Store | Desktop launches Tauri through native messaging; ChromeOS exposes best-effort Android launch plus the owned options route; prove store delivery separately |
 | Legacy Chrome App `v0.5.x` | Chrome packaged-app APIs | Existing user migration channel | Preserve only long enough to route users to replacements |
 
@@ -139,10 +142,10 @@ change:
   desktop UI; and
 - the visible start/stop/status workflow.
 
-Upload and HTTPS exist in parts of the TypeScript engine but are not currently
-exposed by the desktop UI. Classify them explicitly as release-required or
-deferred during the compatibility-corpus phase; do not assume hidden engine
-capability is a shipped desktop contract.
+Upload and HTTPS existed in the retired TypeScript engine but were not exposed
+by the desktop UI. They were intentionally retired with that unpublished lane
+and require explicit future product decisions; hidden implementation
+capability was never a shipped desktop contract.
 
 The Rust core now passes the derived black-box HTTP corpus, but the same
 executable harness has not yet been run against both the released TypeScript
@@ -157,7 +160,7 @@ application identity.
 
 - Rewriting the React/Tauri management UI.
 - Rewriting Android in Rust or pure Kotlin during this campaign.
-- Moving the Node CLI to Rust.
+- Publishing the repository-only Rust core executable as a separate CLI.
 - Preserving a generic TypeScript native-I/O abstraction on desktop.
 - Adding UDP, UPnP, multiple servers, remote management, or other roadmap
   features before the basic native server and release path are trustworthy.
@@ -183,7 +186,8 @@ Tactical 002 fixes the first crate boundary at `desktop/core`, package
 `ok200-core`. It uses Tokio plus Axum/Hyper, canonical native filesystem
 access, native streaming bodies, a bounded structured-log channel, and
 graceful lifecycle state. A development CLI exercises the same public library
-without Tauri.
+without Tauri; Tactical 013 keeps that executable repository-only and
+unreleased.
 
 This selection is intentionally reversible at the HTTP-library level: Tauri
 will depend on the core's configuration/lifecycle/event API, not Axum types.
@@ -195,9 +199,10 @@ roots are rejected; home, ancestor-of-home, outside-home, and LAN exposure
 require confirmation as appropriate.
 
 The desktop TypeScript HTTP server and primitive socket/filesystem IPC have
-been removed. `packages/engine` remains the Node CLI implementation; Android
-has no dependency on it. Neither the desktop app nor shared desktop UI declares
-it as a dependency.
+been removed. The later Tactical 013 cleanup also removed the unpublished Node
+CLI, its stranded TypeScript engine, and the CLI-only HTTP management
+transport. The desktop app and shared UI retain only the Tauri manager
+contract.
 
 The core passes its real-socket HTTP/security corpus and the full desktop Rust
 workspace passes formatting, strict Clippy, and tests. Its Apple Silicon
@@ -284,8 +289,11 @@ Implementation and release sequencing are recorded in
 - The existing WebdriverIO E2E specification targets the Rust command path and
   type-checks, but its direct `tauri-driver` runner is Windows/Linux-only and
   was not executed on macOS.
-- The derived Rust compatibility corpus has not yet been made into one shared
-  harness run against both the TypeScript and Rust servers.
+- The retired TypeScript implementation is no longer available for a shared
+  executable harness. Tactical 013 records the behavior disposition; the Rust
+  real-socket suite retains the applicable serving and security contract,
+  including encoded UTF-8 paths, bodyless missing-file `HEAD`, and HTTP/1.1
+  connection reuse.
 - Current-vs-candidate whole-app memory, startup, and first-request
   measurements are still missing.
 - Signed Rust-core `v0.1.5` is public. Exact prior-public `0.1.4` builds

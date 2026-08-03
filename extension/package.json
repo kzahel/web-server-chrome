@@ -14,7 +14,6 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@ok200/engine": "workspace:*",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },

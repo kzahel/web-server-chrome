@@ -45,7 +45,7 @@ Internet exposure.
 ## Product recommendation
 
 Build this path around the existing Tauri-independent Rust `ok200-core`, not
-the published Node CLI or the full desktop AppImage:
+the now-retired Node CLI proof or the full desktop AppImage:
 
 - publish verified `x86_64` and `aarch64` Linux binaries from a sufficiently
   old glibc baseline or as static musl builds;
@@ -93,11 +93,13 @@ topic.
 
 ## Why not the existing Linux products
 
-The Node `ok200` CLI is a capable TypeScript server with an embedded management
-UI, but it requires Node 18 or later and introduces npm installation and update
-behavior into the fallback. The current desktop AppImage has a complete native
-picker and UI, but it is substantially larger, brings WebKit/GUI packaging
-dependencies, and has not been accepted inside Crostini.
+The former Node `ok200` CLI was a capable TypeScript server proof with an
+embedded management UI, but it was never published to npm. It required Node 18
+or later and would have introduced npm installation and update behavior into
+the fallback; Tactical 013 subsequently retired it. The current desktop
+AppImage has a complete native picker and UI, but it is substantially larger,
+brings WebKit/GUI packaging dependencies, and has not been accepted inside
+Crostini.
 
 The Crostini product reuses that Rust HTTP core inside the independent
 `desktop/crostini` launcher/controller instead of publishing the development
@@ -429,8 +431,9 @@ the first publication candidate.
 ### C1 - productionize the native binary
 
 - [x] Give the Crostini binary the independent `ok200-crostini` product name,
-      `crostini-v` tag namespace, package version, changelog, and release script
-      without silently replacing the feature-richer npm CLI.
+      `crostini-v` tag namespace, package version, changelog, and release
+      script. This remained distinct from the earlier Node proof, which was
+      later retired under Tactical 013.
 - [x] Implement one `ok200-crostini` binary containing the launcher, controller,
       status, reset, self-install, and uninstall subcommands so installed
       launcher/service versions cannot drift; its independent release identity

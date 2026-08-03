@@ -109,7 +109,8 @@ The essentials for the primary use case: pick a folder, set a port, start the se
 
 Grouped into collapsible cards. All collapsed by default so they don't overwhelm. Each section shows a summary of what's enabled when collapsed (e.g., "CORS, SPA" or "Off").
 
-**Serving** *(first settings to implement — all already supported by the engine)*
+**Serving** *(LAN access, listings, CORS, and SPA fallback exist in the native
+server cores; remaining entries are product directions)*
 - LAN access toggle — binds `0.0.0.0` (on) vs `127.0.0.1` (off)
 - Directory listing toggle
 - CORS toggle
@@ -145,60 +146,35 @@ Accessed via the gear icon in the toolbar (phone) or sidebar header (tablet/desk
 
 This list is intentionally short. If a setting is per-server, it goes on the server page, not here.
 
-## Architecture: Management API + Control UI
+## Architecture: Native Control Surfaces
 
-The web UI is not a separate mock or prototype — it is a control surface for a
-real server. The same React components can be served remotely and embedded in
-the Tauri desktop webview. An adapter interface abstracts the control
-transport; it does not require the HTTP server itself to run in JavaScript.
-
-### Management API
-
-The CLI server exposes a management API alongside its normal file serving. The web UI calls this API. Third-party tools can also use it (scripting, CI, etc.).
-
-```
-/_api/servers              GET     list all servers + status
-/_api/servers              POST    create a new server
-/_api/servers/:id          GET     get server config + status
-/_api/servers/:id          PUT     update settings
-/_api/servers/:id/start    POST    start server
-/_api/servers/:id/stop     POST    stop server
-/_api/servers/:id/logs     GET     request log stream
-/_api/ui/                  GET     serves the built web UI
-```
-
-The API is always available — no paywall, no feature flag. It's a natural consequence of the architecture, not an add-on.
-
-### Adapter Interface
-
-The web UI talks to an abstract `ServerManager` interface. Two implementations:
+The desktop React UI is a control surface for the Rust-owned server. Its
+`ServerManager` interface keeps React components independent from Tauri command
+details:
 
 ```typescript
 interface ServerManager {
   listServers(): Promise<ServerInfo[]>
-  createServer(config: Partial<ServerConfig>): Promise<ServerInfo>
   updateServer(id: string, config: Partial<ServerConfig>): Promise<ServerInfo>
-  startServer(id: string): Promise<void>
-  stopServer(id: string): Promise<void>
+  startServer(id: string): Promise<ServerInfo>
+  stopServer(id: string): Promise<ServerInfo>
 }
 
-class HttpServerManager implements ServerManager    // web UI → HTTP calls to /_api/
 class TauriServerManager implements ServerManager   // desktop → typed Tauri commands to Rust
 ```
 
-Same React components, same state management, different transport.
+The earlier Node CLI management API, remotely served browser UI, and
+`HttpServerManager` transport were an unpublished proof and have been retired.
+Remote management would require a new product and security decision; it is not
+latent shared-UI behavior.
 
-### How each platform uses this
+### How each platform controls its server
 
 | Platform | UI | Backend adapter |
 |----------|-----|----------------|
-| **CLI remote UI** | Web UI served at `/_api/ui/` | `HttpServerManager` → HTTP to `/_api/` |
-| **Desktop (Tauri)** | Same React app in webview | `TauriServerManager` → commands/events to Rust-owned servers |
+| **Desktop (Tauri)** | Shared React controls in the webview | `TauriServerManager` → commands/events to Rust-owned servers |
 | **Android** | Jetpack Compose (native) | Application controller → Kotlin HTTP/storage core |
-
-### Development workflow
-
-Run `ok200` on your laptop, open `http://<lan-ip>:8080/_api/ui/` on your phone. Full control panel, live iteration on the real UI. Changes to the React app are the actual desktop/web frontend, not a throwaway prototype.
+| **ChromeOS Linux** | Extension setup/control page | Authenticated Crostini controller → shared Rust core |
 
 ## Platform Notes
 
@@ -211,14 +187,8 @@ Run `ok200` on your laptop, open `http://<lan-ip>:8080/_api/ui/` on your phone. 
 - Same design language as web UI, native implementation
 
 ### Desktop (Tauri)
-- Embeds the same React web UI in a webview
-- Uses `TauriServerManager` commands/events instead of HTTP or direct
-  JavaScript server calls
+- Embeds the shared React controls in a webview
+- Uses `TauriServerManager` commands/events rather than an HTTP management API
 - Always shows sidebar layout (window is wide enough)
 - System tray support for background mode
 - Native file picker via Tauri dialog API
-
-### CLI
-- Serves the web UI at `/_api/ui/` for remote management
-- Management API at `/_api/` for programmatic control
-- UI is optional — CLI flags still work for everything

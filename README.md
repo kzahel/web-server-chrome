@@ -10,8 +10,9 @@ The original Chrome App was used by 200,000+ people for local web development an
 
 - **Chrome Extension** — A familiar launcher for the installed server app
 - **Desktop App** — Native app (Tauri) for Mac, Windows, and Linux
-- **CLI** — `ok200` command for developers who live in the terminal
 - **Android / ChromeOS** — Native app, published on Google Play
+- **ChromeOS Linux** — A small Rust launcher/controller for Chromebooks
+  without Google Play
 
 Same author. Same mission. Modern architecture.
 
@@ -23,24 +24,24 @@ Same author. Same mission. Modern architecture.
 
 ## Current Status
 
-The CLI server, Chrome extension, Android app, and signed desktop `v0.1.5` have
-all shipped. Their runtimes are intentionally not unified:
+The Chrome extension, Android app, ChromeOS Linux component, and signed desktop
+`v0.1.5` have shipped. The server runtimes are intentionally not unified:
 
-- the CLI uses the TypeScript engine on Node.js;
 - Android source uses a native Kotlin HTTP/storage core behind its Compose UI;
 - desktop `v0.1.5` uses the standalone Rust HTTP core behind the Tauri/React
-  control surface; and
+  control surface;
+- the ChromeOS Linux controller reuses that Rust core; and
 - the extension is a launcher/status surface, not the HTTP server.
 
 Desktop `main` uses the standalone Rust core for HTTP, filesystem, and server
 lifecycle work; its Tauri webview is only a static React control surface.
 Signed desktop `v0.1.5` includes the AppImage-first Linux installation,
 native-host relaunch repair, Linux ARM64 packages, and package-aware signed
-updates. Android, desktop, and the published Node CLI remain deliberately
-independent implementations. GitHub release `android-v0.2.1` contains the
-signed native Kotlin APK and AAB with the physically validated ChromeOS
-LAN-address correction. The maintainer reports `v0.2.1` submitted to Play;
-Play may continue serving an earlier artifact until review and rollout finish.
+updates. The former Node/TypeScript CLI was never published to npm and has
+been retired. GitHub release `android-v0.2.1` contains the signed native Kotlin
+APK and AAB with the physically validated ChromeOS LAN-address correction. The
+maintainer reports `v0.2.1` submitted to Play; Play may continue serving an
+earlier artifact until review and rollout finish.
 
 See the living
 [product branding decision](docs/topics/product-branding.md),
@@ -60,50 +61,26 @@ The scoped Play-free Linux fallback is recorded in
   AppImage is recommended on Linux because it installs and updates without an
   administrator password; DEB and RPM remain secondary system packages. Linux
   packages are published for x86_64 and ARM64.
+- ChromeOS without Google Play: follow the
+  [ChromeOS Linux setup guide](https://ok200.app/chromeos).
 
-### CLI Usage
-
-```sh
-npx ok200                          # serve current directory on port 8080
-npx ok200 ./dist                   # serve a specific directory
-npx ok200 --port 3000              # custom port
-npx ok200 --host 0.0.0.0           # expose on LAN
-npx ok200 ./dist --spa --cors      # SPA mode with CORS headers
-npx ok200 ./dist --upload          # enable PUT/POST file uploads
-```
-
-### CLI Options
-
-| Flag | Description | Default |
-|------|-------------|---------|
-| `--port, -p <port>` | Port to listen on | `8080` |
-| `--host, -H <host>` | Host to bind | `127.0.0.1` |
-| `--cors` | Enable CORS headers | off |
-| `--spa` | Serve index.html for missing paths | off |
-| `--upload` | Enable file uploads via PUT/POST | off |
-| `--no-listing` | Disable directory listing | off |
-| `--quiet, -q` | Suppress request logging | off |
-
-### Features
+### Core serving features
 
 - Static file serving with MIME type detection
 - Auto-serves index.html for directories
 - Directory listing with file sizes and dates
-- ETag / If-None-Match (304) support
+- ETag / If-None-Match (304) and byte-range support
 - Path traversal protection
-- Graceful shutdown on SIGINT/SIGTERM
+- Explicit start/stop lifecycle
 
 ## Roadmap
 
 ### Coming Soon
 - Complete store review, rollout, and controlled delivery proof for the
   submitted Android and launcher-focused extension candidates
-- Provide a verified mini-Rust Crostini fallback for ChromeOS users without
-  Google Play
 - Complete the final legacy Chrome App migration update
-- HTTPS with self-signed cert generation
-- HTTP Basic Auth
-- Range requests for media streaming
+- Decide which supported product surfaces should add uploads, HTTPS, or
+  authentication
 
 ### Later
 - QR code for easy mobile access on LAN
@@ -115,24 +92,25 @@ See [docs/vision.md](docs/vision.md) for the full roadmap.
 
 ## Architecture
 
-The repository contains three intentionally independent server runtimes and the
-platform applications that use or launch them:
+The repository contains two supported server cores and the platform
+applications that use or launch them:
 
 ```
-packages/engine/     TypeScript HTTP server used by the Node CLI
-packages/cli/        CLI wrapper (Node.js adapters)
+packages/ui/         Shared React controls used by the desktop webview
 extension/           Chrome Extension
 desktop/             Tauri/React controls plus Rust application state
-desktop/core/        Rust HTTP core and development CLI
+desktop/core/        Rust HTTP core and repository-only smoke executable
+desktop/crostini/    ChromeOS Linux launcher/controller using the Rust core
 android/             Compose app plus Kotlin HTTP/storage and lifecycle core
 ```
 
-The CLI uses TypeScript with Node adapters, desktop uses native Rust, and
-Android uses native Kotlin. Their core feature contract is kept broadly
-compatible through tests rather than shared runtime source. The Tauri webview
-remains for configuration and control, while native Rust owns desktop sockets,
-filesystem access, HTTP behavior, and server lifecycle. Authoritative runtime
-boundaries live in
+Desktop and ChromeOS Linux use native Rust, while Android uses native Kotlin.
+Their core feature contract is kept broadly compatible through tests rather
+than shared runtime source. The Tauri webview remains for configuration and
+control, while native Rust owns desktop sockets, filesystem access, HTTP
+behavior, and server lifecycle. The small `ok200-core` executable is retained
+only for repository development and smoke testing; it is not an independently
+packaged CLI product. Authoritative runtime boundaries live in
 [`docs/topics/desktop-runtime.md`](docs/topics/desktop-runtime.md) and
 [`docs/topics/android-runtime.md`](docs/topics/android-runtime.md).
 
@@ -154,13 +132,13 @@ Migration status and the final legacy update plan are in
 
 ```sh
 pnpm install
-pnpm build       # compile TypeScript
+pnpm build       # build frontend applications and shared UI
 pnpm test        # run tests
 pnpm typecheck   # type check
 pnpm lint        # lint with Biome
 ```
 
-For the Rust-native desktop workspace:
+For the Rust-native desktop workspace and its internal smoke executable:
 
 ```sh
 cd desktop

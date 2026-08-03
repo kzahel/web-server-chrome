@@ -18,39 +18,40 @@ The scoped Play-free ChromeOS Linux fallback lives in
 ## Quick Context
 
 Lightweight web server app for every platform. Successor to "Web Server for
-Chrome" (200k+ users). The CLI, Android app, extension, and signed Rust-native
-Tauri desktop `v0.1.5` have shipped.
+Chrome" (200k+ users). The Android app, extension, ChromeOS Linux component,
+and signed Rust-native Tauri desktop `v0.1.5` have shipped.
 
 The old Transistor proof is not the current desktop architecture. Desktop
 keeps Tauri and its webview for control/configuration while a small Rust core
 owns HTTP execution on Windows, macOS, and Linux. Desktop `v0.1.5` includes
 AppImage-first integration, Linux ARM64 artifacts, AppImage native-host repair,
 macOS Dock activation repair, and the package-aware updater policy. Android
-source uses a native Kotlin HTTP server; the Node/TypeScript CLI remains an
-independent implementation. GitHub release `android-v0.2.1` contains the
-signed native-Kotlin APK/AAB with the physically accepted ChromeOS LAN-address
-correction. The maintainer reports the exact Android `v0.2.1` and extension
-`v0.1.4` candidates submitted to their stores; public `extension-v0.1.6` is
-the tested replacement candidate with the ChromeOS Linux controller and
-corrected peer-choice copy. Production may still serve earlier artifacts until
-review and rollout finish.
+source uses a native Kotlin HTTP server, and the former unpublished
+Node/TypeScript CLI and engine have been retired. GitHub release
+`android-v0.2.1` contains the signed native-Kotlin APK/AAB with the physically
+accepted ChromeOS LAN-address correction. The maintainer reports the exact
+Android `v0.2.1` and extension `v0.1.4` candidates submitted to their stores;
+public `extension-v0.1.6` is the tested replacement candidate with the
+ChromeOS Linux controller and corrected peer-choice copy. Production may still
+serve earlier artifacts until review and rollout finish.
 
 ## Architecture
 
 Current repository shape:
 
-- `packages/engine` — TypeScript HTTP engine used by the CLI, but not Android
-  or the Rust-native desktop release.
-- `packages/cli` — CLI wrapper using the engine with Node.js adapters.
+- `packages/ui` — shared React controls used by the desktop Tauri webview.
 - `android` — Compose app with a Kotlin HTTP/storage core and native Android
-lifecycle, permission, background, wake, boot, and battery policy.
+  lifecycle, permission, background, wake, boot, and battery policy.
 - `desktop` — Tauri app with a Tauri-independent Rust HTTP core and a thin
   React/Tauri command/event control layer.
+- `desktop/crostini` — independently released ChromeOS Linux
+  launcher/controller that reuses the Rust core.
 - `extension` — Published launcher/status surface.
 
 Do not recreate the deleted generic TypeScript native-I/O architecture.
 Android and desktop own their Kotlin and Rust implementations respectively;
-keep Node imports in `packages/engine` within its Node adapter.
+keep the `desktop/core/src/main.rs` executable repository-only for development
+and smoke testing rather than packaging or versioning it as a separate CLI.
 ChromeOS launcher detection limits, Android/Play fallbacks, and the future
 Crostini choice are owned by
 [`docs/topics/chromeos-extension-launcher.md`](docs/topics/chromeos-extension-launcher.md).
@@ -185,28 +186,16 @@ All components follow the same release pattern:
 2. Run the release script: `./scripts/release-{component}.sh <version>`
 3. CI automatically builds and publishes artifacts when the tag is pushed
 
-**Commit message format:** `Release {Component} v{VERSION}` (e.g., `Release CLI v0.1.0`)
+**Commit message format:** `Release {Component} v{VERSION}` (e.g., `Release Desktop v0.1.5`)
 
 ### Release Pipeline Summary
 
 | Component | Tag | CI builds | Publishing |
 |-----------|-----|-----------|------------|
-| **CLI** | `v{ver}` | npm package | CI auto-publishes to npm |
 | **Desktop** | `desktop-v{ver}` | Targets signed Mac/Win/Linux installers | Auto-updates only after the release-readiness gate passes |
 | **Extension** | `extension-v{ver}` | ZIP | Manual upload to Chrome Web Store |
 | **Android** | `android-v{ver}` | Signed APK + AAB | Manual upload to Google Play Console |
 | **ChromeOS Linux** | `crostini-v{ver}` | Signed static x86_64 + ARM64 binaries and manifest | CI creates a separate GitHub release; website/update-service rollout is a coordinated maintainer step |
-
-### CLI Releases
-
-```bash
-./scripts/release-cli.sh <version>
-```
-
-- Updates `packages/cli/package.json`
-- Creates tag: `v{version}`
-- CI publishes to npm as `ok200`
-- Changelog: `packages/cli/CHANGELOG.md`
 
 ### Desktop Releases
 

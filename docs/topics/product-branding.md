@@ -9,23 +9,23 @@ Topic: product-branding
 Status: **accepted product identity; active source surfaces reconciled,
 publication pending.**
 
-Last reconciled: **2026-08-01**.
+Last reconciled: **2026-08-03**.
 
 ## Scope
 
 This topic owns:
 
 - the canonical current product name and its short form;
-- how desktop, Android, the extension, CLI, website, and directory listings
-  present the brand;
+- how desktop, Android, ChromeOS Linux, the extension, website, and directory
+  listings present the brand;
 - how the legacy name is retained for recognition, migration, and search; and
 - naming rules for application metadata, store copy, documentation, and
   user-visible interfaces.
 
 It does not rename stable technical identities such as bundle identifiers,
-package scopes, the `ok200` command, update URLs, or native-messaging host
-names. It also does not rewrite historical records that accurately discuss the
-original Chrome packaged app.
+package scopes, Crostini commands, update URLs, or native-messaging host names.
+It also does not rewrite historical records that accurately discuss the
+original Chrome packaged app or retired implementation lanes.
 
 ## Canonical identity
 
@@ -34,7 +34,6 @@ original Chrome packaged app.
 | Descriptive product name | **200 OK Web Server** |
 | Compact product name | **200 OK** |
 | Product descriptor | **Web Server** |
-| CLI command and package | `ok200` |
 | Domain | `ok200.app` |
 | Legacy relationship | **The successor to Web Server for Chrome** |
 | Migration transition | **Web Server for Chrome is now 200 OK Web Server** |
@@ -95,7 +94,6 @@ surface are governed by
 | Chrome extension listing and popup | **200 OK Web Server**; describe it as the launcher for the desktop or Android app |
 | Website site name/header | **200 OK Web Server** |
 | Website SEO | Lead with **200 OK Web Server** and explicitly include **successor to Web Server for Chrome** |
-| CLI | `ok200`; describe it as the 200 OK Web Server CLI |
 | Served directory listing | **200 OK Web Server** |
 | Legacy packaged app | Preserve **Web Server for Chrome** |
 
@@ -115,7 +113,8 @@ surface are governed by
 The stable technical identities already align with this decision:
 
 - `app.ok200.desktop` and `app.ok200.android`;
-- the `ok200` CLI and `@ok200/*` packages;
+- the `@ok200/*` workspace package scope and independently named
+  `ok200-crostini` component;
 - `ok200.app`;
 - the **200 OK** application icon and searchable **200 OK Web Server** Android
   system label; and
@@ -125,11 +124,15 @@ Current reconciliation should update active product surfaces while preserving
 accurate historical references in `legacy/`, research documents, changelogs,
 and migration history.
 
-As of 2026-08-01, current source now uses the accepted identity in the desktop
+As of 2026-08-03, current source uses the accepted identity in the desktop
 window and control header, Rust directory listings, website header and
 metadata, README, and Chrome extension manifest and popup. Android already
 uses the searchable **200 OK Web Server** system label while retaining the
 compact **200 OK** header with a **Web Server** descriptor.
+
+The unpublished Node `ok200` package has been retired. Its command name and
+branding survive only in accurate historical records; there is no current CLI
+surface requiring a branding contract.
 
 This source state is ahead of distribution. The locally installed desktop
 review app has been rebuilt and visually checked with the changed window and

@@ -44,13 +44,7 @@ function toServerInfo(snapshot: NativeServerSnapshot): ManagedServerInfo {
     actualPort: snapshot.actualPort,
     error: snapshot.error,
     startAssessment: snapshot.startAssessment,
-    config: {
-      ...snapshot.config,
-      quiet: false,
-      upload: false,
-      requestTimeoutMs: 5000,
-      maxRequestBodySize: 10 * 1024 * 1024,
-    },
+    config: snapshot.config,
   };
 }
 

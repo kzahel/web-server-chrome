@@ -9,7 +9,7 @@ accepted ChromeOS LAN-address correction. The maintainer reports that exact
 candidate submitted to Play; delivery and store-served validation remain
 open.**
 
-Last reconciled: **2026-08-02**.
+Last reconciled: **2026-08-03**.
 
 The accepted plan, implementation sequence, and detailed emulator evidence are
 recorded in
@@ -45,7 +45,7 @@ Compose UI / debug RPC / boot / notification
 
 The desktop and Android servers deliberately have separate implementations.
 Desktop owns its HTTP runtime in Rust; Android owns its runtime in Kotlin. The
-CLI continues to use the TypeScript engine with Node adapters. Android's former
+former Node/TypeScript CLI and engine have been retired. Android's former
 QuickJS/JNI/native-I/O path is fully deleted and is historical evidence only,
 not a dormant implementation or extension point.
 
@@ -181,7 +181,8 @@ They require explicit product decisions rather than accidental parity work.
 
 ## Evidence
 
-- JVM socket tests cover files, directories, caching, ranges, CORS, SPA,
+- JVM socket tests cover files (including percent-encoded UTF-8 paths),
+  bodyless missing-file `HEAD`, directories, caching, ranges, CORS, SPA,
   malformed/traversal requests, oversized headers, keep-alive, concurrency,
   idempotent stop, and symlink containment.
 - `jstorrent-dev` passed filesystem and SAF HTTP checks, persisted-grant update

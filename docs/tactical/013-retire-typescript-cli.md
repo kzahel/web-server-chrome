@@ -1,7 +1,8 @@
 # 013: Retire the TypeScript CLI
 
-Status: **planned; public website promotion is removed in the precursor site
-truth pass, but no TypeScript CLI or engine cleanup has started.**
+Status: **complete on 2026-08-03. The unpublished Node/TypeScript CLI, engine,
+release lane, and browser-management transport are removed. The Rust core
+development executable remains repository-only and passed its smoke check.**
 
 Related continuing concerns:
 
@@ -22,8 +23,8 @@ improves the supported desktop, Android, and ChromeOS products.
 The original TypeScript engine was a real cross-runtime implementation used by
 the early CLI, Tauri desktop, and embedded-JavaScript Android paths. Desktop
 now serves through `ok200-core` in Rust, Android serves through its native
-Kotlin implementation, and Crostini reuses the Rust core. The Node CLI is the
-TypeScript engine's only remaining runtime consumer.
+Kotlin implementation, and Crostini reuses the Rust core. Before this tactical,
+the Node CLI was the TypeScript engine's only remaining runtime consumer.
 
 The `v0.1.1` tag's publish workflow failed at the npm publication step, no
 GitHub CLI release was created, and the public npm registry does not contain
@@ -42,39 +43,56 @@ The accepted end state is therefore:
 - do not publish, package, rename, or independently version that Rust
   development executable as part of this tactical.
 
+## Behavior disposition
+
+The pre-deletion audit classified the TypeScript coverage as follows:
+
+| Classification | Disposition |
+|---|---|
+| Supported native contract | Static files, indexes, MIME types, directory listings, missing-file behavior, encoded paths, `GET`/`HEAD`, traversal and symlink containment, ETags/ranges, HTTP/1.1 reuse, SPA fallback, CORS/`OPTIONS`, bounded requests, and lifecycle failures remain covered by Rust and/or Kotlin real-socket tests. |
+| Coverage made explicit during retirement | Rust and Kotlin now request a percent-encoded UTF-8 filename and assert a missing-file `HEAD` has no body. Rust now proves two HTTP/1.1 requests reuse one connection; Android already had that socket-level case. |
+| Intentionally retired CLI-only behavior | Node argument handling, process-signal shutdown, the server registry, `/_api` management/authentication, browser UI asset serving, and direct/HTTP shared-UI adapters had no supported product consumer. |
+| Intentionally retired hidden capability | PUT/POST uploads and Node-generated self-signed TLS were never exposed as supported native desktop or Android contracts. Future uploads or TLS require product-specific decisions. |
+| Implementation-specific evidence | TypeScript parser/writer, Node filesystem/socket/certificate adapters, in-memory filesystem, token bucket, and event-emitter unit tests do not define native implementation requirements. |
+
+The TypeScript engine allowed the filesystem root `/`; both native products
+reject a filesystem root as a deliberate containment policy. That test was not
+ported. Android also remains read-only, and unsupported methods remain an
+explicit native contract rather than inheriting the CLI's upload path.
+
 ## Scope
 
 ### C1 — preserve useful behavior evidence
 
-- [ ] Inventory TypeScript-only behavior and tests, including upload and
+- [x] Inventory TypeScript-only behavior and tests, including upload and
       self-signed TLS, before deletion.
-- [ ] Classify each behavior as supported native-product contract, intentionally
+- [x] Classify each behavior as supported native-product contract, intentionally
       retired CLI-only capability, or future product work.
-- [ ] Move only applicable black-box/security coverage into the Rust and Kotlin
+- [x] Move only applicable black-box/security coverage into the Rust and Kotlin
       suites. Do not preserve an implementation solely to call it a reference.
-- [ ] Record intentional differences rather than silently weakening existing
+- [x] Record intentional differences rather than silently weakening existing
       native behavior.
 
 ### C2 — remove the unpublished CLI release surface
 
-- [ ] Remove `packages/cli` and its bundle, tests, changelog, package metadata,
+- [x] Remove `packages/cli` and its bundle, tests, changelog, package metadata,
       and workspace lockfile entries.
-- [ ] Remove `.github/workflows/cli-publish.yml` and
+- [x] Remove `.github/workflows/cli-publish.yml` and
       `scripts/release-cli.sh`.
-- [ ] Preserve the historical `v0.1.1` tag and failed workflow record; do not
+- [x] Preserve the historical `v0.1.1` tag and failed workflow record; do not
       rewrite release history.
-- [ ] Remove current instructions that tell users to run `npx ok200`.
+- [x] Remove current instructions that tell users to run `npx ok200`.
 
 ### C3 — remove the stranded TypeScript engine
 
-- [ ] Confirm no desktop, Android, Crostini, extension, website, or release tool
+- [x] Confirm no desktop, Android, Crostini, extension, website, or release tool
       imports `@ok200/engine`.
-- [ ] Remove `packages/engine` after the applicable compatibility evidence has
+- [x] Remove `packages/engine` after the applicable compatibility evidence has
       moved or been explicitly retired.
-- [ ] Remove the CLI-only HTTP management API and browser transport from the
+- [x] Remove the CLI-only HTTP management API and browser transport from the
       shared UI while keeping the Tauri `ServerManager` contract and desktop
       React controls intact.
-- [ ] Remove unused shared-UI adapters and dependencies exposed by the retired
+- [x] Remove unused shared-UI adapters and dependencies exposed by the retired
       Node path.
 
 ### C4 — reconcile current product truth
@@ -82,23 +100,42 @@ The accepted end state is therefore:
 - [x] Replace the homepage CLI promotion with actionable Desktop, Android,
       ChromeOS, and Chrome Extension choices.
 - [x] Remove homepage `npx ok200` instructions and the CLI comparison claim.
-- [ ] Reconcile `README.md`, `CLAUDE.md`, `docs/vision.md`, product branding,
+- [x] Reconcile `README.md`, `CLAUDE.md`, `docs/vision.md`, product branding,
       runtime topics, architecture diagrams, release tables, and active
       tacticals with the accepted retirement.
-- [ ] Preserve accurate historical references in completed tacticals,
+- [x] Preserve accurate historical references in completed tacticals,
       changelogs, research documents, and Git history.
+
+## Implementation record
+
+- Repository search found no runtime import of `@ok200/engine`. The extension
+  retained only a stale workspace dependency and Vite alias; both are removed.
+- `packages/cli`, `packages/engine`, the npm publish workflow, and CLI release
+  script are removed. The lockfile and root type-check command now reflect the
+  remaining five pnpm workspaces.
+- The shared React controls retain `ServerManager` and the Tauri context. The
+  unused `DirectServerManager`, CLI-only `HttpServerManager`, standalone
+  browser entry/build, and CLI-only configuration fields are removed.
+- Current product and contributor documentation describes the Rust/Kotlin
+  runtime boundary and internal smoke executable. Completed tacticals,
+  changelogs, the `v0.1.1` tag, and explicitly historical plans remain intact.
 
 ## Validation
 
-- Root install, typecheck, build, test, and Biome checks pass without the CLI
-  and engine workspaces.
-- Desktop TypeScript build/tests and the complete Rust workspace pass.
-- Android compile, JVM tests, and lint pass if shared documentation or build
-  configuration touches that lane.
-- No active public surface or current architecture document advertises an npm
-  CLI.
-- `cargo run -p ok200-core -- --root <fixture> --port 0` still provides the
-  intended repository-only native-core smoke path.
+- [x] `pnpm install --frozen-lockfile`, root type-check, all production builds,
+      all 52 frontend tests, and Biome checks pass across the five remaining
+      pnpm workspaces.
+- [x] The desktop frontend build/tests, strict Rust formatting and Clippy, and
+      all 65 Rust workspace tests pass. The added Rust real-socket cases pass.
+- [x] Android debug Kotlin compilation, JVM tests (including the added native
+      server cases), and debug lint pass.
+- [x] Repository search finds no runtime `@ok200/engine` reference, workspace
+      entry, release workflow, or active public/current-architecture claim that
+      an npm CLI is available. Explicitly historical records remain.
+- [x] `cargo run -p ok200-core -- --root .. --port 0 --quiet` selected an
+      ephemeral loopback port; an external `HEAD /README.md` returned `200 OK`,
+      and Ctrl-C stopped it cleanly.
+- [x] Historical tag `v0.1.1` remains present and unchanged.
 
 ## Non-goals
 
@@ -111,7 +148,7 @@ The accepted end state is therefore:
 
 ## Completion criteria
 
-Close this tactical when the Node CLI, TypeScript engine, release automation,
-and current public/documentation claims are gone; applicable behavioral
-coverage has moved or been explicitly retired; supported product builds pass;
-and the small Rust development CLI remains internal and unreleased.
+The Node CLI, TypeScript engine, release automation, and current
+public/documentation claims are gone. Applicable behavioral coverage moved or
+was explicitly retired, supported product builds pass, and the small Rust
+development CLI remains internal and unreleased. This tactical is closed.

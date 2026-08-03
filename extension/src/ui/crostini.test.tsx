@@ -327,6 +327,8 @@ describe("Crostini controller UI", () => {
   it("detects the Chromebook LAN address and ignores ChromeOS guest interfaces", async () => {
     installChromeMock(true);
     installLanAddressProbe(["100.115.92.25", "192.168.1.106"]);
+    const legacyAddressKey = `ok200-crostini-lan-host:${INSTANCE_ID}`;
+    localStorage.setItem(legacyAddressKey, "10.0.0.9");
     const running = {
       ...statusResponse("running"),
       server: { state: "running", url: "http://localhost:8080" },
@@ -360,10 +362,12 @@ describe("Crostini controller UI", () => {
     await renderController();
     await settle();
 
-    const address = document.querySelector<HTMLInputElement>(
-      "#chromebook-address",
+    const address = document.querySelector(
+      '[data-testid="chromebook-address"]',
     );
-    expect(address?.value).toBe("192.168.1.106");
+    expect(address?.textContent).toBe("192.168.1.106");
+    expect(document.querySelector("#chromebook-address")).toBeNull();
+    expect(localStorage.getItem(legacyAddressKey)).toBeNull();
     expect(document.body.textContent).toContain(
       "Detected automatically from ChromeOS.",
     );

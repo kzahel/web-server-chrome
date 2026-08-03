@@ -530,7 +530,6 @@ input[aria-disabled="true"] {
 }
 
 .port-input,
-.lan-address-field input,
 .new-folder-row input {
   border: 1px solid var(--border-strong);
   border-radius: 9px;
@@ -544,8 +543,7 @@ input[aria-disabled="true"] {
   text-align: right;
 }
 
-.port-input.has-error,
-.lan-address-field input[aria-invalid="true"] {
+.port-input.has-error {
   border-color: var(--error);
 }
 
@@ -762,29 +760,33 @@ input[aria-disabled="true"] {
   font-size: 12px;
 }
 
-.lan-address-field label,
-.lan-address-field small {
+.lan-address-summary > strong,
+.lan-address-summary small {
   display: block;
 }
 
-.lan-address-field label {
+.lan-address-summary {
+  margin: 9px 0 0 35px;
+}
+
+.lan-address-summary > strong {
   margin-bottom: 5px;
   font-size: 12px;
   font-weight: 650;
 }
 
-.lan-address-input {
+.lan-address-row {
   display: flex;
-  max-width: 276px;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 }
 
-.lan-address-field input {
-  width: min(100%, 230px);
-  min-width: 0;
-  padding: 8px 10px;
+.lan-address-value {
+  min-width: 126px;
+  color: var(--text);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .detect-address-button {
@@ -804,7 +806,7 @@ input[aria-disabled="true"] {
   animation: spin 0.8s linear infinite;
 }
 
-.lan-address-field small {
+.lan-address-summary small {
   margin-top: 5px;
   color: var(--text-tertiary);
 }

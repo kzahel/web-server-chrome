@@ -766,9 +766,10 @@ as the user-facing LAN address. The accepted flow is:
 3. instruct the user to add that same TCP port under **Settings -> About
    ChromeOS -> Developers -> Linux development environment -> Port
    forwarding**; and
-4. detect the Chromebook host's IPv4 in the extension control page, retain an
-   editable manual fallback, and show that address with the forwarded content
-   port.
+4. detect the Chromebook host's IPv4 in the extension control page and show it
+   with the forwarded content port. If detection is unavailable, point to the
+   address ChromeOS already prints above the Port forwarding controls rather
+   than duplicating it in an editable field.
 
 The control port remains local and is never forwarded. Automatic UPnP is a
 separate future concern owned by
@@ -796,9 +797,10 @@ private Chrome API. A local-only `RTCPeerConnection` with an empty ICE-server
 list exposed host candidates `100.115.92.25`, `192.168.1.106`, and a global
 IPv6 address on the same fixture. 200 OK now discards loopback, link-local, and
 `100.115.*` candidates, prefers a private IPv4, and composes the LAN URL from
-the result. The editable, persisted IPv4 field remains a fallback and explicit
-override if WebRTC exposure changes, a VPN creates ambiguity, or detection is
-otherwise unavailable. It must never be silently filled with a guest address.
+the result. There is no manual-address field or persisted override. If WebRTC
+exposure changes, a VPN creates ambiguity, or detection is otherwise
+unavailable, the UI directs the user to ChromeOS's displayed address next to
+the required forwarding setup. It must never display a guest address.
 
 ## Update, uninstall, and recovery contract
 

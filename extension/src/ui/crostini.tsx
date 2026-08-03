@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  detectChromeOsLanIpv4Address,
-  validIpv4,
-} from "../lib/chromeos-lan-address";
+import { detectChromeOsLanIpv4Address } from "../lib/chromeos-lan-address";
 import {
   type ControllerSettings,
   type ControllerStatus,
@@ -919,16 +916,12 @@ function UrlCard({ label, url }: { label: string; url: string }) {
 }
 
 function LanAccessCard({ status }: { status: ControllerStatus }) {
-  const storageKey = `ok200-crostini-lan-host:${status.instanceId}`;
-  const [manualAddress, setManualAddress] = useState<string | null>(() =>
-    localStorage.getItem(storageKey),
-  );
   const [detectedAddress, setDetectedAddress] = useState<string | null>(null);
   const [detecting, setDetecting] = useState(true);
   const detectionGeneration = useRef(0);
-  const address = manualAddress ?? detectedAddress ?? "";
-  const host = validIpv4(address) ? address : null;
-  const url = host ? `http://${host}:${status.settings.port}/` : null;
+  const url = detectedAddress
+    ? `http://${detectedAddress}:${status.settings.port}/`
+    : null;
 
   const detectAddress = useCallback(async () => {
     const generation = detectionGeneration.current + 1;
@@ -941,22 +934,18 @@ function LanAccessCard({ status }: { status: ControllerStatus }) {
   }, []);
 
   useEffect(() => {
+    localStorage.removeItem(`ok200-crostini-lan-host:${status.instanceId}`);
     void detectAddress();
     return () => {
       detectionGeneration.current += 1;
     };
-  }, [detectAddress]);
+  }, [detectAddress, status.instanceId]);
 
-  const addressHelp =
-    manualAddress !== null
-      ? validIpv4(manualAddress)
-        ? "Using your saved address. Clear it to use automatic detection."
-        : "Enter a complete IPv4 address."
-      : detecting
-        ? "Detecting this Chromebook’s address…"
-        : detectedAddress
-          ? "Detected automatically from ChromeOS."
-          : "Automatic detection was unavailable. Find it in your connected Wi-Fi details.";
+  const addressHelp = detecting
+    ? "Detecting this Chromebook’s address…"
+    : detectedAddress
+      ? "Detected automatically from ChromeOS."
+      : "ChromeOS shows this address just above the Port forwarding controls.";
 
   return (
     <section className="surface lan-surface">
@@ -965,7 +954,7 @@ function LanAccessCard({ status }: { status: ControllerStatus }) {
           <div className="section-label">Local network</div>
           <h2>Finish ChromeOS forwarding</h2>
         </div>
-        <span className="step-pill">2 steps</span>
+        <span className="step-pill">1 step</span>
       </div>
       <ol className="lan-steps">
         <li>
@@ -976,51 +965,26 @@ function LanAccessCard({ status }: { status: ControllerStatus }) {
             port {status.settings.port}.
           </p>
         </li>
-        <li>
-          <span>2</span>
-          <div className="lan-address-field">
-            <label htmlFor="chromebook-address">Chromebook IPv4 address</label>
-            <div className="lan-address-input">
-              <input
-                id="chromebook-address"
-                value={address}
-                inputMode="decimal"
-                placeholder={detecting ? "Detecting…" : "192.168.1.42"}
-                aria-invalid={address.length > 0 && !host}
-                onChange={(event) => {
-                  const value = event.target.value.trim();
-                  if (!value) {
-                    setManualAddress(null);
-                    localStorage.removeItem(storageKey);
-                    return;
-                  }
-                  setManualAddress(value);
-                  if (validIpv4(value)) {
-                    localStorage.setItem(storageKey, value);
-                  } else {
-                    localStorage.removeItem(storageKey);
-                  }
-                }}
-              />
-              <button
-                type="button"
-                className="icon-button detect-address-button"
-                aria-label="Detect Chromebook address again"
-                title="Detect again"
-                disabled={detecting}
-                onClick={() => {
-                  setManualAddress(null);
-                  localStorage.removeItem(storageKey);
-                  void detectAddress();
-                }}
-              >
-                <RefreshIcon />
-              </button>
-            </div>
-            <small aria-live="polite">{addressHelp}</small>
-          </div>
-        </li>
       </ol>
+      <div className="lan-address-summary">
+        <strong>Chromebook IPv4 address</strong>
+        <div className="lan-address-row">
+          <code className="lan-address-value" data-testid="chromebook-address">
+            {detecting ? "Detecting…" : detectedAddress || "Not detected"}
+          </code>
+          <button
+            type="button"
+            className="icon-button detect-address-button"
+            aria-label="Detect Chromebook address again"
+            title="Detect again"
+            disabled={detecting}
+            onClick={() => void detectAddress()}
+          >
+            <RefreshIcon />
+          </button>
+        </div>
+        <small aria-live="polite">{addressHelp}</small>
+      </div>
       {url && status.server.state === "running" && (
         <UrlCard label="Other devices" url={url} />
       )}

@@ -323,10 +323,10 @@ surface is recognizably the same 200 OK product as desktop and Android.
 - [x] Perform one bounded implementation spike for a supported Chromebook host
       IPv4 source. The MV3 page now gathers local WebRTC host candidates without
       STUN, rejects loopback/link-local/`100.115.*`, prefers private IPv4, and
-      composes the copyable `http://<chromebook-ip>:<port>/` URL. Keep the
-      validated, persisted **Chromebook IPv4 address** field as an editable
-      fallback and override rather than using a private Chrome API or Crostini
-      guest address.
+      composes the copyable `http://<chromebook-ip>:<port>/` URL. Do not keep a
+      duplicate manual-address field: when detection is unavailable, direct the
+      user to the address ChromeOS already prints above its Port forwarding
+      controls.
 - [ ] Distinguish **listening in Linux**, **ChromeOS port added**, and **tested
       from another device**. Do not claim reachability merely because the Rust
       listener bound successfully.
@@ -556,15 +556,15 @@ port/content probes as phases close.
   conclusion.
 - **2026-08-03 automatic LAN-address correction:** commit `f67ee55` uses a
   local-only WebRTC ICE probe in the MV3 control page, filters ChromeOS guest
-  candidates, preserves an editable fallback, and adds a compact re-detect
-  action. JSTorrent source inspection established that its MV3 client instead
+  candidates, and adds a compact re-detect action. JSTorrent source inspection
+  established that its MV3 client instead
   asks the Android/native I/O daemon for that daemon's interfaces and gateway;
   UPnP remains a separate WAN mapping mechanism. Physical TTL probes from
   Crostini returned `100.115.92.193`, `100.115.92.25`, and router
   `192.168.1.1`, confirming that hop inspection does not return the translated
   host address. The deployed production-ID extension gathered both
-  `100.115.92.25` and `192.168.1.106`, selected the latter, left no manual value
-  in local storage, and displayed the detected state. The external Mac and
+  `100.115.92.25` and `192.168.1.106`, selected the latter, and displayed the
+  detected state. The external Mac and
   Crostini loopback fetches returned identical SHA-256
   `f46c16dc543df8be799fbf1e66ef4aa5ba99ed9df80bc5933048dba2de0cbc75`.
   Workspace typecheck, production build, Biome, and all 52 extension tests
@@ -573,7 +573,8 @@ port/content probes as phases close.
   delegates to the authoritative ChromeOS testbed, targets the active
   `200-ok-extension` directory, and passed an end-to-end build, transfer, and
   production-ID reload. The controller was reopened and left running with the
-  automatically detected address and no saved override.
+  automatically detected address. The follow-up removes the manual-address UI
+  entirely and clears legacy saved overrides.
 
 ## Completion definition
 

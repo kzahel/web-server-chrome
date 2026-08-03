@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   type ControllerSettings,
   type ControllerStatus,
@@ -449,9 +449,18 @@ function ControllerPanel({
   updateMessage: string;
 }) {
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [lockNotice, setLockNotice] = useState("");
+  const lockNoticeTimer = useRef<number | null>(null);
   const running = status.server.state === "running";
   const active = running || serverPending === "starting";
-  const settingsLocked = running || serverPending !== null || busy;
+  const settingsLockReason = running
+    ? "Stop the server to change settings."
+    : serverPending
+      ? `Wait for the server to finish ${serverPending}.`
+      : busy
+        ? "Wait for the current action to finish."
+        : "";
+  const settingsLocked = settingsLockReason.length > 0;
   const stateLabel = serverPending
     ? serverPending === "starting"
       ? "Starting"
@@ -468,6 +477,27 @@ function ControllerPanel({
       ? "Serving continues when this window closes"
       : "Serving stops when this window closes"
     : status.server.error || "Choose a folder, then turn the server on";
+
+  useEffect(
+    () => () => {
+      if (lockNoticeTimer.current !== null) {
+        window.clearTimeout(lockNoticeTimer.current);
+      }
+    },
+    [],
+  );
+
+  const explainSettingsLock = () => {
+    if (!settingsLockReason) return;
+    setLockNotice(settingsLockReason);
+    if (lockNoticeTimer.current !== null) {
+      window.clearTimeout(lockNoticeTimer.current);
+    }
+    lockNoticeTimer.current = window.setTimeout(() => {
+      setLockNotice("");
+      lockNoticeTimer.current = null;
+    }, 3_000);
+  };
 
   return (
     <div className="controller-stack">
@@ -516,8 +546,17 @@ function ControllerPanel({
         <button
           type="button"
           className="folder-control"
-          disabled={settingsLocked}
-          onClick={() => setPickerOpen(true)}
+          aria-disabled={settingsLocked}
+          title={
+            settingsLocked ? settingsLockReason : "Choose a different folder"
+          }
+          onClick={() => {
+            if (settingsLocked) {
+              explainSettingsLock();
+            } else {
+              setPickerOpen(true);
+            }
+          }}
           data-testid="choose-folder"
         >
           <span className="setting-icon">
@@ -531,7 +570,10 @@ function ControllerPanel({
           <ChevronRightIcon />
         </button>
 
-        <div className="setting-row port-row">
+        <div
+          className={`setting-row port-row ${settingsLocked ? "is-locked" : ""}`}
+          title={settingsLocked ? settingsLockReason : undefined}
+        >
           <span className="setting-icon">
             <GlobeIcon />
           </span>
@@ -540,7 +582,8 @@ function ControllerPanel({
             <span>Used in the server address</span>
           </label>
           <PortInput
-            disabled={settingsLocked}
+            lockedReason={settingsLockReason}
+            onLocked={explainSettingsLock}
             onCommit={(port) => onChangeSettings({ port })}
             value={status.settings.port}
           />
@@ -549,9 +592,10 @@ function ControllerPanel({
         <SettingSwitch
           checked={status.settings.lan}
           description="Allow ChromeOS to forward this port to your network"
-          disabled={settingsLocked}
           icon={<NetworkIcon />}
           label="Available on local network"
+          lockedReason={settingsLockReason}
+          onLocked={explainSettingsLock}
           onChange={(lan) => onChangeSettings({ lan })}
         />
       </section>
@@ -572,9 +616,10 @@ function ControllerPanel({
               ? "The server keeps running until you stop it or Linux shuts down"
               : "The server stops after the final 200 OK control window closes"
           }
-          disabled={settingsLocked}
           icon={<WindowIcon />}
           label="Keep serving when controls close"
+          lockedReason={settingsLockReason}
+          onLocked={explainSettingsLock}
           onChange={(keepServingOnClose) =>
             onChangeSettings({ keepServingOnClose })
           }
@@ -603,8 +648,9 @@ function ControllerPanel({
           <SettingSwitch
             checked={status.settings.directoryListing}
             description="Show an index when a folder has no index file"
-            disabled={settingsLocked}
             label="Directory listings"
+            lockedReason={settingsLockReason}
+            onLocked={explainSettingsLock}
             onChange={(directoryListing) =>
               onChangeSettings({ directoryListing })
             }
@@ -612,22 +658,25 @@ function ControllerPanel({
           <SettingSwitch
             checked={status.settings.spa}
             description="Serve index.html for routes that do not match a file"
-            disabled={settingsLocked}
             label="Single-page app fallback"
+            lockedReason={settingsLockReason}
+            onLocked={explainSettingsLock}
             onChange={(spa) => onChangeSettings({ spa })}
           />
           <SettingSwitch
             checked={status.settings.cors}
             description="Allow pages on other origins to request these files"
-            disabled={settingsLocked}
             label="Cross-origin requests"
+            lockedReason={settingsLockReason}
+            onLocked={explainSettingsLock}
             onChange={(cors) => onChangeSettings({ cors })}
           />
           <SettingSwitch
             checked={status.settings.automaticUpdates}
             description="Install signed Linux component updates while stopped"
-            disabled={settingsLocked}
             label="Automatic Linux updates"
+            lockedReason={settingsLockReason}
+            onLocked={explainSettingsLock}
             onChange={(automaticUpdates) =>
               onChangeSettings({ automaticUpdates })
             }
@@ -676,6 +725,17 @@ function ControllerPanel({
         <span>Controller port 20080 stays private</span>
       </footer>
 
+      {lockNotice && settingsLocked && (
+        <output
+          className="settings-lock-feedback"
+          aria-live="polite"
+          data-testid="settings-lock-feedback"
+        >
+          <LockIcon />
+          <span>{lockNotice}</span>
+        </output>
+      )}
+
       {pickerOpen && (
         <FolderPicker
           client={client}
@@ -693,11 +753,13 @@ function ControllerPanel({
 }
 
 function PortInput({
-  disabled,
+  lockedReason,
+  onLocked,
   onCommit,
   value,
 }: {
-  disabled: boolean;
+  lockedReason: string;
+  onLocked: () => void;
   onCommit: (port: number) => void;
   value: number;
 }) {
@@ -726,18 +788,27 @@ function PortInput({
     <input
       id="content-port"
       className={error ? "port-input has-error" : "port-input"}
-      disabled={disabled}
+      aria-disabled={lockedReason.length > 0}
       inputMode="numeric"
       min={1024}
       max={65_535}
+      readOnly={lockedReason.length > 0}
+      title={lockedReason || "Content server port"}
       type="number"
       value={draft}
       aria-invalid={error}
       aria-label="Content port"
       onBlur={commit}
       onChange={(event) => setDraft(event.target.value)}
+      onFocus={() => {
+        if (lockedReason) onLocked();
+      }}
       onKeyDown={(event) => {
-        if (event.key === "Enter") event.currentTarget.blur();
+        if (lockedReason) {
+          onLocked();
+        } else if (event.key === "Enter") {
+          event.currentTarget.blur();
+        }
       }}
     />
   );
@@ -746,20 +817,26 @@ function PortInput({
 function SettingSwitch({
   checked,
   description,
-  disabled,
   icon,
   label,
+  lockedReason,
+  onLocked,
   onChange,
 }: {
   checked: boolean;
   description: string;
-  disabled: boolean;
   icon?: React.ReactNode;
   label: string;
+  lockedReason: string;
+  onLocked: () => void;
   onChange: (checked: boolean) => void;
 }) {
+  const locked = lockedReason.length > 0;
   return (
-    <div className="setting-row switch-row">
+    <div
+      className={`setting-row switch-row ${locked ? "is-locked" : ""}`}
+      title={locked ? lockedReason : undefined}
+    >
       {icon && <span className="setting-icon">{icon}</span>}
       <div className="setting-copy">
         <strong>{label}</strong>
@@ -769,10 +846,18 @@ function SettingSwitch({
         type="button"
         role="switch"
         aria-checked={checked}
+        aria-disabled={locked}
         aria-label={label}
         className="mini-switch"
-        disabled={disabled}
-        onClick={() => onChange(!checked)}
+        title={locked ? lockedReason : label}
+        onClick={(event) => {
+          event.stopPropagation();
+          if (locked) {
+            onLocked();
+          } else {
+            onChange(!checked);
+          }
+        }}
       >
         <span />
       </button>

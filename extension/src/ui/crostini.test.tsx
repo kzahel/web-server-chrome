@@ -247,6 +247,7 @@ describe("Crostini controller UI", () => {
     const choose = document.querySelector<HTMLButtonElement>(
       '[data-testid="choose-folder"]',
     );
+    expect(choose?.getAttribute("aria-disabled")).toBe("false");
     await act(async () => choose?.click());
     await settle();
 
@@ -321,6 +322,65 @@ describe("Crostini controller UI", () => {
     expect(fetchMock.mock.calls[3]?.[1]?.body).toBe(
       JSON.stringify({ sessionId: "session-1" }),
     );
+  });
+
+  it("explains why running-server settings cannot be changed", async () => {
+    installChromeMock(true);
+    const running = {
+      ...statusResponse("running"),
+      server: { state: "running", url: "http://localhost:8080" },
+    };
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        jsonResponse({
+          claimed: false,
+          instanceId: INSTANCE_ID,
+          product: "ok200-crostini-controller",
+          protocolVersion: 2,
+          version: "0.1.5",
+        }),
+      )
+      .mockResolvedValueOnce(jsonResponse({ controllerToken: "secret-token" }))
+      .mockResolvedValueOnce(
+        jsonResponse({
+          expiresInSeconds: 75,
+          sessionId: "session-1",
+          status: running,
+        }),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await renderController();
+    await settle();
+
+    const choose = document.querySelector<HTMLButtonElement>(
+      '[data-testid="choose-folder"]',
+    );
+    expect(choose?.disabled).toBe(false);
+    expect(choose?.getAttribute("aria-disabled")).toBe("true");
+    expect(choose?.title).toBe("Stop the server to change settings.");
+
+    await act(async () => choose?.click());
+
+    expect(
+      document.querySelector('[data-testid="settings-lock-feedback"]')
+        ?.textContent,
+    ).toContain("Stop the server to change settings.");
+    expect(document.querySelector(".folder-dialog")).toBeNull();
+
+    const port = document.querySelector<HTMLInputElement>("#content-port");
+    expect(port?.readOnly).toBe(true);
+    expect(port?.getAttribute("aria-disabled")).toBe("true");
+
+    const lanSwitch = document.querySelector<HTMLButtonElement>(
+      '[role="switch"][aria-label="Available on local network"]',
+    );
+    expect(lanSwitch?.disabled).toBe(false);
+    expect(lanSwitch?.getAttribute("aria-disabled")).toBe("true");
+    await act(async () => lanSwitch?.click());
+
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 });
 

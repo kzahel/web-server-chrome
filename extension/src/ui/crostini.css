@@ -63,9 +63,11 @@ input:focus-visible {
 }
 
 button:disabled,
-input:disabled {
+input:disabled,
+button[aria-disabled="true"],
+input[aria-disabled="true"] {
   cursor: not-allowed;
-  opacity: 0.55;
+  opacity: 0.62;
 }
 
 .icon {
@@ -77,7 +79,7 @@ input:disabled {
 
 .crostini-page {
   min-height: 100vh;
-  padding: 22px 18px 28px;
+  padding: 16px 14px 22px;
   background:
     radial-gradient(circle at 12% -10%, rgb(248 210 3 / 14%), transparent 34%),
     var(--page);
@@ -91,9 +93,9 @@ input:disabled {
 .product-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: 50px;
-  margin: 0 4px 18px;
+  gap: 10px;
+  min-height: 46px;
+  margin: 0 3px 12px;
 }
 
 .product-header img {
@@ -151,24 +153,28 @@ input:disabled {
 
 .controller-stack {
   display: grid;
-  gap: 12px;
+  gap: 9px;
 }
 
 .surface {
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--surface);
   box-shadow: 0 1px 2px rgb(20 22 28 / 3%);
 }
 
 .server-surface {
+  position: sticky;
+  z-index: 10;
+  top: 8px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 14px;
-  min-height: 112px;
-  padding: 18px;
+  gap: 11px;
+  min-height: 78px;
+  padding: 11px 13px;
   overflow: hidden;
+  box-shadow: 0 7px 22px rgb(20 22 28 / 10%);
   transition:
     border-color 160ms ease,
     background 160ms ease;
@@ -183,6 +189,17 @@ input:disabled {
       transparent 65%
     ),
     var(--surface);
+}
+
+.server-surface .surface-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.server-surface .surface-icon .icon {
+  width: 18px;
+  height: 18px;
 }
 
 .surface-icon,
@@ -227,15 +244,15 @@ input:disabled {
 }
 
 .server-state {
-  margin-top: 3px;
-  font-size: 22px;
+  margin-top: 2px;
+  font-size: 18px;
   font-weight: 730;
   line-height: 1.16;
   letter-spacing: -0.02em;
 }
 
 .server-copy p {
-  margin: 5px 0 0;
+  margin: 2px 0 0;
   color: var(--text-secondary);
   font-size: 12px;
 }
@@ -303,9 +320,14 @@ input:disabled {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 13px;
-  min-height: 76px;
-  padding: 14px 14px 14px 16px;
+  gap: 10px;
+  min-height: 66px;
+  padding: 10px 11px 10px 13px;
+}
+
+.url-surface > .surface-icon {
+  width: 36px;
+  height: 36px;
 }
 
 .url-copy {
@@ -370,7 +392,7 @@ input:disabled {
 .settings-surface,
 .behavior-surface,
 .lan-surface {
-  padding: 5px 16px;
+  padding: 3px 14px;
 }
 
 .section-heading {
@@ -378,8 +400,8 @@ input:disabled {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 66px;
-  padding: 10px 0;
+  min-height: 56px;
+  padding: 7px 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -395,7 +417,7 @@ input:disabled {
 }
 
 .compact-heading {
-  min-height: 59px;
+  min-height: 52px;
 }
 
 .locked-note,
@@ -407,11 +429,11 @@ input:disabled {
 .folder-control {
   display: grid;
   width: 100%;
-  min-height: 70px;
+  min-height: 60px;
   grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: center;
-  gap: 12px;
-  padding: 10px 0;
+  gap: 10px;
+  padding: 7px 0;
   border: 0;
   border-bottom: 1px solid var(--border);
   background: transparent;
@@ -420,15 +442,16 @@ input:disabled {
   text-align: left;
 }
 
-.folder-control:hover:not(:disabled) .folder-action {
+.folder-control:hover:not(:disabled):not([aria-disabled="true"])
+  .folder-action {
   color: var(--text);
 }
 
 .setting-icon,
 .summary-icon,
 .folder-row-icon {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   background: var(--surface-muted);
   color: var(--text-secondary);
 }
@@ -487,10 +510,14 @@ input:disabled {
 
 .setting-row {
   display: flex;
-  min-height: 64px;
+  min-height: 56px;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   border-bottom: 1px solid var(--border);
+}
+
+.setting-row.is-locked {
+  cursor: not-allowed;
 }
 
 .setting-row:last-child {
@@ -549,11 +576,11 @@ input:disabled {
 
 .advanced-surface > summary {
   display: grid;
-  min-height: 68px;
+  min-height: 58px;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
-  padding: 10px 16px;
+  padding: 8px 14px;
   cursor: pointer;
   list-style: none;
 }
@@ -585,12 +612,12 @@ input:disabled {
 }
 
 .advanced-content {
-  padding: 0 16px 16px;
+  padding: 0 14px 14px;
   border-top: 1px solid var(--border);
 }
 
 .advanced-content .setting-row {
-  min-height: 58px;
+  min-height: 52px;
 }
 
 .update-panel {
@@ -699,13 +726,13 @@ input:disabled {
 }
 
 .lan-surface {
-  padding-bottom: 14px;
+  padding-bottom: 10px;
 }
 
 .lan-steps {
   display: grid;
-  gap: 14px;
-  margin: 15px 0;
+  gap: 10px;
+  margin: 10px 0;
   padding: 0;
   list-style: none;
 }
@@ -770,6 +797,35 @@ input:disabled {
   margin: 12px 0 0;
   color: var(--text-tertiary);
   font-size: 10px;
+}
+
+.settings-lock-feedback {
+  position: fixed;
+  z-index: 40;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+  width: fit-content;
+  max-width: min(420px, calc(100vw - 32px));
+  min-height: 42px;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto;
+  padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--accent-strong) 32%, var(--border));
+  border-radius: 12px;
+  background: var(--text);
+  color: var(--surface);
+  font-size: 12px;
+  font-weight: 650;
+  box-shadow: var(--shadow);
+}
+
+.settings-lock-feedback .icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
 }
 
 .security-note .icon {
@@ -1176,7 +1232,7 @@ input:disabled {
 
 @media (max-width: 520px) {
   .crostini-page {
-    padding: 14px 10px 20px;
+    padding: 10px 9px 16px;
   }
 
   .product-header {
@@ -1199,7 +1255,7 @@ input:disabled {
 
   .server-surface {
     grid-template-columns: auto minmax(0, 1fr) auto;
-    padding: 15px;
+    padding: 10px 11px;
   }
 
   .server-copy p {

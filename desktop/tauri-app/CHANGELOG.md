@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## [0.1.8]
+## [0.1.9]
 
 ### Changed
 
@@ -26,6 +26,9 @@
   incompatible host GVFS modules.
 - Isolate native-host telemetry and launcher unit tests so release validation
   cannot race through process-global test state.
+- Extract and inspect the actual Linux package contents when validating launcher
+  identity, and fail clearly unless each package contains exactly one desktop
+  entry.
 
 ## [0.1.6]
 

@@ -351,6 +351,17 @@ jobs:
             realpath "${matches[0]}"
           }
 
+          find_desktop() {
+            local directory="$1"
+            local matches=()
+            mapfile -t matches < <(find "$directory" -type f -name '*.desktop' -print)
+            if [ "${#matches[@]}" -ne 1 ]; then
+              echo "Expected one desktop file in $directory, found ${#matches[@]}" >&2
+              return 1
+            fi
+            realpath "${matches[0]}"
+          }
+
           verify_launcher() {
             local desktop_file="$1"
             desktop-file-validate "$desktop_file"
@@ -368,14 +379,14 @@ jobs:
           mkdir "$VERIFY_DIR/appimage"
           (
             cd "$VERIFY_DIR/appimage"
-            "$APPIMAGE_PATH" --appimage-extract '*.desktop' >/dev/null
+            "$APPIMAGE_PATH" --appimage-extract >/dev/null
           )
-          APPIMAGE_DESKTOP="$(find "$VERIFY_DIR/appimage" -type f -name '*.desktop' -print -quit)"
+          APPIMAGE_DESKTOP="$(find_desktop "$VERIFY_DIR/appimage")"
           verify_launcher "$APPIMAGE_DESKTOP"
 
           mkdir "$VERIFY_DIR/deb"
           dpkg-deb -x "$DEB_PATH" "$VERIFY_DIR/deb"
-          DEB_DESKTOP="$(find "$VERIFY_DIR/deb/usr/share/applications" -type f -name '*.desktop' -print -quit)"
+          DEB_DESKTOP="$(find_desktop "$VERIFY_DIR/deb/usr/share/applications")"
           verify_launcher "$DEB_DESKTOP"
 
           mkdir "$VERIFY_DIR/rpm"
@@ -383,7 +394,7 @@ jobs:
             cd "$VERIFY_DIR/rpm"
             rpm2cpio "$RPM_PATH" | cpio -idm --quiet
           )
-          RPM_DESKTOP="$(find "$VERIFY_DIR/rpm" -type f -name '*.desktop' -print -quit)"
+          RPM_DESKTOP="$(find_desktop "$VERIFY_DIR/rpm")"
           verify_launcher "$RPM_DESKTOP"
 
       - name: Verify macOS app signing and notarization

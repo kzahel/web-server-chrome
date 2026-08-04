@@ -1,8 +1,9 @@
 # UI Design
 
 Cross-platform visual design for 200 OK across Android (Jetpack Compose),
-desktop (Tauri/HTML), and potentially iOS. This document includes future
-responsive directions; implemented layouts remain platform-specific.
+desktop (Tauri/HTML), and the planned native iOS application (SwiftUI). This
+document includes future responsive directions; implemented layouts remain
+platform-specific.
 
 Status: **visual principles and future layout exploration.** The implemented
 desktop product is a single-server portrait control surface; the responsive
@@ -13,7 +14,9 @@ remote UI retired.
 The original cross-platform TypeScript engine assumptions are superseded by
 the independent Rust desktop and Kotlin Android runtimes in
 [`topics/desktop-runtime.md`](topics/desktop-runtime.md) and
-[`topics/android-runtime.md`](topics/android-runtime.md).
+[`topics/android-runtime.md`](topics/android-runtime.md). The accepted iOS
+direction is a third independent Swift implementation in
+[`topics/ios-runtime.md`](topics/ios-runtime.md).
 
 ## Principles
 
@@ -201,6 +204,7 @@ latent shared-UI behavior.
 |----------|-----|----------------|
 | **Desktop (Tauri)** | Shared React controls in the webview | `TauriServerManager` → commands/events to Rust-owned servers |
 | **Android** | Jetpack Compose (native) | Application controller → Kotlin HTTP/storage core |
+| **iOS (planned)** | SwiftUI (native) | Application controller → Swift HTTP/storage core |
 | **ChromeOS Linux** | Extension setup/control page | Authenticated Crostini controller → shared Rust core |
 
 ## Platform Notes
@@ -219,3 +223,14 @@ latent shared-UI behavior.
 - Currently uses one portrait, single-server control page without a sidebar
 - System tray support for background mode
 - Native file picker via Tauri dialog API
+
+### iOS (SwiftUI, planned)
+- Uses the same compact branded header, server-status hierarchy, folder,
+  network, serving-option, and URL concepts as Android and desktop
+- Uses native SwiftUI controls and iOS spacing rather than copying another App
+  Store application's layout
+- Selects one directory through Files and keeps the first release read-only
+- Runs only while the app is foregrounded; it has no background, boot, wake,
+  notification-service, or battery-policy settings
+- Uses an in-app preview so localhost content can be inspected without
+  backgrounding the server app

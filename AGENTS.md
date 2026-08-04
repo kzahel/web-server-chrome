@@ -4,10 +4,10 @@ release commands.
 ## Documentation roles
 
 Focused, living records of continuing concerns live under
-[`docs/topics/`](docs/topics/README.md). Before changing desktop or Android
-runtime, release/signing, or legacy migration behavior, read the corresponding
-topic document. Update it when work changes the current state, accepted
-decision, evidence, gaps, or recommended next direction.
+[`docs/topics/`](docs/topics/README.md). Before changing desktop, Android, or
+iOS runtime, release/signing, or legacy migration behavior, read the
+corresponding topic document. Update it when work changes the current state,
+accepted decision, evidence, gaps, or recommended next direction.
 
 Bounded implementation plans and execution records live under
 [`docs/tactical/`](docs/tactical/README.md). Tactical filenames use
@@ -28,6 +28,7 @@ the root [`topics.md`](topics.md) log before reusing them across a series.
 
 - Desktop runtime: [`docs/topics/desktop-runtime.md`](docs/topics/desktop-runtime.md)
 - Android runtime: [`docs/topics/android-runtime.md`](docs/topics/android-runtime.md)
+- iOS runtime: [`docs/topics/ios-runtime.md`](docs/topics/ios-runtime.md)
 - ChromeOS extension launcher:
   [`docs/topics/chromeos-extension-launcher.md`](docs/topics/chromeos-extension-launcher.md)
 - ChromeOS Crostini launcher/controller:
@@ -40,6 +41,8 @@ the root [`topics.md`](topics.md) log before reusing them across a series.
   [`docs/tactical/009-release-confidence-closeout.md`](docs/tactical/009-release-confidence-closeout.md)
 - Active desktop production repair and validation:
   [`docs/tactical/015-desktop-production-validation.md`](docs/tactical/015-desktop-production-validation.md)
+- Active native iOS implementation and physical-device validation:
+  [`docs/tactical/016-native-swift-ios-app.md`](docs/tactical/016-native-swift-ios-app.md)
 - Desktop post-publication production runbook:
   [`docs/runbooks/desktop-production-validation.md`](docs/runbooks/desktop-production-validation.md)
 - Active ChromeOS launcher and network closeout:

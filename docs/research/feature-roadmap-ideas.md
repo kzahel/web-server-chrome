@@ -2,8 +2,10 @@
 
 Status: **historical research and feature inventory.** Its early Rust-core
 notes anticipated the accepted desktop direction, but its Rust CLI, Android
-JNI, iOS, sequencing, and unchecked task states are not current commitments.
-See [`../topics/desktop-runtime.md`](../topics/desktop-runtime.md) and
+JNI, sequencing, and unchecked task states are not current commitments. Its
+iOS-via-shared-Rust sketch is superseded by the independent native Swift
+direction in [`../topics/ios-runtime.md`](../topics/ios-runtime.md). See also
+[`../topics/desktop-runtime.md`](../topics/desktop-runtime.md) and
 [`../topics/android-runtime.md`](../topics/android-runtime.md). Tactical 000
 owns the accepted desktop sequence.
 
@@ -132,7 +134,7 @@ ok200-core (Rust library crate - the server engine)
   |     +-- Kotlin/Java app
   |     +-- ok200-core via JNI
   |
-  +-- (future) ios-app
+  +-- (historical proposal) ios-app via shared Rust core
 ```
 
 ### Why Rust for the core

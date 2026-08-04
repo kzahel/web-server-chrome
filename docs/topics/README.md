@@ -24,6 +24,9 @@ status. Do not create a topic for every small standalone change.
 - [`android-runtime.md`](android-runtime.md) — native Kotlin HTTP/storage
   implementation, Android lifecycle and Advanced controls, compatibility
   contract, evidence, and release gaps.
+- [`ios-runtime.md`](ios-runtime.md) — accepted independent SwiftUI/Swift
+  application, foreground-only lifecycle, Files authorization, native HTTP
+  boundary, and physical-device LAN acceptance contract.
 - [`chromeos-extension-launcher.md`](chromeos-extension-launcher.md) — public
   detection limits, Android/Play fallback contract, unsupported-device
   messaging, platform-choice routing, and physical/store validation gates.

@@ -2,7 +2,9 @@
 
 Status: dated positioning research. Current platform/runtime truth lives in
 [`../topics/desktop-runtime.md`](../topics/desktop-runtime.md) and
-[`../topics/android-runtime.md`](../topics/android-runtime.md).
+[`../topics/android-runtime.md`](../topics/android-runtime.md). Its former iOS
+“Swift or skip” placeholder is superseded by the accepted independent native
+direction in [`../topics/ios-runtime.md`](../topics/ios-runtime.md).
 
 ## Direct Competitors
 
@@ -48,7 +50,7 @@ Status: dated positioning research. Current platform/runtime truth lives in
 | Linux | Tauri | P1 |
 | Android | Compose + native Kotlin HTTP/storage core | Source complete; Play release is separate |
 | ChromeOS | Android app launched by extension | Validate with the next Android release |
-| iOS | Native (Swift?) or skip | P2 |
+| iOS | Historical placeholder: native Swift or skip | Superseded by the accepted native SwiftUI/Swift MVP |
 
 ### Size Advantage
 Tauri apps are dramatically smaller than Electron:

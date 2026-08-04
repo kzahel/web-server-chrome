@@ -62,6 +62,10 @@ distinctive name and the product category. The compact in-app header stays
 **200 OK** with a nearby **Web Server** descriptor, and a home-screen launcher
 may truncate the longer metadata label visually.
 
+The planned iOS application follows the same rule: its Home Screen and system
+metadata use **200 OK Web Server**, while the compact SwiftUI header uses the
+canonical artwork with **200 OK** and a nearby **Web Server** descriptor.
+
 The logo artwork may retain its handwritten `200 OK!` treatment. Normal prose
 and accessible labels omit the exclamation mark.
 
@@ -103,6 +107,8 @@ Chromebooks or accounts. The ChromeOS Linux component's
 | Desktop window and primary header | **200 OK Web Server** |
 | Android launcher/system metadata | **200 OK Web Server** for launcher search |
 | Android compact UI | **200 OK**, with **Web Server** descriptor |
+| iOS launcher/system metadata (planned) | **200 OK Web Server** for system search |
+| iOS compact UI (planned) | **200 OK**, with **Web Server** descriptor |
 | Chrome extension listing and popup | **200 OK Web Server**; describe it as the launcher for the desktop or Android app |
 | Website site name/header | **200 OK Web Server** |
 | Website SEO | Lead with **200 OK Web Server** and explicitly include **successor to Web Server for Chrome** |
@@ -188,6 +194,8 @@ Validation on 2026-07-28:
 - macOS, Windows, Linux, ChromeOS Linux, and Android launcher search match
   **Web Server** while their compact in-app treatment and stable technical
   identities remain intact.
+- Planned iOS metadata and compact-header treatment follow the same full-name
+  and short-name split before a signed candidate is described as implemented.
 - Website and migration metadata still contain the exact legacy name in
   explicit successor/migration context.
 - Extension copy states that the desktop or Android application serves files.

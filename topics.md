@@ -18,6 +18,9 @@ Keep each string exact across its commit series so
 - `android-native-kotlin` — replace Android's embedded QuickJS/TypeScript HTTP
   runtime with a native Kotlin server while maintaining a tested, broadly
   compatible feature contract with desktop.
+- `ios-native-swift` — build a standalone native SwiftUI/Swift iOS server with
+  Files-authorized storage, foreground-only lifecycle, and physical-device LAN
+  proof rather than shared Android or desktop runtime code.
 - `product-branding` — keep the 200 OK Web Server identity consistent and
   searchable across application metadata, compact UI, stores, migration copy,
   and public product surfaces.

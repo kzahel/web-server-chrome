@@ -11,6 +11,7 @@ The original Chrome App was used by 200,000+ people for local web development an
 - **Chrome Extension** — A familiar launcher for the installed server app
 - **Desktop App** — Native app (Tauri) for Mac, Windows, and Linux
 - **Android / ChromeOS** — Native app, published on Google Play
+- **iOS** — Planned native SwiftUI/Swift app with foreground serving
 - **ChromeOS Linux** — A small Rust launcher/controller for Chromebooks
   without Google Play
 
@@ -43,10 +44,17 @@ APK and AAB with the physically validated ChromeOS LAN-address correction. The
 maintainer reports `v0.2.1` submitted to Play; Play may continue serving an
 earlier artifact until review and rollout finish.
 
+A standalone native iOS application is now planned but not implemented or
+released. It will use SwiftUI and a Swift HTTP/storage implementation, reuse
+the product artwork rather than another platform's code, and stop when iOS
+backgrounds it. Its first acceptance gate is a real same-Wi-Fi fetch from the
+attached physical phone.
+
 See the living
 [product branding decision](docs/topics/product-branding.md),
 [desktop runtime decision](docs/topics/desktop-runtime.md),
 [Android runtime decision](docs/topics/android-runtime.md),
+[iOS runtime decision](docs/topics/ios-runtime.md),
 [ChromeOS extension launcher decision](docs/topics/chromeos-extension-launcher.md),
 [ChromeOS Crostini launcher/controller decision](docs/topics/chromeos-crostini-launcher.md), and
 [active extension/ChromeOS closeout](docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md).
@@ -76,6 +84,7 @@ The scoped Play-free Linux fallback is recorded in
 ## Roadmap
 
 ### Coming Soon
+- Build and physically validate the first native foreground-only iOS app
 - Complete store review, rollout, and controlled delivery proof for the
   submitted Android and launcher-focused extension candidates
 - Complete the final legacy Chrome App migration update
@@ -113,6 +122,11 @@ only for repository development and smoke testing; it is not an independently
 packaged CLI product. Authoritative runtime boundaries live in
 [`docs/topics/desktop-runtime.md`](docs/topics/desktop-runtime.md) and
 [`docs/topics/android-runtime.md`](docs/topics/android-runtime.md).
+
+The accepted iOS direction is a separate native SwiftUI/Swift implementation;
+no `ios/` source directory or release exists yet. See
+[`docs/topics/ios-runtime.md`](docs/topics/ios-runtime.md) and
+[`docs/tactical/016-native-swift-ios-app.md`](docs/tactical/016-native-swift-ios-app.md).
 
 ## Migration from Chrome App
 

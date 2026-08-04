@@ -3,7 +3,8 @@
 Read [docs/vision.md](docs/vision.md) first for product intent. For current
 architecture and implementation direction, read
 [docs/topics/desktop-runtime.md](docs/topics/desktop-runtime.md),
-[docs/topics/android-runtime.md](docs/topics/android-runtime.md), and
+[docs/topics/android-runtime.md](docs/topics/android-runtime.md),
+[docs/topics/ios-runtime.md](docs/topics/ios-runtime.md), and
 [docs/topics/chromeos-extension-launcher.md](docs/topics/chromeos-extension-launcher.md).
 For the accepted Play-free Linux product shape and user flow, also read
 [docs/topics/chromeos-crostini-launcher.md](docs/topics/chromeos-crostini-launcher.md).
@@ -36,6 +37,11 @@ an exact-version round trip through the production Chrome Web Store extension.
 Do not describe it as production-accepted; Tactical 015 owns the repair and
 post-publication rerun.
 
+A standalone native SwiftUI/Swift iOS app is now an accepted direction, but no
+iOS source or release exists yet. Tactical 016 owns its first implementation
+and requires an external same-Wi-Fi fetch from the attached physical phone via
+the project-neutral `~/code/ios-device-testbed` QA path.
+
 The old Transistor proof is not the current desktop architecture. Desktop
 keeps Tauri and its webview for control/configuration while a small Rust core
 owns HTTP execution on Windows, macOS, and Linux. Desktop `v0.1.6` adds the
@@ -59,6 +65,8 @@ Current repository shape:
 - `packages/ui` — shared React controls used by the desktop Tauri webview.
 - `android` — Compose app with a Kotlin HTTP/storage core and native Android
   lifecycle, permission, background, wake, boot, and battery policy.
+- planned `ios` — independent SwiftUI controls, Swift HTTP/storage code, and an
+  intentionally foreground-only lifecycle; the directory does not exist yet.
 - `desktop` — Tauri app with a Tauri-independent Rust HTTP core and a thin
   React/Tauri command/event control layer.
 - `desktop/crostini` — independently released ChromeOS Linux

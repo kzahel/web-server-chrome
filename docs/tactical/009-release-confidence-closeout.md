@@ -1,11 +1,12 @@
 # 009: Release Confidence Closeout
 
 Status: **desktop release lane complete; maintainer/store migration lane
-active.** Signed `desktop-v0.1.5` is public and the exact recommended macOS
-app, Windows NSIS, and Linux AppImage update/server/extension paths are
-accepted. The remaining work is store-delivered ChromeOS/Android/extension,
-subjective desktop UI spot-checks, and the final legacy migration decision and
-submission.
+active.** Signed `desktop-v0.1.6` is public and its automated release and
+public-asset gates pass. Exact recommended macOS app, Windows NSIS, and Linux
+AppImage update/server/extension acceptance remains recorded against `v0.1.5`
+because the maintainer directed that `v0.1.6` packaged smoke be skipped. The
+remaining work is store-delivered ChromeOS/Android/extension, subjective
+desktop UI spot-checks, and the final legacy migration decision and submission.
 
 Topics:
 
@@ -69,7 +70,7 @@ subjective product approval.
 
 | Surface | Accepted evidence | Remaining confidence gap |
 |---|---|---|
-| Desktop release pipeline | Corrected `desktop-v0.1.5` five-leg matrix, finalizer, 16-asset publication, independent checksums/signatures, and live routes pass | None for the signed release; the initial private metadata-upload race is recorded below |
+| Desktop release pipeline | `desktop-v0.1.6` five-leg matrix, finalizer, 16-asset publication, and independent checksum/updater-metadata inspection pass | Packaged functional smoke was skipped by maintainer direction; `v0.1.5` remains the exact functional baseline |
 | General CI | Deterministic DER repair and all source/release workflows passed at the release revision | None |
 | Updater UI | JSTorrent cadence/UX is implemented and unit-tested; exact `0.1.4` → `0.1.5` transitions pass on every recommended path | Optional subjective presentation spot-check only |
 | Updater safety | Package-aware policy, negative validators, live no-downgrade routes, and runtime tampered-payload signature rejection pass | None for recommended packages; managed secondary packages remain manual by design |
@@ -78,7 +79,7 @@ subjective product approval.
 | macOS extension launch | Exact signed updated app passes native framing, production extension launch, one process, Dock recreation, serving, and stop | Attended `/Applications` PKG install and subjective tray review |
 | Android / ChromeOS | Corrected native-Kotlin `v0.2.1` and launcher extension `v0.1.4` pass exact release inspection and were reportedly submitted to Play and the Chrome Web Store | Store review, rollout, and controlled store-delivered proof remain open; Tactical 011 owns the closeout |
 | Live update service | Deployed config/hash, health, reason/CFU accounting, Control Room aggregates, and final `0.1.5` route/asset matrix agree | None; keep normal operational monitoring |
-| Documentation | Repository topics, tactical evidence, quick context, and private operational pointers now describe `v0.1.5` and the remaining manual lane | Continue updating store/legacy state as it changes |
+| Documentation | Repository topics, tactical evidence, and quick context distinguish the published `v0.1.6` release from the `v0.1.5` functional-smoke baseline | Continue updating store/legacy state as it changes |
 
 The certificate failure is a real low-probability encoder defect, not a Dock
 regression. `derInteger` does not remove redundant leading zero bytes from the
@@ -501,6 +502,28 @@ Darwin arm64/x64, Windows x64, and Linux arm64/x64 prior clients. Current
   The runtime downloaded it, returned `Install failed: The signature
   verification failed`, and left the executable SHA-256 unchanged. Production
   endpoint configuration was restored immediately after building the fixture.
+
+## Desktop `v0.1.6` release execution — 2026-08-04
+
+The maintainer authorized publication and directed that manual packaged smoke
+be skipped. Release commit `6dcfbd39fd5202b13f9446bfdfe41c7e3bcdc698`
+and tag `desktop-v0.1.6` produced the [successful tagged Tauri
+run](https://github.com/kzahel/web-server-chrome/actions/runs/30876353182)
+and [successful general CI
+run](https://github.com/kzahel/web-server-chrome/actions/runs/30876352014).
+The desktop test job and all five macOS arm64/x64, Windows x64, and Linux
+arm64/x64 build legs passed. Windows Authenticode and macOS signing,
+notarization, and PKG checks passed. The finalizer published the [public
+release](https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.6)
+only after validating the complete draft.
+
+The public release contains 16 retained files. All 15 entries in its
+`SHA256SUMS` were independently downloaded and verified; the manifest SHA-256
+is `d2799a853bcd10eb98c7652f4b50fccb335ea53551a04f728541cf098b28ba33`.
+`latest.json` reports `0.1.6`, has non-empty signatures, and covers all 15
+supported default and package-specific targets. This establishes build,
+signing, publication, integrity, and updater-metadata evidence, but makes no new
+installed-product claim beyond the `v0.1.5` functional baseline.
 
 ### Remaining unattended work boundary
 

@@ -6,15 +6,16 @@
 
 Topic: desktop-native-core
 
-Status: **Rust-native desktop `v0.1.5` is published with complete signed
-macOS arm64/x64, Windows x64, and Linux arm64/x64 artifacts. Exact signed
-update, server, native-host, and production-extension paths pass on the
-recommended macOS app, Windows NSIS, and Linux AppImage installations. The
-package-aware updater refuses MSI/DEB/RPM cross-package replacement. Remaining
-desktop work is limited to subjective UI checks and secondary-package or
-physical-ARM64 claims.**
+Status: **Rust-native desktop `v0.1.6` is published with complete signed
+macOS arm64/x64, Windows x64, and Linux arm64/x64 artifacts. It adds the
+canonical main-window app-settings surface and cross-platform tray visibility
+option. Its automated release and public-asset gates pass; packaged functional
+smoke was skipped at the maintainer's direction. Exact signed update, server,
+native-host, and production-extension acceptance therefore remains recorded
+against `v0.1.5` on the recommended macOS app, Windows NSIS, and Linux AppImage
+installations.**
 
-Last reconciled: **2026-08-03**.
+Last reconciled: **2026-08-04**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
@@ -103,10 +104,12 @@ Desktop source now satisfies this rule through a main-window app-settings
 panel and typed Tauri settings commands. The panel exposes every mirrored
 setting plus manual update and Quit actions. Icon visibility is persisted and
 applied on all three desktop platforms, with migration from the earlier
-macOS-only key; menu and tray checkmarks follow the same state. Public `v0.1.5`
-predates this work. Linux tray availability also varies by desktop shell and
-StatusNotifier/AppIndicator integration, so packaged validation must include a
-workflow with no tray surface.
+macOS-only key; menu and tray checkmarks follow the same state. Public `v0.1.6`
+contains this work, although packaged UI/tray behavior was not manually
+smoke-tested for that release at the maintainer's direction. Linux tray
+availability also varies by desktop shell and StatusNotifier/AppIndicator
+integration, so future packaged validation must include a workflow with no
+tray surface.
 
 “Shared Rust core” means one native core reused across macOS, Windows, and
 Linux, including the ChromeOS Linux controller. Android JNI and a separately
@@ -117,7 +120,7 @@ executable remains repository-only development and smoke tooling.
 
 | Surface | Runtime | Current role | Direction |
 |---|---|---|---|
-| Desktop source and release `v0.1.5` | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | Complete signed release with AppImage-first integration, relaunch repair, macOS Dock create-or-focus handling, Linux ARM64, and package-aware updates | Continue compatibility/resource measurements; keep secondary package/hardware claims explicit |
+| Desktop source and release `v0.1.6` | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | Complete signed release with canonical in-app settings, optional tray visibility on every desktop platform, AppImage-first integration, relaunch repair, Linux ARM64, and package-aware updates; automated release gates pass, while the `v0.1.5` packaged paths remain the latest functional smoke baseline | Validate the no-tray packaged workflow in a future smoke cycle; keep secondary package/hardware claims explicit |
 | Previous desktop `v0.1.4` | Same Rust-native runtime before the AppImage/Dock/package-awareness repairs | Public updater source used in the accepted `0.1.4` → `0.1.5` macOS, Windows, and Linux transitions | Retain only as immutable update evidence |
 | Historical desktop `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Partial legacy release | Historical baseline only |
 | Android source | Compose UI; Kotlin owns HTTP, storage adapters, and Android lifecycle policy | Native cutover complete and AVD-validated | Keep broadly compatible through the cross-runtime contract in `android-runtime.md` |

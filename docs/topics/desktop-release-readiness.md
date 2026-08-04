@@ -6,16 +6,16 @@
 
 Topic: desktop-release-readiness
 
-Status: **`desktop-v0.1.5` is the accepted complete signed Rust-core release.
-The five-platform build matrix and one-job finalizer passed; all public assets,
-checksums, signatures, updater metadata, and live routes were independently
-verified. Exact prior-public updates, server behavior, native messaging, and
-the production extension pass on the recommended macOS app, Windows NSIS, and
-Linux AppImage paths. MSI/DEB/RPM updates remain package-managed, and the
-remaining desktop checks are subjective UI or secondary-package/physical-ARM64
-claims rather than release blockers.**
+Status: **`desktop-v0.1.6` is the current complete signed Rust-core release.
+Its five-platform build matrix, platform-signing checks, and one-job finalizer
+passed, and all public assets, checksums, and updater metadata were
+independently verified. The maintainer directed that packaged functional smoke
+be skipped for this release, so `desktop-v0.1.5` remains the latest exact
+clean-install, prior-public update, server, native-messaging, and
+production-extension acceptance evidence on the recommended macOS app,
+Windows NSIS, and Linux AppImage paths.**
 
-Last reconciled: **2026-07-31**.
+Last reconciled: **2026-08-04**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
@@ -113,6 +113,30 @@ rejected it with `The signature verification failed`, and left its executable
 hash unchanged.
 
 ## Latest release evidence
+
+Public desktop release: **`desktop-v0.1.6`**, published 2026-08-04 from commit
+`6dcfbd39fd5202b13f9446bfdfe41c7e3bcdc698`.
+
+- [Public release](https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.6)
+- [Successful tagged workflow run](https://github.com/kzahel/web-server-chrome/actions/runs/30876353182)
+- [Successful general CI run](https://github.com/kzahel/web-server-chrome/actions/runs/30876352014)
+- [Published SHA-256 checksums](https://github.com/kzahel/web-server-chrome/releases/download/desktop-v0.1.6/SHA256SUMS)
+
+The desktop test job and macOS arm64, macOS x64, Windows x64, Linux x64, and
+Linux ARM64 build jobs passed. The Windows job verified Authenticode
+signatures; both macOS jobs verified app signing/notarization and produced
+notarized PKGs. The fail-closed finalizer validated the complete draft before
+publishing exactly 16 retained files at `2026-08-04T04:23:29Z`.
+
+Every one of the 15 files named by the published `SHA256SUMS` was downloaded
+after publication and passed `shasum -a 256 -c`. The manifest itself has
+SHA-256 `d2799a853bcd10eb98c7652f4b50fccb335ea53551a04f728541cf098b28ba33`.
+`latest.json` reports version `0.1.6`, contains non-empty signatures, and
+covers all 15 supported default and package-specific updater targets. Manual
+installed-app smoke was not performed at the maintainer's direction; the
+detailed `v0.1.5` evidence below remains the functional acceptance baseline.
+
+## Previous functional acceptance: `v0.1.5`
 
 Public desktop release: **`desktop-v0.1.5`**, published 2026-07-31 from commit
 `6502cdccfbb2980e250b46fb12fc064a8ea60157`.

@@ -21,13 +21,15 @@ The active ChromeOS Linux product-completion plan lives in
 
 Lightweight web server app for every platform. Successor to "Web Server for
 Chrome" (200k+ users). The Android app, extension, ChromeOS Linux component,
-and signed Rust-native Tauri desktop `v0.1.5` have shipped.
+and signed Rust-native Tauri desktop `v0.1.6` have shipped.
 
 The old Transistor proof is not the current desktop architecture. Desktop
 keeps Tauri and its webview for control/configuration while a small Rust core
-owns HTTP execution on Windows, macOS, and Linux. Desktop `v0.1.5` includes
-AppImage-first integration, Linux ARM64 artifacts, AppImage native-host repair,
-macOS Dock activation repair, and the package-aware updater policy. Android
+owns HTTP execution on Windows, macOS, and Linux. Desktop `v0.1.6` adds the
+canonical in-app settings surface and optional tray visibility on every desktop
+platform; it also includes AppImage-first integration, Linux ARM64 artifacts,
+AppImage native-host repair, macOS Dock activation repair, and the package-aware
+updater policy. Android
 source uses a native Kotlin HTTP server, and the former unpublished
 Node/TypeScript CLI and engine have been retired. GitHub release
 `android-v0.2.1` contains the signed native-Kotlin APK/AAB with the physically

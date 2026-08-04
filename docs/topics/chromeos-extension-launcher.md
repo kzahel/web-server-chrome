@@ -4,27 +4,18 @@ Topic: chromeos-extension-launcher
 
 Status: **the extension uses a best-effort Android intent with an always-visible
 HTTPS options route and does not claim to detect Android or Google Play
-availability. The owned page is live and the exact `extension-v0.1.4` release
-ZIP passes local and CI inspection. The maintainer reports that Android
-`0.2.1` and extension `0.1.4` have been submitted to their stores;
-store-delivered proof remains open. The Play-free Crostini component now ships
-as signed `crostini-v0.1.1`; exact x86_64 ChromeOS and exact ARM64 Linux runtime
-transactions pass, and the public installer/update feed are deployed. The
-public `extension-v0.1.5` follow-up exposes **Use the Linux version**, bundles
-offline setup and recovery, and retains the contextual optional host
-permission rather than adding an install-time warning. Its exact CI ZIP passes
-independent inspection and a warning-free physical load; the production-ID
-candidate passes contextual denial/re-request and forced normal-tab fallback.
-Public `extension-v0.1.6` presents Linux and Android as peer choices, updates
-the package description and store copy, and keeps failed Linux setup retries
-on the Linux route. Its exact CI ZIP passes independent store-package inspection; the
-website's matching chooser and guide copy are deployed. Local, unpushed
-`extension-v0.1.7` adds the polished protocol-2 Linux controls and has a
-153,754-byte, 14-file exact ZIP that passes the store-package gate with SHA-256
-`89afed7ea6af0d1c8a83c05c611f4751a7c21b4aa2df27b99b2cc10db1be0137`.
-Chrome Web Store upload remains maintainer-owned.**
+availability. Public `extension-v0.1.8` is the protocol-2 release for the
+polished ChromeOS Linux setup/control surface and the Android/Linux peer
+chooser. Its exact 153,762-byte, 14-file GitHub ZIP passes CI and independent
+store-package inspection with SHA-256
+`19c1a15ffad8c10bab2f6b1c42cf3a2c75c9739dcf4bdde9a1b304bbcb07925e`.
+The release is ready for maintainer-owned Chrome Web Store upload; store
+delivery and the matching protocol-2 bootstrap deployment remain open. Earlier
+physical evidence still owns the Android intent, contextual permission,
+claim, popup fallback, ChromeOS Linux control, LAN, and lifecycle claims until
+the exact store-delivered `0.1.8` package is exercised.**
 
-Last reconciled: **2026-08-03**.
+Last reconciled: **2026-08-04**.
 
 Implementation and release sequencing live in
 [Tactical 011](../tactical/011-extension-launcher-and-chromeos-network-readiness.md).

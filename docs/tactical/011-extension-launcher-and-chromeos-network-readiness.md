@@ -1,13 +1,13 @@
 # Extension Launcher and ChromeOS Network Readiness
 
-Status: **active; the ChromeOS URL fix passes physical validation, the owned
-options page is live, and exact signed Android `0.2.1` and extension `0.1.4`
-GitHub release artifacts pass inspection. The maintainer reports both store
-submissions complete; review, rollout, and store-delivered proof remain open.
-Separately, local unpushed `extension-v0.1.7` packages the completed Crostini
-control-surface follow-up; its public release and store upload remain open.**
+Status: **active; the ChromeOS URL fix passes physical validation, Android
+`0.2.1` remains the unchanged signed candidate, and public GitHub extension
+`0.1.8` plus Crostini controller `0.1.5` package the completed protocol-2
+Linux control surface. Their exact artifacts pass CI and independent package,
+hash, and signature inspection. Chrome Web Store upload, store-delivered proof,
+and the coordinated protocol-2 bootstrap deployment remain open.**
 
-Last updated: **2026-08-03**.
+Last updated: **2026-08-04**.
 
 Related continuing concerns:
 

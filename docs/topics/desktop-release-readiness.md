@@ -6,19 +6,16 @@
 
 Topic: desktop-release-readiness
 
-Status: **`desktop-v0.1.6` is the current complete signed Rust-core release.
-Its five-platform build matrix, platform-signing checks, and one-job finalizer
-passed, and all public assets, checksums, and updater metadata were
-independently verified. Later maintainer-directed exact packaged smoke passes
-core installation/launch, HTTP serving, updater, persistence, autostart,
-tray-state, native-host, and cleanup checks on macOS arm64, Windows NSIS, and
-Linux arm64. It fails functional acceptance because the settings dialog is
-unusable or unstable on Windows/Linux and background=false close violates the
-documented exit/recovery contract on every OS; Windows no-tray relaunch can
-wedge multiple invisible processes. `desktop-v0.1.5` remains the latest exact
-prior-public update and production-extension acceptance baseline. Native ARM64
-Linux Chrome now proves `v0.1.6` store delivery and cold extension launch, but
-repeated actions leak defunct desktop children under the connected host.**
+Status: **`desktop-v0.1.10` is the current complete signed Rust-core repair
+release. Its five-platform build matrix, launcher-identity and platform-signing
+checks, one-job finalizer, public checksums, and updater metadata pass. The
+release repairs the settings layout, background=false exit/recovery behavior,
+native-host child reaping, and AppImage GIO isolation exposed by exact
+`v0.1.6` smoke. It remains a public candidate rather than promotion-accepted
+until the repository-owned production runbook passes against exact packages
+and the real Chrome Web Store extension. `desktop-v0.1.5` remains the latest
+accepted prior-public update and production-extension baseline; `v0.1.6`
+retains the failed functional evidence that motivated this repair.**
 
 Last reconciled: **2026-08-04**.
 
@@ -141,6 +138,36 @@ rejected it with `The signature verification failed`, and left its executable
 hash unchanged.
 
 ## Latest release evidence
+
+Public desktop release: **`desktop-v0.1.10`**, published 2026-08-04 from commit
+`1f712ae2f0e919c6dd04906ad6d2208a10ebdccc`.
+
+- [Public release](https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.10)
+- [Successful tagged workflow run](https://github.com/kzahel/web-server-chrome/actions/runs/30944822507)
+- [Successful general CI run](https://github.com/kzahel/web-server-chrome/actions/runs/30944820239)
+- [Published SHA-256 checksums](https://github.com/kzahel/web-server-chrome/releases/download/desktop-v0.1.10/SHA256SUMS)
+
+The desktop test job and macOS arm64, macOS x64, Windows x64, Linux x64, and
+Linux ARM64 jobs passed. Windows verified the installed product name and both
+installer Authenticode signatures. Both macOS jobs verified the full display
+name, app signing/notarization, and signed/notarized/stapled PKGs. Both Linux
+jobs unpacked the exact AppImage, DEB, and RPM payloads and validated one
+desktop entry named **200 OK Web Server** with **Web Server** generic name and
+web/server/HTTP/local/development search keywords. The finalizer published
+exactly 16 retained files only after validating the complete draft.
+
+Every one of the 15 files named by `SHA256SUMS` was downloaded independently
+and passed `shasum -a 256 -c`; the checksum ledger itself has SHA-256
+`3fb0f49ed6ba059bfa6c0b13999385ff73de87b12118fb3a9f7ffa0950a68c49`.
+`latest.json` is version `0.1.10`, has non-empty signatures for all 15 default
+and package-specific updater targets, and names only assets in the immutable
+release. Both downloaded PKGs independently pass Installer signature,
+notarization, stapling, and Gatekeeper assessment. Both downloaded DMG apps
+independently pass full-name metadata, deep/strict signing, Gatekeeper, and
+stapling checks. Exact clean-install, update, lifecycle, server, and real
+production-extension acceptance remains owned by Tactical 015.
+
+## Prior `v0.1.6` signed release and failed packaged smoke
 
 Public desktop release: **`desktop-v0.1.6`**, published 2026-08-04 from commit
 `6dcfbd39fd5202b13f9446bfdfe41c7e3bcdc698`.

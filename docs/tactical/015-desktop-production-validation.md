@@ -1,9 +1,10 @@
 # 015: Desktop Production Validation and Repair
 
-Status: **active; `desktop-v0.1.6` is signed and public but production
-functional acceptance is failed.** The next repair release must fix the
-settings, process-lifecycle, and native-host child-reaping defects, then pass
-the repository-owned
+Status: **active; signed public repair candidate `desktop-v0.1.10` passes the
+complete automated artifact, signing, updater, checksum, and launcher-identity
+gates.** It implements the settings, process-lifecycle, native-host
+child-reaping, and AppImage isolation repairs exposed by `v0.1.6`. It must now
+pass the repository-owned
 [production validation runbook](../runbooks/desktop-production-validation.md)
 using exact public artifacts and the real Chrome Web Store extension on macOS,
 Windows, and Linux.

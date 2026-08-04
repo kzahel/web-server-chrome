@@ -1,15 +1,14 @@
 # 009: Release Confidence Closeout
 
-Status: **desktop signing/publication lane complete; desktop functional repair
-and maintainer/store migration lanes active.** Signed `desktop-v0.1.6` is
-public and its automated release and public-asset gates pass. Later exact
-packaged smoke passes core serving and integration but fails the hard
-main-window settings/recovery rule: Windows/Linux settings layout is broken,
-background=false close stays resident on every OS, and Windows no-tray
-relaunch can wedge invisible processes. `v0.1.5` remains the accepted
-prior-public update and production-extension baseline. Store-delivered
-ChromeOS/Android/extension, the desktop repair release, and the final legacy
-migration decision remain active.
+Status: **desktop repair publication is complete; exact production acceptance
+and maintainer/store migration lanes remain active.** Signed public
+`desktop-v0.1.10` repairs the functional failures exposed by `v0.1.6`, and its
+five-platform release, signing, launcher-identity, public-asset, checksum, and
+updater-metadata gates pass. Exact clean install/update and real
+production-extension acceptance remain open under Tactical 015; `v0.1.5`
+remains the accepted prior-public update and production-extension baseline.
+Store-delivered ChromeOS/Android/extension proof and the final legacy migration
+decision also remain active.
 
 The bounded desktop repair and exact post-production rerun are now owned by
 [Tactical 015](015-desktop-production-validation.md) and the repository-owned

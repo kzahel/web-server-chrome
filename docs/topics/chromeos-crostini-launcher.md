@@ -2,33 +2,18 @@
 
 Topic: chromeos-crostini-launcher
 
-Status: **the Play-free Linux choice now has a public signed component,
-deployed update feed, public bootstrap, owned website guide, and public
-separately versioned extension follow-up. `crostini-v0.1.1` is the
-first completed release. Its exact x86_64 artifact passed the public bootstrap,
-contextual permission/claim, start/ChromeOS-localhost-fetch/stop, repeated
-graphical Launcher handoff, current-feed check, preserve/reinstall, and purge
-on M150 ChromeOS with Debian 12. The exact ARM64 artifact passed signature,
-static execution, install, and purge on the ARM64 Linux testbed; this is not a
-native ARM Chromebook claim. Exact `extension-v0.1.5` passes its store-package
-allowlist and warning-free physical install; the production-ID candidate
-passes contextual deny/re-request/claim and forced popup-to-tab fallback. The
-extension bundles setup/recovery and exposes **Use ChromeOS Linux**. Public
-`extension-v0.1.6` presents Linux's no-Play full controls and Android's quick
-setup as peer choices and passes its exact CI package/test gates. Local,
-unpushed `crostini-v0.1.2` and `extension-v0.1.7` tags now contain the
-protocol-2 controller sessions, default close-to-stop lifetime,
-controller-backed Linux and shared-Chromebook folder browsing, automatic share
-discovery, polished switch-based popup, compact sticky server control,
-actionable setting locks, automatic Chromebook-address discovery, and
-local/LAN URL actions. Their source and package preflights pass; the exact
-extension ZIP is recorded, while signed Crostini artifacts still require the
-tag workflow. The same source fixture passes normal preserve-uninstall/reinstall,
-a full ChromeOS reboot/login, and repeated single-controller Launcher handoff
-with content kept stopped. Native ARM ChromeOS, complete
-folder/lifecycle/accessibility matrices, update-to-a-newer-release/rollback,
-the public-artifact uninstall/pin matrix, sleeping-display proof for the
-wake-aware testbed capture, and signed-artifact physical evidence remain open.**
+Status: **the Play-free Linux choice now has public protocol-2 controller
+release `crostini-v0.1.5`, public GitHub extension release
+`extension-v0.1.8`, and a deployed signed update feed. Both static controller
+architectures, the signed manifest, and the checksum ledger pass CI and
+independent signature/hash verification. Earlier exact public and
+production-shaped tests own the x86_64 ChromeOS and ARM64 Linux runtime,
+Launcher, permission/claim, server lifecycle, LAN, reinstall, and purge
+evidence; native ARM Chromebook and exact `0.1.5` physical acceptance remain
+open. The existing protocol-1 bootstrap intentionally fails closed against
+the protocol-2 feed. A tested protocol-2 bootstrap switch is prepared but must
+deploy with the matching Chrome Web Store `0.1.8` rollout so users cannot
+install an incompatible controller/extension pair.**
 
 Last reconciled: **2026-08-04**.
 

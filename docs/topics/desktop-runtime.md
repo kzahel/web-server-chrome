@@ -17,7 +17,9 @@ closed. On Windows, combining that behavior with a hidden tray can leave an
 unrecoverable invisible instance and subsequent stuck processes. The signed
 distribution remains valid, but `v0.1.6` is not accepted as a promotion-ready
 settings/recovery release. Exact prior-public update and production-extension
-acceptance remains recorded against `v0.1.5`.**
+acceptance remains recorded against `v0.1.5`. A native ARM64 Linux Chrome test
+now proves `v0.1.6` store delivery and cold extension launch, but every repeated
+launch leaves another defunct desktop child under the connected native host.**
 
 Last reconciled: **2026-08-04**.
 
@@ -139,6 +141,14 @@ again. Windows can instead leave the first instance without a window, then
 accumulate additional invisible launch and `--quit-for-uninstall` processes.
 This violates the recoverability rule and requires a release repair.
 
+The exact production extension now exposes a separate Linux process-lifecycle
+failure. Native ARM64 Chrome `151.0.7922.71` installed store version `0.1.6`
+and cold-launched the exact public AppImage into one visible window and one live
+desktop process. While Chrome kept `ok200-host` connected, each repeated launch
+focused the existing window but left the exited launch child as a persistent
+zombie. The native host must reap spawned children so repeated activation keeps
+one live process/window and zero defunct children.
+
 “Shared Rust core” means one native core reused across macOS, Windows, and
 Linux, including the ChromeOS Linux controller. Android JNI and a separately
 released Rust CLI are not requirements or current directions. The small core
@@ -148,7 +158,7 @@ executable remains repository-only development and smoke tooling.
 
 | Surface | Runtime | Current role | Direction |
 |---|---|---|---|
-| Desktop source and release `v0.1.6` | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | Complete signed release; exact macOS arm64, Windows NSIS-on-Windows-ARM64-emulation, and Linux arm64 recommended-path smoke passes core serving and integration, but settings-dialog layout and background-close/recovery defects violate the canonical-main-window rule | Portal the settings dialog outside the blurred header; make background=false close exit; add Windows regression coverage for no-tray relaunch and one-process recovery; publish a repaired signed release |
+| Desktop source and release `v0.1.6` | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | Complete signed release; exact macOS arm64, Windows NSIS-on-Windows-ARM64-emulation, and Linux arm64 recommended-path smoke passes core serving and integration, but settings-dialog layout, background-close/recovery, and Linux native-host child-reaping defects violate the canonical-main-window and one-process rules | Portal the settings dialog outside the blurred header; make background=false close exit; reap native-host launch children; add no-tray/repeated-extension process regressions; publish a repaired signed release |
 | Previous desktop `v0.1.4` | Same Rust-native runtime before the AppImage/Dock/package-awareness repairs | Public updater source used in the accepted `0.1.4` → `0.1.5` macOS, Windows, and Linux transitions | Retain only as immutable update evidence |
 | Historical desktop `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Partial legacy release | Historical baseline only |
 | Android source | Compose UI; Kotlin owns HTTP, storage adapters, and Android lifecycle policy | Native cutover complete and AVD-validated | Keep broadly compatible through the cross-runtime contract in `android-runtime.md` |

@@ -2,7 +2,8 @@
 
 Status: **active; `desktop-v0.1.6` is signed and public but production
 functional acceptance is failed.** The next repair release must fix the
-settings and process-lifecycle defects, then pass the repository-owned
+settings, process-lifecycle, and native-host child-reaping defects, then pass
+the repository-owned
 [production validation runbook](../runbooks/desktop-production-validation.md)
 using exact public artifacts and the real Chrome Web Store extension on macOS,
 Windows, and Linux.
@@ -58,8 +59,9 @@ and a repeatable acceptance process:
 | P0 | Windows lifecycle/recovery | With Run in Background disabled and the tray hidden, closing leaves an invisible process. Launch and `--quit-for-uninstall` can accumulate stuck invisible processes rather than restore or exit. | One-process/window regression across close, relaunch, extension launch, quit, and uninstall; exact public NSIS pass. |
 | P0 | Main-window settings | Windows WebView2 and Linux WebKitGTK confine the fixed settings modal to the blurred header containing block; Linux accessibility bounds can misleadingly describe an ideal dialog while pixels remain clipped. | Render outside the transformed/filtered ancestor and prove visually plus accessibility/interaction on all three engines. |
 | P1 | Cross-platform close contract | Run in Background disabled leaves the application resident after last-window close on macOS, Windows, and Linux. | Exit process, tray, server, and port on last-window close; preserve the one-instance restore behavior only when background is enabled. |
+| P1 | Linux production-extension lifecycle | Exact store extension `0.1.6` in native ARM64 Chrome `151.0.7922.71` cold-launches one visible `v0.1.6` AppImage window and one live desktop process. Each repeated **Open 200 OK** action focuses that window but leaves another persistent defunct `ok200-desktop` child under the long-lived `ok200-host`; three actions produced one live child and two zombies until Chrome closed. | Reap every launched child without blocking native messaging; prove repeated store-extension launches retain one live process/window and zero zombies. |
 | P2 | Linux packaging/runtime | Ubuntu ARM64 AppImage logs a host GVFS/GLib symbol mismatch involving `libgvfsdbus.so` and `g_task_set_static_name`; chooser and serving still worked. | Identify whether host-library loading, packaging, or environment causes it; remove the warning or document a verified harmless boundary with broader evidence. |
-| Gate | Production extension | None of the three `v0.1.6` VM profiles had the production Chrome Web Store extension installed. Direct host framing/launch passed on macOS/Linux; Windows registration/host check passed. | Install the store package, record exact ID/version, and pass browser-driven launch/focus/recovery on all three OSes. |
+| Gate | Production extension | Store extension `0.1.6` with production ID `lpkjdhnmgkhaabhimpdinmdgejoaejic` is installed in all three VM profiles. Linux now proves real store delivery, detection, and cold launch, but fails repeated-launch process hygiene; macOS and Windows still lack an exact `v0.1.6` browser-driven round trip. | Reap Linux children, then pass browser-driven launch/focus/recovery on all three OSes with the exact repaired public release. |
 | Claim gap | Windows architecture | The public x64 NSIS ran under Windows 11 ARM64 x64 emulation. | Keep the evidence labeled emulated; add native x64 hardware/VM evidence before claiming it. |
 | Claim gap | macOS installer | The PKG passed cryptographic inspection but was not installed into `/Applications` because the attended administrator step was not authorized. | Perform an attended recommended PKG installation in the acceptance campaign. |
 | Claim gap | Linux ARM64 | The public ARM64 AppImage passed a native Ubuntu ARM64 VM, not physical ARM64 hardware. | Keep the VM claim precise; physical hardware is required only for a physical-hardware claim. |
@@ -82,6 +84,9 @@ historical evidence. They cannot substitute for the exact repaired version.
 - [ ] Harden single-instance activation when the original main window was
       destroyed. Repeated app and native-host launches must never accumulate
       invisible processes.
+- [ ] Reap native-host launch children on Unix. Repeated production-extension
+      actions must leave one live desktop process/window and no defunct
+      children while the browser keeps `ok200-host` connected.
 - [ ] Make `--quit-for-uninstall` terminate reliably regardless of window/tray
       state and add a Windows regression.
 - [ ] Investigate the AppImage GVFS/GLib warning with host-library and clean-OS
@@ -104,14 +109,24 @@ and Windows Chrome profiles without an account login. Ubuntu ARM64 Chromium
 install extensions and themes** and offers no install action. This is evidence
 about that Chromium/store combination, not an ARM64 extension limitation.
 Google's live Linux repository now publishes stable `arm64` Chrome packages;
-install production Chrome in the existing ARM64 VM and rerun the real store
-gate there. A separate Linux x86_64 environment is not required for this gate.
+official stable ARM64 Chrome `151.0.7922.71` was installed from package
+`151.0.7922.71-1` (SHA-256
+`d8d3e1bfc92d38751154d3d30dfcb4e8c8a25e630d8a53d60b06b034b55e9aa4`).
+The live store installed extension `0.1.6` with the exact production ID without
+a Google login. The exact public ARM64 AppImage then registered its native
+host, the popup reported **Desktop app detected (v0.1.6)**, and a cold **Open
+200 OK** produced one visible window and one live desktop process. Repeated
+actions accumulated defunct desktop children under `ok200-host`, so store
+readiness is closed but functional acceptance remains failed. A separate Linux
+x86_64 environment is not required for this gate. Settled pre-test and
+post-test doctors passed, all browser/product processes were stopped, and the
+VM returned to its original stopped state.
 
-- [ ] Each macOS, Windows, and Linux environment has a supported production
+- [x] Each macOS, Windows, and Linux environment has a supported production
       browser before desktop native-host registration is tested.
-- [ ] The actual Chrome Web Store extension is installed in the intended test
+- [x] The actual Chrome Web Store extension is installed in the intended test
       profile on all three; record exact store version and production ID.
-- [ ] Install official ARM64 Google Chrome in the existing Linux VM, then prove
+- [x] Install official ARM64 Google Chrome in the existing Linux VM, then prove
       that the production browser can install and run the store package. Keep
       the earlier Chromium refusal as browser-specific evidence rather than an
       architecture conclusion.

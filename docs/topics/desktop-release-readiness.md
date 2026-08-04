@@ -16,7 +16,9 @@ Linux arm64. It fails functional acceptance because the settings dialog is
 unusable or unstable on Windows/Linux and background=false close violates the
 documented exit/recovery contract on every OS; Windows no-tray relaunch can
 wedge multiple invisible processes. `desktop-v0.1.5` remains the latest exact
-prior-public update and production-extension acceptance baseline.**
+prior-public update and production-extension acceptance baseline. Native ARM64
+Linux Chrome now proves `v0.1.6` store delivery and cold extension launch, but
+repeated actions leak defunct desktop children under the connected host.**
 
 Last reconciled: **2026-08-04**.
 
@@ -155,7 +157,7 @@ emulation; this is not native x64 hardware evidence.
 |---|---|---|
 | macOS arm64 app tar and PKG | App tar SHA-256 `a6172f4824790cf0ea328e60533b88ebafd0ed5cdffa433885cf4ea6d04b8c2c`; PKG SHA-256 `8d7b2306f98ece8b937febac5737637823a23ea428e94c359723f19d56dfa06c`. Deep/strict code signing, Gatekeeper Notarized Developer ID, stapling, PKG signature, and install assessment pass. The extracted app passed settings/tray/autostart/updater, serving, persistence, no-tray background close/relaunch, in-app quit, and native-host framing/launch. The PKG was inspected but not authorized into `/Applications` | Packaging and recommended arm64 app path pass; background=false close leaves a process/tray alive, contrary to its label |
 | Windows x64 NSIS on Windows 11 ARM64 | Installer SHA-256 `919f6de719256d37093cc3b8dec94d81f9e8d5f517f905d50696ce3948251dc3`; Authenticode is `Valid` for Kyle Graehl. Visible current-user install, native folder choice, external serve/list/404/stop, config persistence, updater host check, native-host registration, and complete silent uninstall pass | Packaging and server pass. WebView2 clips the app-settings dialog into the blurred header. With background=false and tray=false, close leaves an invisible process; relaunch and `--quit-for-uninstall` can add stuck invisible processes instead of restoring/exiting |
-| Linux arm64 AppImage on Ubuntu 24.04 ARM64 | SHA-256 `48e64086736a4d84f8470c249cdfa0769e5a57ac165ece9cdc7f0fcc85b1891f`. Direct FUSE launch, native chooser, external serve/list/404/stop, persistence, autostart creation/removal, manual current-version result, tray hide/re-enable, no-tray one-process relaunch, in-app quit, and native-host handshake/ping/launch pass | Native ARM64 VM product path passes. WebKitGTK visually clips the settings dialog into the header even though AT-SPI initially reports ideal bounds; focus can reveal only individual rows in the strip. Background=false close still leaves the process alive. AppImage logs a host-GVFS/GLib symbol mismatch, although local chooser/serving remained functional |
+| Linux arm64 AppImage on Ubuntu 24.04 ARM64 | SHA-256 `48e64086736a4d84f8470c249cdfa0769e5a57ac165ece9cdc7f0fcc85b1891f`. Direct FUSE launch, native chooser, external serve/list/404/stop, persistence, autostart creation/removal, manual current-version result, tray hide/re-enable, no-tray one-process relaunch, in-app quit, and native-host handshake/ping/launch pass. A later native ARM64 Chrome `151.0.7922.71` run installed production extension `0.1.6`, detected the host, and cold-launched one visible window/live process | Native ARM64 VM product and store-delivery paths pass. Functional acceptance fails: WebKitGTK clips settings, background=false close remains resident, and every repeated store-extension launch leaves another defunct `ok200-desktop` child under the connected `ok200-host`. AppImage also logs the host-GVFS/GLib warning |
 
 All three servers returned the exact fixture, `Server: ok200`, expected content
 type, branded directory listing with parent navigation, and `404 Not Found`,
@@ -163,11 +165,14 @@ then released port 8080 on stop. Server configuration survived graceful
 quit/relaunch. Smoke-created application state was removed and every VM was
 returned to its original lifecycle state.
 
-No testbed had the production extension installed. Direct native-host framing
-and one-process launch passed on macOS and Linux, and Windows registration plus
-host update-check passed, but a real `v0.1.6` extension-to-host round trip was
-not repeated. The accepted `v0.1.5` production-extension evidence below
-remains the current end-to-end baseline.
+Production extension `0.1.6` with ID
+`lpkjdhnmgkhaabhimpdinmdgejoaejic` is now installed in all three VM profiles.
+Linux exercised a real store-extension → native-host → exact public AppImage
+round trip: cold launch passed with one visible window and one live process,
+but two more popup actions accumulated two persistent zombie desktop children
+until Chrome closed. macOS and Windows still lack an exact `v0.1.6`
+browser-driven round trip. The accepted `v0.1.5` production-extension evidence
+below therefore remains the last complete end-to-end baseline.
 
 The artifact/signing gate remains accepted, but the post-publication
 functional gate is **failed**. Before the next tag, render AppSettings outside

@@ -131,7 +131,7 @@ fn launch_app() -> Result<(), String> {
         for candidate in linux_app_candidates(&host_path) {
             if candidate.is_file() {
                 spawn_and_reap(
-                    std::process::Command::new(&candidate),
+                    &mut std::process::Command::new(&candidate),
                     candidate.display().to_string(),
                 )?;
                 return Ok(());
@@ -163,7 +163,7 @@ fn launch_app() -> Result<(), String> {
             let app_exe = dir.join(name);
             if app_exe.exists() {
                 spawn_and_reap(
-                    std::process::Command::new(&app_exe),
+                    &mut std::process::Command::new(&app_exe),
                     app_exe.display().to_string(),
                 )?;
                 return Ok(());

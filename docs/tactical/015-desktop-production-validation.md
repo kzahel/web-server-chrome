@@ -101,17 +101,20 @@ space as clicks. All controller smoke suites and live doctors pass. Production
 Chrome Web Store extension `0.1.6` with the exact ID is installed in the macOS
 and Windows Chrome profiles without an account login. Ubuntu ARM64 Chromium
 `150.0.7871.128` reaches the live listing but it says **Switch to Chrome to
-install extensions and themes** and offers no install action. That environment
-cannot close the Linux extension gate; add a Linux x86_64 production-Chrome
-environment before the repair release.
+install extensions and themes** and offers no install action. This is evidence
+about that Chromium/store combination, not an ARM64 extension limitation.
+Google's live Linux repository now publishes stable `arm64` Chrome packages;
+install production Chrome in the existing ARM64 VM and rerun the real store
+gate there. A separate Linux x86_64 environment is not required for this gate.
 
 - [ ] Each macOS, Windows, and Linux environment has a supported production
       browser before desktop native-host registration is tested.
 - [ ] The actual Chrome Web Store extension is installed in the intended test
       profile on all three; record exact store version and production ID.
-- [ ] Prove that the Linux architecture/browser combination can install and
-      run the store package. If it cannot, add a supported environment rather
-      than treating Chromium packaging limitations as a product pass.
+- [ ] Install official ARM64 Google Chrome in the existing Linux VM, then prove
+      that the production browser can install and run the store package. Keep
+      the earlier Chromium refusal as browser-specific evidence rather than an
+      architecture conclusion.
 - [ ] Run each authoritative testbed doctor before and after the campaign.
 - [ ] Keep controller-specific commands/state in the dotfiles wrapper and new
       controller problems in each testbed's `docs/problems.md`.

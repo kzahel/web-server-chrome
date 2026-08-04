@@ -88,7 +88,10 @@ UI looks correct.
    insufficient because store rollout can lag.
 5. Ensure a supported production browser is installed before the desktop app
    registers its native-messaging manifest. If the browser is added later,
-   relaunch or reinstall the app and prove registration again.
+   relaunch or reinstall the app and prove registration again. On Linux, do
+   not infer architecture support from a Chrome Web Store result in Chromium:
+   verify the current official Chrome package for the guest architecture and
+   test the production store path in that browser.
 6. Record the environment's starting lifecycle and user-data state. Preserve
    unrelated user data, and decide explicitly whether the production browser
    and extension are durable testbed baseline or campaign-created state.

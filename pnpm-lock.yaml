@@ -48,6 +48,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.27(postcss@8.5.6)
+      happy-dom:
+        specifier: ^20.11.1
+        version: 20.11.1
       postcss:
         specifier: ^8.4.38
         version: 8.5.6

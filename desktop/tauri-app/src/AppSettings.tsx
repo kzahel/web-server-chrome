@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface DesktopSettingsState {
   autostart: boolean;
@@ -152,99 +153,105 @@ export function AppSettings() {
         </svg>
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/40 p-3 backdrop-blur-[1px]">
-          <button
-            type="button"
-            className="fixed inset-0 cursor-default"
-            onClick={() => setOpen(false)}
-            aria-label="Close app settings"
-          />
-          <section
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="app-settings-title"
-            className="relative z-10 mx-auto mt-8 w-full max-w-sm rounded-2xl border border-gray-300/80 bg-white p-4 text-gray-900 shadow-xl dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-gray-100"
+      {open &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-50 overflow-y-auto bg-black/40 p-3 backdrop-blur-[1px]"
+            data-testid="app-settings-overlay"
           >
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 id="app-settings-title" className="text-sm font-semibold">
-                  App settings
-                </h2>
-                <p className="mt-0.5 text-[11px] text-gray-500 dark:text-gray-400">
-                  These controls are always available here.
+            <button
+              type="button"
+              className="fixed inset-0 cursor-default"
+              onClick={() => setOpen(false)}
+              aria-label="Close app settings"
+            />
+            <section
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="app-settings-title"
+              className="relative z-10 mx-auto mt-8 w-full max-w-sm rounded-2xl border border-gray-300/80 bg-white p-4 text-gray-900 shadow-xl dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-gray-100"
+              data-testid="app-settings-dialog"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2 id="app-settings-title" className="text-sm font-semibold">
+                    App settings
+                  </h2>
+                  <p className="mt-0.5 text-[11px] text-gray-500 dark:text-gray-400">
+                    These controls are always available here.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg text-lg text-gray-500 hover:bg-black/5 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d2af00] dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white"
+                  aria-label="Close app settings"
+                >
+                  ×
+                </button>
+              </div>
+
+              {settings ? (
+                <div className="mt-3 divide-y divide-gray-200 dark:divide-[#333]">
+                  <SettingToggle
+                    checked={settings.autostart}
+                    disabled={saving}
+                    label="Start at Login"
+                    description="Launch 200 OK when you sign in."
+                    onChange={(autostart) => void updateSettings({ autostart })}
+                  />
+                  <SettingToggle
+                    checked={settings.runInBackground}
+                    disabled={saving}
+                    label="Run in Background"
+                    description="Keep running when the main window is closed."
+                    onChange={(runInBackground) =>
+                      void updateSettings({ runInBackground })
+                    }
+                  />
+                  <SettingToggle
+                    checked={settings.showTrayIcon}
+                    disabled={saving}
+                    label={settings.trayIconLabel}
+                    description="Keep a shortcut to 200 OK in the system area."
+                    onChange={(showTrayIcon) =>
+                      void updateSettings({ showTrayIcon })
+                    }
+                  />
+                </div>
+              ) : (
+                <p className="mt-4 text-xs text-gray-500">Loading settings…</p>
+              )}
+
+              {error && (
+                <p
+                  className="mt-3 rounded-lg bg-red-50 px-2.5 py-2 text-[11px] leading-4 text-red-700 dark:bg-red-950/40 dark:text-red-200"
+                  role="alert"
+                >
+                  {error}
                 </p>
+              )}
+
+              <div className="mt-4 flex items-center justify-between gap-2 border-t border-gray-200 pt-3 dark:border-[#333]">
+                <button
+                  type="button"
+                  onClick={() => void checkForUpdates()}
+                  className="rounded-lg border border-gray-300 px-2.5 py-1.5 text-[11px] font-semibold transition hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d2af00] dark:border-[#444] dark:hover:bg-white/10"
+                >
+                  Check for Updates
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void invoke("desktop_quit")}
+                  className="rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-red-700 transition hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:text-red-300 dark:hover:bg-red-950/40"
+                >
+                  Quit 200 OK
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-lg text-gray-500 hover:bg-black/5 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d2af00] dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white"
-                aria-label="Close app settings"
-              >
-                ×
-              </button>
-            </div>
-
-            {settings ? (
-              <div className="mt-3 divide-y divide-gray-200 dark:divide-[#333]">
-                <SettingToggle
-                  checked={settings.autostart}
-                  disabled={saving}
-                  label="Start at Login"
-                  description="Launch 200 OK when you sign in."
-                  onChange={(autostart) => void updateSettings({ autostart })}
-                />
-                <SettingToggle
-                  checked={settings.runInBackground}
-                  disabled={saving}
-                  label="Run in Background"
-                  description="Keep running when the main window is closed."
-                  onChange={(runInBackground) =>
-                    void updateSettings({ runInBackground })
-                  }
-                />
-                <SettingToggle
-                  checked={settings.showTrayIcon}
-                  disabled={saving}
-                  label={settings.trayIconLabel}
-                  description="Keep a shortcut to 200 OK in the system area."
-                  onChange={(showTrayIcon) =>
-                    void updateSettings({ showTrayIcon })
-                  }
-                />
-              </div>
-            ) : (
-              <p className="mt-4 text-xs text-gray-500">Loading settings…</p>
-            )}
-
-            {error && (
-              <p
-                className="mt-3 rounded-lg bg-red-50 px-2.5 py-2 text-[11px] leading-4 text-red-700 dark:bg-red-950/40 dark:text-red-200"
-                role="alert"
-              >
-                {error}
-              </p>
-            )}
-
-            <div className="mt-4 flex items-center justify-between gap-2 border-t border-gray-200 pt-3 dark:border-[#333]">
-              <button
-                type="button"
-                onClick={() => void checkForUpdates()}
-                className="rounded-lg border border-gray-300 px-2.5 py-1.5 text-[11px] font-semibold transition hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d2af00] dark:border-[#444] dark:hover:bg-white/10"
-              >
-                Check for Updates
-              </button>
-              <button
-                type="button"
-                onClick={() => void invoke("desktop_quit")}
-                className="rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-red-700 transition hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:text-red-300 dark:hover:bg-red-950/40"
-              >
-                Quit 200 OK
-              </button>
-            </div>
-          </section>
-        </div>
-      )}
+            </section>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

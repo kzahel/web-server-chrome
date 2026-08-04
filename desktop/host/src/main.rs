@@ -2,6 +2,19 @@ mod telemetry;
 
 use std::io::{self, Read, Write};
 
+#[cfg(any(target_os = "linux", target_os = "windows"))]
+fn spawn_and_reap(command: &mut std::process::Command, label: String) -> Result<(), String> {
+    let mut child = command
+        .spawn()
+        .map_err(|error| format!("failed to spawn {label}: {error}"))?;
+    std::thread::spawn(move || {
+        if let Err(error) = child.wait() {
+            eprintln!("failed to reap {label}: {error}");
+        }
+    });
+    Ok(())
+}
+
 fn read_message_from(reader: &mut impl Read) -> io::Result<Option<serde_json::Value>> {
     let mut len_buf = [0u8; 4];
     match reader.read_exact(&mut len_buf) {
@@ -117,9 +130,10 @@ fn launch_app() -> Result<(), String> {
         let host_path = std::env::current_exe().map_err(|e| format!("cannot find own exe: {e}"))?;
         for candidate in linux_app_candidates(&host_path) {
             if candidate.is_file() {
-                std::process::Command::new(&candidate)
-                    .spawn()
-                    .map_err(|e| format!("failed to spawn {}: {e}", candidate.display()))?;
+                spawn_and_reap(
+                    std::process::Command::new(&candidate),
+                    candidate.display().to_string(),
+                )?;
                 return Ok(());
             }
         }
@@ -148,9 +162,10 @@ fn launch_app() -> Result<(), String> {
         for name in ["ok200-desktop.exe", "200 OK.exe"] {
             let app_exe = dir.join(name);
             if app_exe.exists() {
-                std::process::Command::new(&app_exe)
-                    .spawn()
-                    .map_err(|e| format!("failed to spawn {}: {e}", app_exe.display()))?;
+                spawn_and_reap(
+                    std::process::Command::new(&app_exe),
+                    app_exe.display().to_string(),
+                )?;
                 return Ok(());
             }
         }
@@ -196,6 +211,10 @@ mod tests {
     #[cfg(target_os = "linux")]
     use serial_test::serial;
     use std::io::Cursor;
+    #[cfg(target_os = "linux")]
+    use std::os::unix::fs::PermissionsExt;
+    #[cfg(target_os = "linux")]
+    use std::time::{Duration, Instant};
 
     #[test]
     fn test_roundtrip_message() {
@@ -271,6 +290,68 @@ mod tests {
         let host = tmp.path().join("lib/ok200/ok200-host");
         let candidates = linux_app_candidates(&host);
         assert!(candidates.contains(&appimage));
+
+        match original {
+            Some(val) => std::env::set_var(key, val),
+            None => std::env::remove_var(key),
+        }
+    }
+
+    #[cfg(target_os = "linux")]
+    #[test]
+    #[serial]
+    fn test_repeated_linux_launches_are_reaped_while_host_stays_alive() {
+        let tmp = tempfile::tempdir().unwrap();
+        let key = "OK200_CONFIG_DIR";
+        let original = std::env::var(key).ok();
+        std::env::set_var(key, tmp.path().join("config"));
+
+        let pid_file = tmp.path().join("pids");
+        let appimage = tmp.path().join("fake.AppImage");
+        std::fs::write(
+            &appimage,
+            format!(
+                "#!/bin/sh\nprintf '%s\\n' \"$$\" >> '{}'\nsleep 1\n",
+                pid_file.display()
+            ),
+        )
+        .unwrap();
+        let mut permissions = std::fs::metadata(&appimage).unwrap().permissions();
+        permissions.set_mode(0o755);
+        std::fs::set_permissions(&appimage, permissions).unwrap();
+        ok200_common::record_appimage_path(&appimage).unwrap();
+
+        let response_started = Instant::now();
+        for _ in 0..3 {
+            let response = handle_message(&serde_json::json!({"action": "launch"}));
+            assert_eq!(response["ok"], true);
+        }
+        assert!(
+            response_started.elapsed() < Duration::from_millis(500),
+            "native messaging launch responses waited for child exit"
+        );
+
+        let deadline = Instant::now() + Duration::from_secs(10);
+        let pids = loop {
+            let pids = std::fs::read_to_string(&pid_file)
+                .unwrap_or_default()
+                .lines()
+                .map(str::to_owned)
+                .collect::<Vec<_>>();
+            if pids.len() == 3 {
+                break pids;
+            }
+            assert!(Instant::now() < deadline, "fake apps did not all launch");
+            std::thread::sleep(Duration::from_millis(25));
+        };
+
+        for pid in pids {
+            let proc_path = std::path::PathBuf::from(format!("/proc/{pid}"));
+            while proc_path.exists() && Instant::now() < deadline {
+                std::thread::sleep(Duration::from_millis(25));
+            }
+            assert!(!proc_path.exists(), "launch child {pid} was not reaped");
+        }
 
         match original {
             Some(val) => std::env::set_var(key, val),

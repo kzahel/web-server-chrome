@@ -195,6 +195,20 @@ fn show_main_window<R: tauri::Runtime>(app: &tauri::AppHandle<R>) {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum CloseAction {
+    Hide,
+    Exit,
+}
+
+fn close_action(run_in_background: bool) -> CloseAction {
+    if run_in_background {
+        CloseAction::Hide
+    } else {
+        CloseAction::Exit
+    }
+}
+
 // -- Native menu/tray check item sync --
 
 struct CheckItemSync(HashMap<String, Vec<CheckMenuItem<tauri::Wry>>>);
@@ -400,13 +414,13 @@ pub fn run() {
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {
                 let state = window.app_handle().state::<Mutex<Settings>>();
-                if state.lock().unwrap().run_in_background {
-                    let _ = window.hide();
-                    api.prevent_close();
-                } else if let Some(tray) = window.app_handle().tray_by_id("tray") {
-                    let _ = tray.set_tooltip(Some("200 OK"));
-                    #[cfg(target_os = "macos")]
-                    let _ = tray.set_title(Some(""));
+                let run_in_background = state.lock().unwrap().run_in_background;
+                match close_action(run_in_background) {
+                    CloseAction::Hide => {
+                        let _ = window.hide();
+                        api.prevent_close();
+                    }
+                    CloseAction::Exit => window.app_handle().exit(0),
                 }
             }
         })
@@ -652,6 +666,12 @@ mod tests {
         assert!(!s.autostart);
         assert!(s.run_in_background);
         assert!(s.show_tray_icon);
+    }
+
+    #[test]
+    fn test_close_action_matches_background_policy() {
+        assert_eq!(close_action(true), CloseAction::Hide);
+        assert_eq!(close_action(false), CloseAction::Exit);
     }
 
     #[test]

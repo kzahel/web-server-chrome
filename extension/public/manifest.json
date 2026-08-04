@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "200 OK Web Server",
   "short_name": "200 OK",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Launch 200 OK on desktop or ChromeOS; set up and control its ChromeOS Linux server. Successor to Web Server for Chrome.",
   "permissions": ["nativeMessaging"],
   "optional_host_permissions": ["http://penguin.linux.test/*"],

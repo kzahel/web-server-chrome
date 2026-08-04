@@ -20,6 +20,11 @@ that product through `~/code/ios-device-testbed`; the testbed never builds this
 project and this project never reimplements testbed device selection or lease
 management.
 
-The first implementation slice intentionally serves one fixed DEBUG response
-on port 8080. It exists only to prove the actual phone listener and LAN path
-before the complete selected-folder server is built.
+The app is a foreground-only, read-only server for one folder selected through
+Files. Port, local-network access, directory listings, CORS, and SPA fallback
+are configured in the native SwiftUI screen. Moving the app to the background
+stops the listener by design.
+
+Simulator UI tests use a fixture installed only in DEBUG builds through the
+`-use-ok200-ui-test-fixture` launch argument. The fixture and reset launch hooks
+are compiled out of Release builds.

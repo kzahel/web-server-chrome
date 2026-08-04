@@ -1,7 +1,17 @@
 import Foundation
 import Network
 
-final class SwiftHTTPServer: @unchecked Sendable {
+protocol HTTPServing: AnyObject, Sendable {
+    var isRunning: Bool { get }
+    func start(
+        rootURL: URL,
+        configuration: ServerConfiguration,
+        stateHandler: @escaping SwiftHTTPServer.StateHandler
+    ) throws
+    func stop()
+}
+
+final class SwiftHTTPServer: HTTPServing, @unchecked Sendable {
     static let maximumClients = 32
     static let requestTimeout: TimeInterval = 10
     static let responseTimeout: TimeInterval = 30

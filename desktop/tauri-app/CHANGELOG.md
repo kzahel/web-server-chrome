@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.1.6]
+
 ### Added
 
 - Add a canonical in-app settings panel with Start at Login, Run in

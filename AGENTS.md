@@ -41,8 +41,10 @@ the root [`topics.md`](topics.md) log before reusing them across a series.
   [`docs/tactical/009-release-confidence-closeout.md`](docs/tactical/009-release-confidence-closeout.md)
 - Active desktop production repair and validation:
   [`docs/tactical/015-desktop-production-validation.md`](docs/tactical/015-desktop-production-validation.md)
-- Active native iOS implementation and physical-device validation:
+- Completed native iOS implementation and physical-device validation:
   [`docs/tactical/016-native-swift-ios-app.md`](docs/tactical/016-native-swift-ios-app.md)
+- Planned iOS store-readiness follow-up:
+  [`docs/tactical/017-ios-store-readiness.md`](docs/tactical/017-ios-store-readiness.md)
 - Desktop post-publication production runbook:
   [`docs/runbooks/desktop-production-validation.md`](docs/runbooks/desktop-production-validation.md)
 - Active ChromeOS launcher and network closeout:

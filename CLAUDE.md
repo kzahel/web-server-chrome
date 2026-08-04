@@ -22,6 +22,10 @@ The scoped Play-free ChromeOS Linux fallback lives in
 [docs/tactical/012-chromeos-crostini-fallback.md](docs/tactical/012-chromeos-crostini-fallback.md).
 The active ChromeOS Linux product-completion plan lives in
 [docs/tactical/014-chromeos-crostini-product-completion.md](docs/tactical/014-chromeos-crostini-product-completion.md).
+The native iOS MVP is complete in
+[docs/tactical/016-native-swift-ios-app.md](docs/tactical/016-native-swift-ios-app.md);
+its separate store-readiness follow-up is
+[docs/tactical/017-ios-store-readiness.md](docs/tactical/017-ios-store-readiness.md).
 
 ## Quick Context
 
@@ -37,10 +41,11 @@ an exact-version round trip through the production Chrome Web Store extension.
 Do not describe it as production-accepted; Tactical 015 owns the repair and
 post-publication rerun.
 
-A standalone native SwiftUI/Swift iOS app is now an accepted direction, but no
-iOS source or release exists yet. Tactical 016 owns its first implementation
-and requires an external same-Wi-Fi fetch from the attached physical phone via
-the project-neutral `~/code/ios-device-testbed` QA path.
+A standalone native SwiftUI/Swift iOS app now exists and has passed its
+simulator, Release-hygiene, Files/bookmark, lifecycle, and external same-Wi-Fi
+acceptance gates on the attached physical phone through the project-neutral
+`~/code/ios-device-testbed` path. It is not released; Tactical 017 owns the
+separate App Store/TestFlight lane.
 
 The old Transistor proof is not the current desktop architecture. Desktop
 keeps Tauri and its webview for control/configuration while a small Rust core
@@ -65,8 +70,8 @@ Current repository shape:
 - `packages/ui` — shared React controls used by the desktop Tauri webview.
 - `android` — Compose app with a Kotlin HTTP/storage core and native Android
   lifecycle, permission, background, wake, boot, and battery policy.
-- planned `ios` — independent SwiftUI controls, Swift HTTP/storage code, and an
-  intentionally foreground-only lifecycle; the directory does not exist yet.
+- `ios` — independent SwiftUI controls, Swift HTTP/storage code, security-scoped
+  Files access, and an intentionally foreground-only lifecycle.
 - `desktop` — Tauri app with a Tauri-independent Rust HTTP core and a thin
   React/Tauri command/event control layer.
 - `desktop/crostini` — independently released ChromeOS Linux
@@ -121,6 +126,8 @@ This loads PATH entries for Java, Rust/Cargo, and other development tools.
 - Biome for linting and formatting (`pnpm lint`, `pnpm format`)
 - Vitest for testing (`pnpm test`)
 - `pnpm typecheck` for type checking
+- SwiftUI/Swift 6 and Network.framework for the independent iOS application
+- xcodegen for the checked-in iOS Xcode project
 
 ## Conventions
 
@@ -151,6 +158,21 @@ After editing Kotlin/Java files in `android/`:
 2. `./gradlew :app:testDebugUnitTest` - Run JVM tests
 3. `./gradlew :app:lintDebug` - Run Android lint
 4. `./gradlew connectedDebugAndroidTest` - Run device UI tests when an AVD is available
+
+## iOS/Swift Editing Workflow
+
+After editing Swift or iOS project files under `ios/`:
+
+1. `ios/scripts/check.sh` - Regenerate the project, run simulator unit/UI tests,
+   build Release, reject DEBUG hooks in Release, and reject a committed team.
+2. `ios/scripts/build-device.sh` - Produce the explicit development-signed app
+   using ignored signing selection from `~/code/ios-device-testbed`.
+3. `ios/scripts/device-smoke.sh` - When the physical phone is available, install
+   through the testbed, fetch its displayed Wi-Fi URL externally, and verify
+   background shutdown.
+
+Do not call the testbed's underlying provider directly or commit a signing team,
+device identifier, certificate, profile, account, or private session output.
 
 ## Android Emulator Management
 

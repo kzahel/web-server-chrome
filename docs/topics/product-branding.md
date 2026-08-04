@@ -62,7 +62,7 @@ distinctive name and the product category. The compact in-app header stays
 **200 OK** with a nearby **Web Server** descriptor, and a home-screen launcher
 may truncate the longer metadata label visually.
 
-The planned iOS application follows the same rule: its Home Screen and system
+The iOS application follows the same rule: its Home Screen and system
 metadata use **200 OK Web Server**, while the compact SwiftUI header uses the
 canonical artwork with **200 OK** and a nearby **Web Server** descriptor.
 
@@ -107,8 +107,8 @@ Chromebooks or accounts. The ChromeOS Linux component's
 | Desktop window and primary header | **200 OK Web Server** |
 | Android launcher/system metadata | **200 OK Web Server** for launcher search |
 | Android compact UI | **200 OK**, with **Web Server** descriptor |
-| iOS launcher/system metadata (planned) | **200 OK Web Server** for system search |
-| iOS compact UI (planned) | **200 OK**, with **Web Server** descriptor |
+| iOS launcher/system metadata | **200 OK Web Server** for system search |
+| iOS compact UI | **200 OK**, with **Web Server** descriptor |
 | Chrome extension listing and popup | **200 OK Web Server**; describe it as the launcher for the desktop or Android app |
 | Website site name/header | **200 OK Web Server** |
 | Website SEO | Lead with **200 OK Web Server** and explicitly include **successor to Web Server for Chrome** |
@@ -130,7 +130,7 @@ Chromebooks or accounts. The ChromeOS Linux component's
 
 The stable technical identities already align with this decision:
 
-- `app.ok200.desktop` and `app.ok200.android`;
+- `app.ok200.desktop`, `app.ok200.android`, and `app.ok200.ios`;
 - the `@ok200/*` workspace package scope and independently named
   `ok200-crostini` component;
 - `ok200.app`;
@@ -152,6 +152,11 @@ display name to the system, and retains **200 OK** as its short bundle name.
 Unreleased Windows, Linux, and ChromeOS Linux source now likewise exposes the
 full descriptive name to system launch/search surfaces while preserving their
 technical identities.
+
+The native iOS source uses **200 OK Web Server** for bundle display/system
+metadata and the compact artwork, **200 OK**, and **Web Server** treatment in
+SwiftUI. Its signed development build was inspected on the physical iPhone SE;
+App Store metadata and screenshots remain the separate store-readiness lane.
 
 The unpublished Node `ok200` package has been retired. Its command name and
 branding survive only in accurate historical records; there is no current CLI
@@ -194,8 +199,8 @@ Validation on 2026-07-28:
 - macOS, Windows, Linux, ChromeOS Linux, and Android launcher search match
   **Web Server** while their compact in-app treatment and stable technical
   identities remain intact.
-- Planned iOS metadata and compact-header treatment follow the same full-name
-  and short-name split before a signed candidate is described as implemented.
+- iOS metadata and compact-header treatment follow the same full-name and
+  short-name split; App Store claims still require store-delivered evidence.
 - Website and migration metadata still contain the exact legacy name in
   explicit successor/migration context.
 - Extension copy states that the desktop or Android application serves files.

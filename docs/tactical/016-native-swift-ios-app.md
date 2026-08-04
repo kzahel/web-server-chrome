@@ -1,6 +1,6 @@
 # Tactical 016: Native Swift iOS App
 
-**Status:** active plan; implementation not started  
+**Status:** complete; native MVP and physical-device acceptance passed on 2026-08-04
 **Topic:** `ios-native-swift`  
 **Baseline:** `01388d0`  
 **Scope:** native iOS application and its project-owned build/tests, plus
@@ -219,6 +219,39 @@ another machine on the real LAN.
 4. Create a separate store-readiness tactical for App Store Connect identity,
    privacy metadata, screenshots, TestFlight, review notes, signing/release
    automation, and exact store-delivered validation.
+
+## Completion record
+
+All six phases completed on 2026-08-04. The execution series is:
+
+- `87d9882` — accepted iOS runtime/topic and Tactical 016 plan;
+- `bff0594` — native iOS 17 scaffold and signed physical `NWListener` proof;
+- `322e1a0` — bounded read-only HTTP implementation, security-scoped bookmark
+  storage, and protocol/storage tests;
+- `85d8ff9` — SwiftUI control surface, application controller, system folder
+  picker, in-app Safari preview, persistence, lifecycle, and UI tests; and
+- `c6a5f94` — repeatable simulator/Release/device gates plus phone-discovered
+  accessibility and keyboard repairs.
+
+`ios/scripts/check.sh` passed all 26 declared unit/UI tests and the Release
+fixture/signing checks. `ios/scripts/device-smoke.sh` then built and installed a
+signed app through `~/code/ios-device-testbed`, parsed the Wi-Fi URL displayed
+by the UI, fetched the fixture from the external Mac, exercised representative
+file/range/missing behavior, pressed Home, and verified that the same URL was
+unreachable.
+
+The broader one-time physical campaign also proved LAN Off rejection versus
+LAN On reachability, port-`0` reassignment, the complete external HTTP matrix,
+CORS and SPA options, localhost in-app preview, stop/restart, truthful
+background resume, a real Files-selected bookmark across relaunch, simulated
+invalid-bookmark recovery, small-phone light/dark and accessibility-sized text,
+and settings locked while Running. Exact details and remaining provider/device
+gaps live in [`../topics/ios-runtime.md`](../topics/ios-runtime.md).
+
+No testbed source change, third-party runtime, background entitlement, shared
+platform code, write access, signing identifier, or store mutation was needed.
+The separate distribution lane is now bounded by
+[`017-ios-store-readiness.md`](017-ios-store-readiness.md).
 
 ## Exit criteria
 

@@ -1,7 +1,7 @@
 # UI Design
 
 Cross-platform visual design for 200 OK across Android (Jetpack Compose),
-desktop (Tauri/HTML), and the planned native iOS application (SwiftUI). This
+desktop (Tauri/HTML), and the native iOS application (SwiftUI). This
 document includes future responsive directions; implemented layouts remain
 platform-specific.
 
@@ -14,8 +14,8 @@ remote UI retired.
 The original cross-platform TypeScript engine assumptions are superseded by
 the independent Rust desktop and Kotlin Android runtimes in
 [`topics/desktop-runtime.md`](topics/desktop-runtime.md) and
-[`topics/android-runtime.md`](topics/android-runtime.md). The accepted iOS
-direction is a third independent Swift implementation in
+[`topics/android-runtime.md`](topics/android-runtime.md). The implemented iOS
+surface is a third independent Swift implementation in
 [`topics/ios-runtime.md`](topics/ios-runtime.md).
 
 ## Principles
@@ -204,7 +204,7 @@ latent shared-UI behavior.
 |----------|-----|----------------|
 | **Desktop (Tauri)** | Shared React controls in the webview | `TauriServerManager` → commands/events to Rust-owned servers |
 | **Android** | Jetpack Compose (native) | Application controller → Kotlin HTTP/storage core |
-| **iOS (planned)** | SwiftUI (native) | Application controller → Swift HTTP/storage core |
+| **iOS** | SwiftUI (native) | Application controller → Swift HTTP/storage core |
 | **ChromeOS Linux** | Extension setup/control page | Authenticated Crostini controller → shared Rust core |
 
 ## Platform Notes
@@ -224,7 +224,7 @@ latent shared-UI behavior.
 - System tray support for background mode
 - Native file picker via Tauri dialog API
 
-### iOS (SwiftUI, planned)
+### iOS (SwiftUI)
 - Uses the same compact branded header, server-status hierarchy, folder,
   network, serving-option, and URL concepts as Android and desktop
 - Uses native SwiftUI controls and iOS spacing rather than copying another App

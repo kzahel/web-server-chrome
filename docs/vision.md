@@ -14,8 +14,8 @@ The replacement is a family of small platform surfaces:
 
 - a desktop application for Windows, macOS, and Linux;
 - an Android application that is also the ChromeOS server path;
-- a planned native iOS application for foreground serving from a user-selected
-  Files folder;
+- a native iOS application for foreground serving from a user-selected Files
+  folder;
 - a Chrome extension that provides familiar browser presence and launches the
   correct installed application; and
 - a small ChromeOS Linux launcher/controller for users without Google Play.
@@ -32,7 +32,7 @@ As of 2026-08-04:
 | Desktop source | Same Rust-native runtime with AppImage-first Linux integration, Linux ARM64 artifacts, and package-aware updates | Published baseline is `v0.1.5`; RPM-native, MSI-elevated, and physical ARM64 product smoke remain claim-only gaps |
 | Android / ChromeOS source | Compose UI and native Kotlin HTTP/storage core | Kotlin cutover and ChromeOS LAN-address correction physically accepted; signed upload candidate published in GitHub release `android-v0.2.1` |
 | Android / ChromeOS Play artifact | The maintainer reports the native Kotlin `v0.2.1` AAB submitted; store delivery can still differ during review | Play-delivered validation remains open |
-| iOS plan | Independent SwiftUI controls and Swift HTTP/storage implementation | Accepted direction; source and release do not exist yet; Tactical 016 starts with physical same-Wi-Fi proof |
+| iOS source | Independent SwiftUI controls and Swift HTTP/storage implementation | Native MVP and physical same-Wi-Fi acceptance complete; App Store/TestFlight lane remains open |
 | Chrome extension | MV3 launcher/status UI | Public `v0.1.6` GitHub candidate includes the ChromeOS Linux controller, peer Linux/Android chooser, corrected manifest/listing description, and action-preserving retry; Web Store upload remains maintainer-owned |
 | ChromeOS Linux choice | Extension control UI plus a small Rust Crostini launcher/controller | Public `crostini-v0.1.1`, update route, installer, website guide, x86_64 ChromeOS proof, ARM64 Linux proof, and extension controller are complete; lifecycle and native ARM ChromeOS gaps remain documented |
 | Legacy Chrome App | Chrome packaged-app APIs | Migration channel approaching end of life |
@@ -71,15 +71,15 @@ a best-effort Android intent. Because an ordinary extension cannot detect Play
 or app-installation state, it also exposes a separate HTTPS options route with
 the exact Play listing and non-Android alternatives.
 
-Desktop and Android intentionally have separate Rust and Kotlin implementations.
-Their common feature/HTTP contract is maintained through tests, not a shared
-embedded runtime. The currently published Android `v0.1.2` remains the earlier
-artifact until a separately approved Play release. See
+Desktop, Android, and iOS intentionally have separate Rust, Kotlin, and Swift
+implementations. Their common feature/HTTP contract is maintained through
+tests, not a shared embedded runtime. The currently published Android `v0.1.2`
+remains the earlier artifact until a separately approved Play release. See
 [`topics/android-runtime.md`](topics/android-runtime.md).
 
 ### iOS
 
-iOS will be a third independent native implementation: SwiftUI controls, one
+iOS is a third independent native implementation: SwiftUI controls, one
 application-scoped controller, a small Swift HTTP server over Apple's Network
 framework, and read-only access to a security-scoped Files directory. It reuses
 canonical icons and product design language, not Android, desktop, Rust, React,
@@ -131,7 +131,7 @@ This is a scoped correction, not a mandate to unify every platform immediately.
 - **Native platform ownership.** File authorization, networking, background
   lifecycle, and installation follow platform rules.
 - **Honest surfaces.** The extension launches; Android, desktop, and the
-  planned foreground iOS app serve.
+  foreground iOS app serve.
 - **Safe local defaults.** Loopback by default, explicit LAN exposure, strict
   path containment, bounded parsing, and clear running state.
 - **Updatable replacements.** Stable application identity and signed update
@@ -162,14 +162,13 @@ This is a scoped correction, not a mandate to unify every platform immediately.
   released and candidate runtimes.
 - Ship through the already-proven signed updater path.
 
-### 3. Native iOS MVP
+### 3. Native iOS MVP and distribution
 
-- Build a standalone SwiftUI/Swift app with no shared runtime or UI code.
-- Preserve the core one-folder, one-server workflow and common serving options.
-- Stop truthfully on background rather than exposing unsupported lifecycle
-  controls.
-- Prove the exact signed development app on a physical phone and fetch it from
-  a separate Mac on the same Wi-Fi network.
+- The standalone SwiftUI/Swift app, one-folder/one-server workflow, common
+  serving options, truthful background stop, and external physical-phone LAN
+  proof are complete.
+- Keep App Store identity, privacy metadata, screenshots, TestFlight, review,
+  and exact store-delivered acceptance as the separate next lane.
 
 ### 4. Legacy parity
 
@@ -222,6 +221,7 @@ After the replacement and release path are dependable:
 - [Legacy migration topic](topics/legacy-app-migration.md)
 - [Tactical 000: historical desktop implementation sequence](tactical/000-desktop-native-core-and-release-readiness.md)
 - [Tactical 011: active extension and ChromeOS closeout](tactical/011-extension-launcher-and-chromeos-network-readiness.md)
-- [Tactical 016: active native iOS implementation and physical QA](tactical/016-native-swift-ios-app.md)
+- [Tactical 016: completed native iOS implementation and physical QA](tactical/016-native-swift-ios-app.md)
+- [Tactical 017: planned iOS store readiness](tactical/017-ios-store-readiness.md)
 - [`research/`](research/) — historical comparisons and proposals; not
   automatically current decisions

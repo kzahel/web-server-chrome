@@ -11,7 +11,8 @@ The original Chrome App was used by 200,000+ people for local web development an
 - **Chrome Extension** — A familiar launcher for the installed server app
 - **Desktop App** — Native app (Tauri) for Mac, Windows, and Linux
 - **Android / ChromeOS** — Native app, published on Google Play
-- **iOS** — Planned native SwiftUI/Swift app with foreground serving
+- **iOS** — Native SwiftUI/Swift app with foreground serving (source/device
+  accepted; App Store release pending)
 - **ChromeOS Linux** — A small Rust launcher/controller for Chromebooks
   without Google Play
 
@@ -31,6 +32,8 @@ The Chrome extension, Android app, ChromeOS Linux component, and signed desktop
 - Android source uses a native Kotlin HTTP/storage core behind its Compose UI;
 - desktop `v0.1.5` uses the standalone Rust HTTP core behind the Tauri/React
   control surface;
+- iOS source uses its own Swift HTTP/storage core behind SwiftUI and stops when
+  the app backgrounds;
 - the ChromeOS Linux controller reuses that Rust core; and
 - the extension is a launcher/status surface, not the HTTP server.
 
@@ -44,11 +47,12 @@ APK and AAB with the physically validated ChromeOS LAN-address correction. The
 maintainer reports `v0.2.1` submitted to Play; Play may continue serving an
 earlier artifact until review and rollout finish.
 
-A standalone native iOS application is now planned but not implemented or
-released. It will use SwiftUI and a Swift HTTP/storage implementation, reuse
-the product artwork rather than another platform's code, and stop when iOS
-backgrounds it. Its first acceptance gate is a real same-Wi-Fi fetch from the
-attached physical phone.
+A standalone native iOS application is now implemented but not released. It
+uses SwiftUI and a Swift HTTP/storage implementation, reuses the product
+artwork rather than another platform's code, and stops when iOS backgrounds
+it. Its simulator/Release gates and same-Wi-Fi external HTTP campaign passed on
+the attached physical iPhone; App Store packaging and TestFlight are separate
+remaining work.
 
 See the living
 [product branding decision](docs/topics/product-branding.md),
@@ -84,7 +88,8 @@ The scoped Play-free Linux fallback is recorded in
 ## Roadmap
 
 ### Coming Soon
-- Build and physically validate the first native foreground-only iOS app
+- Package, TestFlight-test, review, and accept the exact App Store-delivered
+  native iOS app
 - Complete store review, rollout, and controlled delivery proof for the
   submitted Android and launcher-focused extension candidates
 - Complete the final legacy Chrome App migration update
@@ -101,7 +106,7 @@ See [docs/vision.md](docs/vision.md) for the full roadmap.
 
 ## Architecture
 
-The repository contains two supported server cores and the platform
+The repository contains three supported server cores and the platform
 applications that use or launch them:
 
 ```
@@ -111,22 +116,24 @@ desktop/             Tauri/React controls plus Rust application state
 desktop/core/        Rust HTTP core and repository-only smoke executable
 desktop/crostini/    ChromeOS Linux launcher/controller using the Rust core
 android/             Compose app plus Kotlin HTTP/storage and lifecycle core
+ios/                 SwiftUI app plus Swift HTTP/storage and foreground lifecycle
 ```
 
-Desktop and ChromeOS Linux use native Rust, while Android uses native Kotlin.
-Their core feature contract is kept broadly compatible through tests rather
-than shared runtime source. The Tauri webview remains for configuration and
-control, while native Rust owns desktop sockets, filesystem access, HTTP
-behavior, and server lifecycle. The small `ok200-core` executable is retained
-only for repository development and smoke testing; it is not an independently
-packaged CLI product. Authoritative runtime boundaries live in
+Desktop and ChromeOS Linux use native Rust, Android uses native Kotlin, and
+iOS uses native Swift. Their core feature contract is kept broadly compatible
+through tests rather than shared runtime source. The Tauri webview remains for
+configuration and control, while native Rust owns desktop sockets, filesystem
+access, HTTP behavior, and server lifecycle. The small `ok200-core` executable
+is retained only for repository development and smoke testing; it is not an
+independently packaged CLI product. Authoritative runtime boundaries live in
 [`docs/topics/desktop-runtime.md`](docs/topics/desktop-runtime.md) and
 [`docs/topics/android-runtime.md`](docs/topics/android-runtime.md).
 
-The accepted iOS direction is a separate native SwiftUI/Swift implementation;
-no `ios/` source directory or release exists yet. See
+The iOS source is a separate native SwiftUI/Swift implementation under `ios/`;
+its development candidate is physically accepted but no App Store release
+exists yet. See
 [`docs/topics/ios-runtime.md`](docs/topics/ios-runtime.md) and
-[`docs/tactical/016-native-swift-ios-app.md`](docs/tactical/016-native-swift-ios-app.md).
+[`docs/tactical/017-ios-store-readiness.md`](docs/tactical/017-ios-store-readiness.md).
 
 ## Migration from Chrome App
 
@@ -160,6 +167,13 @@ cargo run -p ok200-core -- --root .. --port 0
 cargo fmt --all -- --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
+```
+
+For the native iOS application:
+
+```sh
+ios/scripts/check.sh          # simulator unit/UI tests and Release hygiene
+ios/scripts/device-smoke.sh   # signed phone install, LAN fetch, background stop
 ```
 
 ## License

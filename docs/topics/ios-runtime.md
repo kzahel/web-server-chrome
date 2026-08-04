@@ -2,9 +2,8 @@
 
 Topic: ios-native-swift
 
-Status: **accepted native direction; implementation has not started. The host
-build tools and physical-device install, automation, and LAN-validation path
-are ready.**
+Status: **native MVP implemented and accepted on the attached physical phone;
+App Store packaging, TestFlight, and publication have not started.**
 
 Last reconciled: **2026-08-04**.
 
@@ -14,7 +13,7 @@ continuing iOS product and runtime decisions after that tactical.
 
 ## Product decision
 
-200 OK will have a small, ordinary native iOS application analogous to the
+200 OK has a small, ordinary native iOS application analogous to the
 Android and desktop apps. It performs the same core job—select a folder, start
 a read-only HTTP server, and show reachable URLs—but follows iOS storage and
 application-lifecycle rules.
@@ -38,10 +37,10 @@ controls, or a generated cross-platform layer. It may reuse the canonical 200
 OK icons and artwork. Product terminology, information order, and externally
 observable HTTP behavior are contracts to align, not source code to share.
 
-The planned system application name is **200 OK Web Server**, with compact
+The system application name is **200 OK Web Server**, with compact
 **200 OK** and **Web Server** treatment inside the app. The intended bundle
-identifier is `app.ok200.ios`, subject to the normal signing and App Store
-reservation check when the Xcode project is created.
+identifier is `app.ok200.ios`; its App Store Connect reservation remains a
+store-readiness gate.
 
 The initial deployment target is iOS 17.0. The implementation uses APIs
 available at that target even though the attached validation phone runs a newer
@@ -198,8 +197,8 @@ bin/ios-device doctor
 
 On 2026-08-04, those read-only commands reported the selected phone connected,
 unlocked, in Developer Mode, and `doctor: ready`, with valid Xcode, signing,
-and cached-runner checks. This proves controller readiness only; no 200 OK iOS
-application has been built or tested yet.
+and cached-runner checks. The campaign below then used that controller without
+changing it.
 
 The product build then passes its explicit signed `.app` path to
 `bin/ios-device install` and runs multi-step work through
@@ -231,6 +230,74 @@ The simulator remains useful for unit/UI coverage and layout variants, but it
 cannot close the real local-network privacy, Files-provider, signing, or
 Mac-to-phone LAN gates.
 
+## Implemented state and evidence
+
+The repository now contains a generated Xcode project and its xcodegen source
+under `ios/`, with application, Swift Testing, and XCTest UI targets. The app
+is native SwiftUI/Swift and links no Android, Rust, React, Tauri, or third-party
+HTTP runtime. Its application-scoped `IOSServerController` owns persisted
+configuration, security-scoped root leases, one `SwiftHTTPServer`, observable
+status, current Wi-Fi URLs, and the SwiftUI scene transition.
+
+The native HTTP implementation now provides:
+
+- bounded HTTP/1.0 and HTTP/1.1 request heads, clients, and request/response
+  timeouts;
+- `GET`, `HEAD`, optional CORS `OPTIONS`, explicit `405`, and connection close;
+- streamed files, `index.html`, bounded escaped listings, MIME types, ETag,
+  Last-Modified, conditional requests, and single byte ranges;
+- optional CORS and extensionless SPA fallback; and
+- strict single decoding, encoded-separator rejection, traversal rejection,
+  symlink containment, and read-only coordinated access.
+
+`ios/scripts/check.sh` is the repeatable host gate. On 2026-08-04 it passed 26
+declared unit/UI tests, a Debug simulator build/test run, a Release simulator
+build, the check that DEBUG fixtures and launch hooks are absent from the
+Release binary, and the check that no development team is committed in the
+generated project. `ios/scripts/device-smoke.sh` owns the repeatable signed
+build/install/semantic-start/external-fetch/background-stop path through the
+shared device testbed.
+
+Physical acceptance on 2026-08-04 used the attached iPhone SE (3rd generation)
+running iOS 26.6 and an external Mac peer on the same Wi-Fi network. It proved:
+
+1. The signed app installed and launched through accessible controls. The
+   initial Network.framework spike served a fixed fixture on port 8080 before
+   the complete implementation replaced it.
+2. With LAN disabled, the Mac could not connect to the phone's Wi-Fi IPv4
+   address. With LAN enabled, the same Mac fetched the displayed Wi-Fi URL.
+   This proves a real loopback/all-interface bind difference rather than a
+   hidden-URL convention.
+3. The complete DEBUG fixture passed external requests for `/`, an ordinary
+   file, a missing file, `HEAD`, ETag/`304`, a single byte range/`206`, CORS
+   disabled and enabled, preflight `OPTIONS`, SPA fallback, and traversal
+   rejection. Automatic-port restarts assigned successive reachable ports in
+   the 54713–54716 range during the campaign.
+4. The in-app `SFSafariViewController` preview rendered the localhost fixture
+   while the app remained active. Copy and Share were present as accessible
+   URL actions.
+5. Pressing Home made the external listener unreachable. Returning showed
+   Stopped plus the background explanation; it never auto-resumed. A new
+   explicit start served successfully and received a new automatic port.
+6. The system directory picker selected a real local Files directory. Its
+   bookmark survived process termination and relaunch, then resolved and
+   served successfully. A DEBUG-only corrupt-bookmark case showed the concise
+   error and enabled Change-folder recovery path on the physical phone.
+7. The available small phone rendered the complete scrollable surface in
+   light and dark appearance, including an accessibility-sized text launch.
+   Semantic snapshots exposed named start/stop, folder, port, option, preview,
+   copy, and share controls; settings became disabled while Running. A
+   phone-discovered number-pad trap was repaired with an accessible Done
+   control before final validation.
+8. No local-network permission alert appeared for this incoming-TCP-only app
+   on the tested device/OS. The testbed session exited cleanly after each
+   campaign, and no signing team, profile, certificate, account, or device
+   identifier was added to source.
+
+Implementation was committed in logical slices: `87d9882` (accepted plan),
+`bff0594` (physical listener foundation), `322e1a0` (HTTP/storage core),
+`85d8ff9` (native control surface), and `c6a5f94` (repeatable validation gates).
+
 ## Research basis
 
 - Apple [NWListener documentation](https://developer.apple.com/documentation/network/nwlistener)
@@ -252,12 +319,17 @@ Mac-to-phone LAN gates.
 
 ## Known gaps and next direction
 
-No iOS source, Xcode project, tests, signed app, App Store record, release
-workflow, or product evidence exists yet. Tactical 016 starts with the smallest
-physical vertical slice and does not treat documentation or simulator success
-as proof that the app serves over a real network.
+The accepted evidence is deliberately bounded to one iPhone SE on iOS 26.6,
+one host Mac, the local Files provider, and the tested fixture sizes. Runtime
+execution on iOS 17, iCloud Drive and third-party/cloud provider latency,
+provider revocation outside the simulated corrupt bookmark, very large files,
+load/stress behavior, additional phone/iPad sizes, and actual VoiceOver speech
+remain unproven. The local provider returned a generic underlying directory
+name during one selection, so provider-specific display naming also merits
+broader review.
 
-After the device-accepted MVP, make App Store packaging, privacy metadata,
-screenshots, TestFlight, review notes, and release automation a separate
-bounded closeout. Store submission is not implied by completion of the first
-implementation tactical.
+There is no App Store Connect record, distribution profile, archive/export
+workflow, privacy declaration, store copy, screenshot set, TestFlight build,
+review result, or store-delivered artifact proof. Tactical 017 owns those
+separate store-readiness gates. Store submission or publication is not implied
+by the completed native MVP.

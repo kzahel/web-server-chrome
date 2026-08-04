@@ -9,10 +9,13 @@ set -euo pipefail
 # the selected static binary's signed size and SHA-256 before executing it.
 
 UPDATE_ENDPOINT="https://updates.ok200.app/crostini/manifest"
-FALLBACK_TAG="crostini-v0.1.0"
+FALLBACK_TAG="crostini-v0.1.5"
 REPOSITORY="kzahel/web-server-chrome"
 MANIFEST_NAME="ok200-crostini-release.manifest"
 SIGNATURE_NAME="ok200-crostini-release.manifest.minisig"
+CONTROLLER_PROTOCOL_VERSION="2"
+EXTENSION_PROTOCOL_MIN="2"
+EXTENSION_PROTOCOL_MAX="2"
 MINISIGN_PUBLIC_KEY="RWSK1rRTqNNgKReeJCiqkdVaRCFFOSTEI1yVRK/nU10foAzYGTZAK5oc"
 MAX_METADATA_BYTES=65536
 MAX_ASSET_BYTES=67108864
@@ -154,9 +157,9 @@ signature_asset'
        [ "$RELEASE_TAG" != "crostini-v${RELEASE_VERSION}" ] ||
        [ "$RELEASE_REPOSITORY" != "$REPOSITORY" ] ||
        [[ ! "$source_commit" =~ ^[0-9a-f]{40}$ ]] ||
-       [ "$controller_protocol" != "1" ] ||
-       [ "$extension_min" != "1" ] ||
-       [ "$extension_max" != "1" ] ||
+       [ "$controller_protocol" != "$CONTROLLER_PROTOCOL_VERSION" ] ||
+       [ "$extension_min" != "$EXTENSION_PROTOCOL_MIN" ] ||
+       [ "$extension_max" != "$EXTENSION_PROTOCOL_MAX" ] ||
        [ "$runtime" != "linux-musl-static" ] ||
        [ "$(manifest_value manifest_asset "$manifest")" != "$MANIFEST_NAME" ] ||
        [ "$(manifest_value signature_asset "$manifest")" != "$SIGNATURE_NAME" ]; then

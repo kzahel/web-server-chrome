@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Prepare the versionless website bootstrap for the protocol-2 component and
+  pin its outage fallback to the completed signed `0.1.5` release. This switch
+  must deploy with the matching extension store rollout.
+
 ## [0.1.5]
 
 - Add authenticated UI sessions that stop the content server when the final

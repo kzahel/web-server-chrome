@@ -7,6 +7,9 @@ import { pathToFileURL } from "node:url";
 
 export const MANIFEST_NAME = "ok200-crostini-release.manifest";
 export const SIGNATURE_NAME = "ok200-crostini-release.manifest.minisig";
+export const CONTROLLER_PROTOCOL_VERSION = 2;
+export const EXTENSION_PROTOCOL_MIN = 2;
+export const EXTENSION_PROTOCOL_MAX = 2;
 
 const ARCHITECTURES = ["x86_64", "aarch64"];
 const MAX_ASSET_BYTES = 64 * 1024 * 1024;
@@ -57,9 +60,9 @@ export function createCrostiniReleaseManifest({
     `tag=crostini-v${version}`,
     "repository=kzahel/web-server-chrome",
     `source_commit=${sourceCommit}`,
-    "controller_protocol=1",
-    "extension_protocol_min=1",
-    "extension_protocol_max=1",
+    `controller_protocol=${CONTROLLER_PROTOCOL_VERSION}`,
+    `extension_protocol_min=${EXTENSION_PROTOCOL_MIN}`,
+    `extension_protocol_max=${EXTENSION_PROTOCOL_MAX}`,
     "runtime=linux-musl-static",
   ];
   for (const arch of ARCHITECTURES) {

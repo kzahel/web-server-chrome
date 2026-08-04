@@ -75,11 +75,19 @@ fn linux_app_candidates(host_path: &std::path::Path) -> Vec<std::path::PathBuf> 
 }
 
 fn handle_message(msg: &serde_json::Value) -> serde_json::Value {
+    handle_message_with_services(msg, telemetry::maybe_check_for_update, launch_app)
+}
+
+fn handle_message_with_services(
+    msg: &serde_json::Value,
+    telemetry_check: impl FnOnce(),
+    launcher: impl FnOnce() -> Result<(), String>,
+) -> serde_json::Value {
     let action = msg.get("action").and_then(|v| v.as_str()).unwrap_or("");
 
     match action {
         "handshake" => {
-            telemetry::maybe_check_for_update();
+            telemetry_check();
             serde_json::json!({
                 "action": "handshake",
                 "version": env!("CARGO_PKG_VERSION"),
@@ -91,7 +99,7 @@ fn handle_message(msg: &serde_json::Value) -> serde_json::Value {
                 "action": "pong"
             })
         }
-        "launch" => match launch_app() {
+        "launch" => match launcher() {
             Ok(()) => serde_json::json!({
                 "action": "launch",
                 "ok": true
@@ -245,10 +253,12 @@ mod tests {
     #[test]
     fn test_handle_handshake() {
         let msg = serde_json::json!({"action": "handshake"});
-        let response = handle_message(&msg);
+        let telemetry_called = std::cell::Cell::new(false);
+        let response = handle_message_with_services(&msg, || telemetry_called.set(true), || Ok(()));
         assert_eq!(response["action"], "handshake");
         assert_eq!(response["name"], "ok200-host");
         assert!(response["version"].as_str().is_some());
+        assert!(telemetry_called.get());
     }
 
     #[test]
@@ -266,12 +276,13 @@ mod tests {
     }
 
     #[test]
-    fn test_handle_launch_returns_structured_response() {
+    fn test_handle_launch_uses_injected_launcher() {
         let msg = serde_json::json!({"action": "launch"});
-        let response = handle_message(&msg);
+        let response =
+            handle_message_with_services(&msg, || {}, || Err("test launch failure".to_string()));
         assert_eq!(response["action"], "launch");
-        // In test/CI the app won't be installed, so ok will be false
-        assert!(response.get("ok").is_some());
+        assert_eq!(response["ok"], false);
+        assert_eq!(response["error"], "test launch failure");
     }
 
     #[cfg(target_os = "linux")]

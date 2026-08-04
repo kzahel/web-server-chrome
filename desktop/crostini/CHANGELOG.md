@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## [0.1.3]
+## [0.1.4]
 
 - Add authenticated UI sessions that stop the content server when the final
   control window closes by default, with an explicit option to keep serving in
@@ -17,6 +17,8 @@
 - Name the ChromeOS Linux Launcher item **200 OK Web Server** and add standard
   Linux generic-name and search-keyword metadata without changing its desktop,
   service, command, or package identities.
+- Keep signed release-manifest protocol metadata aligned with the protocol-2
+  controller and extension, and reject future source/manifest drift in CI.
 
 ## [0.1.2]
 

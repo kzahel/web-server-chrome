@@ -1,10 +1,15 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
-import { createCrostiniReleaseManifest } from "./write-crostini-release-manifest.mjs";
+import {
+  CONTROLLER_PROTOCOL_VERSION,
+  createCrostiniReleaseManifest,
+  EXTENSION_PROTOCOL_MAX,
+  EXTENSION_PROTOCOL_MIN,
+} from "./write-crostini-release-manifest.mjs";
 
 function fixture() {
   const directory = mkdtempSync(join(tmpdir(), "ok200-crostini-manifest-"));
@@ -29,6 +34,9 @@ test("writes the canonical strict two-architecture manifest", () => {
   });
   assert.match(manifest, /^ok200-crostini-release-v1\n/);
   assert.match(manifest, /tag=crostini-v0\.1\.0\n/);
+  assert.match(manifest, /controller_protocol=2\n/);
+  assert.match(manifest, /extension_protocol_min=2\n/);
+  assert.match(manifest, /extension_protocol_max=2\n/);
   assert.match(manifest, /runtime=linux-musl-static\n/);
   assert.match(manifest, /x86_64_sha256=[0-9a-f]{64}\n/);
   assert.match(manifest, /aarch64_sha256=[0-9a-f]{64}\n/);
@@ -36,6 +44,30 @@ test("writes the canonical strict two-architecture manifest", () => {
     manifest,
     /signature_asset=ok200-crostini-release\.manifest\.minisig\n$/,
   );
+});
+
+test("keeps release metadata aligned with controller and extension source", () => {
+  const controllerSource = readFileSync(
+    new URL("../../desktop/crostini/src/lib.rs", import.meta.url),
+    "utf8",
+  );
+  const extensionSource = readFileSync(
+    new URL("../../extension/src/lib/crostini-controller.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(
+    controllerSource,
+    new RegExp(
+      `CONTROLLER_PROTOCOL_VERSION: u16 = ${CONTROLLER_PROTOCOL_VERSION};`,
+    ),
+  );
+  assert.match(
+    extensionSource,
+    new RegExp(`CONTROLLER_PROTOCOL_VERSION = ${CONTROLLER_PROTOCOL_VERSION};`),
+  );
+  assert.equal(EXTENSION_PROTOCOL_MIN, CONTROLLER_PROTOCOL_VERSION);
+  assert.equal(EXTENSION_PROTOCOL_MAX, CONTROLLER_PROTOCOL_VERSION);
 });
 
 test("rejects prereleases, malformed commits, and misleading asset names", () => {

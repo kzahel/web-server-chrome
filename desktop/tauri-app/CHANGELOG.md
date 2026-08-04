@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## [0.1.7]
+## [0.1.8]
 
 ### Changed
 
@@ -24,6 +24,8 @@
   launches do not leave defunct processes behind.
 - Keep AppImage GIO module loading inside the portable bundle to avoid loading
   incompatible host GVFS modules.
+- Isolate native-host telemetry and launcher unit tests so release validation
+  cannot race through process-global test state.
 
 ## [0.1.6]
 

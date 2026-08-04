@@ -94,6 +94,17 @@ living desktop-runtime topic describes the repaired contract.
 
 ## Lane B — production-test readiness
 
+Readiness evidence, 2026-08-04: the MacVM runner is now owned by launchd and
+survives its caller; LinuxVM has a first-class session-owned GUI launcher and
+synchronous shutdown; and WinVM screenshots now use the same guest coordinate
+space as clicks. All controller smoke suites and live doctors pass. Production
+Chrome Web Store extension `0.1.6` with the exact ID is installed in the macOS
+and Windows Chrome profiles without an account login. Ubuntu ARM64 Chromium
+`150.0.7871.128` reaches the live listing but it says **Switch to Chrome to
+install extensions and themes** and offers no install action. That environment
+cannot close the Linux extension gate; add a Linux x86_64 production-Chrome
+environment before the repair release.
+
 - [ ] Each macOS, Windows, and Linux environment has a supported production
       browser before desktop native-host registration is tested.
 - [ ] The actual Chrome Web Store extension is installed in the intended test

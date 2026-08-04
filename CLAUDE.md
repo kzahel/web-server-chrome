@@ -12,6 +12,11 @@ maintainer/device checks, read
 [docs/tactical/009-release-confidence-closeout.md](docs/tactical/009-release-confidence-closeout.md)
 and
 [docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md](docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md).
+For the active desktop defect repair and the exact-public-artifact acceptance
+campaign, read
+[docs/tactical/015-desktop-production-validation.md](docs/tactical/015-desktop-production-validation.md)
+and follow
+[docs/runbooks/desktop-production-validation.md](docs/runbooks/desktop-production-validation.md).
 The scoped Play-free ChromeOS Linux fallback lives in
 [docs/tactical/012-chromeos-crostini-fallback.md](docs/tactical/012-chromeos-crostini-fallback.md).
 The active ChromeOS Linux product-completion plan lives in
@@ -22,6 +27,14 @@ The active ChromeOS Linux product-completion plan lives in
 Lightweight web server app for every platform. Successor to "Web Server for
 Chrome" (200k+ users). The Android app, extension, ChromeOS Linux component,
 and signed Rust-native Tauri desktop `v0.1.6` have shipped.
+
+Desktop `v0.1.6` passed its signing and public-asset gates but failed later
+three-OS functional acceptance: the settings surface is clipped on Windows and
+Linux, disabling background operation does not exit on last-window close, and
+Windows can become unrecoverably invisible with the tray hidden. It also lacks
+an exact-version round trip through the production Chrome Web Store extension.
+Do not describe it as production-accepted; Tactical 015 owns the repair and
+post-publication rerun.
 
 The old Transistor proof is not the current desktop architecture. Desktop
 keeps Tauri and its webview for control/configuration while a small Rust core

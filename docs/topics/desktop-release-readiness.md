@@ -9,11 +9,14 @@ Topic: desktop-release-readiness
 Status: **`desktop-v0.1.6` is the current complete signed Rust-core release.
 Its five-platform build matrix, platform-signing checks, and one-job finalizer
 passed, and all public assets, checksums, and updater metadata were
-independently verified. The maintainer directed that packaged functional smoke
-be skipped for this release, so `desktop-v0.1.5` remains the latest exact
-clean-install, prior-public update, server, native-messaging, and
-production-extension acceptance evidence on the recommended macOS app,
-Windows NSIS, and Linux AppImage paths.**
+independently verified. Later maintainer-directed exact packaged smoke passes
+core installation/launch, HTTP serving, updater, persistence, autostart,
+tray-state, native-host, and cleanup checks on macOS arm64, Windows NSIS, and
+Linux arm64. It fails functional acceptance because the settings dialog is
+unusable or unstable on Windows/Linux and background=false close violates the
+documented exit/recovery contract on every OS; Windows no-tray relaunch can
+wedge multiple invisible processes. `desktop-v0.1.5` remains the latest exact
+prior-public update and production-extension acceptance baseline.**
 
 Last reconciled: **2026-08-04**.
 
@@ -26,7 +29,10 @@ Linux product evidence is recorded in
 The AppImage-first Linux package decision and source repair are recorded in
 [Tactical 008](../tactical/008-appimage-first-linux-distribution.md). The final
 agent-owned and maintainer/device confidence gates are recorded in
-[Tactical 009](../tactical/009-release-confidence-closeout.md).
+[Tactical 009](../tactical/009-release-confidence-closeout.md). The current
+functional repair and exact public-release acceptance are owned by
+[Tactical 015](../tactical/015-desktop-production-validation.md) and the
+[desktop production validation runbook](../runbooks/desktop-production-validation.md).
 
 ## Source of truth
 
@@ -133,8 +139,41 @@ after publication and passed `shasum -a 256 -c`. The manifest itself has
 SHA-256 `d2799a853bcd10eb98c7652f4b50fccb335ea53551a04f728541cf098b28ba33`.
 `latest.json` reports version `0.1.6`, contains non-empty signatures, and
 covers all 15 supported default and package-specific updater targets. Manual
-installed-app smoke was not performed at the maintainer's direction; the
-detailed `v0.1.5` evidence below remains the functional acceptance baseline.
+installed-app smoke was initially omitted at the maintainer's direction. The
+later exact post-publication smoke below supersedes that gap and records a
+failed functional disposition without changing the immutable signing and
+artifact-integrity evidence.
+
+## Post-publication `v0.1.6` packaged smoke — 2026-08-04
+
+The public artifacts were exercised in the local MacVM, WinVM, and LinuxVM
+testbeds. The macOS and Linux guests are native ARM64. The Windows guest is
+Windows 11 ARM64 and ran the released x64 NSIS application through Windows x64
+emulation; this is not native x64 hardware evidence.
+
+| Platform/artifact | Exact evidence | Disposition |
+|---|---|---|
+| macOS arm64 app tar and PKG | App tar SHA-256 `a6172f4824790cf0ea328e60533b88ebafd0ed5cdffa433885cf4ea6d04b8c2c`; PKG SHA-256 `8d7b2306f98ece8b937febac5737637823a23ea428e94c359723f19d56dfa06c`. Deep/strict code signing, Gatekeeper Notarized Developer ID, stapling, PKG signature, and install assessment pass. The extracted app passed settings/tray/autostart/updater, serving, persistence, no-tray background close/relaunch, in-app quit, and native-host framing/launch. The PKG was inspected but not authorized into `/Applications` | Packaging and recommended arm64 app path pass; background=false close leaves a process/tray alive, contrary to its label |
+| Windows x64 NSIS on Windows 11 ARM64 | Installer SHA-256 `919f6de719256d37093cc3b8dec94d81f9e8d5f517f905d50696ce3948251dc3`; Authenticode is `Valid` for Kyle Graehl. Visible current-user install, native folder choice, external serve/list/404/stop, config persistence, updater host check, native-host registration, and complete silent uninstall pass | Packaging and server pass. WebView2 clips the app-settings dialog into the blurred header. With background=false and tray=false, close leaves an invisible process; relaunch and `--quit-for-uninstall` can add stuck invisible processes instead of restoring/exiting |
+| Linux arm64 AppImage on Ubuntu 24.04 ARM64 | SHA-256 `48e64086736a4d84f8470c249cdfa0769e5a57ac165ece9cdc7f0fcc85b1891f`. Direct FUSE launch, native chooser, external serve/list/404/stop, persistence, autostart creation/removal, manual current-version result, tray hide/re-enable, no-tray one-process relaunch, in-app quit, and native-host handshake/ping/launch pass | Native ARM64 VM product path passes. WebKitGTK visually clips the settings dialog into the header even though AT-SPI initially reports ideal bounds; focus can reveal only individual rows in the strip. Background=false close still leaves the process alive. AppImage logs a host-GVFS/GLib symbol mismatch, although local chooser/serving remained functional |
+
+All three servers returned the exact fixture, `Server: ok200`, expected content
+type, branded directory listing with parent navigation, and `404 Not Found`,
+then released port 8080 on stop. Server configuration survived graceful
+quit/relaunch. Smoke-created application state was removed and every VM was
+returned to its original lifecycle state.
+
+No testbed had the production extension installed. Direct native-host framing
+and one-process launch passed on macOS and Linux, and Windows registration plus
+host update-check passed, but a real `v0.1.6` extension-to-host round trip was
+not repeated. The accepted `v0.1.5` production-extension evidence below
+remains the current end-to-end baseline.
+
+The artifact/signing gate remains accepted, but the post-publication
+functional gate is **failed**. Before the next tag, render AppSettings outside
+the header/backdrop-filter containing block, make background=false last-window
+close exit the application, and add a Windows no-tray relaunch regression that
+asserts one visible window and one process.
 
 ## Previous functional acceptance: `v0.1.5`
 
@@ -328,8 +367,15 @@ A desktop tag may be made public only after all of these pass.
 
 - The app selects a root, starts and stops a server, and serves an external
   request on each OS.
-- Extension-to-native-host launch works on macOS, Windows, and Linux.
+- The actual Chrome Web Store extension, with production ID and store-served
+  version recorded, launches/focuses the native host on macOS, Windows, and
+  Linux. Direct native-host invocation or an unpacked extension is not a pass.
 - The release is tested once from a clean install and once as an update.
+- Every persistent option and recovery/quit action works in the main window
+  with the tray hidden; tray or menu-bar items are optional shortcut mirrors.
+- Background close, relaunch, extension activation, Quit, process count, and
+  cleanup pass the exact matrix in the
+  [production validation runbook](../runbooks/desktop-production-validation.md).
 
 ## Implemented pipeline shape
 
@@ -389,10 +435,11 @@ The release validator now also requires each Linux Tauri updater target,
 Linux ARM64 packages are built natively on GitHub's `ubuntu-22.04-arm` runners
 and are required release assets: `200.OK_{version}_aarch64.AppImage`,
 `200.OK_{version}_arm64.deb`, and `200.OK-{version}-1.aarch64.rpm`. Artifact
-production and validation are gated in CI, but **no ARM64 product smoke has
-been run**. Do not claim ARM64 as an accepted platform until an ARM64 host
-installs the published AppImage, serves an external request, and completes an
-extension-to-native-host launch.
+production and validation are gated in CI. Exact public `v0.1.6` ARM64
+AppImage product smoke now passes in a native Ubuntu 24.04 ARM64 VM, including
+external serving and direct native-host launch. This is native-architecture VM
+evidence, not physical ARM64 hardware or a production-extension round trip;
+keep those narrower claims explicit.
 
 The shipped `v0.1.5` repair records the real AppImage path, installs a stable
 `200-ok.desktop` identity and icon, and teaches the copied native host to launch

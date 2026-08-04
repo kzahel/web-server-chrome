@@ -7,13 +7,17 @@
 Topic: desktop-native-core
 
 Status: **Rust-native desktop `v0.1.6` is published with complete signed
-macOS arm64/x64, Windows x64, and Linux arm64/x64 artifacts. It adds the
-canonical main-window app-settings surface and cross-platform tray visibility
-option. Its automated release and public-asset gates pass; packaged functional
-smoke was skipped at the maintainer's direction. Exact signed update, server,
-native-host, and production-extension acceptance therefore remains recorded
-against `v0.1.5` on the recommended macOS app, Windows NSIS, and Linux AppImage
-installations.**
+macOS arm64/x64, Windows x64, and Linux arm64/x64 artifacts. Exact
+post-publication macOS arm64 app, Windows NSIS, and Linux arm64 AppImage smoke
+passes artifact identity, server, persistence, updater, autostart, tray-state,
+native-host, and cleanup checks. It also exposes two hard-rule defects: the
+main-window settings dialog is clipped or scrolls out of view on Windows and
+Linux, and disabling Run in Background does not exit when the last window is
+closed. On Windows, combining that behavior with a hidden tray can leave an
+unrecoverable invisible instance and subsequent stuck processes. The signed
+distribution remains valid, but `v0.1.6` is not accepted as a promotion-ready
+settings/recovery release. Exact prior-public update and production-extension
+acceptance remains recorded against `v0.1.5`.**
 
 Last reconciled: **2026-08-04**.
 
@@ -34,6 +38,9 @@ The accepted AppImage-first repair and distribution path are recorded in
 [Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
 The final release-confidence gates and manual sign-off boundary are recorded
 in [Tactical 009](../tactical/009-release-confidence-closeout.md).
+The active settings/lifecycle repair and exact public three-OS acceptance are
+owned by [Tactical 015](../tactical/015-desktop-production-validation.md) and
+the [desktop production validation runbook](../runbooks/desktop-production-validation.md).
 Retirement of the unpublished Node CLI and stranded TypeScript engine is
 recorded in [Tactical 013](../tactical/013-retire-typescript-cli.md).
 Future UPnP/public-listening work is owned by
@@ -100,16 +107,37 @@ an option on every desktop platform: **Show Icon in Menu Bar** on macOS and
 the Dock, Start menu, application launcher, or equivalent must restore the
 existing main window even when that icon is hidden.
 
-Desktop source now satisfies this rule through a main-window app-settings
-panel and typed Tauri settings commands. The panel exposes every mirrored
-setting plus manual update and Quit actions. Icon visibility is persisted and
-applied on all three desktop platforms, with migration from the earlier
-macOS-only key; menu and tray checkmarks follow the same state. Public `v0.1.6`
-contains this work, although packaged UI/tray behavior was not manually
-smoke-tested for that release at the maintainer's direction. Linux tray
+Desktop source implements this rule through a main-window app-settings panel
+and typed Tauri settings commands. The panel contains every mirrored setting
+plus manual update and Quit actions. Icon visibility is persisted and applied
+on all three desktop platforms, with migration from the earlier macOS-only
+key; menu and tray checkmarks follow the same state.
+
+Production acceptance of this rule is performed from the main window first,
+with tray/menu-bar entries tested only as mirrors. The exact clean-install,
+update, hidden-icon recovery, process, and production-extension matrix is
+defined by the
+[desktop production validation runbook](../runbooks/desktop-production-validation.md).
+
+Exact public `v0.1.6` smoke proves the panel and no-tray recovery on macOS and
+Linux, but not the rule as a whole. On Windows WebView2 the dialog is confined
+to the header strip and is not normally usable. Linux WebKitGTK likewise shows
+only the dimmed header rather than the dialog even though AT-SPI initially
+reports ideal dialog bounds; focus/interaction can reveal individual rows in
+the header strip and scroll the rest outside the viewport. `AppSettings` is
+rendered as a `position: fixed` descendant of the shared header, whose
+`backdrop-blur` creates a containing block in those engines. The dialog must be
+portaled to `document.body` or rendered outside that header. Linux tray
 availability also varies by desktop shell and StatusNotifier/AppIndicator
-integration, so future packaged validation must include a workflow with no
-tray surface.
+integration, so the main-window route must remain usable with no tray surface.
+
+The same smoke proves that the persisted Run in Background value is not
+honored when false. The close handler allows the window to be destroyed but
+does not exit the Tauri event loop, leaving a tray-resident process on all
+three platforms. Linux can recreate the one existing window when launched
+again. Windows can instead leave the first instance without a window, then
+accumulate additional invisible launch and `--quit-for-uninstall` processes.
+This violates the recoverability rule and requires a release repair.
 
 “Shared Rust core” means one native core reused across macOS, Windows, and
 Linux, including the ChromeOS Linux controller. Android JNI and a separately
@@ -120,7 +148,7 @@ executable remains repository-only development and smoke tooling.
 
 | Surface | Runtime | Current role | Direction |
 |---|---|---|---|
-| Desktop source and release `v0.1.6` | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | Complete signed release with canonical in-app settings, optional tray visibility on every desktop platform, AppImage-first integration, relaunch repair, Linux ARM64, and package-aware updates; automated release gates pass, while the `v0.1.5` packaged paths remain the latest functional smoke baseline | Validate the no-tray packaged workflow in a future smoke cycle; keep secondary package/hardware claims explicit |
+| Desktop source and release `v0.1.6` | Tauri/React control surface; Rust owns persisted server state and `ok200-core` owns native HTTP/filesystem/networking | Complete signed release; exact macOS arm64, Windows NSIS-on-Windows-ARM64-emulation, and Linux arm64 recommended-path smoke passes core serving and integration, but settings-dialog layout and background-close/recovery defects violate the canonical-main-window rule | Portal the settings dialog outside the blurred header; make background=false close exit; add Windows regression coverage for no-tray relaunch and one-process recovery; publish a repaired signed release |
 | Previous desktop `v0.1.4` | Same Rust-native runtime before the AppImage/Dock/package-awareness repairs | Public updater source used in the accepted `0.1.4` → `0.1.5` macOS, Windows, and Linux transitions | Retain only as immutable update evidence |
 | Historical desktop `v0.1.3` | Tauri webview runs `@ok200/engine`; Rust exposes TCP/filesystem commands | Partial legacy release | Historical baseline only |
 | Android source | Compose UI; Kotlin owns HTTP, storage adapters, and Android lifecycle policy | Native cutover complete and AVD-validated | Keep broadly compatible through the cross-runtime contract in `android-runtime.md` |
@@ -293,19 +321,27 @@ FUSE mount disappears.
 DEB and RPM remain published as secondary system packages for users who
 deliberately prefer them. Their installation requires administrator
 privileges and their updates are manual until a separate bundle-aware package
-update policy is accepted. The currently supported Linux release architecture
-is x86_64.
+update policy is accepted. Linux release artifacts support x86_64 and ARM64;
+the exact public ARM64 AppImage now has native Ubuntu ARM64 VM product smoke,
+while physical ARM64 hardware remains a separate claim gap.
 
 Implementation and release sequencing are recorded in
 [Tactical 008](../tactical/008-appimage-first-linux-distribution.md).
 
 ## Known gaps
 
-- Source implements the app-level settings/accessibility rule above and passes
-  TypeScript, Rust, and persistence-migration tests. Packaged Windows, macOS,
-  and Linux UI validation remains open, including hiding and restoring the
-  tray icon and operating Linux without a usable tray surface. Public `v0.1.5`
-  retains the earlier menu-owned controls.
+- Exact public `v0.1.6` packaged UI validation is complete on macOS arm64,
+  Windows 11 ARM64 running the x64 NSIS build through Windows emulation, and
+  Ubuntu ARM64. The main settings route, icon visibility, autostart, manual
+  update, and in-app quit work on macOS. Linux passes the same state changes
+  and no-tray relaunch only through AT-SPI/keyboard actions because WebKitGTK
+  clips the visual dialog into the header. Windows WebView2 has the same
+  immediate visual failure. These are product defects, not remaining smoke
+  gaps.
+- Disabling Run in Background leaves the process alive after its last window
+  closes on macOS, Windows, and Linux. Windows additionally fails the required
+  no-tray launch recovery and can accumulate stuck invisible processes. This
+  blocks promotion of `v0.1.6` as the hard-rule repair.
 - Exact public `v0.1.5` Windows NSIS update and clean-install paths pass
   Authenticode inspection, external start/serve/stop, configuration retention,
   native-host framing, production-extension launch/focus with one process, and
@@ -316,8 +352,11 @@ Implementation and release sequencing are recorded in
   start/serve/stop, and production-extension launch/focus. The exact DEB
   separately refuses cross-package auto-install and passes the same extension
   identity path. RPM metadata/payload are accepted, but native RPM-family
-  install/launch remains untested; physical Linux ARM64 product smoke remains
-  a claim-only gap. See
+  install/launch remains untested. Exact `v0.1.6` native Ubuntu ARM64 VM
+  AppImage product smoke now passes serving, persistence, updater, autostart,
+  tray visibility, in-app quit, and native-host framing/launch. A physical
+  Linux ARM64 hardware run and real extension round trip remain claim-only
+  gaps. See
   [Tactical 007](../tactical/007-linux-desktop-validation.md),
   [Tactical 008](../tactical/008-appimage-first-linux-distribution.md), and
   [Tactical 009](../tactical/009-release-confidence-closeout.md).

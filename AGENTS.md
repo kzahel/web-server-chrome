@@ -38,5 +38,9 @@ the root [`topics.md`](topics.md) log before reusing them across a series.
   [`docs/topics/legacy-app-migration.md`](docs/topics/legacy-app-migration.md)
 - Active release confidence closeout:
   [`docs/tactical/009-release-confidence-closeout.md`](docs/tactical/009-release-confidence-closeout.md)
+- Active desktop production repair and validation:
+  [`docs/tactical/015-desktop-production-validation.md`](docs/tactical/015-desktop-production-validation.md)
+- Desktop post-publication production runbook:
+  [`docs/runbooks/desktop-production-validation.md`](docs/runbooks/desktop-production-validation.md)
 - Active ChromeOS launcher and network closeout:
   [`docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md`](docs/tactical/011-extension-launcher-and-chromeos-network-readiness.md)

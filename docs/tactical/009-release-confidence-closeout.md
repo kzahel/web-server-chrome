@@ -1,12 +1,22 @@
 # 009: Release Confidence Closeout
 
-Status: **desktop release lane complete; maintainer/store migration lane
-active.** Signed `desktop-v0.1.6` is public and its automated release and
-public-asset gates pass. Exact recommended macOS app, Windows NSIS, and Linux
-AppImage update/server/extension acceptance remains recorded against `v0.1.5`
-because the maintainer directed that `v0.1.6` packaged smoke be skipped. The
-remaining work is store-delivered ChromeOS/Android/extension, subjective
-desktop UI spot-checks, and the final legacy migration decision and submission.
+Status: **desktop signing/publication lane complete; desktop functional repair
+and maintainer/store migration lanes active.** Signed `desktop-v0.1.6` is
+public and its automated release and public-asset gates pass. Later exact
+packaged smoke passes core serving and integration but fails the hard
+main-window settings/recovery rule: Windows/Linux settings layout is broken,
+background=false close stays resident on every OS, and Windows no-tray
+relaunch can wedge invisible processes. `v0.1.5` remains the accepted
+prior-public update and production-extension baseline. Store-delivered
+ChromeOS/Android/extension, the desktop repair release, and the final legacy
+migration decision remain active.
+
+The bounded desktop repair and exact post-production rerun are now owned by
+[Tactical 015](015-desktop-production-validation.md) and the repository-owned
+[desktop production validation runbook](../runbooks/desktop-production-validation.md).
+This tactical retains the broader release/store/migration ledger and the
+historical evidence; do not close the desktop functional row here from signing
+evidence alone.
 
 Topics:
 
@@ -70,16 +80,16 @@ subjective product approval.
 
 | Surface | Accepted evidence | Remaining confidence gap |
 |---|---|---|
-| Desktop release pipeline | `desktop-v0.1.6` five-leg matrix, finalizer, 16-asset publication, and independent checksum/updater-metadata inspection pass | Packaged functional smoke was skipped by maintainer direction; `v0.1.5` remains the exact functional baseline |
+| Desktop release pipeline | `desktop-v0.1.6` five-leg matrix, finalizer, 16-asset publication, and independent checksum/updater-metadata inspection pass | Artifact gate is complete; exact later packaged smoke failed functional acceptance and requires a repair tag |
 | General CI | Deterministic DER repair and all source/release workflows passed at the release revision | None |
 | Updater UI | JSTorrent cadence/UX is implemented and unit-tested; exact `0.1.4` → `0.1.5` transitions pass on every recommended path | Optional subjective presentation spot-check only |
 | Updater safety | Package-aware policy, negative validators, live no-downgrade routes, and runtime tampered-payload signature rejection pass | None for recommended packages; managed secondary packages remain manual by design |
-| Windows extension launch | Exact signed updated and clean-installed NSIS plus production extension identity pass popup → host → one desktop instance | Tray-only subjective review |
-| Linux extension launch | Exact updated AppImage, verified installer, and installed DEB all pass production extension identity → host → one process | Native RPM-family and physical ARM64 claims only |
-| macOS extension launch | Exact signed updated app passes native framing, production extension launch, one process, Dock recreation, serving, and stop | Attended `/Applications` PKG install and subjective tray review |
+| Windows desktop | `v0.1.6` exact NSIS Authenticode, clean install, chooser, serve/stop, persistence, native registration, and uninstall pass; `v0.1.5` production extension launch remains accepted | `v0.1.6` settings modal is clipped; background=false plus no tray can wedge invisible processes; no real `v0.1.6` production-extension round trip |
+| Linux desktop | `v0.1.6` exact ARM64 AppImage passes native ARM64 VM server, updater, autostart, tray, persistence, quit, and direct host launch; `v0.1.5` production extension paths remain accepted | Settings modal is visually clipped into the header; background=false remains resident; physical ARM64, native RPM-family, and real `v0.1.6` extension claims remain open |
+| macOS desktop | `v0.1.6` exact arm64 app/PKG signing evidence and extracted app settings/server/updater/tray/native-host smoke pass; `v0.1.5` production extension launch remains accepted | background=false remains tray-resident; attended `/Applications` PKG install and real `v0.1.6` extension round trip remain open |
 | Android / ChromeOS | Corrected native-Kotlin `v0.2.1` and launcher extension `v0.1.4` pass exact release inspection and were reportedly submitted to Play and the Chrome Web Store | Store review, rollout, and controlled store-delivered proof remain open; Tactical 011 owns the closeout |
 | Live update service | Deployed config/hash, health, reason/CFU accounting, Control Room aggregates, and final `0.1.5` route/asset matrix agree | None; keep normal operational monitoring |
-| Documentation | Repository topics, tactical evidence, and quick context distinguish the published `v0.1.6` release from the `v0.1.5` functional-smoke baseline | Continue updating store/legacy state as it changes |
+| Documentation | Repository topics and this tactical record the immutable `v0.1.6` signing success, later functional failures, and the retained `v0.1.5` update/extension baseline | Update with the desktop repair and store/legacy state as they change |
 
 The certificate failure is a real low-probability encoder defect, not a Dock
 regression. `derInteger` does not remove redundant leading zero bytes from the
@@ -522,16 +532,61 @@ The public release contains 16 retained files. All 15 entries in its
 is `d2799a853bcd10eb98c7652f4b50fccb335ea53551a04f728541cf098b28ba33`.
 `latest.json` reports `0.1.6`, has non-empty signatures, and covers all 15
 supported default and package-specific targets. This establishes build,
-signing, publication, integrity, and updater-metadata evidence, but makes no new
-installed-product claim beyond the `v0.1.5` functional baseline.
+signing, publication, integrity, and updater-metadata evidence. The maintainer
+later requested the packaged smoke that had initially been skipped; its result
+is recorded below.
+
+## Desktop `v0.1.6` post-publication smoke — 2026-08-04
+
+Exact public artifacts were exercised on macOS ARM64, Windows 11 ARM64 running
+the x64 NSIS build through Windows emulation, and Ubuntu 24.04 ARM64. All three
+passed public checksum identity, app launch, native folder selection, exact
+external HTTP serving, branded directory listing, 404 behavior, stop/old-port
+teardown, persisted server configuration, and cleanup. Platform-specific
+signing/install checks passed: macOS code-sign/Gatekeeper/notarization/stapling
+for the app and PKG, Windows Authenticode plus visible NSIS install/silent
+uninstall, and Linux direct ARM64 AppImage FUSE launch.
+
+The main-window app settings were then exercised, including autostart, Run in
+Background, icon visibility, manual update, and in-app Quit. The results expose
+release defects:
+
+- Windows WebView2 constrains the fixed settings overlay to the blurred header
+  strip, so the canonical settings route is not normally usable.
+- Linux WebKitGTK also shows only the dimmed header even though AT-SPI
+  initially reports ideal dialog bounds; focus/interaction can reveal
+  individual controls in the header strip while the rest remains clipped.
+  Both engines match `AppSettings` being nested beneath the `backdrop-blur`
+  header, which creates a containing block for fixed descendants.
+- On macOS, Windows, and Linux, setting Run in Background false and closing the
+  last window leaves `ok200-desktop` running instead of exiting.
+- Linux no-tray relaunch recovers the existing one-process app, but Windows
+  no-tray relaunch can leave the original invisible and accumulate additional
+  stuck normal and `--quit-for-uninstall` processes. Exact-process force stop
+  was required before the otherwise clean NSIS uninstall.
+
+Mac and Linux direct native-host framing/launch passed; Windows native-host
+registration and `--check-update` passed. The production extension was absent
+from all testbed profiles, so the real `v0.1.6` extension round trip was not
+repeated. AppImage startup also logged a host GVFS module/GLib symbol mismatch;
+local chooser and serving still passed, so treat it as a packaging warning to
+investigate rather than the functional gate failure.
+
+The complete evidence table and artifact hashes live in
+[`../topics/desktop-release-readiness.md`](../topics/desktop-release-readiness.md).
+All smoke-created state was removed; MacVM returned to suspended, and WinVM
+and LinuxVM returned to stopped.
 
 ### Remaining unattended work boundary
 
-There is no open unattended desktop release blocker. Store publishing and
-physical ChromeOS delivery remain in Lane B, as do the maintainer's subjective
-tray/installer spot-checks and secondary MSI/RPM/physical-ARM64 claims. The
-Android emulator is shut down; future Android device work should use the
-attached physical device as requested.
+There are now open unattended desktop release blockers. Portal the settings
+dialog outside the blurred header, make background=false last-window close
+exit, add Windows no-tray one-window/one-process relaunch coverage, and publish
+an exact repaired release before desktop promotion. Store publishing and
+physical ChromeOS delivery remain in Lane B, as do subjective installer
+spot-checks and secondary MSI/RPM/physical-ARM64 claims. The Android emulator
+is shut down; future Android device work should use the attached physical
+device as requested.
 
 ## Lane B — maintainer/device sign-off
 

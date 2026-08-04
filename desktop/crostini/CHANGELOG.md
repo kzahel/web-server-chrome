@@ -3,8 +3,9 @@
 ## Unreleased
 
 - Prepare the versionless website bootstrap for the protocol-2 component and
-  pin its outage fallback to the completed signed `0.1.5` release. This switch
-  must deploy with the matching extension store rollout.
+  pin its outage fallback to the completed signed `0.1.5` release. At the
+  maintainer's direction, deploy it before the matching extension store rollout
+  and accept the temporary protocol-1 store-extension compatibility gap.
 
 ## [0.1.5]
 

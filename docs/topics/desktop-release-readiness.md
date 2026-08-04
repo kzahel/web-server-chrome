@@ -167,6 +167,16 @@ independently pass full-name metadata, deep/strict signing, Gatekeeper, and
 stapling checks. Exact clean-install, update, lifecycle, server, and real
 production-extension acceptance remains owned by Tactical 015.
 
+The first live route audit remained pinned to `0.1.6` because the shared update
+server trusted GitHub's general release-list order, which did not place
+`0.1.10` first even though GitHub's latest-release endpoint did. Shared-server
+commit `a70fdf6` now excludes drafts/prereleases, fails closed on malformed
+release versions, and selects the highest public semantic version. After its
+tested build and Remy deployment, Darwin arm64/x64, Windows x64, and Linux
+arm64/x64 `0.1.6` clients receive signed `0.1.10` app, NSIS, or AppImage
+metadata whose URLs name the immutable release. Current `0.1.10` and future
+`9.0.0` clients receive HTTP `204` on all five routes.
+
 ## Prior `v0.1.6` signed release and failed packaged smoke
 
 Public desktop release: **`desktop-v0.1.6`**, published 2026-08-04 from commit

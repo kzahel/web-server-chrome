@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+#[cfg(target_os = "linux")]
+use std::path::Path;
 use std::path::PathBuf;
 use std::sync::Mutex;
 use tauri::{
@@ -365,8 +367,39 @@ fn handle_menu_event(app: &tauri::AppHandle, event_id: &str) {
 
 // -- Entry point --
 
+#[cfg(target_os = "linux")]
+fn appimage_gio_module_dir(
+    app_dir: &Path,
+    extra_modules: Option<&std::ffi::OsStr>,
+) -> Option<PathBuf> {
+    let extra_modules = extra_modules?;
+    std::env::split_paths(extra_modules).find(|path| path.starts_with(app_dir) && path.is_dir())
+}
+
+#[cfg(target_os = "linux")]
+fn configure_appimage_gio_modules() {
+    let Some(app_dir) = std::env::var_os("APPDIR") else {
+        return;
+    };
+    let Some(module_dir) = appimage_gio_module_dir(
+        Path::new(&app_dir),
+        std::env::var_os("GIO_EXTRA_MODULES").as_deref(),
+    ) else {
+        return;
+    };
+
+    // linuxdeploy already points GIO_EXTRA_MODULES at the AppImage's modules,
+    // but GIO also loads its compiled-in host module directory. A newer host
+    // GVFS module can require symbols absent from the older, portable GIO that
+    // the AppImage bundles. Keep both module searches inside the AppImage.
+    std::env::set_var("GIO_MODULE_DIR", module_dir);
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    #[cfg(target_os = "linux")]
+    configure_appimage_gio_modules();
+
     let context = tauri::generate_context!();
 
     // Check for headless updater mode before building the full app
@@ -672,6 +705,28 @@ mod tests {
     fn test_close_action_matches_background_policy() {
         assert_eq!(close_action(true), CloseAction::Hide);
         assert_eq!(close_action(false), CloseAction::Exit);
+    }
+
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn test_appimage_gio_module_dir_stays_inside_appimage() {
+        let tmp = tempfile::tempdir().unwrap();
+        let app_dir = tmp.path().join("AppDir");
+        let bundled_modules = app_dir.join("usr/lib/aarch64-linux-gnu/gio/modules");
+        let host_modules = tmp.path().join("host-gio/modules");
+        std::fs::create_dir_all(&bundled_modules).unwrap();
+        std::fs::create_dir_all(&host_modules).unwrap();
+
+        let search_path = std::env::join_paths([&host_modules, &bundled_modules]).unwrap();
+        assert_eq!(
+            appimage_gio_module_dir(&app_dir, Some(&search_path)),
+            Some(bundled_modules)
+        );
+        assert_eq!(
+            appimage_gio_module_dir(&app_dir, Some(host_modules.as_os_str())),
+            None
+        );
+        assert_eq!(appimage_gio_module_dir(&app_dir, None), None);
     }
 
     #[test]

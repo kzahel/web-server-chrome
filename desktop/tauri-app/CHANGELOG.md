@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## [0.1.9]
+## [0.1.10]
 
 ### Changed
 
@@ -26,9 +26,9 @@
   incompatible host GVFS modules.
 - Isolate native-host telemetry and launcher unit tests so release validation
   cannot race through process-global test state.
-- Extract and inspect the actual Linux package contents when validating launcher
-  identity, and fail clearly unless each package contains exactly one desktop
-  entry.
+- Extract and inspect the actual AppImage, DEB, and RPM contents with their
+  package-aware archive tools when validating launcher identity, and fail
+  clearly unless each package contains exactly one desktop entry.
 
 ## [0.1.6]
 

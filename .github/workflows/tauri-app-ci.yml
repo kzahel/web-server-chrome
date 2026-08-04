@@ -146,7 +146,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libsoup-3.0-dev libjavascriptcoregtk-4.1-dev xdg-utils desktop-file-utils rpm2cpio cpio
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libsoup-3.0-dev libjavascriptcoregtk-4.1-dev xdg-utils desktop-file-utils libarchive-tools
 
       # --- macOS code signing ---
       - name: Set up macOS code signing keychain
@@ -390,10 +390,7 @@ jobs:
           verify_launcher "$DEB_DESKTOP"
 
           mkdir "$VERIFY_DIR/rpm"
-          (
-            cd "$VERIFY_DIR/rpm"
-            rpm2cpio "$RPM_PATH" | cpio -idm --quiet
-          )
+          bsdtar -xf "$RPM_PATH" -C "$VERIFY_DIR/rpm"
           RPM_DESKTOP="$(find_desktop "$VERIFY_DIR/rpm")"
           verify_launcher "$RPM_DESKTOP"
 

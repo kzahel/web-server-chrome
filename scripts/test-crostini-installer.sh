@@ -80,9 +80,9 @@ version=0.1.0
 tag=crostini-v0.1.0
 repository=kzahel/web-server-chrome
 source_commit=0123456789abcdef0123456789abcdef01234567
-controller_protocol=1
-extension_protocol_min=1
-extension_protocol_max=1
+controller_protocol=2
+extension_protocol_min=2
+extension_protocol_max=2
 runtime=linux-musl-static
 x86_64_asset=ok200-crostini-x86_64-unknown-linux-musl
 x86_64_sha256=$FIXTURE_SHA
@@ -103,6 +103,13 @@ cp "$TEST_DIR/release.manifest" "$TEST_DIR/bad.manifest"
 sed -i.bak 's/runtime=linux-musl-static/runtime=linux-gnu/' "$TEST_DIR/bad.manifest"
 if parse_manifest "$TEST_DIR/bad.manifest" x86_64 2>/dev/null; then
     echo "FAIL: installer accepted incompatible runtime metadata" >&2
+    exit 1
+fi
+
+cp "$TEST_DIR/release.manifest" "$TEST_DIR/bad-protocol.manifest"
+sed -i.bak 's/controller_protocol=2/controller_protocol=1/' "$TEST_DIR/bad-protocol.manifest"
+if parse_manifest "$TEST_DIR/bad-protocol.manifest" x86_64 2>/dev/null; then
+    echo "FAIL: installer accepted incompatible protocol metadata" >&2
     exit 1
 fi
 

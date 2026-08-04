@@ -59,6 +59,10 @@ test("keeps release metadata aligned with controller and extension source", () =
     new URL("../../desktop/crostini/src/release.rs", import.meta.url),
     "utf8",
   );
+  const installerSource = readFileSync(
+    new URL("../../website/public/install-crostini.sh", import.meta.url),
+    "utf8",
+  );
 
   assert.match(
     controllerSource,
@@ -75,6 +79,18 @@ test("keeps release metadata aligned with controller and extension source", () =
     new RegExp(
       `EXTENSION_PROTOCOL_VERSION: u16 = ${CONTROLLER_PROTOCOL_VERSION};`,
     ),
+  );
+  assert.match(
+    installerSource,
+    new RegExp(`CONTROLLER_PROTOCOL_VERSION="${CONTROLLER_PROTOCOL_VERSION}"`),
+  );
+  assert.match(
+    installerSource,
+    new RegExp(`EXTENSION_PROTOCOL_MIN="${EXTENSION_PROTOCOL_MIN}"`),
+  );
+  assert.match(
+    installerSource,
+    new RegExp(`EXTENSION_PROTOCOL_MAX="${EXTENSION_PROTOCOL_MAX}"`),
   );
   assert.equal(EXTENSION_PROTOCOL_MIN, CONTROLLER_PROTOCOL_VERSION);
   assert.equal(EXTENSION_PROTOCOL_MAX, CONTROLLER_PROTOCOL_VERSION);

@@ -17,7 +17,7 @@ pub const RELEASE_MANIFEST_NAME: &str = "ok200-crostini-release.manifest";
 pub const RELEASE_SIGNATURE_NAME: &str = "ok200-crostini-release.manifest.minisig";
 pub const UPDATE_ENDPOINT: &str = "https://updates.ok200.app/crostini/manifest";
 pub const RELEASE_REPOSITORY: &str = "kzahel/web-server-chrome";
-pub const EXTENSION_PROTOCOL_VERSION: u16 = 1;
+pub const EXTENSION_PROTOCOL_VERSION: u16 = 2;
 
 const MANIFEST_HEADER: &str = "ok200-crostini-release-v1";
 const RELEASE_RUNTIME: &str = "linux-musl-static";
@@ -536,8 +536,8 @@ mod tests {
              repository={RELEASE_REPOSITORY}\n\
              source_commit=0123456789abcdef0123456789abcdef01234567\n\
              controller_protocol=2\n\
-             extension_protocol_min=1\n\
-             extension_protocol_max=1\n\
+             extension_protocol_min=2\n\
+             extension_protocol_max=2\n\
              runtime={RELEASE_RUNTIME}\n\
              x86_64_asset=ok200-crostini-x86_64-unknown-linux-musl\n\
              x86_64_sha256={sha}\n\
@@ -579,7 +579,7 @@ mod tests {
         .is_err());
         assert!(parse_release_manifest(
             canonical
-                .replace("extension_protocol_max=1", "extension_protocol_max=0")
+                .replace("extension_protocol_max=2", "extension_protocol_max=1")
                 .as_bytes()
         )
         .is_err());

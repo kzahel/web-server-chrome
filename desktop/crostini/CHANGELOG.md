@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## [0.1.4]
+## [0.1.5]
 
 - Add authenticated UI sessions that stop the content server when the final
   control window closes by default, with an explicit option to keep serving in
@@ -19,6 +19,8 @@
   service, command, or package identities.
 - Keep signed release-manifest protocol metadata aligned with the protocol-2
   controller and extension, and reject future source/manifest drift in CI.
+- Keep the controller's signed-update compatibility verifier aligned with the
+  same extension protocol before publishing release assets.
 
 ## [0.1.2]
 

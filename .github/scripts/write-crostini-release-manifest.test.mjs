@@ -55,6 +55,10 @@ test("keeps release metadata aligned with controller and extension source", () =
     new URL("../../extension/src/lib/crostini-controller.ts", import.meta.url),
     "utf8",
   );
+  const releaseSource = readFileSync(
+    new URL("../../desktop/crostini/src/release.rs", import.meta.url),
+    "utf8",
+  );
 
   assert.match(
     controllerSource,
@@ -65,6 +69,12 @@ test("keeps release metadata aligned with controller and extension source", () =
   assert.match(
     extensionSource,
     new RegExp(`CONTROLLER_PROTOCOL_VERSION = ${CONTROLLER_PROTOCOL_VERSION};`),
+  );
+  assert.match(
+    releaseSource,
+    new RegExp(
+      `EXTENSION_PROTOCOL_VERSION: u16 = ${CONTROLLER_PROTOCOL_VERSION};`,
+    ),
   );
   assert.equal(EXTENSION_PROTOCOL_MIN, CONTROLLER_PROTOCOL_VERSION);
   assert.equal(EXTENSION_PROTOCOL_MAX, CONTROLLER_PROTOCOL_VERSION);

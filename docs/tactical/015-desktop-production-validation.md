@@ -61,6 +61,7 @@ and a repeatable acceptance process:
 | P1 | Cross-platform close contract | Run in Background disabled leaves the application resident after last-window close on macOS, Windows, and Linux. | Exit process, tray, server, and port on last-window close; preserve the one-instance restore behavior only when background is enabled. |
 | P1 | Linux production-extension lifecycle | Exact store extension `0.1.6` in native ARM64 Chrome `151.0.7922.71` cold-launches one visible `v0.1.6` AppImage window and one live desktop process. Each repeated **Open 200 OK** action focuses that window but leaves another persistent defunct `ok200-desktop` child under the long-lived `ok200-host`; three actions produced one live child and two zombies until Chrome closed. | Reap every launched child without blocking native messaging; prove repeated store-extension launches retain one live process/window and zero zombies. |
 | P2 | Linux packaging/runtime | Ubuntu ARM64 AppImage logs a host GVFS/GLib symbol mismatch involving `libgvfsdbus.so` and `g_task_set_static_name`; chooser and serving still worked. | Identify whether host-library loading, packaging, or environment causes it; remove the warning or document a verified harmless boundary with broader evidence. |
+| P2 | macOS launcher discovery | The compact `200 OK.app` bundle name does not match a user searching Spotlight for “web server.” | Ship `200 OK Web Server.app` with the full system display name and prove a clean installed artifact is found by a `web server` launcher search. |
 | Gate | Production extension | Store extension `0.1.6` with production ID `lpkjdhnmgkhaabhimpdinmdgejoaejic` is installed in all three VM profiles. Linux now proves real store delivery, detection, and cold launch, but fails repeated-launch process hygiene; macOS and Windows still lack an exact `v0.1.6` browser-driven round trip. | Reap Linux children, then pass browser-driven launch/focus/recovery on all three OSes with the exact repaired public release. |
 | Claim gap | Windows architecture | The public x64 NSIS ran under Windows 11 ARM64 x64 emulation. | Keep the evidence labeled emulated; add native x64 hardware/VM evidence before claiming it. |
 | Claim gap | macOS installer | The PKG passed cryptographic inspection but was not installed into `/Applications` because the attended administrator step was not authorized. | Perform an attended recommended PKG installation in the acceptance campaign. |
@@ -91,6 +92,9 @@ historical evidence. They cannot substitute for the exact repaired version.
       state and add a Windows regression.
 - [ ] Investigate the AppImage GVFS/GLib warning with host-library and clean-OS
       comparisons; record the decision in the runtime/release topic.
+- [x] Give the macOS bundle and system display name the searchable
+      **200 OK Web Server** identity while retaining the stable identifier and
+      compact short bundle name; local generated-bundle inspection passes.
 - [ ] Run TypeScript and Rust formatting, type, lint, unit, integration, and
       platform UI checks required by `CLAUDE.md`.
 

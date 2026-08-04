@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Changed
+
+- Name the macOS application and system display **200 OK Web Server** so
+  launcher searches for “web server” find it, while retaining **200 OK** as
+  the short bundle and compact interface name.
+
 ## [0.1.6]
 
 ### Added

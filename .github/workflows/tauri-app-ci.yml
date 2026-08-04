@@ -294,6 +294,18 @@ jobs:
             ${{ env.HAS_UPDATER_SIGNING != 'true' && '--config ''{"bundle":{"createUpdaterArtifacts":false}}''' || '' }}
             ${{ matrix.platform == 'windows-latest' && secrets.AZURE_CLIENT_SECRET != '' && '--config ''{"bundle":{"windows":{"signCommand":"trusted-signing-cli -e https://eus.codesigning.azure.net -a kylegraehl -c jstorrent-profile %1"}}}''' || '' }}
 
+      - name: Verify macOS bundle identity
+        if: matrix.platform == 'macos-latest'
+        shell: bash
+        run: |
+          APP_PATH="desktop/target/${{ matrix.rust_target }}/release/bundle/macos/200 OK Web Server.app"
+          INFO_PLIST="$APP_PATH/Contents/Info.plist"
+
+          test -d "$APP_PATH"
+          test "$(plutil -extract CFBundleDisplayName raw "$INFO_PLIST")" = "200 OK Web Server"
+          test "$(plutil -extract CFBundleName raw "$INFO_PLIST")" = "200 OK"
+          test "$(plutil -extract CFBundleIdentifier raw "$INFO_PLIST")" = "app.ok200.desktop"
+
       - name: Verify macOS app signing and notarization
         if: matrix.platform == 'macos-latest' && env.HAS_MACOS_SIGNING == 'true' && env.HAS_MACOS_NOTARIZATION == 'true'
         shell: bash
@@ -304,8 +316,8 @@ jobs:
           else
             ARCH="x64"
           fi
-          APP_PATH="desktop/target/${{ matrix.rust_target }}/release/bundle/macos/200 OK.app"
-          DMG_PATH="desktop/target/${{ matrix.rust_target }}/release/bundle/dmg/200 OK_${VERSION}_${ARCH}.dmg"
+          APP_PATH="desktop/target/${{ matrix.rust_target }}/release/bundle/macos/200 OK Web Server.app"
+          DMG_PATH="desktop/target/${{ matrix.rust_target }}/release/bundle/dmg/200 OK Web Server_${VERSION}_${ARCH}.dmg"
 
           test -d "$APP_PATH"
           test -f "$DMG_PATH"
@@ -352,7 +364,7 @@ jobs:
           else
             ARCH="x64"
           fi
-          APP_PATH="desktop/target/$TARGET/release/bundle/macos/200 OK.app"
+          APP_PATH="desktop/target/$TARGET/release/bundle/macos/200 OK Web Server.app"
           if [ ! -d "$APP_PATH" ]; then
             echo "::error::Could not find required app bundle at $APP_PATH"
             find desktop/target -maxdepth 6 -type d -name '*.app' -print || true
@@ -487,8 +499,8 @@ jobs:
             echo ""
             echo "| Platform | |"
             echo "|----------|-|"
-            echo "| macOS (Apple Silicon) | [PKG](${BASE}/200_OK_${VERSION}_aarch64.pkg) (recommended) · [DMG](${BASE}/200.OK_${VERSION}_aarch64.dmg) |"
-            echo "| macOS (Intel) | [PKG](${BASE}/200_OK_${VERSION}_x64.pkg) (recommended) · [DMG](${BASE}/200.OK_${VERSION}_x64.dmg) |"
+            echo "| macOS (Apple Silicon) | [PKG](${BASE}/200_OK_${VERSION}_aarch64.pkg) (recommended) · [DMG](${BASE}/200.OK.Web.Server_${VERSION}_aarch64.dmg) |"
+            echo "| macOS (Intel) | [PKG](${BASE}/200_OK_${VERSION}_x64.pkg) (recommended) · [DMG](${BASE}/200.OK.Web.Server_${VERSION}_x64.dmg) |"
             echo "| Windows | [EXE](${BASE}/200.OK_${VERSION}_x64-setup.exe) (recommended) · [MSI](${BASE}/200.OK_${VERSION}_x64.msi) (system-wide) |"
             echo "| Linux (x86_64) | [AppImage](${BASE}/200.OK_${VERSION}_amd64.AppImage) (recommended, no admin) · [DEB](${BASE}/200.OK_${VERSION}_amd64.deb) (system package) · [RPM](${BASE}/200.OK-${VERSION}-1.x86_64.rpm) (system package) |"
             echo "| Linux (ARM64) | [AppImage](${BASE}/200.OK_${VERSION}_aarch64.AppImage) (recommended, no admin) · [DEB](${BASE}/200.OK_${VERSION}_arm64.deb) (system package) · [RPM](${BASE}/200.OK-${VERSION}-1.aarch64.rpm) (system package) |"

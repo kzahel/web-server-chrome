@@ -166,6 +166,8 @@ release ledger.
 - Perform the recommended clean install. If installation needs administrator
   authentication, treat it as an attended step; cryptographic inspection of an
   uninstalled package is not equivalent.
+- Search the macOS application launcher for `web server`; require the installed
+  **200 OK Web Server** application to appear and launch the expected bundle.
 - Record whether the artifact and host architecture match or use translation.
 
 ### Windows

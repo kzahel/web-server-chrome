@@ -18,7 +18,7 @@ echo "Building Tauri app in release mode (unsigned)..."
 cd "$TAURI_DIR"
 pnpm tauri build --no-sign --bundles app
 
-APP_NAME="200 OK.app"
+APP_NAME="200 OK Web Server.app"
 BUILD_APP="$SCRIPT_DIR/../target/release/bundle/macos/$APP_NAME"
 
 if [ ! -d "$BUILD_APP" ]; then

@@ -43,8 +43,8 @@ export function validateDesktopRelease({ release, latest, tag, repository }) {
   }
 
   const requiredInstallers = [
-    `200.OK_${version}_aarch64.dmg`,
-    `200.OK_${version}_x64.dmg`,
+    `200.OK.Web.Server_${version}_aarch64.dmg`,
+    `200.OK.Web.Server_${version}_x64.dmg`,
     `200_OK_${version}_aarch64.pkg`,
     `200_OK_${version}_x64.pkg`,
     `200.OK_${version}_x64-setup.exe`,

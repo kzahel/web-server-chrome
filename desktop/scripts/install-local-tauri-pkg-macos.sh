@@ -27,7 +27,7 @@ echo "Building Tauri app in release mode (unsigned)..."
 cd "$TAURI_DIR"
 pnpm tauri build --no-sign --bundles app
 
-BUILD_APP="$SCRIPT_DIR/../target/release/bundle/macos/200 OK.app"
+BUILD_APP="$SCRIPT_DIR/../target/release/bundle/macos/200 OK Web Server.app"
 if [ ! -d "$BUILD_APP" ]; then
     echo "Error: Built app not found at $BUILD_APP"
     exit 1
@@ -47,6 +47,6 @@ echo "Installing .pkg to ~/Applications (no admin required)..."
 installer -pkg "$PKG_FILE" -target CurrentUserHomeDirectory
 
 # Strip quarantine so Gatekeeper doesn't block unsigned app
-xattr -cr "$HOME/Applications/200 OK.app"
+xattr -cr "$HOME/Applications/200 OK Web Server.app"
 
-echo "Installed: $HOME/Applications/200 OK.app"
+echo "Installed: $HOME/Applications/200 OK Web Server.app"

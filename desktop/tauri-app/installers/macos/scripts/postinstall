@@ -4,7 +4,7 @@
 
 # $2 is the install location: "/" for system-domain, user home for user-domain
 INSTALL_BASE="${2:-/}"
-APP_PATH="$INSTALL_BASE/Applications/200 OK.app"
+APP_PATH="$INSTALL_BASE/Applications/200 OK Web Server.app"
 
 # Find the host sidecar binary (architecture-specific name)
 HOST_BIN=$(find "$APP_PATH/Contents/MacOS" -name "ok200-host-*" -not -name "*.dwarf" 2>/dev/null | head -1)

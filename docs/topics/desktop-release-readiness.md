@@ -98,6 +98,17 @@ Repository configuration currently preserves:
 The shipped Rust-core release keeps the identifier, updater key, and endpoint
 so installed desktop apps can update in place.
 
+Unreleased macOS source now packages the searchable
+`200 OK Web Server.app`, with `CFBundleDisplayName` set to the full descriptive
+name and the short `CFBundleName` retained as `200 OK`. The technical identity
+remains `app.ok200.desktop`. The macOS PKG payload, local install helpers,
+signed-build checks, release asset validation, and generated release links now
+follow that bundle name. An unsigned production build on 2026-08-04 confirmed
+the expected bundle path, full display name, short bundle name, identifier,
+executable, sidecar, and updater archive. Signed/notarized artifact acceptance
+remains a gate for the next release rather than an inference from that local
+build.
+
 The desktop control surface performs signed update discovery and
 download/install/relaunch through the Tauri plugins. On 2026-07-31 the
 maintainer accepted JSTorrent's shipped cadence and interaction decisions as

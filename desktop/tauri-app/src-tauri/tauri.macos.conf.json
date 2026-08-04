@@ -1,0 +1,9 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "200 OK Web Server",
+  "bundle": {
+    "macOS": {
+      "infoPlist": "Info.macos.plist"
+    }
+  }
+}

@@ -1,11 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
-# Build a .pkg installer wrapping the Tauri-built "200 OK.app".
+# Build a .pkg installer wrapping the Tauri-built "200 OK Web Server.app".
 #
 # Usage: build-macos-pkg.sh [--user-domain] <APP_PATH> <VERSION> <ARCH>
 #   --user-domain  Install to ~/Applications (no admin required) instead of /Applications
-#   APP_PATH       Path to the signed "200 OK.app" from Tauri build
+#   APP_PATH       Path to the signed "200 OK Web Server.app" from Tauri build
 #   VERSION        Version string (e.g., 0.1.0)
 #   ARCH           Architecture label (aarch64 or x64)
 #
@@ -21,7 +21,7 @@ fi
 if [ $# -ne 3 ]; then
     echo "Usage: $0 [--user-domain] <APP_PATH> <VERSION> <ARCH>"
     echo "  --user-domain  Install to ~/Applications (no admin required)"
-    echo "  APP_PATH       Path to 200 OK.app from Tauri build"
+    echo "  APP_PATH       Path to 200 OK Web Server.app from Tauri build"
     echo "  VERSION        Version string (e.g., 0.1.0)"
     echo "  ARCH           Architecture label (aarch64 or x64)"
     exit 1
@@ -45,7 +45,7 @@ if [ ! -f "$INSTALLER_SCRIPTS/postinstall" ]; then
     exit 1
 fi
 
-echo "Building .pkg installer for 200 OK v${VERSION} (${ARCH})..."
+echo "Building .pkg installer for 200 OK Web Server v${VERSION} (${ARCH})..."
 echo "  App: $APP_PATH"
 echo "  Output: $OUTPUT_FILE"
 
@@ -56,7 +56,7 @@ trap 'rm -rf "$WORK_DIR"' EXIT
 # Create pkgroot with the .app (installs to /Applications)
 PKGROOT="$WORK_DIR/pkgroot"
 mkdir -p "$PKGROOT/Applications"
-cp -R "$APP_PATH" "$PKGROOT/Applications/200 OK.app"
+cp -R "$APP_PATH" "$PKGROOT/Applications/200 OK Web Server.app"
 
 # Build component package
 COMPONENT_PKG="$WORK_DIR/ok200-component.pkg"
@@ -76,13 +76,13 @@ fi
 cat > "$WORK_DIR/distribution.xml" << EOF
 <?xml version="1.0" encoding="utf-8"?>
 <installer-gui-script minSpecVersion="2">
-    <title>200 OK</title>
+    <title>200 OK Web Server</title>
     <options customize="never" require-scripts="false" hostArchitectures="x86_64,arm64"/>
     $DOMAINS
     <choices-outline>
         <line choice="default"/>
     </choices-outline>
-    <choice id="default" title="200 OK">
+    <choice id="default" title="200 OK Web Server">
         <pkg-ref id="$IDENTIFIER"/>
     </choice>
     <pkg-ref id="$IDENTIFIER" version="$VERSION" onConclusion="none">ok200-component.pkg</pkg-ref>

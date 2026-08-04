@@ -9,7 +9,7 @@ Topic: product-branding
 Status: **accepted product identity; active source surfaces reconciled,
 publication pending.**
 
-Last reconciled: **2026-08-03**.
+Last reconciled: **2026-08-04**.
 
 ## Scope
 
@@ -43,13 +43,18 @@ is: websites, page and window titles, store listings, README headings,
 directory listings, and first-run or migration copy.
 
 Use **200 OK** where the category is already clear or space is constrained:
-application filenames, desktop operating-system launcher labels, menu items,
-buttons, tray labels, and compact headers. A nearby **Web Server** descriptor
-may visually form the full name.
+menu items, buttons, tray labels, and compact headers. A nearby **Web Server**
+descriptor may visually form the full name.
 
-Android is an intentional exception for searchability: its application and
-launcher metadata use **200 OK Web Server**, so launcher search can match both
-the distinctive name and the product category. The compact in-app header stays
+macOS application and launcher metadata use **200 OK Web Server** so Spotlight
+and other system search surfaces can match the product category. The `.app`
+filename and `CFBundleDisplayName` use the full name; the short
+`CFBundleName`, menu items, and compact in-app treatment remain **200 OK**.
+The stable bundle identifier remains `app.ok200.desktop`.
+
+Android follows the same searchability rule: its application and launcher
+metadata use **200 OK Web Server**, so launcher search can match both the
+distinctive name and the product category. The compact in-app header stays
 **200 OK** with a nearby **Web Server** descriptor, and a home-screen launcher
 may truncate the longer metadata label visually.
 
@@ -87,7 +92,8 @@ surface are governed by
 
 | Surface | Brand treatment |
 |---|---|
-| Desktop bundle/launcher | **200 OK** |
+| macOS bundle/launcher | **200 OK Web Server** for system search; short bundle/menu name **200 OK** |
+| Windows/Linux bundle/launcher | **200 OK** |
 | Desktop window and primary header | **200 OK Web Server** |
 | Android launcher/system metadata | **200 OK Web Server** for launcher search |
 | Android compact UI | **200 OK**, with **Web Server** descriptor |
@@ -124,11 +130,13 @@ Current reconciliation should update active product surfaces while preserving
 accurate historical references in `legacy/`, research documents, changelogs,
 and migration history.
 
-As of 2026-08-03, current source uses the accepted identity in the desktop
+As of 2026-08-04, current source uses the accepted identity in the desktop
 window and control header, Rust directory listings, website header and
 metadata, README, and Chrome extension manifest and popup. Android already
 uses the searchable **200 OK Web Server** system label while retaining the
-compact **200 OK** header with a **Web Server** descriptor.
+compact **200 OK** header with a **Web Server** descriptor. Unreleased macOS
+source now also generates **200 OK Web Server.app**, advertises that full
+display name to the system, and retains **200 OK** as its short bundle name.
 
 The unpublished Node `ok200` package has been retired. Its command name and
 branding survive only in accurate historical records; there is no current CLI
@@ -168,8 +176,9 @@ Validation on 2026-07-28:
 - No current desktop window, application header, website header, extension
   manifest, or generated directory listing uses **Web Server for Chrome** as
   the current product name.
-- Desktop's compact system label remains readable, and Android launcher search
-  matches **Web Server** while its compact in-app header remains readable.
+- macOS and Android launcher search match **Web Server** while their compact
+  in-app treatment remains readable; Windows and Linux compact system labels
+  remain readable.
 - Website and migration metadata still contain the exact legacy name in
   explicit successor/migration context.
 - Extension copy states that the desktop or Android application serves files.

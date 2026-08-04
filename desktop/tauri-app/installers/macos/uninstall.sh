@@ -1,8 +1,8 @@
 #!/bin/bash
 # Uninstall script for 200 OK Desktop
-# Run: bash "/Applications/200 OK.app/Contents/Resources/uninstall.sh"
+# Run: bash "/Applications/200 OK Web Server.app/Contents/Resources/uninstall.sh"
 
-APP_PATH="/Applications/200 OK.app"
+APP_PATH="/Applications/200 OK Web Server.app"
 
 echo "Uninstalling 200 OK..."
 

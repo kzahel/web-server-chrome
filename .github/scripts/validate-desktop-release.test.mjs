@@ -15,8 +15,8 @@ const digest = `sha256:${"a".repeat(64)}`;
 
 function fixture() {
   const installerAssets = [
-    `200.OK_${version}_aarch64.dmg`,
-    `200.OK_${version}_x64.dmg`,
+    `200.OK.Web.Server_${version}_aarch64.dmg`,
+    `200.OK.Web.Server_${version}_x64.dmg`,
     `200_OK_${version}_aarch64.pkg`,
     `200_OK_${version}_x64.pkg`,
     `200.OK_${version}_x64-setup.exe`,
@@ -30,8 +30,8 @@ function fixture() {
     "latest.json",
   ];
   const updaterAssets = {
-    "darwin-aarch64": "200.OK_aarch64.app.tar.gz",
-    "darwin-x86_64": "200.OK_x64.app.tar.gz",
+    "darwin-aarch64": "200.OK.Web.Server_aarch64.app.tar.gz",
+    "darwin-x86_64": "200.OK.Web.Server_x64.app.tar.gz",
     "linux-x86_64": `200.OK_${version}_amd64.AppImage`,
     "linux-aarch64": `200.OK_${version}_aarch64.AppImage`,
     "windows-x86_64": `200.OK_${version}_x64-setup.exe`,

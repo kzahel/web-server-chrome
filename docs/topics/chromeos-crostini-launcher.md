@@ -10,10 +10,10 @@ independent signature/hash verification. Earlier exact public and
 production-shaped tests own the x86_64 ChromeOS and ARM64 Linux runtime,
 Launcher, permission/claim, server lifecycle, LAN, reinstall, and purge
 evidence; native ARM Chromebook and exact `0.1.5` physical acceptance remain
-open. The existing protocol-1 bootstrap intentionally fails closed against
-the protocol-2 feed. A tested protocol-2 bootstrap switch is prepared but must
-deploy with the matching Chrome Web Store `0.1.8` rollout so users cannot
-install an incompatible controller/extension pair.**
+open. The tested protocol-2 bootstrap is now deployed and installs signed
+controller `0.1.5`. At the maintainer's direction this preceded Chrome Web
+Store `0.1.8` approval, accepting a temporary compatibility gap for users of
+the current protocol-1 store extension until the submitted update is live.**
 
 Last reconciled: **2026-08-04**.
 

@@ -9,9 +9,11 @@ polished ChromeOS Linux setup/control surface and the Android/Linux peer
 chooser. Its exact 153,762-byte, 14-file GitHub ZIP passes CI and independent
 store-package inspection with SHA-256
 `19c1a15ffad8c10bab2f6b1c42cf3a2c75c9739dcf4bdde9a1b304bbcb07925e`.
-The release is ready for maintainer-owned Chrome Web Store upload; store
-delivery and the matching protocol-2 bootstrap deployment remain open. Earlier
-physical evidence still owns the Android intent, contextual permission,
+The release was submitted for maintainer-owned Chrome Web Store publication;
+store delivery remains open. The matching protocol-2 bootstrap is already
+deployed at the maintainer's direction, accepting a temporary compatibility
+gap until store `0.1.8` is live. Earlier physical evidence still owns the
+Android intent, contextual permission,
 claim, popup fallback, ChromeOS Linux control, LAN, and lifecycle claims until
 the exact store-delivered `0.1.8` package is exercised.**
 

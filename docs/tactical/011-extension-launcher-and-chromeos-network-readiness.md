@@ -4,8 +4,10 @@ Status: **active; the ChromeOS URL fix passes physical validation, Android
 `0.2.1` remains the unchanged signed candidate, and public GitHub extension
 `0.1.8` plus Crostini controller `0.1.5` package the completed protocol-2
 Linux control surface. Their exact artifacts pass CI and independent package,
-hash, and signature inspection. Chrome Web Store upload, store-delivered proof,
-and the coordinated protocol-2 bootstrap deployment remain open.**
+hash, and signature inspection. The extension was submitted for Chrome Web
+Store publication. Its protocol-2 bootstrap is deployed ahead of approval at
+the maintainer's direction; store delivery and exact store-delivered proof
+remain open.**
 
 Last updated: **2026-08-04**.
 

@@ -4,6 +4,7 @@ import Foundation
 enum DebugFixture {
     static let launchArgument = "-use-ok200-ui-test-fixture"
     static let resetLaunchArgument = "-reset-ok200-ui-test-state"
+    static let invalidRootLaunchArgument = "-use-ok200-invalid-root"
 
     static func installIfRequested(arguments: [String] = ProcessInfo.processInfo.arguments) -> URL? {
         guard arguments.contains(launchArgument) else { return nil }

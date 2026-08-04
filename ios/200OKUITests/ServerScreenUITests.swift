@@ -59,6 +59,22 @@ final class ServerScreenUITests: XCTestCase {
     }
 
     @MainActor
+    func testInvalidBookmarkShowsRecoveryPath() {
+        let app = XCUIApplication()
+        app.launchArguments = [
+            "-reset-ok200-ui-test-state",
+            "-use-ok200-invalid-root"
+        ]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["folder-name"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["folder-name"].label, "Unavailable folder")
+        app.buttons["start-server"].tap()
+        XCTAssertTrue(app.staticTexts["server-status"].label.contains("Choose it again"))
+        XCTAssertTrue(app.buttons["choose-folder"].isEnabled)
+    }
+
+    @MainActor
     func testBackgroundStopsAndResumeIsTruthful() {
         let app = XCUIApplication()
         app.launchArguments = [

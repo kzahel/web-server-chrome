@@ -5,6 +5,7 @@ struct ServerScreen: View {
     @Bindable var controller: IOSServerController
     @State private var showsDirectoryPicker = false
     @State private var showsPreview = false
+    @FocusState private var portIsFocused: Bool
 
     private let brandYellow = Color(red: 0.98, green: 0.82, blue: 0.02)
 
@@ -32,6 +33,12 @@ struct ServerScreen: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationBarHidden(true)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { portIsFocused = false }
+                }
+            }
         }
         .sheet(isPresented: $showsDirectoryPicker) {
             DirectoryPicker(
@@ -170,6 +177,7 @@ struct ServerScreen: View {
                         set: { value in controller.updatePort(value) }
                     ))
                     .keyboardType(.numberPad)
+                    .focused($portIsFocused)
                     .multilineTextAlignment(.trailing)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 110)
@@ -320,16 +328,21 @@ struct ServerScreen: View {
         value: Binding<Bool>,
         identifier: String
     ) -> some View {
-        Toggle(isOn: value) {
+        HStack(alignment: .center, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                 Text(detail)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            Spacer(minLength: 8)
+            Toggle("", isOn: value)
+                .labelsHidden()
+                .accessibilityLabel(title)
+                .accessibilityHint(detail)
+                .accessibilityIdentifier(identifier)
         }
         .disabled(controller.settingsLocked)
-        .accessibilityIdentifier(identifier)
     }
 
     private func card<Content: View>(

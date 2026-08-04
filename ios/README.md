@@ -28,3 +28,21 @@ stops the listener by design.
 Simulator UI tests use a fixture installed only in DEBUG builds through the
 `-use-ok200-ui-test-fixture` launch argument. The fixture and reset launch hooks
 are compiled out of Release builds.
+
+Run the complete simulator test suite plus the Release fixture/signing checks:
+
+```bash
+ios/scripts/check.sh
+```
+
+Run the attached-phone preflight, signed build, install, semantic launch, and
+LAN fixture start through the shared controller:
+
+```bash
+ios/scripts/device-smoke.sh
+```
+
+The smoke reads the displayed Wi-Fi URL from the semantic snapshot, checks the
+fixture externally from the Mac, backgrounds the app, and verifies that the
+listener closes. It does not guess a device address or weaken the testbed's
+explicit device-selection and session rules.

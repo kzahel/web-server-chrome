@@ -76,7 +76,12 @@ struct SecurityScopedRootStore {
                 url.stopAccessingSecurityScopedResource()
             }
         }
-        let values = try url.resourceValues(forKeys: [.isDirectoryKey, .isReadableKey, .nameKey])
+        let values = try url.resourceValues(forKeys: [
+            .isDirectoryKey,
+            .isReadableKey,
+            .localizedNameKey,
+            .nameKey
+        ])
         guard values.isDirectory == true else {
             throw SelectedRootError.notDirectory
         }
@@ -85,12 +90,12 @@ struct SecurityScopedRootStore {
         }
         let bookmark = try url.bookmarkData(
             options: .minimalBookmark,
-            includingResourceValuesForKeys: [.isDirectoryKey, .nameKey],
+            includingResourceValuesForKeys: [.isDirectoryKey, .localizedNameKey, .nameKey],
             relativeTo: nil
         )
         let selected = SelectedRoot(
             bookmark: bookmark,
-            displayName: values.name ?? url.lastPathComponent
+            displayName: values.localizedName ?? values.name ?? url.lastPathComponent
         )
         defaults.set(try JSONEncoder().encode(selected), forKey: key)
         return selected

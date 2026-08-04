@@ -39,6 +39,13 @@ final class IOSServerController {
             defaults.removeObject(forKey: "server-configuration")
             defaults.removeObject(forKey: "selected-root")
         }
+        if ProcessInfo.processInfo.arguments.contains(DebugFixture.invalidRootLaunchArgument),
+           let data = try? JSONEncoder().encode(SelectedRoot(
+               bookmark: Data("invalid-bookmark".utf8),
+               displayName: "Unavailable folder"
+           )) {
+            defaults.set(data, forKey: "selected-root")
+        }
 #endif
         let settingsStore = AppSettingsStore(defaults: defaults)
         let rootStore = SecurityScopedRootStore(defaults: defaults)

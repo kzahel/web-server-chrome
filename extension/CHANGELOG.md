@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Refer to the ChromeOS Linux Launcher item by its searchable
+  **200 OK Web Server** system name in setup and recovery guidance.
+
 ## [0.1.7]
 
 ### Added

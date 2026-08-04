@@ -8,7 +8,7 @@ Choose the implementation that fits your device and preferences:
 
 • ChromeOS Linux works without Google Play and gives the extension full server controls. Install one small signed Linux component, then configure the served folder, port, directory listings, single-page-app fallback, CORS, and LAN listening from the extension. You can start and stop the server, check signed component updates, and opt into automatic updates while the server is stopped.
 
-• The Linux component supports x86_64 and ARM64 Chromebooks, plus compatible x86_64 ChromeOS Flex devices where the Linux development environment is available. After one Terminal installation, open 200 OK Linux from the ChromeOS Launcher whenever you want to use it.
+• The Linux component supports x86_64 and ARM64 Chromebooks, plus compatible x86_64 ChromeOS Flex devices where the Linux development environment is available. After one Terminal installation, open 200 OK Web Server from the ChromeOS Launcher whenever you want to use it.
 
 • The Android app offers the quickest setup when Google Play and Android apps are available. The extension can open the installed 200 OK Android app and provides direct Google Play and ChromeOS options links. Availability depends on the Chromebook, account, and administrator policy.
 

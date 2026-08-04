@@ -109,6 +109,15 @@ executable, sidecar, and updater archive. Signed/notarized artifact acceptance
 remains a gate for the next release rather than an inference from that local
 build.
 
+Unreleased Windows source now uses **200 OK Web Server** as the installed
+product and shortcut name while retaining `ok200-desktop.exe`, the stable
+application identifier, native-host identity, and compact release-asset names.
+Unreleased Linux source keeps the `200-ok` package/desktop identities and
+`ok200-desktop` executable, but every generated or installer-managed desktop
+entry now advertises `Name=200 OK Web Server`, `GenericName=Web Server`, and
+explicit search keywords. The build matrix inspects Windows MSI product
+metadata and the actual AppImage, DEB, and RPM launcher entries before release.
+
 The desktop control surface performs signed update discovery and
 download/install/relaunch through the Tauri plugins. On 2026-07-31 the
 maintainer accepted JSTorrent's shipped cadence and interaction decisions as

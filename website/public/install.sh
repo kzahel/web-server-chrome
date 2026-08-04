@@ -187,12 +187,14 @@ ESCAPED_INSTALL_PATH="${ESCAPED_INSTALL_PATH//\`/\\\`}"
 cat > "${APPLICATIONS_DIR}/200-ok.desktop" <<DESKTOP_ENTRY
 [Desktop Entry]
 Type=Application
-Name=200 OK
+Name=200 OK Web Server
+GenericName=Web Server
 Comment=200 OK Web Server Desktop App
 Exec="${ESCAPED_INSTALL_PATH}" %U
 Icon=ok200-desktop
 Terminal=false
 Categories=Development;Network;
+Keywords=web;server;HTTP;local;development;
 StartupWMClass=ok200-desktop
 DESKTOP_ENTRY
 chmod 644 "${APPLICATIONS_DIR}/200-ok.desktop"

@@ -384,7 +384,7 @@ info "Verified ${RELEASE_ASSET}."
 
 echo
 info "200 OK Linux ${RELEASE_VERSION} is installed."
-echo "Open ‘200 OK Linux’ from the ChromeOS Launcher."
+echo "Open ‘200 OK Web Server’ from the ChromeOS Launcher."
 echo "The web server remains stopped until you press Start in the extension."
 echo
 echo "Useful commands:"

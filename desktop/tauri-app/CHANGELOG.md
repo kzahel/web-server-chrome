@@ -7,6 +7,10 @@
 - Name the macOS application and system display **200 OK Web Server** so
   launcher searches for “web server” find it, while retaining **200 OK** as
   the short bundle and compact interface name.
+- Name the installed Windows application and Linux launcher
+  **200 OK Web Server**, and add standard Linux generic-name and search-keyword
+  metadata while retaining the existing executable, package, and desktop-file
+  identities.
 
 ## [0.1.6]
 

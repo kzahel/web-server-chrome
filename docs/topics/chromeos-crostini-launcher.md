@@ -30,7 +30,13 @@ folder/lifecycle/accessibility matrices, update-to-a-newer-release/rollback,
 the public-artifact uninstall/pin matrix, sleeping-display proof for the
 wake-aware testbed capture, and signed-artifact physical evidence remain open.**
 
-Last reconciled: **2026-08-03**.
+Last reconciled: **2026-08-04**.
+
+Unreleased source now labels the registered ChromeOS Linux Launcher item
+**200 OK Web Server**, with **Web Server** as its generic name and explicit
+web/server/HTTP search keywords. The stable
+`app.ok200.crostini.desktop` identity, `ok200-crostini` command, service,
+package, controller role, and compact UI treatment do not change.
 
 The released fallback's implementation and acceptance ledger lives in
 [Tactical 012](../tactical/012-chromeos-crostini-fallback.md). The active
@@ -84,6 +90,10 @@ controller-served launch page --external message--> extension worker
   [`desktop/crostini`](../../desktop/crostini), uses the X11 protocol directly
   with DPI-aware pure-Rust font rasterization, and adds no GTK, Tauri,
   `xmessage`, or Xlib runtime dependency.
+- The `.desktop` entry's searchable system label is
+  **200 OK Web Server**, with generic name **Web Server** and explicit
+  web/server/HTTP keywords. **200 OK Linux** may still describe the component
+  in technical or platform context, but is not the Launcher label.
 - After the controller answers, the launcher opens its static
   `http://penguin.linux.test:<control-port>/launch-chromeos` page. That page
   sends one external message to wake the extension, whose service worker opens
@@ -206,7 +216,7 @@ flow to prototype:
 Provisional setup copy:
 
 > First-time setup needs an Internet connection and one Terminal command.
-> After setup, open **200 OK Linux** from your Chromebook Launcher.
+> After setup, open **200 OK Web Server** from your Chromebook Launcher.
 
 > Don't see Linux in Settings? Your Chromebook, account, or administrator may
 > not allow it. You can still use 200 OK on Android or another desktop device.
@@ -220,7 +230,7 @@ Provisional permission copy:
 
 After installation:
 
-1. The user clicks **200 OK Linux** in the ChromeOS Launcher.
+1. The user clicks **200 OK Web Server** in the ChromeOS Launcher.
 2. ChromeOS wakes the default Linux VM/container if it is stopped and runs the
    non-terminal launch helper, which briefly displays **Launching…**.
 3. The helper starts or focuses the single controller service and waits for
@@ -243,7 +253,7 @@ After installation:
 Until a complete ChromeOS reboot/login test passes with the production
 launcher, the bundled recovery text should also say:
 
-> If **200 OK Linux** does not start, open Terminal once, close its window when
+> If **200 OK Web Server** does not start, open Terminal once, close its window when
 > Linux finishes starting, and try the 200 OK Launcher item again.
 
 The user should not normally have to keep a Terminal window open. A full OS
@@ -251,7 +261,7 @@ reboot requires the user to sign back into ChromeOS, but the installed Linux
 app is expected—not yet proved—to remain registered in the Launcher.
 
 The service does not start merely because Terminal or another Linux app wakes
-the container. The user must click **200 OK Linux** after a reboot or VM stop;
+the container. The user must click **200 OK Web Server** after a reboot or VM stop;
 that explicit action starts the service and opens the control UI.
 
 ## Implemented launcher contract

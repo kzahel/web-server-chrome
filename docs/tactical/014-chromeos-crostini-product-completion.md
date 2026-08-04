@@ -5,8 +5,9 @@ first physically reviewed product-UI checkpoint and local release preparation.
 Controller-backed folder browsing, automatic shared-folder discovery,
 default stop-on-close lifetime, a
 server switch, a polished portrait control surface, automatic Chromebook-host
-address discovery, local/LAN URL actions, and a compact system-font Linux
-launch handoff are implemented. The primary server control is now compact and
+address discovery, local/LAN URL actions, a compact system-font Linux launch
+handoff, and the searchable **200 OK Web Server** ChromeOS Launcher label are
+implemented. The primary server control is now compact and
 sticky, and locked settings explain their stop-to-edit requirement when
 activated. Local, unpushed `crostini-v0.1.2` and `extension-v0.1.7` tags pass
 their source/package gates, but the signed Crostini artifacts and full matrix
@@ -17,7 +18,7 @@ capture implementation and the old shelf residue is classified, but sleeping-
 display proof, the public-artifact purge/pin matrix, broader lifecycle and
 accessibility coverage, and signed-artifact physical evidence remain open.**
 
-Last updated: **2026-08-03**.
+Last updated: **2026-08-04**.
 
 Topic: `chromeos-crostini-launcher`
 

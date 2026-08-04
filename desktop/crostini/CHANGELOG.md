@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Name the ChromeOS Linux Launcher item **200 OK Web Server** and add standard
+  Linux generic-name and search-keyword metadata without changing its desktop,
+  service, command, or package identities.
+
 ## [0.1.2]
 
 - Add authenticated UI sessions that stop the content server when the final

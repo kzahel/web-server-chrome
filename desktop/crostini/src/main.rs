@@ -202,7 +202,7 @@ fn reset_controller() -> ExitCode {
     };
     match runtime.block_on(ok200_crostini::reset_controller_identity(&options)) {
         Ok(()) => {
-            println!("Controller pairing was reset. Open 200 OK Linux to pair again.");
+            println!("Controller pairing was reset. Open 200 OK Web Server to pair again.");
             ExitCode::SUCCESS
         }
         Err(error) => fail(error),

@@ -60,7 +60,7 @@ export function CrostiniController() {
       if (!health.claimed) {
         if (!launch.claimCode) {
           throw new Error(
-            "The one-time controller claim is missing. Launch 200 OK Linux again.",
+            "The one-time controller claim is missing. Launch 200 OK Web Server again.",
           );
         }
         const claim = await client.claim(launch.instanceId, launch.claimCode);
@@ -71,7 +71,7 @@ export function CrostiniController() {
         );
       } else if (!controllerToken) {
         throw new Error(
-          "This Linux controller is already paired, but this extension no longer has its token. Run ‘ok200-crostini reset-controller’ in Terminal, then launch 200 OK Linux again.",
+          "This Linux controller is already paired, but this extension no longer has its token. Run ‘ok200-crostini reset-controller’ in Terminal, then launch 200 OK Web Server again.",
         );
       }
 
@@ -292,7 +292,7 @@ export function CrostiniController() {
         }
       }
       setDetail(
-        "The update is taking longer than expected. Launch 200 OK Linux again, or run ‘ok200-crostini update’ in Terminal.",
+        "The update is taking longer than expected. Launch 200 OK Web Server again, or run ‘ok200-crostini update’ in Terminal.",
       );
       setUpdateMessage("");
     } catch (error) {
@@ -1442,7 +1442,7 @@ function OfflineSetup({ compact = false }: { compact?: boolean }) {
           </small>
         </li>
         <li>
-          Open <strong>200 OK Linux</strong> from the ChromeOS Launcher.
+          Open <strong>200 OK Web Server</strong> from the ChromeOS Launcher.
         </li>
       </ol>
       <p>

@@ -146,7 +146,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libsoup-3.0-dev libjavascriptcoregtk-4.1-dev xdg-utils
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libsoup-3.0-dev libjavascriptcoregtk-4.1-dev xdg-utils desktop-file-utils rpm2cpio cpio
 
       # --- macOS code signing ---
       - name: Set up macOS code signing keychain
@@ -305,6 +305,86 @@ jobs:
           test "$(plutil -extract CFBundleDisplayName raw "$INFO_PLIST")" = "200 OK Web Server"
           test "$(plutil -extract CFBundleName raw "$INFO_PLIST")" = "200 OK"
           test "$(plutil -extract CFBundleIdentifier raw "$INFO_PLIST")" = "app.ok200.desktop"
+
+      - name: Verify Windows bundle identity
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $msi = @(Get-ChildItem 'desktop/target/release/bundle/msi' -Filter '*.msi' -File)
+          if ($msi.Count -ne 1) {
+            throw "Expected exactly one MSI, found $($msi.Count)"
+          }
+
+          $installer = New-Object -ComObject WindowsInstaller.Installer
+          $invoke = [System.Reflection.BindingFlags]::InvokeMethod
+          $getProperty = [System.Reflection.BindingFlags]::GetProperty
+          $database = $installer.GetType().InvokeMember(
+            'OpenDatabase', $invoke, $null, $installer, @($msi[0].FullName, 0)
+          )
+          $view = $database.GetType().InvokeMember(
+            'OpenView', $invoke, $null, $database,
+            @("SELECT ``Value`` FROM ``Property`` WHERE ``Property``='ProductName'")
+          )
+          $null = $view.GetType().InvokeMember('Execute', $invoke, $null, $view, @())
+          $record = $view.GetType().InvokeMember('Fetch', $invoke, $null, $view, @())
+          $productName = $record.GetType().InvokeMember(
+            'StringData', $getProperty, $null, $record, @(1)
+          )
+          if ($productName -ne '200 OK Web Server') {
+            throw "Unexpected Windows ProductName: $productName"
+          }
+
+      - name: Verify Linux launcher identity
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          find_one() {
+            local directory="$1"
+            local pattern="$2"
+            local matches=()
+            mapfile -t matches < <(find "$directory" -maxdepth 1 -type f -name "$pattern" -print)
+            if [ "${#matches[@]}" -ne 1 ]; then
+              echo "Expected one $pattern in $directory, found ${#matches[@]}" >&2
+              return 1
+            fi
+            realpath "${matches[0]}"
+          }
+
+          verify_launcher() {
+            local desktop_file="$1"
+            desktop-file-validate "$desktop_file"
+            grep -Fxq 'Name=200 OK Web Server' "$desktop_file"
+            grep -Fxq 'GenericName=Web Server' "$desktop_file"
+            grep -Fxq 'Keywords=web;server;HTTP;local;development;' "$desktop_file"
+          }
+
+          APPIMAGE_PATH="$(find_one desktop/target/release/bundle/appimage '*.AppImage')"
+          DEB_PATH="$(find_one desktop/target/release/bundle/deb '*.deb')"
+          RPM_PATH="$(find_one desktop/target/release/bundle/rpm '*.rpm')"
+          VERIFY_DIR="$(mktemp -d)"
+          trap 'rm -rf "$VERIFY_DIR"' EXIT
+
+          mkdir "$VERIFY_DIR/appimage"
+          (
+            cd "$VERIFY_DIR/appimage"
+            "$APPIMAGE_PATH" --appimage-extract '*.desktop' >/dev/null
+          )
+          APPIMAGE_DESKTOP="$(find "$VERIFY_DIR/appimage" -type f -name '*.desktop' -print -quit)"
+          verify_launcher "$APPIMAGE_DESKTOP"
+
+          mkdir "$VERIFY_DIR/deb"
+          dpkg-deb -x "$DEB_PATH" "$VERIFY_DIR/deb"
+          DEB_DESKTOP="$(find "$VERIFY_DIR/deb/usr/share/applications" -type f -name '*.desktop' -print -quit)"
+          verify_launcher "$DEB_DESKTOP"
+
+          mkdir "$VERIFY_DIR/rpm"
+          (
+            cd "$VERIFY_DIR/rpm"
+            rpm2cpio "$RPM_PATH" | cpio -idm --quiet
+          )
+          RPM_DESKTOP="$(find "$VERIFY_DIR/rpm" -type f -name '*.desktop' -print -quit)"
+          verify_launcher "$RPM_DESKTOP"
 
       - name: Verify macOS app signing and notarization
         if: matrix.platform == 'macos-latest' && env.HAS_MACOS_SIGNING == 'true' && env.HAS_MACOS_NOTARIZATION == 'true'

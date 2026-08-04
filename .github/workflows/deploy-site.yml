@@ -30,6 +30,9 @@ jobs:
       - name: Validate Linux installer
         run: |
           bash -n website/public/install.sh website/public/install-crostini.sh
+          grep -Fxq 'Name=200 OK Web Server' website/public/install.sh
+          grep -Fxq 'GenericName=Web Server' website/public/install.sh
+          grep -Fxq 'Keywords=web;server;HTTP;local;development;' website/public/install.sh
           scripts/test-crostini-installer.sh
       - name: Install and build
         run: |

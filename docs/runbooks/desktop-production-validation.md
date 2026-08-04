@@ -173,6 +173,8 @@ release ledger.
 ### Windows
 
 - Use the public recommended current-user NSIS installer.
+- Search the Windows Start menu for `web server`; require the installed
+  **200 OK Web Server** application to appear and launch the expected product.
 - Require Authenticode status `Valid` and the expected publisher before
   execution.
 - Record native versus emulated execution. Emulation cannot be reported as
@@ -185,6 +187,8 @@ release ledger.
 
 - Use the public AppImage through the documented verified installer or an
   equivalently checksum-verified direct path.
+- Search the desktop application launcher for `web server`; require
+  **200 OK Web Server** to appear and launch the expected desktop identity.
 - Record OS, desktop session, architecture, FUSE mode, executable location, and
   native-versus-emulated execution.
 - Verify stable desktop identity and native-host registration after any move

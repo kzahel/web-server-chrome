@@ -46,11 +46,15 @@ Use **200 OK** where the category is already clear or space is constrained:
 menu items, buttons, tray labels, and compact headers. A nearby **Web Server**
 descriptor may visually form the full name.
 
-macOS application and launcher metadata use **200 OK Web Server** so Spotlight
-and other system search surfaces can match the product category. The `.app`
-filename and `CFBundleDisplayName` use the full name; the short
-`CFBundleName`, menu items, and compact in-app treatment remain **200 OK**.
-The stable bundle identifier remains `app.ok200.desktop`.
+Operating-system application and launcher metadata use
+**200 OK Web Server** so system search surfaces can match the product category.
+On macOS, the `.app` filename and `CFBundleDisplayName` use the full name while
+the short `CFBundleName` remains **200 OK**. Windows uses the full installed
+application and shortcut name. Linux and ChromeOS Linux `.desktop` entries use
+the full `Name`, the generic name **Web Server**, and explicit web/server/HTTP
+search keywords. Executable names, package names, desktop-file IDs, bundle
+identifiers, menu items, and compact in-app treatment remain stable and may use
+**200 OK**.
 
 Android follows the same searchability rule: its application and launcher
 metadata use **200 OK Web Server**, so launcher search can match both the
@@ -84,8 +88,8 @@ relationship explained in description and migration copy.
 ChromeOS availability and fallback claims must also follow
 [`chromeos-extension-launcher.md`](chromeos-extension-launcher.md); branding
 must not conceal that Android apps and Google Play are unavailable on some
-Chromebooks or accounts. The future **200 OK Linux** Launcher and control
-surface are governed by
+Chromebooks or accounts. The ChromeOS Linux component's
+**200 OK Web Server** Launcher and control surface are governed by
 [`chromeos-crostini-launcher.md`](chromeos-crostini-launcher.md).
 
 ## Surface contract
@@ -93,7 +97,9 @@ surface are governed by
 | Surface | Brand treatment |
 |---|---|
 | macOS bundle/launcher | **200 OK Web Server** for system search; short bundle/menu name **200 OK** |
-| Windows/Linux bundle/launcher | **200 OK** |
+| Windows installed app/shortcut | **200 OK Web Server**; technical executable and app identity remain stable |
+| Linux desktop launcher | **200 OK Web Server**, generic name **Web Server**, and searchable keywords; package/desktop IDs remain stable |
+| ChromeOS Linux launcher | **200 OK Web Server**, generic name **Web Server**, and searchable keywords; component/desktop/service IDs remain stable |
 | Desktop window and primary header | **200 OK Web Server** |
 | Android launcher/system metadata | **200 OK Web Server** for launcher search |
 | Android compact UI | **200 OK**, with **Web Server** descriptor |
@@ -137,6 +143,9 @@ uses the searchable **200 OK Web Server** system label while retaining the
 compact **200 OK** header with a **Web Server** descriptor. Unreleased macOS
 source now also generates **200 OK Web Server.app**, advertises that full
 display name to the system, and retains **200 OK** as its short bundle name.
+Unreleased Windows, Linux, and ChromeOS Linux source now likewise exposes the
+full descriptive name to system launch/search surfaces while preserving their
+technical identities.
 
 The unpublished Node `ok200` package has been retired. Its command name and
 branding survive only in accurate historical records; there is no current CLI
@@ -176,9 +185,9 @@ Validation on 2026-07-28:
 - No current desktop window, application header, website header, extension
   manifest, or generated directory listing uses **Web Server for Chrome** as
   the current product name.
-- macOS and Android launcher search match **Web Server** while their compact
-  in-app treatment remains readable; Windows and Linux compact system labels
-  remain readable.
+- macOS, Windows, Linux, ChromeOS Linux, and Android launcher search match
+  **Web Server** while their compact in-app treatment and stable technical
+  identities remain intact.
 - Website and migration metadata still contain the exact legacy name in
   explicit successor/migration context.
 - Extension copy states that the desktop or Android application serves files.

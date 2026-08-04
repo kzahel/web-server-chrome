@@ -247,18 +247,7 @@ fn register_appimage_installation() -> Result<(), String> {
     std::fs::create_dir_all(&applications_dir)
         .map_err(|e| format!("mkdir {}: {e}", applications_dir.display()))?;
     let desktop_path = applications_dir.join("200-ok.desktop");
-    let desktop_entry = format!(
-        "[Desktop Entry]\n\
-         Type=Application\n\
-         Name=200 OK\n\
-         Comment=200 OK Web Server Desktop App\n\
-         Exec={} %U\n\
-         Icon={icon_name}\n\
-         Terminal=false\n\
-         Categories=Development;Network;\n\
-         StartupWMClass=ok200-desktop\n",
-        desktop_exec_arg(&appimage)
-    );
+    let desktop_entry = appimage_desktop_entry(&appimage, icon_name);
     std::fs::write(&desktop_path, desktop_entry)
         .map_err(|e| format!("write {}: {e}", desktop_path.display()))?;
     eprintln!(
@@ -267,6 +256,24 @@ fn register_appimage_installation() -> Result<(), String> {
     );
 
     Ok(())
+}
+
+#[cfg(target_os = "linux")]
+fn appimage_desktop_entry(appimage: &std::path::Path, icon_name: &str) -> String {
+    format!(
+        "[Desktop Entry]\n\
+         Type=Application\n\
+         Name=200 OK Web Server\n\
+         GenericName=Web Server\n\
+         Comment=200 OK Web Server Desktop App\n\
+         Exec={} %U\n\
+         Icon={icon_name}\n\
+         Terminal=false\n\
+         Categories=Development;Network;\n\
+         Keywords=web;server;HTTP;local;development;\n\
+         StartupWMClass=ok200-desktop\n",
+        desktop_exec_arg(appimage)
+    )
 }
 
 #[cfg(target_os = "linux")]
@@ -282,7 +289,7 @@ fn desktop_exec_arg(path: &std::path::Path) -> String {
 
 #[cfg(all(test, target_os = "linux"))]
 mod tests {
-    use super::{copy_sidecar_to_lib_dir, desktop_exec_arg};
+    use super::{appimage_desktop_entry, copy_sidecar_to_lib_dir, desktop_exec_arg};
     use std::path::Path;
 
     #[test]
@@ -291,6 +298,15 @@ mod tests {
             desktop_exec_arg(Path::new("/tmp/200 OK $preview.AppImage")),
             "\"/tmp/200 OK \\$preview.AppImage\""
         );
+    }
+
+    #[test]
+    fn appimage_desktop_entry_uses_searchable_product_name() {
+        let entry = appimage_desktop_entry(Path::new("/tmp/200 OK.AppImage"), "ok200-desktop");
+        assert!(entry.contains("\nName=200 OK Web Server\n"));
+        assert!(entry.contains("\nGenericName=Web Server\n"));
+        assert!(entry.contains("\nKeywords=web;server;HTTP;local;development;\n"));
+        assert!(!entry.contains("\nName=200 OK\n"));
     }
 
     #[test]

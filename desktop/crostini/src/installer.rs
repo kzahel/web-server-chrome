@@ -151,7 +151,7 @@ mod platform {
         )?;
 
         println!("Installed 200 OK Linux {version}.");
-        println!("Open ‘200 OK Linux’ from the ChromeOS Launcher.");
+        println!("Open ‘200 OK Web Server’ from the ChromeOS Launcher.");
         println!("The controller was started for this setup session but was not enabled at login.");
         Ok(())
     }
@@ -591,6 +591,14 @@ mod platform {
                 "\"/home/a user/bin/ok200\""
             );
             assert!(quote_exec_path(Path::new("/tmp/bad\npath")).is_err());
+        }
+
+        #[test]
+        fn desktop_launcher_metadata_uses_searchable_product_name() {
+            assert!(DESKTOP_TEMPLATE.contains("\nName=200 OK Web Server\n"));
+            assert!(DESKTOP_TEMPLATE.contains("\nGenericName=Web Server\n"));
+            assert!(DESKTOP_TEMPLATE.contains("\nKeywords=web;server;HTTP;local;development;\n"));
+            assert!(!DESKTOP_TEMPLATE.contains("\nName=200 OK Linux\n"));
         }
 
         #[test]

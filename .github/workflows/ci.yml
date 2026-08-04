@@ -22,4 +22,10 @@ jobs:
       - run: pnpm build
       - run: pnpm test
       - run: node --test .github/scripts/write-crostini-release-manifest.test.mjs
+      - name: Validate Linux launcher metadata
+        run: |
+          bash -n website/public/install.sh website/public/install-crostini.sh
+          grep -Fxq 'Name=200 OK Web Server' website/public/install.sh
+          grep -Fxq 'GenericName=Web Server' website/public/install.sh
+          grep -Fxq 'Keywords=web;server;HTTP;local;development;' website/public/install.sh
       - run: scripts/test-crostini-installer.sh

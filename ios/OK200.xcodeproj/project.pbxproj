@@ -7,12 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		027B874265DAF51328187F8A /* HTTPRequestParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89C56CBD0B083C61244D67E /* HTTPRequestParserTests.swift */; };
+		3315BF2431EDFF114E94F378 /* RequestPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116F199F209380C5D7EE5275 /* RequestPath.swift */; };
+		38D01EB4B945DD139F2719AB /* SecurityScopedRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF57275AE49C8E2E6C2FB3CC /* SecurityScopedRoot.swift */; };
+		5A58929D01752F54A3DED687 /* HTTPTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39083A4E94AC6ACFAA3432CA /* HTTPTypes.swift */; };
+		5F8E35220F6BE3BB3C6304A3 /* HTTPRequestParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1A87A30B7504AC4BB838D9 /* HTTPRequestParser.swift */; };
 		688DD1DC198B96397E2040F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43A1CC27E4FFFD2F50A8867E /* Assets.xcassets */; };
+		6FDA75E31660CFF97A377289 /* RequestPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87618E6A9EE3A11522A8AD0A /* RequestPathTests.swift */; };
 		85A51C9315A3D931B9C8E451 /* DeviceSmokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D08A1CDC5EA77EBEB6DB55A /* DeviceSmokeView.swift */; };
 		9F10F2EE77EE305E9078202C /* DeviceSmokeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B219CA079BBAE2C3997DEB50 /* DeviceSmokeController.swift */; };
+		A003DEC8A5A7AE01DFBEF039 /* SwiftHTTPServerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9FAD625D77C56DE1E2B6B9 /* SwiftHTTPServerTests.swift */; };
+		A6E02979C9BD14294CD97F58 /* HTTPFileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74D460A9AAA60ED357AD3C /* HTTPFileService.swift */; };
 		B21CB7F9785FF25E440D4EA6 /* OK200App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B334D7DC2B2D0E1259CED01 /* OK200App.swift */; };
+		CD22D00E51416E8E52ABC88E /* HTTPFileServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C693E028DACBB1074E6788 /* HTTPFileServiceTests.swift */; };
 		DF1DCCF60C34E0AD38DE2576 /* DeviceSmokeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6CAF888072A1FD4E95E981 /* DeviceSmokeUITests.swift */; };
 		E0006EB6D6320665A9A728B8 /* DeviceSmokeControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A51505C62C6C5F63ACEB951 /* DeviceSmokeControllerTests.swift */; };
+		E60AA3D4AD90E3BA76FEC69A /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E650548EE59AF09461CC8 /* ServerConfiguration.swift */; };
+		EA8369A2B8A55D01E5C2301D /* SwiftHTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D135B97B9690362902695634 /* SwiftHTTPServer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,12 +44,23 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		116F199F209380C5D7EE5275 /* RequestPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestPath.swift; sourceTree = "<group>"; };
 		1D08A1CDC5EA77EBEB6DB55A /* DeviceSmokeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSmokeView.swift; sourceTree = "<group>"; };
 		2B334D7DC2B2D0E1259CED01 /* OK200App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OK200App.swift; sourceTree = "<group>"; };
+		39083A4E94AC6ACFAA3432CA /* HTTPTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPTypes.swift; sourceTree = "<group>"; };
 		43A1CC27E4FFFD2F50A8867E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4D2E650548EE59AF09461CC8 /* ServerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfiguration.swift; sourceTree = "<group>"; };
 		52EF28765BB03CA068368611 /* OK200.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OK200.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A51505C62C6C5F63ACEB951 /* DeviceSmokeControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSmokeControllerTests.swift; sourceTree = "<group>"; };
+		6E74D460A9AAA60ED357AD3C /* HTTPFileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPFileService.swift; sourceTree = "<group>"; };
+		6F1A87A30B7504AC4BB838D9 /* HTTPRequestParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequestParser.swift; sourceTree = "<group>"; };
+		87618E6A9EE3A11522A8AD0A /* RequestPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestPathTests.swift; sourceTree = "<group>"; };
+		8F9FAD625D77C56DE1E2B6B9 /* SwiftHTTPServerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftHTTPServerTests.swift; sourceTree = "<group>"; };
+		A89C56CBD0B083C61244D67E /* HTTPRequestParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequestParserTests.swift; sourceTree = "<group>"; };
 		B219CA079BBAE2C3997DEB50 /* DeviceSmokeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSmokeController.swift; sourceTree = "<group>"; };
+		B4C693E028DACBB1074E6788 /* HTTPFileServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPFileServiceTests.swift; sourceTree = "<group>"; };
+		BF57275AE49C8E2E6C2FB3CC /* SecurityScopedRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityScopedRoot.swift; sourceTree = "<group>"; };
+		D135B97B9690362902695634 /* SwiftHTTPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftHTTPServer.swift; sourceTree = "<group>"; };
 		EC5088094161159E3487471D /* OK200UITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = OK200UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC6CAF888072A1FD4E95E981 /* DeviceSmokeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSmokeUITests.swift; sourceTree = "<group>"; };
 		FB9DC5E5B12F73EE5EAE9328 /* OK200Tests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = OK200Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,12 +94,35 @@
 			path = 200OK;
 			sourceTree = "<group>";
 		};
+		3C2B50C27AF158D61AA2EE3C /* HTTP */ = {
+			isa = PBXGroup;
+			children = (
+				6E74D460A9AAA60ED357AD3C /* HTTPFileService.swift */,
+				6F1A87A30B7504AC4BB838D9 /* HTTPRequestParser.swift */,
+				39083A4E94AC6ACFAA3432CA /* HTTPTypes.swift */,
+				116F199F209380C5D7EE5275 /* RequestPath.swift */,
+				D135B97B9690362902695634 /* SwiftHTTPServer.swift */,
+			);
+			path = HTTP;
+			sourceTree = "<group>";
+		};
+		4892CE61C8E7D9B4A9191B61 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				BF57275AE49C8E2E6C2FB3CC /* SecurityScopedRoot.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
 		51BF4260858DE7AA346227DD /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				B219CA079BBAE2C3997DEB50 /* DeviceSmokeController.swift */,
 				1D08A1CDC5EA77EBEB6DB55A /* DeviceSmokeView.swift */,
 				2B334D7DC2B2D0E1259CED01 /* OK200App.swift */,
+				4D2E650548EE59AF09461CC8 /* ServerConfiguration.swift */,
+				3C2B50C27AF158D61AA2EE3C /* HTTP */,
+				4892CE61C8E7D9B4A9191B61 /* Storage */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -94,6 +139,10 @@
 			isa = PBXGroup;
 			children = (
 				5A51505C62C6C5F63ACEB951 /* DeviceSmokeControllerTests.swift */,
+				B4C693E028DACBB1074E6788 /* HTTPFileServiceTests.swift */,
+				A89C56CBD0B083C61244D67E /* HTTPRequestParserTests.swift */,
+				87618E6A9EE3A11522A8AD0A /* RequestPathTests.swift */,
+				8F9FAD625D77C56DE1E2B6B9 /* SwiftHTTPServerTests.swift */,
 			);
 			path = 200OKTests;
 			sourceTree = "<group>";
@@ -224,6 +273,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0006EB6D6320665A9A728B8 /* DeviceSmokeControllerTests.swift in Sources */,
+				CD22D00E51416E8E52ABC88E /* HTTPFileServiceTests.swift in Sources */,
+				027B874265DAF51328187F8A /* HTTPRequestParserTests.swift in Sources */,
+				6FDA75E31660CFF97A377289 /* RequestPathTests.swift in Sources */,
+				A003DEC8A5A7AE01DFBEF039 /* SwiftHTTPServerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,7 +294,14 @@
 			files = (
 				9F10F2EE77EE305E9078202C /* DeviceSmokeController.swift in Sources */,
 				85A51C9315A3D931B9C8E451 /* DeviceSmokeView.swift in Sources */,
+				A6E02979C9BD14294CD97F58 /* HTTPFileService.swift in Sources */,
+				5F8E35220F6BE3BB3C6304A3 /* HTTPRequestParser.swift in Sources */,
+				5A58929D01752F54A3DED687 /* HTTPTypes.swift in Sources */,
 				B21CB7F9785FF25E440D4EA6 /* OK200App.swift in Sources */,
+				3315BF2431EDFF114E94F378 /* RequestPath.swift in Sources */,
+				38D01EB4B945DD139F2719AB /* SecurityScopedRoot.swift in Sources */,
+				E60AA3D4AD90E3BA76FEC69A /* ServerConfiguration.swift in Sources */,
+				EA8369A2B8A55D01E5C2301D /* SwiftHTTPServer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

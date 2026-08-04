@@ -1,0 +1,77 @@
+name: OK200
+
+options:
+  createIntermediateGroups: true
+  deploymentTarget:
+    iOS: "17.0"
+  developmentLanguage: en
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    CODE_SIGN_STYLE: Automatic
+    CURRENT_PROJECT_VERSION: 1
+    MARKETING_VERSION: 0.1.0
+
+targets:
+  OK200:
+    type: application
+    platform: iOS
+    sources:
+      - path: 200OK/Sources
+      - path: 200OK/Resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.ok200.ios
+        PRODUCT_NAME: OK200
+        PRODUCT_MODULE_NAME: OK200
+        INFOPLIST_FILE: 200OK/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTS_MACCATALYST: NO
+    scheme:
+      testTargets:
+        - OK200Tests
+        - OK200UITests
+
+  OK200Tests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: 200OKTests
+    dependencies:
+      - target: OK200
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.ok200.ios.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+  OK200UITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: 200OKUITests
+    dependencies:
+      - target: OK200
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.ok200.ios.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: OK200
+
+schemes:
+  OK200:
+    build:
+      targets:
+        OK200: all
+        OK200Tests: [test]
+        OK200UITests: [test]
+    test:
+      targets:
+        - OK200Tests
+        - OK200UITests
+    run:
+      config: Debug
+    archive:
+      config: Release

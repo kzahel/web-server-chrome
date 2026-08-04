@@ -11,6 +11,9 @@ android/.gradle/
 android/local.properties
 android/**/build/
 android/**/.cxx/
+ios/build/
+ios/**/*.xcuserstate
+ios/**/xcuserdata/
 tmp/
 .yep/
 wsc-crx/

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.1.7]
+
 ### Changed
 
 - Name the macOS application and system display **200 OK Web Server** so
@@ -11,6 +13,17 @@
   **200 OK Web Server**, and add standard Linux generic-name and search-keyword
   metadata while retaining the existing executable, package, and desktop-file
   identities.
+
+### Fixed
+
+- Render App settings outside the transformed header so the full dialog is
+  visible and interactive on Windows, macOS, and Linux.
+- Exit cleanly when the last window closes with **Run in Background** disabled,
+  while preserving hide-and-restore behavior when it is enabled.
+- Reap native-host launch children without blocking Chrome so repeated desktop
+  launches do not leave defunct processes behind.
+- Keep AppImage GIO module loading inside the portable bundle to avoid loading
+  incompatible host GVFS modules.
 
 ## [0.1.6]
 

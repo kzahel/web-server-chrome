@@ -44,17 +44,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build extension
-        run: pnpm run build
-
-      - name: Typecheck
-        run: pnpm run typecheck
-
-      - name: Test launcher routing and popup behavior
-        run: pnpm run test
-
-      - name: Build and inspect store-safe package
-        run: ../scripts/package-extension.sh "$PWD/ok200-extension.zip"
+      - name: Run extension source and package checks
+        run: scripts/check.sh
 
   release:
     needs: build

@@ -50,16 +50,8 @@ jobs:
           SOURCE_VERSION=$(sed -n '/^\[package\]/,/^\[/s/^version = "\([^"]*\)"/\1/p' desktop/crostini/Cargo.toml)
           test "$VERSION" = "$SOURCE_VERSION"
           grep -q "^## \[$VERSION\]" desktop/crostini/CHANGELOG.md
-      - name: Rust validation
-        working-directory: desktop
-        run: |
-          cargo fmt --all -- --check
-          cargo clippy --locked -p ok200-crostini --all-targets -- -D warnings
-          cargo test --locked -p ok200-crostini
-      - name: Release-manifest generator tests
-        run: node --test .github/scripts/write-crostini-release-manifest.test.mjs
-      - name: Installer syntax and integrity tests
-        run: scripts/test-crostini-installer.sh
+      - name: Run Crostini source and installer checks
+        run: desktop/crostini/scripts/check.sh
 
   build:
     needs: validate

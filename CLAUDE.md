@@ -147,20 +147,28 @@ After editing TypeScript files, run checks in this order:
 
 ## Rust Editing Workflow (desktop/)
 
-After editing Rust files in `desktop/`, run from the `desktop/` directory:
+After editing desktop Rust files, run the canonical source gate:
 
-1. `cargo fmt --all`
-2. `cargo clippy --workspace -- -D warnings`
-3. `cargo test --workspace`
+1. `desktop/scripts/check.sh` - Run release-validator tests plus the formatting,
+   Clippy, and test gates for the shared desktop crates.
+2. `desktop/crostini/scripts/check.sh` - Also run this when changing the
+   ChromeOS Linux controller, release manifest, or installer.
 
 ## Android/Kotlin Editing Workflow
 
 After editing Kotlin/Java files in `android/`:
 
-1. `./gradlew :app:compileDebugKotlin` - Compile Kotlin
-2. `./gradlew :app:testDebugUnitTest` - Run JVM tests
-3. `./gradlew :app:lintDebug` - Run Android lint
-4. `./gradlew connectedDebugAndroidTest` - Run device UI tests when an AVD is available
+1. `android/scripts/check.sh` - Build the Debug APK, run JVM tests, and lint.
+2. `android/scripts/test.sh --integration` - Run device tests when an emulator
+   or attached device is available.
+
+## Extension Editing Workflow
+
+After editing the Chrome extension:
+
+1. `pnpm install --frozen-lockfile` - Install the locked workspace dependencies.
+2. `extension/scripts/check.sh` - Typecheck, test, then build and inspect a
+   store-safe extension package.
 
 ## iOS/Swift Editing Workflow
 

@@ -32,9 +32,6 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Test release validation
-        run: node --test .github/scripts/validate-desktop-release.test.mjs
-
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
@@ -43,17 +40,8 @@ jobs:
         with:
           workspaces: './desktop -> target'
 
-      - name: Check Rust formatting
-        working-directory: desktop
-        run: cargo fmt --all -- --check
-
-      - name: Lint native Rust crates
-        working-directory: desktop
-        run: cargo clippy -p ok200-core -p ok200-common -p ok200-host --all-targets -- -D warnings
-
-      - name: Run Rust tests
-        working-directory: desktop
-        run: cargo test -p ok200-core -p ok200-host -p ok200-common
+      - name: Run desktop source checks
+        run: desktop/scripts/check.sh
 
   build-tauri:
     strategy:

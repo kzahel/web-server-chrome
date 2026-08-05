@@ -1,0 +1,11 @@
+android.permission.ACCESS_NETWORK_STATE
+android.permission.ACCESS_WIFI_STATE
+android.permission.CHANGE_NETWORK_STATE
+android.permission.FOREGROUND_SERVICE
+android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE
+android.permission.INTERNET
+android.permission.MANAGE_EXTERNAL_STORAGE
+android.permission.POST_NOTIFICATIONS
+android.permission.RECEIVE_BOOT_COMPLETED
+android.permission.WAKE_LOCK
+app.ok200.android.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION

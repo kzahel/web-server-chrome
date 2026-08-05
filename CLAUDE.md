@@ -163,6 +163,8 @@ After editing Kotlin/Java files in `android/`:
 1. `android/scripts/check.sh` - Build the Debug APK, run JVM tests, and lint.
 2. `android/scripts/test.sh --integration` - Run device tests when an emulator
    or attached device is available.
+3. `android/scripts/verify-release-artifacts.sh` - On a candidate build, verify
+   the exact signed APK/AAB identity, manifest, payload, and checksums.
 
 ## Extension Editing Workflow
 
@@ -312,7 +314,9 @@ All components follow the same release pattern:
 - Runs Android compile, unit-test, and lint gates before versioning
 - Creates the version commit and local tag `android-v{version}` without pushing
 - **Maintainer release step:** Atomically push `main` and the approved tag
-- CI builds signed APK and AAB, creates GitHub Release with both attached
+- CI builds the signed APK/AAB, verifies their signer, identity, manifest,
+  permissions, native payload, and checksums, then installs and deep-links the
+  exact Release APK on API 36 before creating the GitHub Release
 - **Manual step:** Download AAB from GitHub Release and upload to Google Play Console
 - Changelog: `android/CHANGELOG.md`
 

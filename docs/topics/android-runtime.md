@@ -190,6 +190,16 @@ They require explicit product decisions rather than accidental parity work.
   rejected rather than reinterpreted as path boundaries, SPA fallback does
   not mask a missing asset with a dotted final component, and
   `If-Modified-Since` now returns `304` at whole-second HTTP-date precision.
+- Android CI now runs the native instrumentation suite at both the declared
+  minimum API 26 and target API 36. Tag builds compare the exact signed APK/AAB
+  against checked-in package, SDK, permission, deep-link, native-library, and
+  upload-certificate expectations; Bundletool validates the AAB, the APK/AAB
+  and mapping receive one checksum manifest, and the exact Release APK must
+  install, launch, expose its primary server switch, and handle
+  `ok200://launch` on an API-36 emulator before GitHub publication. The first
+  hosted execution remains pending: the SDK-boundary matrix runs on the next
+  Android change, while the artifact and Release-smoke gates run on the next
+  Android tag.
 - `jstorrent-dev` passed filesystem and SAF HTTP checks, persisted-grant update
   checks, all-files revocation, foreground/background transitions, all wake
   modes, notification Stop, low-battery shutdown, valid and revoked-grant boot,

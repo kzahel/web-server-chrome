@@ -54,6 +54,10 @@ jobs:
 
   instrumented-tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [26, 36]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -80,7 +84,7 @@ jobs:
       - name: Run instrumented tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 30
+          api-level: ${{ matrix.api-level }}
           arch: x86_64
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
           script: cd android && ./gradlew connectedDebugAndroidTest
@@ -124,6 +128,41 @@ jobs:
           UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
         run: ./gradlew assembleRelease bundleRelease
 
+      - name: Compress Mapping File
+        run: gzip -k app/build/outputs/mapping/release/mapping.txt
+
+      - name: Install pinned Bundletool
+        run: |
+          BUNDLETOOL_JAR="$RUNNER_TEMP/bundletool-all-1.18.1.jar"
+          curl -fsSL -o "$BUNDLETOOL_JAR" https://github.com/google/bundletool/releases/download/1.18.1/bundletool-all-1.18.1.jar
+          echo "675786493983787ffa11550bdb7c0715679a44e1643f3ff980a529e9c822595c  $BUNDLETOOL_JAR" | sha256sum -c -
+          echo "BUNDLETOOL_JAR=$BUNDLETOOL_JAR" >> "$GITHUB_ENV"
+
+      - name: Inspect exact Release APK and AAB
+        run: |
+          VERSION="${GITHUB_REF_NAME#android-v}"
+          VERSION_CODE="$(sed -n 's/.*versionCode = \([0-9][0-9]*\).*/\1/p' app/build.gradle.kts)"
+          scripts/verify-release-artifacts.sh \
+            app/build/outputs/apk/release/app-release.apk \
+            app/build/outputs/bundle/release/app-release.aab \
+            app/build/outputs/mapping/release/mapping.txt.gz \
+            "$VERSION" "$VERSION_CODE" "$BUNDLETOOL_JAR" \
+            app/build/outputs/release-verification
+
+      - name: Enable KVM for Release smoke
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Smoke exact Release APK
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          arch: x86_64
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          script: cd android && scripts/smoke-release-apk.sh app/build/outputs/apk/release/app-release.apk "${GITHUB_REF_NAME#android-v}" app/build/outputs/release-verification
+
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
@@ -136,14 +175,17 @@ jobs:
           name: android-release-aab
           path: android/app/build/outputs/bundle/release/app-release.aab
 
-      - name: Compress Mapping File
-        run: gzip -k app/build/outputs/mapping/release/mapping.txt
-
       - name: Upload Mapping File
         uses: actions/upload-artifact@v4
         with:
           name: android-mapping
           path: android/app/build/outputs/mapping/release/mapping.txt.gz
+
+      - name: Upload Release verification
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-verification
+          path: android/app/build/outputs/release-verification/
 
       - name: Extract changelog
         run: |
@@ -162,3 +204,4 @@ jobs:
             android/app/build/outputs/apk/release/app-release.apk
             android/app/build/outputs/bundle/release/app-release.aab
             android/app/build/outputs/mapping/release/mapping.txt.gz
+            android/app/build/outputs/release-verification/SHA256SUMS

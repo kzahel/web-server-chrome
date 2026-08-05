@@ -1,6 +1,32 @@
 Read and follow [`CLAUDE.md`](CLAUDE.md) for repository setup, validation, and
 release commands.
 
+## Cross-version compatibility
+
+For every feature or behavioral change, explicitly consider backward and
+forward compatibility between versions that users may run at the same time.
+Identify all independently released producers and consumers—including store
+apps, extensions, desktop/mobile apps, controllers, installers, update feeds,
+and services—and do not assume their deployments are atomic or ordered.
+
+When a change affects a shared protocol, API, persisted data, configuration,
+artifact, or update path:
+
+- Prefer additive changes, capability negotiation, and overlapping supported
+  version ranges over an exact-version cutover.
+- Plan a rollout in which old/new and new/old component combinations continue
+  to interoperate throughout store review, staged rollout, and delayed updates.
+- Add cross-version tests for each supported pairing, and make release checks
+  reject a new artifact when it has no compatibility overlap with a counterpart
+  that users can still receive or run.
+- Document the compatibility window, rollout order, fallback/error behavior,
+  and eventual removal plan for legacy support in the owning topic or tactical
+  document.
+
+Do not intentionally strand a supported released component or require users to
+update independently distributed components in lockstep unless the maintainer
+has explicitly accepted the incompatibility and its user-visible consequences.
+
 ## Documentation roles
 
 Focused, living records of continuing concerns live under

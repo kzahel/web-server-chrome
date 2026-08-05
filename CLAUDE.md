@@ -186,6 +186,15 @@ After editing Swift or iOS project files under `ios/`:
 Do not call the testbed's underlying provider directly or commit a signing team,
 device identifier, certificate, profile, account, or private session output.
 
+## Shared HTTP Contract
+
+Externally observable server behavior shared by iOS, Android, and desktop is
+defined in `tests/http-conformance/corpus-v1.json`. Run
+`node --test tests/http-conformance/validate.test.mjs` after editing its schema
+or fixtures. The canonical iOS, Android, and desktop source gates each run their
+native adapter; every case must name each runtime as claimed or give an explicit
+exclusion reason.
+
 ## Android Emulator Management
 
 **Preamble (required before any emulator/adb commands):**

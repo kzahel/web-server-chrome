@@ -7,11 +7,13 @@ on:
       - 'android-v*'
     paths:
       - 'android/**'
+      - 'tests/http-conformance/**'
       - '.github/workflows/android-ci.yml'
   pull_request:
     branches: [main]
     paths:
       - 'android/**'
+      - 'tests/http-conformance/**'
       - '.github/workflows/android-ci.yml'
 
 permissions:

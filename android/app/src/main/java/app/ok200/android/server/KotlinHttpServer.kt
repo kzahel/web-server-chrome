@@ -219,7 +219,7 @@ class KotlinHttpServer(
         val response = when {
             metadata?.isDirectory == false -> serveFile(decoded.segments, metadata, request)
             metadata?.isDirectory == true -> serveDirectory(decoded, request)
-            else -> serveNotFound(request)
+            else -> serveNotFound(decoded, request)
         }
         return addCommonHeaders(response)
     }
@@ -241,11 +241,11 @@ class KotlinHttpServer(
                 renderDirectory(path.urlPath, bounded, truncated).toByteArray(StandardCharsets.UTF_8)
             )
         }
-        return serveNotFound(request)
+        return serveNotFound(path, request)
     }
 
-    private fun serveNotFound(request: Request): Response {
-        if (config.spa) {
+    private fun serveNotFound(path: DecodedPath, request: Request): Response {
+        if (config.spa && path.segments.lastOrNull()?.contains('.') == false) {
             val indexPath = listOf("index.html")
             val index = tree.metadata(indexPath)
             if (index != null && !index.isDirectory) return serveFile(indexPath, index, request)
@@ -263,7 +263,13 @@ class KotlinHttpServer(
             "Last-Modified" to formatHttpDate(metadata.lastModifiedMillis)
         )
 
-        if (ifNoneMatch(request.headers["if-none-match"], etag)) {
+        val ifNoneMatch = request.headers["if-none-match"]
+        val notModified = if (ifNoneMatch != null) {
+            ifNoneMatch(ifNoneMatch, etag)
+        } else {
+            ifModifiedSince(request.headers["if-modified-since"], metadata.lastModifiedMillis)
+        }
+        if (notModified) {
             return Response.empty(304, "Not Modified").apply { headers.putAll(commonFileHeaders) }
         }
 
@@ -513,6 +519,10 @@ class KotlinHttpServer(
             if (!rawPath.startsWith('/') || rawPath.startsWith("//")) {
                 throw HttpParseException(400, "Bad Request", "Bad Request")
             }
+            val lowercasePath = rawPath.lowercase(Locale.US)
+            if (lowercasePath.contains("%2f") || lowercasePath.contains("%5c") || lowercasePath.contains("%00")) {
+                throw HttpParseException(400, "Bad Request", "Bad Request")
+            }
             val decoded = percentDecode(rawPath)
             if (decoded.indexOf('\u0000') >= 0 || decoded.indexOf('\\') >= 0 || decoded.indexOf(':') >= 0) {
                 throw HttpParseException(400, "Bad Request", "Bad Request")
@@ -579,6 +589,12 @@ class KotlinHttpServer(
 
         private fun ifNoneMatch(value: String?, etag: String): Boolean =
             value?.split(',')?.map(String::trim)?.any { it == "*" || it == etag } == true
+
+        private fun ifModifiedSince(value: String?, modifiedMillis: Long): Boolean {
+            val condition = value?.let { runCatching { Instant.from(HTTP_DATE.parse(it)) }.getOrNull() }
+                ?: return false
+            return modifiedMillis.coerceAtLeast(0) / 1_000 <= condition.toEpochMilli() / 1_000
+        }
 
         private fun contentType(entry: TreeEntry): String {
             val guessed = entry.mimeType ?: URLConnection.guessContentTypeFromName(entry.name)

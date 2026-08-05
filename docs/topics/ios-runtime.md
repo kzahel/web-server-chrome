@@ -252,11 +252,14 @@ The native HTTP implementation now provides:
 - strict single decoding, encoded-separator rejection, traversal rejection,
   symlink containment, and read-only coordinated access.
 
-`ios/scripts/check.sh` is the repeatable host gate. On 2026-08-05 it passed 26
-declared unit/UI tests, a Debug simulator build/test run, a Release simulator
-build, the check that DEBUG fixtures and launch hooks are absent from the
+`ios/scripts/check.sh` is the repeatable host gate. On 2026-08-05 it passed 27
+declared unit/UI tests (including all 28 cases in shared HTTP contract `1.0.0`),
+a Debug simulator build/test run, unsigned Release simulator and generic-device
+builds, the check that DEBUG fixtures and launch hooks are absent from the
 Release binary, and the check that no development team is committed in the
-generated project. `ios/scripts/device-smoke.sh` owns the repeatable signed
+generated project. `.github/workflows/ios-ci.yml` now runs that same gate on a
+pinned hosted macOS image and rejects generated-project drift without importing
+signing or device state. `ios/scripts/device-smoke.sh` owns the repeatable signed
 build/install/semantic-switch/external-fetch/background-stop path through the
 shared device testbed without scrolling to discover the displayed LAN URL.
 

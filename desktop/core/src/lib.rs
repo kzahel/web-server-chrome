@@ -12,7 +12,7 @@ use axum::extract::{ConnectInfo, State};
 use axum::http::header::{
     ACCEPT_RANGES, ACCESS_CONTROL_ALLOW_HEADERS, ACCESS_CONTROL_ALLOW_METHODS,
     ACCESS_CONTROL_ALLOW_ORIGIN, ALLOW, CONTENT_LENGTH, CONTENT_RANGE, CONTENT_TYPE, ETAG,
-    IF_NONE_MATCH, LAST_MODIFIED, RANGE, SERVER,
+    IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED, RANGE, SERVER,
 };
 use axum::http::{HeaderMap, HeaderValue, Method, Request, StatusCode};
 use axum::response::Response;
@@ -462,7 +462,9 @@ async fn serve_request(state: Arc<ServerState>, request: Request<Body>) -> Respo
             )
             .await
         }
-        Ok(Some(_) | None) => serve_not_found(&state, request.headers(), is_head).await,
+        Ok(Some(_) | None) => {
+            serve_not_found(&state, request.headers(), is_head, &decoded_path.url_path).await
+        }
         Err(ResolveError::Forbidden) => text_response(StatusCode::FORBIDDEN, "Forbidden", is_head),
         Err(ResolveError::Io(error)) => internal_error(&error, is_head),
     }
@@ -500,15 +502,16 @@ async fn serve_directory(
         }
     }
 
-    serve_not_found(state, request_headers, is_head).await
+    serve_not_found(state, request_headers, is_head, url_path).await
 }
 
 async fn serve_not_found(
     state: &ServerState,
     request_headers: &HeaderMap,
     is_head: bool,
+    url_path: &str,
 ) -> Response<Body> {
-    if state.config.spa {
+    if state.config.spa && should_use_spa_fallback(url_path) {
         match resolve_existing_path(&state.root, &state.root.join("index.html")).await {
             Ok(Some((index_path, metadata))) if metadata.is_file() => {
                 return serve_file(&index_path, &metadata, request_headers, is_head).await;
@@ -536,11 +539,15 @@ async fn serve_file(
     let etag = format!("\"{:x}-{:x}\"", modified_duration.as_millis(), file_size);
     let content_type = content_type_for(path);
 
-    if request_headers
-        .get(IF_NONE_MATCH)
-        .and_then(|value| value.to_str().ok())
-        == Some(etag.as_str())
-    {
+    let not_modified = request_headers.get(IF_NONE_MATCH).map_or_else(
+        || {
+            request_headers
+                .get(IF_MODIFIED_SINCE)
+                .is_some_and(|value| if_modified_since(value, modified))
+        },
+        |value| if_none_match(value, &etag),
+    );
+    if not_modified {
         let mut response = empty_response(StatusCode::NOT_MODIFIED);
         add_file_headers(&mut response, &content_type, &etag, modified, None, None);
         return response;
@@ -747,6 +754,10 @@ struct DecodedPath {
 
 fn decode_request_path(path: &str) -> Result<DecodedPath, ()> {
     validate_percent_encoding(path)?;
+    let lowercased = path.to_ascii_lowercase();
+    if lowercased.contains("%2f") || lowercased.contains("%5c") || lowercased.contains("%00") {
+        return Err(());
+    }
     let decoded = percent_encoding::percent_decode_str(path)
         .decode_utf8()
         .map_err(|_| ())?;
@@ -773,6 +784,39 @@ fn decode_request_path(path: &str) -> Result<DecodedPath, ()> {
         path: filesystem_path,
         url_path,
     })
+}
+
+fn should_use_spa_fallback(url_path: &str) -> bool {
+    url_path
+        .rsplit('/')
+        .find(|segment| !segment.is_empty())
+        .is_some_and(|segment| !segment.contains('.'))
+}
+
+fn if_none_match(value: &HeaderValue, etag: &str) -> bool {
+    value.to_str().is_ok_and(|value| {
+        value
+            .split(',')
+            .map(str::trim)
+            .any(|candidate| candidate == "*" || candidate == etag)
+    })
+}
+
+fn if_modified_since(value: &HeaderValue, modified: SystemTime) -> bool {
+    let Ok(value) = value.to_str() else {
+        return false;
+    };
+    let Ok(condition) = httpdate::parse_http_date(value) else {
+        return false;
+    };
+    modified
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs()
+        <= condition
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_secs()
 }
 
 fn validate_percent_encoding(value: &str) -> Result<(), ()> {

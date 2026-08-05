@@ -5,11 +5,13 @@ on:
     branches: [main]
     paths:
       - 'ios/**'
+      - 'tests/http-conformance/**'
       - '.github/workflows/ios-ci.yml'
   pull_request:
     branches: [main]
     paths:
       - 'ios/**'
+      - 'tests/http-conformance/**'
       - '.github/workflows/ios-ci.yml'
 
 jobs:

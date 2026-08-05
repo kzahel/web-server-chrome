@@ -40,6 +40,8 @@ targets:
     platform: iOS
     sources:
       - path: 200OKTests
+      - path: ../tests/http-conformance/corpus-v1.json
+        buildPhase: resources
     dependencies:
       - target: OK200
     settings:

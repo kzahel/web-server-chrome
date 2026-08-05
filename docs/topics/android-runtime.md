@@ -185,6 +185,11 @@ They require explicit product decisions rather than accidental parity work.
   bodyless missing-file `HEAD`, directories, caching, ranges, CORS, SPA,
   malformed/traversal requests, oversized headers, keep-alive, concurrency,
   idempotent stop, and symlink containment.
+- The Kotlin adapter passes all 28 cases in shared HTTP contract `1.0.0`. The
+  first common run closed three cross-runtime drifts: encoded separators are
+  rejected rather than reinterpreted as path boundaries, SPA fallback does
+  not mask a missing asset with a dotted final component, and
+  `If-Modified-Since` now returns `304` at whole-second HTTP-date precision.
 - `jstorrent-dev` passed filesystem and SAF HTTP checks, persisted-grant update
   checks, all-files revocation, foreground/background transitions, all wake
   modes, notification Stop, low-battery shutdown, valid and revoked-grant boot,

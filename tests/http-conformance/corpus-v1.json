@@ -1,0 +1,309 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "1.0.0",
+  "runtimes": ["swift", "kotlin", "rust"],
+  "configurations": {
+    "default": { "cors": false, "spa": false, "directoryListing": true },
+    "cors": { "cors": true, "spa": false, "directoryListing": true },
+    "spa": { "cors": false, "spa": true, "directoryListing": true }
+  },
+  "fixture": {
+    "directories": ["empty", "listing"],
+    "files": [
+      { "path": "index.html", "utf8": "<main>shared contract</main>\n" },
+      { "path": "range.txt", "utf8": "0123456789" },
+      { "path": "data.json", "utf8": "{\"ok\":true}\n" },
+      { "path": "empty.txt", "utf8": "" },
+      { "path": "café.txt", "utf8": "unicode\n" },
+      { "path": "nested/child.txt", "utf8": "nested\n" },
+      { "path": "listing/<unsafe>&.txt", "utf8": "escaped\n" },
+      { "path": "listing/space name.txt", "utf8": "space\n" },
+      { "path": "encoded/separator", "utf8": "encoded separators must not become path boundaries\n" },
+      { "path": "%2e%2e/secret.txt", "utf8": "decoded exactly once\n" }
+    ],
+    "symlinkEscapes": [
+      { "path": "escape.txt", "outsideUtf8": "outside root\n" }
+    ]
+  },
+  "cases": [
+    {
+      "id": "get-root-index",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": {
+        "statuses": [200],
+        "bodyEquals": "<main>shared contract</main>\n",
+        "headersPrefix": { "Content-Type": "text/html" }
+      }
+    },
+    {
+      "id": "head-file",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "HEAD", "target": "/range.txt" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [200], "bodyEmpty": true, "headersEqual": { "Content-Length": "10" } }
+    },
+    {
+      "id": "options-cors-enabled",
+      "kind": "request",
+      "configuration": "cors",
+      "request": {
+        "method": "OPTIONS",
+        "target": "/anything",
+        "headers": { "Access-Control-Request-Headers": "X-Demo" }
+      },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": {
+        "statuses": [204],
+        "bodyEmpty": true,
+        "headersEqual": { "Access-Control-Allow-Origin": "*" }
+      }
+    },
+    {
+      "id": "options-cors-disabled",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "OPTIONS", "target": "/anything" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [405], "headersAbsent": ["Access-Control-Allow-Origin"] }
+    },
+    {
+      "id": "unsupported-method",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "POST", "target": "/" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [405], "headersPresent": ["Allow"] }
+    },
+    {
+      "id": "nested-json-mime",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/data.json" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": {
+        "statuses": [200],
+        "bodyEquals": "{\"ok\":true}\n",
+        "headersPrefix": { "Content-Type": "application/json" }
+      }
+    },
+    {
+      "id": "empty-file",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/empty.txt" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [200], "bodyEmpty": true, "headersEqual": { "Content-Length": "0" } }
+    },
+    {
+      "id": "utf8-name",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/caf%C3%A9.txt" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [200], "bodyEquals": "unicode\n" }
+    },
+    {
+      "id": "nested-path",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/nested/child.txt" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [200], "bodyEquals": "nested\n" }
+    },
+    {
+      "id": "missing-file",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/missing.txt" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [404] }
+    },
+    {
+      "id": "missing-directory",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/missing/" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [404] }
+    },
+    {
+      "id": "escaped-directory-listing",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/listing/" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": {
+        "statuses": [200],
+        "bodyContains": ["&lt;unsafe&gt;&amp;.txt", "space%20name.txt"],
+        "bodyExcludes": ["><unsafe>&.txt<"]
+      }
+    },
+    {
+      "id": "file-validators",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/range.txt" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": {
+        "statuses": [200],
+        "headersPresent": ["ETag", "Last-Modified", "Accept-Ranges"]
+      }
+    },
+    {
+      "id": "etag-conditional",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/range.txt", "headers": { "If-None-Match": "$etag:/range.txt" } },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [304], "bodyEmpty": true }
+    },
+    {
+      "id": "date-conditional",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/range.txt", "headers": { "If-Modified-Since": "$last-modified:/range.txt" } },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [304], "bodyEmpty": true }
+    },
+    {
+      "id": "bounded-byte-range",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/range.txt", "headers": { "Range": "bytes=2-5" } },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": {
+        "statuses": [206],
+        "bodyEquals": "2345",
+        "headersEqual": { "Content-Range": "bytes 2-5/10" }
+      }
+    },
+    {
+      "id": "unsatisfiable-range",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/range.txt", "headers": { "Range": "bytes=20-30" } },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [416], "headersEqual": { "Content-Range": "bytes */10" } }
+    },
+    {
+      "id": "cors-disabled",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/range.txt" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [200], "headersAbsent": ["Access-Control-Allow-Origin"] }
+    },
+    {
+      "id": "spa-extensionless-route",
+      "kind": "request",
+      "configuration": "spa",
+      "request": { "method": "GET", "target": "/client/route" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [200], "bodyEquals": "<main>shared contract</main>\n" }
+    },
+    {
+      "id": "spa-does-not-mask-missing-asset",
+      "kind": "request",
+      "configuration": "spa",
+      "request": { "method": "GET", "target": "/missing.js" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [404] }
+    },
+    {
+      "id": "traversal-rejected",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/%2e%2e/secret.txt" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [400] }
+    },
+    {
+      "id": "encoded-separator-rejected",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/encoded%2fseparator" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [400] }
+    },
+    {
+      "id": "path-decoded-once",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/%252e%252e/secret.txt" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [200], "bodyEquals": "decoded exactly once\n" }
+    },
+    {
+      "id": "symlink-escape-denied",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/escape.txt" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [403, 404] }
+    },
+    {
+      "id": "query-does-not-change-path",
+      "kind": "request",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/range.txt?cache=ignored" },
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [200], "bodyEquals": "0123456789" }
+    },
+    {
+      "id": "oversized-request-head",
+      "kind": "oversizedHead",
+      "configuration": "default",
+      "oversizedHeaderBytes": 20000,
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [431] }
+    },
+    {
+      "id": "bounded-concurrency",
+      "kind": "concurrency",
+      "configuration": "default",
+      "request": { "method": "GET", "target": "/range.txt" },
+      "concurrency": 16,
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [200], "bodyEquals": "0123456789" }
+    },
+    {
+      "id": "automatic-port-stop-restart",
+      "kind": "restart",
+      "configuration": "default",
+      "claims": ["swift", "kotlin", "rust"],
+      "exclusions": {},
+      "expect": { "statuses": [200] }
+    }
+  ]
+}

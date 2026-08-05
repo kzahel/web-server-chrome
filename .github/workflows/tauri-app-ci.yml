@@ -8,6 +8,7 @@ on:
     paths:
       - 'desktop/**'
       - 'packages/**'
+      - 'tests/http-conformance/**'
       - '.github/scripts/**'
       - '.github/workflows/tauri-app-ci.yml'
   pull_request:
@@ -15,6 +16,7 @@ on:
     paths:
       - 'desktop/**'
       - 'packages/**'
+      - 'tests/http-conformance/**'
       - '.github/scripts/**'
       - '.github/workflows/tauri-app-ci.yml'
 

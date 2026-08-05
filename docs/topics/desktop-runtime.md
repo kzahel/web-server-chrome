@@ -272,8 +272,11 @@ CLI, its stranded TypeScript engine, and the CLI-only HTTP management
 transport. The desktop app and shared UI retain only the Tauri manager
 contract.
 
-The core passes its real-socket HTTP/security corpus and the full desktop Rust
-workspace passes formatting, strict Clippy, and tests. Its Apple Silicon
+The core passes its real-socket HTTP/security corpus and all 28 cases in shared
+HTTP contract `1.0.0`; that common run added encoded-separator rejection,
+extensionless-only SPA fallback, and `If-Modified-Since` handling where the
+independent native runtimes had drifted. The full desktop Rust workspace passes
+formatting, strict Clippy, and tests. Its Apple Silicon
 release-mode development process measured roughly 2.9 MiB RSS idle and 3.2 MiB
 after a request, with a 2.0 MiB unstripped binary. This demonstrates that the
 server execution path itself is small; it does not measure the complete Tauri

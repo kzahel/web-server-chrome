@@ -6,10 +6,10 @@
 
 Topic: product-feedback-and-support
 
-Status: **interim GitHub Issues routing implemented in source; accountless
-intake and publication pending.**
+Status: **interim GitHub Issues routing and the app privacy policy are
+implemented in source; accountless intake and publication are pending.**
 
-Last reconciled: **2026-07-28**.
+Last reconciled: **2026-08-05**.
 
 Related:
 
@@ -22,6 +22,7 @@ This topic owns:
 
 - durable public URLs for feedback, suggestions, and support;
 - where those URLs currently send users;
+- the stable app privacy-policy URL and its current disclosures;
 - visible feedback and source entry points across product surfaces;
 - the distinction between interim GitHub intake and future accountless
   feedback; and
@@ -37,11 +38,17 @@ the final form provider, or define private security-reporting operations.
 | `https://ok200.app/feedback` | GitHub Issues list | Canonical app-facing entry point |
 | `https://ok200.app/support` | GitHub Issues list | Memorable support alias |
 | `https://ok200.app/suggestions` | GitHub Issues list | Memorable idea alias |
+| `https://ok200.app/privacy` | 200 OK privacy policy | Canonical store- and app-facing policy |
 | GitHub repository URL | `kzahel/web-server-chrome` | Source, contribution, and MIT license |
 
 Applications should link to `/feedback`, not directly to the current intake
 provider. `/support` and `/suggestions` are public aliases for people and
 external copy; they do not require separate app controls.
+
+Applications that require a privacy-policy surface should link to `/privacy`.
+The policy must distinguish locally stored app state and selected files from
+ordinary requests made when someone visits the public website, and it must be
+updated when actual app data flows change.
 
 The static Astro site is hosted on GitHub Pages, which does not provide
 application-level HTTP redirects. Each alias therefore emits a small,
@@ -76,8 +83,9 @@ destination must require only a website deployment.
 |---|---|
 | Desktop control window | Prominent **Feedback & support** and **Source · MIT** links |
 | Android application | Visible **Feedback & support** and **Source · MIT** links after the primary controls |
+| iOS application | Visible **Privacy**, **Feedback & support**, and **Source code · MIT** links after the primary controls |
 | Chrome extension popup | Compact **Feedback & support** and **Source · MIT** links |
-| Website | Feedback in primary navigation and feedback/source/license links in the footer |
+| Website | Feedback in primary navigation and feedback/privacy/source/license links in the footer |
 | README and package metadata | Feedback/Issues, repository, homepage, and MIT license information |
 
 **Feedback & support** must use `https://ok200.app/feedback`. **Source · MIT**
@@ -118,6 +126,8 @@ a temporary accountless intake if it permits submission without sign-in.
 
 - [x] `/feedback`, `/support`, and `/suggestions` build as static redirect pages
   with an accessible fallback link.
+- [x] `/privacy` builds as a stable app-specific policy page and is linked from
+  the website and iOS app source.
 - [x] Every current application surface opens `/feedback` externally rather than
   navigating its embedded UI.
 - [x] Every current application surface exposes the public repository and MIT
@@ -147,7 +157,9 @@ Current source behavior:
 - desktop opens both links through Tauri's native opener;
 - Android uses the platform URI handler;
 - the extension opens both links in browser tabs;
-- the website exposes Feedback and Source in primary navigation and the footer;
+- iOS opens stable privacy and feedback routes plus the public repository;
+- the website exposes Feedback and Source in primary navigation, and Feedback,
+  Privacy, and Source in the footer;
   and
 - `/feedback`, `/support`, and `/suggestions` all replace themselves with the
   public GitHub Issues list while retaining a normal fallback link.
@@ -168,7 +180,13 @@ Completed on 2026-07-28:
   inspected with both controls present at its portrait size; and
 - the installed desktop app runs as one process with no Vite listener.
 
-These changes have not been published. Local `main` remains ahead of
-`origin/main`; the public aliases will not resolve until the branch is pushed
-and the GitHub Pages workflow succeeds. Published Android and extension builds
-likewise retain their current UI until their next releases.
+On 2026-08-05, the production Astro build emitted the new privacy policy as
+`/privacy.html`, and the complete canonical iOS gate passed with the matching
+in-app privacy, feedback, and source controls.
+
+The iOS store-readiness slice also adds the `/privacy` source page, a website
+footer link, and matching in-app links. These changes have not been published.
+Local `main` remains ahead of `origin/main`; the public aliases and privacy
+policy will not resolve until the branch is pushed and the GitHub Pages
+workflow succeeds. Published Android and extension builds likewise retain
+their current UI until their next releases.

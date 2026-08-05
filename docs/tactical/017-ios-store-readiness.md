@@ -1,6 +1,6 @@
 # Tactical 017: iOS Store Readiness
 
-**Status:** planned follow-up; no App Store Connect or distribution mutation authorized
+**Status:** repository preparation active; no App Store Connect or distribution mutation performed
 **Topic:** `ios-native-swift`
 **Baseline:** `c6a5f94`
 **Scope:** distribution identity, App Store packaging, TestFlight/review evidence,
@@ -49,6 +49,32 @@ and publication mutate external account state. Each must be explicitly
 authorized and use the maintainer-selected account/team. No Apple account,
 team identifier, certificate, private key, provisioning profile, device
 identifier, issuer, or API key is committed to this repository.
+
+## Progress record
+
+On 2026-08-05, the first non-mutating repository slice closed the source-level
+privacy and policy gaps:
+
+- `PrivacyInfo.xcprivacy` now declares no tracking or collected data and gives
+  the required reasons for app-owned preferences and metadata reads from the
+  folder the user selected;
+- the bundle declares `ITSAppUsesNonExemptEncryption` false based on the
+  current plain-HTTP, system-framework implementation;
+- the opaque 1024-pixel App Store icon no longer carries an alpha channel;
+- the app exposes stable Privacy, Feedback & support, and Source code · MIT
+  destinations, and simulator UI coverage requires those controls; and
+- the website source includes the app-specific privacy policy and footer link.
+
+The canonical iOS check owns manifest inclusion, encryption metadata, and icon
+format checks in both simulator and generic-device Release products. This is
+source evidence only: the privacy route is not live until the website deploys,
+App Store Connect answers have not been entered, and no account identity,
+credential, signed archive, or upload has been created by this slice.
+
+The complete canonical iOS check and production Astro build passed after this
+slice; the latter emitted `/privacy.html` alongside the existing stable routes.
+The physical smoke rerun remains pending because the testbed readiness probe
+reported that its selected phone was disconnected.
 
 ## Implementation sequence
 

@@ -3,7 +3,8 @@
 Topic: ios-native-swift
 
 Status: **native MVP implemented and accepted on the attached physical phone;
-App Store packaging, TestFlight, and publication have not started.**
+repository store-readiness work is active, but App Store identity, signed
+packaging, TestFlight, and publication have not started.**
 
 Last reconciled: **2026-08-05**.
 
@@ -57,8 +58,10 @@ The first iOS release is one root and one server. Its everyday surface owns:
 - directory listing, CORS, and SPA fallback switches;
 - one native On/Off server switch, with stopped, starting, stopping, running,
   and error states from one runtime owner;
-- reachable HTTP URLs with Copy and Share actions; and
-- an in-app preview path that does not require backgrounding 200 OK.
+- reachable HTTP URLs with Copy and Share actions;
+- an in-app preview path that does not require backgrounding 200 OK; and
+- stable Privacy, Feedback & support, and Source code · MIT links below the
+  primary controls.
 
 The native SwiftUI layout follows the current Android/desktop hierarchy and
 200 OK yellow/black visual identity: compact branded header, prominent server
@@ -253,6 +256,18 @@ HTTP runtime. Its application-scoped `IOSServerController` owns persisted
 configuration, security-scoped root leases, one `SwiftHTTPServer`, observable
 status, current Wi-Fi URLs, and the SwiftUI scene transition.
 
+The first store-readiness source slice adds a bundled privacy manifest for the
+app's UserDefaults and user-selected file metadata access, declares that the
+app does not use non-exempt encryption, removes the opaque icon's unused alpha
+channel, and presents stable privacy, feedback, and source links in the app.
+The source privacy page explains local settings, selected-folder access, plain
+HTTP and LAN exposure, foreground-only iOS serving, support intake, and the
+separate website-hosting data path. These source changes do not constitute App
+Store Connect privacy answers or a published policy until the website deploys.
+The complete canonical iOS gate passed with these declarations present in both
+unsigned Release products. A physical layout/LAN rerun remains pending because
+the testbed readiness probe reported its selected phone disconnected.
+
 The native HTTP implementation now provides:
 
 - bounded HTTP/1.0 and HTTP/1.1 request heads, clients, and request/response
@@ -357,8 +372,10 @@ remain unproven. The local provider returned a generic underlying directory
 name during one selection, so provider-specific display naming also merits
 broader review.
 
-There is no App Store Connect record, distribution profile, archive/export
-workflow, privacy declaration, store copy, screenshot set, TestFlight build,
-review result, or store-delivered artifact proof. Tactical 017 owns those
-separate store-readiness gates. Store submission or publication is not implied
-by the completed native MVP.
+There is no App Store Connect record for this bundle, distribution profile,
+signed archive/export workflow, completed App Store Connect privacy response,
+store copy, screenshot set, TestFlight build, review result, or store-delivered
+artifact proof. The privacy policy and manifest exist only in source until the
+website and app are distributed. Tactical 017 owns those separate
+store-readiness gates. Store submission or publication is not implied by the
+completed native MVP.

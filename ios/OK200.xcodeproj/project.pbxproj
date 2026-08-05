@@ -30,6 +30,7 @@
 		E60AA3D4AD90E3BA76FEC69A /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E650548EE59AF09461CC8 /* ServerConfiguration.swift */; };
 		EA8369A2B8A55D01E5C2301D /* SwiftHTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D135B97B9690362902695634 /* SwiftHTTPServer.swift */; };
 		EFD9A13CF71FAA83FD89274C /* NetworkAddressMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76870087664A9F354E2581DD /* NetworkAddressMonitor.swift */; };
+		F62DA7CBAAD2E56401DA4652 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C467DEE1B89C269ED4C947EA /* PrivacyInfo.xcprivacy */; };
 		F71A6C86900B835310EFD418 /* ServerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E7739834AF0023BC469F3B /* ServerScreen.swift */; };
 		F879E17DF41DE84435616825 /* SettingsCompatibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D3B5F5F64A42A64073B501 /* SettingsCompatibilityTests.swift */; };
 /* End PBXBuildFile section */
@@ -76,6 +77,7 @@
 		B88F139456A8DF19FCB0C448 /* SafariPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariPreview.swift; sourceTree = "<group>"; };
 		BF57275AE49C8E2E6C2FB3CC /* SecurityScopedRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityScopedRoot.swift; sourceTree = "<group>"; };
 		C0F507BE4406964D7E148A41 /* ServerScreenUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerScreenUITests.swift; sourceTree = "<group>"; };
+		C467DEE1B89C269ED4C947EA /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		D135B97B9690362902695634 /* SwiftHTTPServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftHTTPServer.swift; sourceTree = "<group>"; };
 		EC5088094161159E3487471D /* OK200UITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = OK200UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB9DC5E5B12F73EE5EAE9328 /* OK200Tests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = OK200Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				43A1CC27E4FFFD2F50A8867E /* Assets.xcassets */,
+				C467DEE1B89C269ED4C947EA /* PrivacyInfo.xcprivacy */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -312,6 +315,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				688DD1DC198B96397E2040F5 /* Assets.xcassets in Resources */,
+				F62DA7CBAAD2E56401DA4652 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

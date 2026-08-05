@@ -1,0 +1,166 @@
+---
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Privacy — 200 OK Web Server"
+  description="How the 200 OK Web Server apps handle selected files, local network access, settings, and support information."
+>
+  <Header activePage="privacy" />
+
+  <main>
+    <section class="privacy-hero">
+      <div class="container">
+        <p class="eyebrow">Privacy</p>
+        <h1>Your files stay under your control</h1>
+        <p class="lede">
+          200 OK Web Server runs on your device. It does not require an
+          account, upload your selected files to us, or include advertising or
+          analytics SDKs.
+        </p>
+        <p class="updated">Last updated August 5, 2026</p>
+      </div>
+    </section>
+
+    <section class="privacy-content">
+      <div class="container policy">
+        <h2>What the app stores</h2>
+        <p>
+          The app stores its settings and a system-provided bookmark for the
+          folder you select. This information remains on your device so the app
+          can restore your configuration. You can change the selected folder,
+          change the settings, or remove the app and its local data at any time.
+        </p>
+
+        <h2>How local serving works</h2>
+        <p>
+          When you turn the server on, the app reads the folder you selected
+          and responds directly to HTTP requests. Local network access is off by
+          default. If you enable it, devices on the same network can request
+          files through the displayed address while the app remains open.
+        </p>
+        <p>
+          Serving uses plain, unencrypted HTTP. Anyone who can reach the address
+          while local network access is enabled may be able to read the selected
+          files, so select a folder intended for sharing and use a trusted
+          network. Moving the iOS app to the background stops the server.
+        </p>
+
+        <h2>Data collection</h2>
+        <p>
+          The app does not send us your files, selected folder, settings,
+          browsing requests, local network addresses, or usage activity. It has
+          no developer-operated backend, account system, advertising, tracking,
+          or third-party analytics SDK.
+        </p>
+
+        <h2>System features and other services</h2>
+        <p>
+          Folder selection uses Apple's Files interface. Copy, Share, and the
+          in-app preview use system interfaces and act only when you choose
+          them. Information you send to another app, service, or person through
+          a system share action is governed by that destination.
+        </p>
+        <p>
+          This privacy page is hosted through GitHub Pages and uses Google Fonts.
+          Visiting the website sends ordinary web request information, such as
+          an IP address and browser headers, to those hosting providers under
+          their own privacy terms. The installed 200 OK app does not load this
+          website or Google Fonts during normal use.
+        </p>
+
+        <h2>Support</h2>
+        <p>
+          If you choose to contact us, we receive only the information you
+          include in your support request and use it to understand and respond
+          to that request. The current feedback route uses the project's public
+          GitHub Issues page, so do not post private files, addresses, or other
+          sensitive information there.
+        </p>
+        <p>
+          Questions about this policy can be sent through
+          <a href="/feedback">Feedback &amp; support</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .privacy-hero {
+    padding: 72px 0 48px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .eyebrow {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: clamp(32px, 6vw, 52px);
+    line-height: 1.08;
+    margin-bottom: 20px;
+  }
+
+  .lede {
+    color: var(--text-secondary);
+    font-size: 19px;
+    max-width: 700px;
+  }
+
+  .updated {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-top: 20px;
+  }
+
+  .privacy-content {
+    padding: 56px 0 72px;
+  }
+
+  .policy {
+    max-width: 760px;
+  }
+
+  .policy h2 {
+    font-size: 23px;
+    margin: 36px 0 10px;
+  }
+
+  .policy h2:first-child {
+    margin-top: 0;
+  }
+
+  .policy p {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+
+  .policy a {
+    color: var(--text-primary);
+  }
+
+  .policy a:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 600px) {
+    .privacy-hero {
+      padding: 48px 0 36px;
+    }
+
+    .privacy-content {
+      padding: 40px 0 56px;
+    }
+  }
+</style>

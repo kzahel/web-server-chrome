@@ -25,6 +25,7 @@ struct ServerScreen: View {
                     networkCard
                     behaviorCard
                     lifecycleNote
+                    productLinks
                 }
                 .frame(maxWidth: 620)
                 .padding(.horizontal, 16)
@@ -310,6 +311,24 @@ struct ServerScreen: View {
         .foregroundStyle(.secondary)
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 4)
+    }
+
+    private var productLinks: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Link("Privacy", destination: URL(string: "https://ok200.app/privacy")!)
+                .accessibilityIdentifier("privacy-link")
+            Link("Feedback & support", destination: URL(string: "https://ok200.app/feedback")!)
+                .accessibilityIdentifier("feedback-link")
+            Link(
+                "Source code · MIT",
+                destination: URL(string: "https://github.com/kzahel/web-server-chrome")!
+            )
+            .accessibilityIdentifier("source-link")
+        }
+        .font(.footnote)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 4)
+        .accessibilityElement(children: .contain)
     }
 
     @ViewBuilder

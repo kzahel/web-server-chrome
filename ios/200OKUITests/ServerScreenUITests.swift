@@ -57,6 +57,15 @@ final class ServerScreenUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["folder-name"].label, "No folder selected")
         XCTAssertFalse(app.switches["server-toggle"].isEnabled)
         XCTAssertTrue(app.buttons["choose-folder"].isEnabled)
+
+        let privacy = app.descendants(matching: .any)["privacy-link"]
+        for _ in 0..<4 where !privacy.isHittable {
+            app.swipeUp()
+        }
+        XCTAssertTrue(privacy.exists)
+        XCTAssertTrue(privacy.isHittable)
+        XCTAssertTrue(app.descendants(matching: .any)["feedback-link"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["source-link"].exists)
     }
 
     @MainActor

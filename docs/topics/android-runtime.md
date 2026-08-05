@@ -9,7 +9,7 @@ accepted ChromeOS LAN-address correction. The maintainer reports that exact
 candidate submitted to Play; delivery and store-served validation remain
 open.**
 
-Last reconciled: **2026-08-03**.
+Last reconciled: **2026-08-05**.
 
 The accepted plan, implementation sequence, and detailed emulator evidence are
 recorded in
@@ -206,6 +206,9 @@ They require explicit product decisions rather than accidental parity work.
   the wrong stored type; port and battery-threshold reads also normalize
   invalid ranges. The instrumented test APK compiled locally on 2026-08-05;
   its first hosted API-26/API-36 execution remains pending the next push.
+- `scripts/release-check.sh android` now runs the source gate, compiles the
+  instrumentation APK, prints the signed tag-only artifact gates, and hands off
+  optional phone/LAN/Chromebook evidence without treating a skip as a pass.
 - `jstorrent-dev` passed filesystem and SAF HTTP checks, persisted-grant update
   checks, all-files revocation, foreground/background transitions, all wake
   modes, notification Stop, low-battery shutdown, valid and revoked-grant boot,

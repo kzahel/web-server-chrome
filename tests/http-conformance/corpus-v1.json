@@ -18,7 +18,10 @@
       { "path": "nested/child.txt", "utf8": "nested\n" },
       { "path": "listing/<unsafe>&.txt", "utf8": "escaped\n" },
       { "path": "listing/space name.txt", "utf8": "space\n" },
-      { "path": "encoded/separator", "utf8": "encoded separators must not become path boundaries\n" },
+      {
+        "path": "encoded/separator",
+        "utf8": "encoded separators must not become path boundaries\n"
+      },
       { "path": "%2e%2e/secret.txt", "utf8": "decoded exactly once\n" }
     ],
     "symlinkEscapes": [
@@ -46,7 +49,11 @@
       "request": { "method": "HEAD", "target": "/range.txt" },
       "claims": ["swift", "kotlin", "rust"],
       "exclusions": {},
-      "expect": { "statuses": [200], "bodyEmpty": true, "headersEqual": { "Content-Length": "10" } }
+      "expect": {
+        "statuses": [200],
+        "bodyEmpty": true,
+        "headersEqual": { "Content-Length": "10" }
+      }
     },
     {
       "id": "options-cors-enabled",
@@ -72,7 +79,10 @@
       "request": { "method": "OPTIONS", "target": "/anything" },
       "claims": ["swift", "kotlin", "rust"],
       "exclusions": {},
-      "expect": { "statuses": [405], "headersAbsent": ["Access-Control-Allow-Origin"] }
+      "expect": {
+        "statuses": [405],
+        "headersAbsent": ["Access-Control-Allow-Origin"]
+      }
     },
     {
       "id": "unsupported-method",
@@ -103,7 +113,11 @@
       "request": { "method": "GET", "target": "/empty.txt" },
       "claims": ["swift", "kotlin", "rust"],
       "exclusions": {},
-      "expect": { "statuses": [200], "bodyEmpty": true, "headersEqual": { "Content-Length": "0" } }
+      "expect": {
+        "statuses": [200],
+        "bodyEmpty": true,
+        "headersEqual": { "Content-Length": "0" }
+      }
     },
     {
       "id": "utf8-name",
@@ -170,7 +184,11 @@
       "id": "etag-conditional",
       "kind": "request",
       "configuration": "default",
-      "request": { "method": "GET", "target": "/range.txt", "headers": { "If-None-Match": "$etag:/range.txt" } },
+      "request": {
+        "method": "GET",
+        "target": "/range.txt",
+        "headers": { "If-None-Match": "$etag:/range.txt" }
+      },
       "claims": ["swift", "kotlin", "rust"],
       "exclusions": {},
       "expect": { "statuses": [304], "bodyEmpty": true }
@@ -179,7 +197,11 @@
       "id": "date-conditional",
       "kind": "request",
       "configuration": "default",
-      "request": { "method": "GET", "target": "/range.txt", "headers": { "If-Modified-Since": "$last-modified:/range.txt" } },
+      "request": {
+        "method": "GET",
+        "target": "/range.txt",
+        "headers": { "If-Modified-Since": "$last-modified:/range.txt" }
+      },
       "claims": ["swift", "kotlin", "rust"],
       "exclusions": {},
       "expect": { "statuses": [304], "bodyEmpty": true }
@@ -188,7 +210,11 @@
       "id": "bounded-byte-range",
       "kind": "request",
       "configuration": "default",
-      "request": { "method": "GET", "target": "/range.txt", "headers": { "Range": "bytes=2-5" } },
+      "request": {
+        "method": "GET",
+        "target": "/range.txt",
+        "headers": { "Range": "bytes=2-5" }
+      },
       "claims": ["swift", "kotlin", "rust"],
       "exclusions": {},
       "expect": {
@@ -201,10 +227,17 @@
       "id": "unsatisfiable-range",
       "kind": "request",
       "configuration": "default",
-      "request": { "method": "GET", "target": "/range.txt", "headers": { "Range": "bytes=20-30" } },
+      "request": {
+        "method": "GET",
+        "target": "/range.txt",
+        "headers": { "Range": "bytes=20-30" }
+      },
       "claims": ["swift", "kotlin", "rust"],
       "exclusions": {},
-      "expect": { "statuses": [416], "headersEqual": { "Content-Range": "bytes */10" } }
+      "expect": {
+        "statuses": [416],
+        "headersEqual": { "Content-Range": "bytes */10" }
+      }
     },
     {
       "id": "cors-disabled",
@@ -213,7 +246,10 @@
       "request": { "method": "GET", "target": "/range.txt" },
       "claims": ["swift", "kotlin", "rust"],
       "exclusions": {},
-      "expect": { "statuses": [200], "headersAbsent": ["Access-Control-Allow-Origin"] }
+      "expect": {
+        "statuses": [200],
+        "headersAbsent": ["Access-Control-Allow-Origin"]
+      }
     },
     {
       "id": "spa-extensionless-route",
@@ -222,7 +258,10 @@
       "request": { "method": "GET", "target": "/client/route" },
       "claims": ["swift", "kotlin", "rust"],
       "exclusions": {},
-      "expect": { "statuses": [200], "bodyEquals": "<main>shared contract</main>\n" }
+      "expect": {
+        "statuses": [200],
+        "bodyEquals": "<main>shared contract</main>\n"
+      }
     },
     {
       "id": "spa-does-not-mask-missing-asset",

@@ -2,9 +2,10 @@
 set -euo pipefail
 
 VERSION="${1:-}"
+MODE="${2:-}"
 
-if [ -z "$VERSION" ]; then
-  echo "Usage: $0 <version>"
+if [[ -z "$VERSION" || ( -n "$MODE" && "$MODE" != "--check" ) ]]; then
+  echo "Usage: $0 <version> [--check]"
   exit 1
 fi
 
@@ -71,7 +72,12 @@ fi
 
 echo "Updating Android version: $CURRENT_VERSION -> $VERSION (versionCode $CURRENT_CODE -> $NEW_CODE)"
 
-(cd android && ./gradlew :app:compileDebugKotlin :app:testDebugUnitTest :app:lintDebug)
+scripts/release-check.sh android
+
+if [[ "$MODE" == "--check" ]]; then
+  echo "Release preflight passed for $TAG. No files, commits, tags, or remotes changed."
+  exit 0
+fi
 
 # Update versionName
 sed -i '' "s/versionName = \"[^\"]*\"/versionName = \"$VERSION\"/" "$BUILD_GRADLE"

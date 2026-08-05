@@ -17,7 +17,7 @@ and the real Chrome Web Store extension. `desktop-v0.1.5` remains the latest
 accepted prior-public update and production-extension baseline; `v0.1.6`
 retains the failed functional evidence that motivated this repair.**
 
-Last reconciled: **2026-08-04**.
+Last reconciled: **2026-08-05**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
@@ -146,6 +146,11 @@ additive fields, unsupported actions, previous/current/future updater metadata,
 wrong packages, and oldest/current/future/invalid settings. Local native-host,
 Tauri library, Crostini, and finalizer tests pass; the first hosted Linux Tauri
 unit/E2E run for this slice remains pending the next push.
+`scripts/release-check.sh desktop` now runs the canonical non-publishing
+preflight and prints the hosted product/artifact gates and advisory production
+runbook. The release finalizer also waits for the Linux Tauri E2E job before it
+can publish and records its workflow, commit, corpus version, and checksum
+ledger in the release notes.
 
 Public desktop release: **`desktop-v0.1.10`**, published 2026-08-04 from commit
 `1f712ae2f0e919c6dd04906ad6d2208a10ebdccc`.

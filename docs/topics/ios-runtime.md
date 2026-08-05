@@ -241,6 +241,10 @@ unknown future fields, and recovers an invalid form through the existing safe
 store default. The complete canonical iOS check passed afterward: simulator
 tests, simulator Release, unsigned device Release, fixture rejection, and
 signing hygiene.
+`scripts/release-check.sh ios` is the non-publishing release-confidence entry
+point. It runs that same canonical check and prints the physical-device handoff;
+archive, TestFlight, and App Store evidence remain explicitly owned by
+Tactical 017.
 
 The repository now contains a generated Xcode project and its xcodegen source
 under `ios/`, with application, Swift Testing, and XCTest UI targets. The app

@@ -76,11 +76,7 @@ then
 fi
 echo "Extension release preflight: $CURRENT_VERSION -> $VERSION"
 
-pnpm --filter @ok200/extension typecheck
-pnpm --filter @ok200/extension test
-"$SCRIPT_DIR/package-extension.sh" "$REPO_ROOT/extension/package.zip"
-node "$SCRIPT_DIR/validate-extension-package.mjs" \
-  "$REPO_ROOT/extension/package.zip" --expected-version "$CURRENT_VERSION"
+"$SCRIPT_DIR/release-check.sh" extension
 
 if [[ "$MODE" == "--check" ]]; then
   echo "Source preflight passed for $TAG at current version $CURRENT_VERSION."

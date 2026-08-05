@@ -1,6 +1,7 @@
 # 018: Cross-Platform CI and Test Confidence
 
-**Status:** planned implementation; policy boundaries accepted
+**Status:** implemented on `main`; local validation complete; first hosted
+execution of newly added lanes pending the next push
 **Topic:** `cross-platform-release-confidence`
 **Related topics:** `android-native-kotlin`, `ios-native-swift`,
 `desktop-release-readiness`, `chromeos-extension-launcher`,
@@ -411,3 +412,26 @@ This tactical is complete when:
 8. release automation records exact artifacts and automated evidence; and
 9. testbed campaigns remain strongly suggested, explicitly recordable, and
    skippable without being misreported as passes.
+
+## Execution record
+
+The seven planned slices were implemented in order:
+
+| Slice | Commit | Result |
+|---|---|---|
+| Canonical component gates | `50d8559` | Workflows call repository-owned Android, desktop, extension, and Crostini scripts |
+| Hosted iOS gate | `b4f7edf` | Simulator tests, simulator/device Release builds, project drift, and failure artifacts |
+| Shared HTTP corpus | `dbc4f2a` | Contract `1.0.0`, 28 cases, native Swift/Kotlin/Rust adapters |
+| Desktop product E2E | `20c90f9` | Portable Linux Tauri/WebDriver runner and hosted diagnostic lane |
+| Android boundaries/artifacts | `2f590e6` | API 26/36 matrix plus exact signed APK/AAB inspection and Release smoke |
+| Browser/compatibility | `bc74a5b` | Exact packaged Chrome popup smoke and compatibility corpus `1.0.0` |
+| Release evidence | final slice | One component dispatcher, stronger tag dependencies, evidence template, advisory testbed handoff |
+
+Local closeout on 2026-08-05 passed the canonical iOS gate, Android source
+gate and instrumentation-test compilation, extension source/package tests and
+real installed-Chrome smoke, desktop/native-host/Tauri library tests, Crostini
+tests and installer checks, both shared corpus validators, and release-finalizer
+tests. Linux-only Tauri E2E, API-26/API-36 runtime instrumentation, hosted iOS,
+and tag-only signed artifact jobs remain remote execution evidence: their
+workflow definitions are implemented, but no result is claimed until the next
+push or applicable tag actually runs them.

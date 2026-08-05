@@ -13,6 +13,7 @@ on:
       - 'extension/public/icons/ok-128.png'
       - 'website/public/install-crostini.sh'
       - 'scripts/release-crostini.sh'
+      - 'scripts/release-check.sh'
       - 'scripts/test-crostini-installer.sh'
       - 'tests/compatibility/**'
       - '.github/scripts/write-crostini-release-manifest.mjs'
@@ -28,6 +29,7 @@ on:
       - 'extension/public/icons/ok-128.png'
       - 'website/public/install-crostini.sh'
       - 'scripts/release-crostini.sh'
+      - 'scripts/release-check.sh'
       - 'scripts/test-crostini-installer.sh'
       - 'tests/compatibility/**'
       - '.github/scripts/write-crostini-release-manifest.mjs'
@@ -184,6 +186,7 @@ jobs:
           VERSION="${GITHUB_REF_NAME#crostini-v}"
           awk "/^## \[$VERSION\]/{found=1; next} /^## \[/{found=0} found" \
             desktop/crostini/CHANGELOG.md > /tmp/crostini-release-notes.md
+          CORPUS_VERSION=$(node -p "require('./tests/compatibility/corpus-v1.json').corpusVersion")
           {
             cat /tmp/crostini-release-notes.md
             echo
@@ -194,6 +197,14 @@ jobs:
             echo '```'
             echo
             echo 'The installer verifies the signed release manifest and selected static binary before changing the per-user installation.'
+            echo
+            echo '## Automated release evidence'
+            echo
+            echo "- Tagged workflow: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "- Commit: \`${GITHUB_SHA}\`"
+            echo "- Compatibility corpus: \`${CORPUS_VERSION}\`"
+            echo '- Exact binary/manifest/signature hashes: attached `SHA256SUMS`'
+            echo '- Chromebook testbeds: advisory and recorded separately; CI does not report them as passed'
           } > /tmp/crostini-release-body.md
           gh release create "$GITHUB_REF_NAME" \
             --verify-tag \

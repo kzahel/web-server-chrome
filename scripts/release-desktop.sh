@@ -51,6 +51,8 @@ if ! grep -q "## \[${VERSION}\]" "$CHANGELOG" 2>/dev/null; then
   exit 1
 fi
 
+"$SCRIPT_DIR/release-check.sh" desktop
+
 if [ "$MODE" = "--check" ]; then
   echo "Release preflight passed for $TAG"
   exit 0

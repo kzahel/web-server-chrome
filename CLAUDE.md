@@ -27,7 +27,7 @@ The native iOS MVP is complete in
 its separate store-readiness follow-up is
 [docs/tactical/017-ios-store-readiness.md](docs/tactical/017-ios-store-readiness.md).
 Cross-platform CI, shared HTTP conformance, product E2E, artifact validation,
-and advisory testbed improvements are planned in
+compatibility fixtures, and advisory testbed handoff are implemented in
 [docs/tactical/018-cross-platform-ci-and-test-confidence.md](docs/tactical/018-cross-platform-ci-and-test-confidence.md).
 
 ## Quick Context
@@ -208,6 +208,14 @@ Cross-version messages, signed metadata, and persisted settings are frozen in
 component test consumes its own section through production handlers or parsers;
 retain a bounded recovery record for any intentionally incompatible rollout.
 
+## Release Confidence Check
+
+Run `scripts/release-check.sh <android|crostini|desktop|extension|ios>` to
+execute that component's repository-owned automated preflight and print the
+tag-only artifact gates plus advisory testbed handoff. Record exact artifacts,
+workflow URLs, testbed passes or explicit skips, and remaining claim limits
+with `docs/runbooks/release-evidence-template.md`.
+
 ## Android Emulator Management
 
 **Preamble (required before any emulator/adb commands):**
@@ -316,6 +324,7 @@ All components follow the same release pattern:
 ### Android Releases
 
 ```bash
+./scripts/release-android.sh <version> --check
 ./scripts/release-android.sh <version>
 ```
 

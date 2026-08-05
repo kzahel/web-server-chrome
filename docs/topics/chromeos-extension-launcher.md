@@ -17,7 +17,7 @@ Android intent, contextual permission,
 claim, popup fallback, ChromeOS Linux control, LAN, and lifecycle claims until
 the exact store-delivered `0.1.8` package is exercised.**
 
-Last reconciled: **2026-08-04**.
+Last reconciled: **2026-08-05**.
 
 ### Automated packaged-browser and compatibility gate
 
@@ -37,6 +37,10 @@ current protocol 2, unknown additive health fields, the historical protocol-1
 gap, a future protocol, and wrong controller identity. Protocol mismatch now
 names both reported and required protocols and keeps Linux setup/rollback
 recovery visible instead of collapsing to a generic listener error.
+`scripts/release-check.sh extension` runs both source/package inspection and
+the real-browser smoke. Tagged publication now waits for both lanes and writes
+the workflow URL, commit, corpus version, and exact ZIP checksum reference into
+the GitHub release while leaving production-browser testbeds advisory.
 
 Implementation and release sequencing live in
 [Tactical 011](../tactical/011-extension-launcher-and-chromeos-network-readiness.md).

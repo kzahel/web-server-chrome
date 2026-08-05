@@ -9,6 +9,8 @@ on:
       - 'android/**'
       - 'tests/http-conformance/**'
       - 'tests/compatibility/**'
+      - 'scripts/release-android.sh'
+      - 'scripts/release-check.sh'
       - '.github/workflows/android-ci.yml'
   pull_request:
     branches: [main]
@@ -16,6 +18,8 @@ on:
       - 'android/**'
       - 'tests/http-conformance/**'
       - 'tests/compatibility/**'
+      - 'scripts/release-android.sh'
+      - 'scripts/release-check.sh'
       - '.github/workflows/android-ci.yml'
 
 permissions:
@@ -197,6 +201,17 @@ jobs:
           else
             echo "Release $VERSION" > /tmp/release-notes.md
           fi
+          CORPUS_VERSION=$(node -p "require('../tests/compatibility/corpus-v1.json').corpusVersion")
+          {
+            echo
+            echo "## Automated release evidence"
+            echo
+            echo "- Tagged workflow: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "- Commit: \`${GITHUB_SHA}\`"
+            echo "- Compatibility corpus: \`${CORPUS_VERSION}\`"
+            echo "- Exact APK/AAB/mapping hashes: attached \`SHA256SUMS\`"
+            echo "- Phone/Chromebook testbeds: advisory and recorded separately; CI does not report them as passed"
+          } >> /tmp/release-notes.md
 
       - name: Release
         uses: softprops/action-gh-release@v1

@@ -55,15 +55,7 @@ process.exit(currentMatch[4] ? 0 : 1);
 NODE
 echo "ChromeOS Linux release preflight: $CURRENT_VERSION -> $VERSION"
 
-source ~/.profile
-(
-    cd desktop
-    cargo fmt --all -- --check
-    cargo clippy --locked -p ok200-crostini --all-targets -- -D warnings
-    cargo test --locked -p ok200-crostini
-)
-node --test .github/scripts/write-crostini-release-manifest.test.mjs
-scripts/test-crostini-installer.sh
+scripts/release-check.sh crostini
 
 if [ "$MODE" = "--check" ]; then
     echo "Release preflight passed for $TAG. No files, tags, or remotes changed."

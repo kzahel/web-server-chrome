@@ -10,6 +10,8 @@ on:
       - 'packages/**'
       - 'tests/http-conformance/**'
       - 'tests/compatibility/**'
+      - 'scripts/release-desktop.sh'
+      - 'scripts/release-check.sh'
       - '.github/scripts/**'
       - '.github/workflows/tauri-app-ci.yml'
   pull_request:
@@ -19,6 +21,8 @@ on:
       - 'packages/**'
       - 'tests/http-conformance/**'
       - 'tests/compatibility/**'
+      - 'scripts/release-desktop.sh'
+      - 'scripts/release-check.sh'
       - '.github/scripts/**'
       - '.github/workflows/tauri-app-ci.yml'
 
@@ -27,7 +31,7 @@ permissions:
 
 jobs:
   test-desktop:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -43,6 +47,11 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           workspaces: './desktop -> target'
+
+      - name: Install Linux desktop test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev libsoup-3.0-dev libjavascriptcoregtk-4.1-dev
 
       - name: Run desktop source checks
         run: desktop/scripts/check.sh
@@ -541,13 +550,14 @@ jobs:
     if: always() && startsWith(github.ref, 'refs/tags/desktop-v')
     needs:
       - test-desktop
+      - desktop-e2e
       - build-tauri
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Keep failed builds private
-        if: needs.test-desktop.result != 'success' || needs.build-tauri.result != 'success'
+        if: needs.test-desktop.result != 'success' || needs.desktop-e2e.result != 'success' || needs.build-tauri.result != 'success'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -561,7 +571,7 @@ jobs:
           exit 1
 
       - name: Download and validate complete draft release
-        if: needs.test-desktop.result == 'success' && needs.build-tauri.result == 'success'
+        if: needs.test-desktop.result == 'success' && needs.desktop-e2e.result == 'success' && needs.build-tauri.result == 'success'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -589,7 +599,7 @@ jobs:
           gh release upload "$TAG" "$RELEASE_DIR/SHA256SUMS" --clobber
 
       - name: Remove detached updater signatures
-        if: needs.test-desktop.result == 'success' && needs.build-tauri.result == 'success'
+        if: needs.test-desktop.result == 'success' && needs.desktop-e2e.result == 'success' && needs.build-tauri.result == 'success'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -602,13 +612,15 @@ jobs:
           done < <(gh release view "$TAG" --json assets --jq '.assets[].name | select(endswith(".sig"))')
 
       - name: Write exact download links
-        if: needs.test-desktop.result == 'success' && needs.build-tauri.result == 'success'
+        if: needs.test-desktop.result == 'success' && needs.desktop-e2e.result == 'success' && needs.build-tauri.result == 'success'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${GITHUB_REF_NAME}"
           VERSION="${TAG#desktop-v}"
           BASE="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}"
+          RUN_URL="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          CORPUS_VERSION=$(node -p "require('./tests/compatibility/corpus-v1.json').corpusVersion")
 
           CHANGELOG=$(awk "/^## \\[$VERSION\\]/{found=1; next} /^## \\[/{found=0} found" desktop/tauri-app/CHANGELOG.md 2>/dev/null || true)
 
@@ -628,12 +640,20 @@ jobs:
             echo "| Linux (ARM64) | [AppImage](${BASE}/200.OK_${VERSION}_aarch64.AppImage) (recommended, no admin) · [DEB](${BASE}/200.OK_${VERSION}_arm64.deb) (system package) · [RPM](${BASE}/200.OK-${VERSION}-1.aarch64.rpm) (system package) |"
             echo ""
             echo "[SHA-256 checksums](${BASE}/SHA256SUMS)"
+            echo ""
+            echo "## Automated release evidence"
+            echo ""
+            echo "- Tagged workflow: [run ${GITHUB_RUN_ID}](${RUN_URL})"
+            echo "- Commit: \`${GITHUB_SHA}\`"
+            echo "- Compatibility corpus: \`${CORPUS_VERSION}\`"
+            echo "- Exact artifact hashes: [SHA256SUMS](${BASE}/SHA256SUMS)"
+            echo "- Physical/VM testbeds: advisory and recorded separately; CI does not report them as passed"
           } > /tmp/release-body.md
 
           gh release edit "$TAG" --notes-file /tmp/release-body.md
 
       - name: Publish validated release
-        if: needs.test-desktop.result == 'success' && needs.build-tauri.result == 'success'
+        if: needs.test-desktop.result == 'success' && needs.desktop-e2e.result == 'success' && needs.build-tauri.result == 'success'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release edit "$GITHUB_REF_NAME" --draft=false --latest

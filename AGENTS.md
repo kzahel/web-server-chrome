@@ -71,7 +71,7 @@ the root [`topics.md`](topics.md) log before reusing them across a series.
   [`docs/tactical/016-native-swift-ios-app.md`](docs/tactical/016-native-swift-ios-app.md)
 - Planned iOS store-readiness follow-up:
   [`docs/tactical/017-ios-store-readiness.md`](docs/tactical/017-ios-store-readiness.md)
-- Planned cross-platform CI and test-confidence work:
+- Completed cross-platform CI and test-confidence implementation:
   [`docs/tactical/018-cross-platform-ci-and-test-confidence.md`](docs/tactical/018-cross-platform-ci-and-test-confidence.md)
 - Desktop post-publication production runbook:
   [`docs/runbooks/desktop-production-validation.md`](docs/runbooks/desktop-production-validation.md)

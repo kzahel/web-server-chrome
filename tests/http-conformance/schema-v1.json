@@ -3,10 +3,20 @@
   "$id": "https://ok200.app/schemas/http-conformance-v1.json",
   "title": "200 OK shared HTTP conformance corpus",
   "type": "object",
-  "required": ["schemaVersion", "contractVersion", "runtimes", "configurations", "fixture", "cases"],
+  "required": [
+    "schemaVersion",
+    "contractVersion",
+    "runtimes",
+    "configurations",
+    "fixture",
+    "cases"
+  ],
   "properties": {
     "schemaVersion": { "const": 1 },
-    "contractVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "contractVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
     "runtimes": {
       "type": "array",
       "minItems": 1,
@@ -74,7 +84,10 @@
       "properties": {
         "method": { "type": "string" },
         "target": { "type": "string" },
-        "headers": { "type": "object", "additionalProperties": { "type": "string" } }
+        "headers": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
       },
       "additionalProperties": false
     },
@@ -82,30 +95,60 @@
       "type": "object",
       "required": ["statuses"],
       "properties": {
-        "statuses": { "type": "array", "minItems": 1, "items": { "type": "integer" } },
+        "statuses": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "integer" }
+        },
         "bodyEquals": { "type": "string" },
         "bodyEmpty": { "type": "boolean" },
         "bodyContains": { "type": "array", "items": { "type": "string" } },
         "bodyExcludes": { "type": "array", "items": { "type": "string" } },
         "headersPresent": { "type": "array", "items": { "type": "string" } },
         "headersAbsent": { "type": "array", "items": { "type": "string" } },
-        "headersEqual": { "type": "object", "additionalProperties": { "type": "string" } },
-        "headersPrefix": { "type": "object", "additionalProperties": { "type": "string" } }
+        "headersEqual": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "headersPrefix": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
       },
       "additionalProperties": false
     },
     "case": {
       "type": "object",
-      "required": ["id", "kind", "configuration", "claims", "exclusions", "expect"],
+      "required": [
+        "id",
+        "kind",
+        "configuration",
+        "claims",
+        "exclusions",
+        "expect"
+      ],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-        "kind": { "enum": ["request", "oversizedHead", "concurrency", "restart"] },
+        "kind": {
+          "enum": ["request", "oversizedHead", "concurrency", "restart"]
+        },
         "configuration": { "type": "string" },
         "request": { "$ref": "#/$defs/request" },
         "concurrency": { "type": "integer", "minimum": 2, "maximum": 32 },
-        "oversizedHeaderBytes": { "type": "integer", "minimum": 16385, "maximum": 65536 },
-        "claims": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
-        "exclusions": { "type": "object", "additionalProperties": { "type": "string", "minLength": 1 } },
+        "oversizedHeaderBytes": {
+          "type": "integer",
+          "minimum": 16385,
+          "maximum": 65536
+        },
+        "claims": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "exclusions": {
+          "type": "object",
+          "additionalProperties": { "type": "string", "minLength": 1 }
+        },
         "expect": { "$ref": "#/$defs/expectation" }
       },
       "additionalProperties": false

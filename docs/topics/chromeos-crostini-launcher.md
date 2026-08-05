@@ -15,7 +15,7 @@ controller `0.1.5`. At the maintainer's direction this preceded Chrome Web
 Store `0.1.8` approval, accepting a temporary compatibility gap for users of
 the current protocol-1 store extension until the submitted update is live.**
 
-Last reconciled: **2026-08-04**.
+Last reconciled: **2026-08-05**.
 
 ### Executable compatibility fixtures
 
@@ -27,6 +27,10 @@ fields, repair/upgrade/downgrade behavior, and oldest/current/future/invalid
 controller settings. Extension and Rust production parsers consume these
 fixtures directly. The local controller suite passes 22 tests; the Linux-only
 installer version fixtures are compiled and run by the hosted Crostini lane.
+`scripts/release-check.sh crostini` is now the non-publishing automated
+preflight. Signed tag releases continue to fail closed and now record their
+workflow, commit, corpus version, and exact checksum ledger without claiming a
+Chromebook testbed pass.
 
 Unreleased source now labels the registered ChromeOS Linux Launcher item
 **200 OK Web Server**, with **Web Server** as its generic name and explicit

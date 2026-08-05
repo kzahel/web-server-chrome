@@ -28,8 +28,9 @@ profile. The smoke opens the actual packaged popup at the supported 340×500
 viewport and asserts manifest identity, the missing-native-host recovery link,
 visibility and viewport containment of the primary action, and absence of
 private development origins. It retains a screenshot, structured DOM result,
-and browser log. The local installed-Chrome run passed; the first hosted run
-remains pending the next push.
+and browser log. The local installed-Chrome run and hosted
+[Extension CI run `30983441286`](https://github.com/kzahel/web-server-chrome/actions/runs/30983441286)
+both pass.
 
 The versioned corpus at `tests/compatibility/corpus-v1.json` now drives the
 popup/controller tests for missing desktop hosts, additive native-host fields,

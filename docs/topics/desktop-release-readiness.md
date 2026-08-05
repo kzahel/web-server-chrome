@@ -144,8 +144,13 @@ handler, Tauri stored-settings parser, Crostini release/controller parsers, and
 desktop release-finalizer tests. It exercises old/new native messages,
 additive fields, unsupported actions, previous/current/future updater metadata,
 wrong packages, and oldest/current/future/invalid settings. Local native-host,
-Tauri library, Crostini, and finalizer tests pass; the first hosted Linux Tauri
-unit/E2E run for this slice remains pending the next push.
+Tauri library, Crostini, and finalizer tests pass. Hosted
+[Tauri App CI run `30985548539`](https://github.com/kzahel/web-server-chrome/actions/runs/30985548539)
+passes the hermetic desktop source gate, real Linux Tauri/WebDriver UI-to-server
+suite, and all five macOS/Linux/Windows package legs. The first hosted campaign
+also proved the diagnostics useful by exposing and closing image-unsafe Rust
+cache reuse, a locally masked sidecar prerequisite, and WebKitDriver-specific
+DOM assertions before the final green run.
 `scripts/release-check.sh desktop` now runs the canonical non-publishing
 preflight and prints the hosted product/artifact gates and advisory production
 runbook. The release finalizer also waits for the Linux Tauri E2E job before it

@@ -1,7 +1,8 @@
 # 018: Cross-Platform CI and Test Confidence
 
-**Status:** implemented on `main`; local validation complete; first hosted
-execution of newly added lanes pending the next push
+**Status:** implemented on `main`; local validation and all applicable
+main-branch hosted gates are green. Signed/tag-only artifact publication gates
+remain intentionally unexecuted until the next component release tags.
 **Topic:** `cross-platform-release-confidence`
 **Related topics:** `android-native-kotlin`, `ios-native-swift`,
 `desktop-release-readiness`, `chromeos-extension-launcher`,
@@ -425,13 +426,42 @@ The seven planned slices were implemented in order:
 | Desktop product E2E | `20c90f9` | Portable Linux Tauri/WebDriver runner and hosted diagnostic lane |
 | Android boundaries/artifacts | `2f590e6` | API 26/36 matrix plus exact signed APK/AAB inspection and Release smoke |
 | Browser/compatibility | `bc74a5b` | Exact packaged Chrome popup smoke and compatibility corpus `1.0.0` |
-| Release evidence | final slice | One component dispatcher, stronger tag dependencies, evidence template, advisory testbed handoff |
+| Release evidence | `17ee258` | One component dispatcher, stronger tag dependencies, evidence template, advisory testbed handoff |
 
 Local closeout on 2026-08-05 passed the canonical iOS gate, Android source
 gate and instrumentation-test compilation, extension source/package tests and
 real installed-Chrome smoke, desktop/native-host/Tauri library tests, Crostini
 tests and installer checks, both shared corpus validators, and release-finalizer
-tests. Linux-only Tauri E2E, API-26/API-36 runtime instrumentation, hosted iOS,
-and tag-only signed artifact jobs remain remote execution evidence: their
-workflow definitions are implemented, but no result is claimed until the next
-push or applicable tag actually runs them.
+tests.
+
+The first hosted campaign then produced the intended executable evidence:
+
+- [iOS CI run `30983441249`](https://github.com/kzahel/web-server-chrome/actions/runs/30983441249)
+  passed the simulator suite, simulator/device Release compiles, generated-
+  project drift check, and Release-fixture/signing hygiene on macOS 26.
+- [Extension CI run `30983441286`](https://github.com/kzahel/web-server-chrome/actions/runs/30983441286)
+  passed source/package inspection and the real-Chrome packaged-popup smoke.
+- [ChromeOS Linux CI run `30983441266`](https://github.com/kzahel/web-server-chrome/actions/runs/30983441266)
+  passed Crostini source/installer validation and both static architectures.
+- The initial Android run proved the new tests were executing by exposing that
+  instrumentation fixtures were opened through the application rather than
+  test asset context. Commit `686c22f` repaired that boundary, and
+  [Android CI run `30983876710`](https://github.com/kzahel/web-server-chrome/actions/runs/30983876710)
+  passed the source gate plus all instrumentation on API 26 and API 36.
+- The first clean desktop run exposed an Ubuntu-image-incompatible Rust cache
+  and a locally masked sidecar prerequisite. Commits `062f088` and `fe60aec`
+  made the cache image-specific and the canonical gate self-contained. The
+  first WebKitDriver execution then exposed two driver-specific DOM assertions;
+  commit `b467d06` repaired them from the preserved screenshots and logs.
+  [Tauri App CI run `30985548539`](https://github.com/kzahel/web-server-chrome/actions/runs/30985548539)
+  passed the hermetic source gate, real Linux UI/server E2E, and macOS arm64,
+  macOS x64, Linux x64, Linux ARM64, and Windows package builds and identity
+  checks. [General CI run `30985548606`](https://github.com/kzahel/web-server-chrome/actions/runs/30985548606)
+  passed at the same revision.
+
+No release tag was created, so Android signed APK/AAB inspection and Release
+smoke, desktop finalization/signature publication, extension publication, and
+Crostini signed-manifest publication correctly remained skipped. No new
+physical/VM testbed campaign was needed for this CI/test-only closeout; the
+existing device evidence remains unchanged, and a future release should still
+run or explicitly skip its affected testbeds under the policy above.

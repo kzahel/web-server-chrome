@@ -196,16 +196,19 @@ They require explicit product decisions rather than accidental parity work.
   upload-certificate expectations; Bundletool validates the AAB, the APK/AAB
   and mapping receive one checksum manifest, and the exact Release APK must
   install, launch, expose its primary server switch, and handle
-  `ok200://launch` on an API-36 emulator before GitHub publication. The first
-  hosted execution remains pending: the SDK-boundary matrix runs on the next
-  Android change, while the artifact and Release-smoke gates run on the next
-  Android tag.
+  `ok200://launch` on an API-36 emulator before GitHub publication. Hosted
+  [Android CI run `30983876710`](https://github.com/kzahel/web-server-chrome/actions/runs/30983876710)
+  passes the source gate and the complete instrumentation suite at both API 26
+  and API 36. The artifact and exact Release-smoke gates remain intentionally
+  pending the next Android tag.
 - The versioned compatibility corpus supplies oldest, current, unknown-future,
   and invalid SharedPreferences forms to instrumentation on both API
   boundaries. Settings reads now recover to bounded defaults when a key has
   the wrong stored type; port and battery-threshold reads also normalize
-  invalid ranges. The instrumented test APK compiled locally on 2026-08-05;
-  its first hosted API-26/API-36 execution remains pending the next push.
+  invalid ranges. The first hosted execution found and closed a test-packaging
+  defect: the corpus belongs to the instrumentation APK and must be read from
+  its asset context, not the target application context. Both hosted API
+  boundaries pass after commit `686c22f`.
 - `scripts/release-check.sh android` now runs the source gate, compiles the
   instrumentation APK, prints the signed tag-only artifact gates, and hands off
   optional phone/LAN/Chromebook evidence without treating a skip as a pass.

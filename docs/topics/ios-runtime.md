@@ -271,7 +271,9 @@ builds, the check that DEBUG fixtures and launch hooks are absent from the
 Release binary, and the check that no development team is committed in the
 generated project. `.github/workflows/ios-ci.yml` now runs that same gate on a
 pinned hosted macOS image and rejects generated-project drift without importing
-signing or device state. `ios/scripts/device-smoke.sh` owns the repeatable signed
+signing or device state. Hosted
+[iOS CI run `30983441249`](https://github.com/kzahel/web-server-chrome/actions/runs/30983441249)
+passes that complete gate on macOS 26. `ios/scripts/device-smoke.sh` owns the repeatable signed
 build/install/semantic-switch/external-fetch/background-stop path through the
 shared device testbed without scrolling to discover the displayed LAN URL.
 

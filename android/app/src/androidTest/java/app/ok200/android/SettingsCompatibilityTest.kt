@@ -3,6 +3,7 @@ package app.ok200.android
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import app.ok200.android.settings.PREFS_NAME
 import app.ok200.android.settings.SettingsStore
 import org.json.JSONObject
@@ -23,7 +24,8 @@ class SettingsCompatibilityTest {
 
     @Test
     fun frozenSettingsCoverOldCurrentFutureAndInvalidForms() {
-        val corpus = context.assets.open("corpus-v1.json").bufferedReader().use { JSONObject(it.readText()) }
+        val testAssets = InstrumentationRegistry.getInstrumentation().context.assets
+        val corpus = testAssets.open("corpus-v1.json").bufferedReader().use { JSONObject(it.readText()) }
         val fixtures = corpus.getJSONObject("persistedSettings").getJSONArray("android")
 
         for (index in 0 until fixtures.length()) {

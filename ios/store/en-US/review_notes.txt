@@ -1,0 +1,14 @@
+200 OK Web Server serves a user-selected Files directory over plain HTTP while the app remains in the foreground.
+
+Review steps:
+1. Launch the app and tap Choose Folder.
+2. Select any readable directory in the system Files picker.
+3. Turn the Server switch On.
+4. Tap Preview to inspect the selected content locally.
+5. Optionally turn the server Off, enable Local network access, and turn it On again. Another device on the same trusted Wi-Fi network can use the displayed address.
+
+Moving the app to the background stops the listener by design. Returning to the app shows Stopped; the app never claims or requests a background execution mode.
+
+The server is read-only and does not upload, modify, rename, or delete selected files. It uses plain HTTP and does not claim TLS. Local network access is off by default. There is no account, purchase, advertising, analytics SDK, developer-operated backend, Bonjour service, or background entitlement.
+
+No special hardware or reviewer account is required. An incoming-TCP-only listener may not present a local-network permission alert on every tested OS version.

@@ -110,6 +110,34 @@ The workflow has no App Review, tester, pricing, availability, or publication
 operation. Its secret-dependent path remains intentionally unexecuted until
 the attended Apple identity and credential checkpoints.
 
+The fourth source slice adds the English (U.S.) product-page draft, review
+notes, no-collection privacy rationale, current screenshot-size contract, and
+age-rating decision record under `ios/store/`. The metadata gate enforces
+Apple's current 30-character name/subtitle, 4,000-character description,
+100-byte keyword, URL, required disclosure, screenshot count/dimension, and
+no-alpha constraints. The current draft is 17 name characters, 26 subtitle
+characters, 1,052 description characters, and 72 keyword bytes.
+
+Two attended metadata gates remain. Apple's support-URL guidance requires
+actual public contact information where applicable, while the current
+`/support` route only reaches public GitHub Issues. The maintainer must select
+the appropriate public contact surface before that URL is entered. Apple's new
+questionnaire also defines embedded-browser functionality as potentially
+Unrestricted Web Access: the localhost-only starting point and lack of URL
+entry make the current `SFSafariViewController` preview bounded, but selected
+HTML can link externally. The conservative Yes response currently yields 16+
+on OS 26 and 17+ on earlier OS versions; a No response needs an attended policy
+judgment or a technically localhost-restricted preview. Exact-candidate 6.9-
+inch iPhone and 13-inch iPad screenshot sets remain pending.
+
+A DEBUG-fixture layout sanity pass rendered at Apple's accepted `1320x2868`
+iPhone and `2064x2752` iPad portrait sizes. Both showed the complete stopped
+configuration and the new policy links without clipping; the iPad deliberately
+kept the existing 620-point content column and therefore has substantial open
+space below and beside the controls. These are source-layout images, not exact-
+candidate screenshots. `simctl` emitted an alpha channel in both PNGs, which
+confirms why the final screenshot gate must reject unprocessed captures.
+
 ## Implementation sequence
 
 ### 1. Freeze product and distribution identity

@@ -284,6 +284,21 @@ material even on failure. The upload job reinspects the downloaded IPA and is
 separated behind an upload confirmation and named GitHub environment. It has
 no path to testers, App Review submission, availability, or publication.
 
+The English App Store source draft now contains mechanically bounded name,
+subtitle, description, keywords, URLs, review notes, privacy response, age-
+rating analysis, and current highest-resolution iPhone/iPad screenshot rules.
+It does not resolve the maintainer's public support-contact choice or whether
+the bounded `SFSafariViewController` preview should conservatively declare
+Unrestricted Web Access; those remain attended metadata decisions.
+
+Current 6.9-inch iPhone and 13-inch iPad DEBUG-fixture renders show the complete
+stopped surface and policy links without clipping at Apple's accepted portrait
+dimensions. The iPad retains the narrow content column and visible whitespace;
+whether that presentation is accepted for the first release remains part of
+the attended iPad/screenshot review. These source images are not evidence for
+the exact distributed candidate, and their simulator PNG alpha must be removed
+before any App Store upload.
+
 The native HTTP implementation now provides:
 
 - bounded HTTP/1.0 and HTTP/1.1 request heads, clients, and request/response
@@ -390,8 +405,8 @@ broader review.
 
 There is no App Store Connect record for this bundle, distribution profile,
 completed signed archive/export or Apple validation, completed App Store
-Connect privacy response, store copy, screenshot set, TestFlight build, review
-result, or store-delivered artifact proof. The privacy policy and manifest
-exist only in source until the website and app are distributed. Tactical 017
-owns those separate store-readiness gates. Store submission or publication is
-not implied by the completed native MVP.
+Connect privacy response, approved/entered store metadata, screenshot set,
+TestFlight build, review result, or store-delivered artifact proof. The privacy
+policy, manifest, and metadata exist only in source until the website and app
+are distributed. Tactical 017 owns those separate store-readiness gates. Store
+submission or publication is not implied by the completed native MVP.

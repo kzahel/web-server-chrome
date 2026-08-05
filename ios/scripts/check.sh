@@ -15,9 +15,11 @@ bash -n \
   "$script_dir/cleanup-ci-signing.sh" \
   "$script_dir/inspect-release.sh" \
   "$script_dir/prepare-ci-signing.sh" \
+  "$script_dir/check-store-metadata.sh" \
   "$script_dir/release-archive.sh" \
   "$repo_root/scripts/release-ios.sh"
 "$script_dir/prepare-ci-signing.sh" --check >/dev/null
+"$script_dir/check-store-metadata.sh" >/dev/null
 
 plutil -lint "$privacy_manifest"
 

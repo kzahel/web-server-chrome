@@ -7,7 +7,8 @@
 Topic: product-feedback-and-support
 
 Status: **interim GitHub Issues routing and the app privacy policy are
-implemented in source; accountless intake and publication are pending.**
+implemented in source; accountless intake, App Store contact suitability, and
+publication are pending.**
 
 Last reconciled: **2026-08-05**.
 
@@ -49,6 +50,22 @@ Applications that require a privacy-policy surface should link to `/privacy`.
 The policy must distinguish locally stored app state and selected files from
 ordinary requests made when someone visits the public website, and it must be
 updated when actual app data flows change.
+
+## App Store support boundary
+
+Apple's current App Store Connect reference says a support URL must lead to
+actual contact information as required by local law. The current `/support`
+alias leads to public GitHub Issues. That remains useful interim community
+intake, but it is not yet an accepted App Store support surface because it has
+no reviewed public email, address, or telephone contact and requires a GitHub
+account to post.
+
+Before entering `https://ok200.app/support` for the iOS listing, the maintainer
+must choose the appropriate public contact details and the website must turn
+that stable URL into a real support page. The page may still link to GitHub
+Issues, but it must explain the public nature of Issues and offer the selected
+contact route. This is a publication gate, not permission to infer or expose a
+private address or account email from repository history.
 
 The static Astro site is hosted on GitHub Pages, which does not provide
 application-level HTTP redirects. Each alias therefore emits a small,

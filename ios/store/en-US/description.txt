@@ -1,0 +1,18 @@
+Serve a folder from your iPhone or iPad with a small local HTTP server.
+
+200 OK Web Server is useful for previewing static sites, checking files from another device, and testing local HTTP behavior without uploading your content to a service.
+
+Features:
+• Choose a directory with the system Files picker
+• Serve files read-only over HTTP
+• Keep access on this device, or explicitly enable your local network
+• Use a fixed port or let iOS assign one automatically
+• Optional directory listings, CORS, and single-page-app fallback
+• Copy or share a reachable URL
+• Preview the site without leaving the app
+
+Local network access is off by default. When enabled, anyone who can reach the displayed address may be able to read the selected folder, so use a trusted network and choose content intended for sharing.
+
+Serving is intentionally foreground-only. Moving the app to the background stops the server. 200 OK Web Server does not require an account and includes no advertising or analytics SDK.
+
+200 OK Web Server is open source under the MIT License.

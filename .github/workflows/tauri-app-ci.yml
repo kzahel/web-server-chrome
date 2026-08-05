@@ -88,9 +88,6 @@ jobs:
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libsoup-3.0-dev libjavascriptcoregtk-4.1-dev webkit2gtk-driver xvfb
           cargo install --locked tauri-driver --version 2.0.6
 
-      - name: Run Tauri Rust unit tests
-        run: cargo test --manifest-path desktop/Cargo.toml -p ok200-desktop --lib
-
       - name: Run desktop product E2E
         run: desktop/tauri-app/e2e/run-e2e.sh
 

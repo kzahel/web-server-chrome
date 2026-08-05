@@ -8,7 +8,9 @@ on:
       - 'tests/http-conformance/**'
       - 'tests/compatibility/**'
       - 'scripts/release-check.sh'
+      - 'scripts/release-ios.sh'
       - '.github/workflows/ios-ci.yml'
+      - '.github/workflows/ios-release.yml'
   pull_request:
     branches: [main]
     paths:
@@ -16,7 +18,9 @@ on:
       - 'tests/http-conformance/**'
       - 'tests/compatibility/**'
       - 'scripts/release-check.sh'
+      - 'scripts/release-ios.sh'
       - '.github/workflows/ios-ci.yml'
+      - '.github/workflows/ios-release.yml'
 
 jobs:
   check-ios:

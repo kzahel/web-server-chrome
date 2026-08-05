@@ -1,0 +1,186 @@
+name: iOS App Store Candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_action:
+        description: Build, Apple-validate, or explicitly upload the tagged candidate
+        required: true
+        default: build-only
+        type: choice
+        options:
+          - build-only
+          - validate
+          - upload
+      upload_confirmation:
+        description: Type UPLOAD only when release_action is upload
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-app-store-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-candidate:
+    runs-on: macos-26
+    outputs:
+      version: ${{ steps.candidate.outputs.version }}
+      build: ${{ steps.candidate.outputs.build }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require an exact iOS release tag and confirmation
+        id: candidate
+        env:
+          RELEASE_ACTION: ${{ inputs.release_action }}
+          UPLOAD_CONFIRMATION: ${{ inputs.upload_confirmation }}
+        run: |
+          if [[ "$GITHUB_REF_TYPE" != "tag" || ! "$GITHUB_REF_NAME" =~ ^ios-v([0-9]+\.[0-9]+\.[0-9]+)-b([1-9][0-9]*)$ ]]; then
+            echo "Dispatch this workflow from an ios-vX.Y.Z-bN tag" >&2
+            exit 1
+          fi
+          VERSION="${BASH_REMATCH[1]}"
+          BUILD="${BASH_REMATCH[2]}"
+          SPEC_VERSION="$(sed -n 's/^[[:space:]]*MARKETING_VERSION: *//p' ios/project.yml | head -n 1)"
+          SPEC_BUILD="$(sed -n 's/^[[:space:]]*CURRENT_PROJECT_VERSION: *//p' ios/project.yml | head -n 1)"
+          test "$VERSION" = "$SPEC_VERSION"
+          test "$BUILD" = "$SPEC_BUILD"
+          grep -F -q "## $VERSION ($BUILD)" ios/CHANGELOG.md
+          if [[ "$RELEASE_ACTION" == "upload" && "$UPLOAD_CONFIRMATION" != "UPLOAD" ]]; then
+            echo "Upload requires the exact UPLOAD confirmation" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "build=$BUILD" >> "$GITHUB_OUTPUT"
+
+      - name: Install release tools
+        run: brew install xcodegen ripgrep
+
+      - name: Prepare ephemeral signing identity and profile
+        env:
+          IOS_TEAM_ID: ${{ vars.IOS_TEAM_ID }}
+          IOS_CERTIFICATE_P12_BASE64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          MACOS_KEYCHAIN_PASSWORD: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
+        run: ios/scripts/prepare-ci-signing.sh
+
+      - name: Prepare ephemeral App Store Connect key
+        if: inputs.release_action != 'build-only'
+        env:
+          ASC_API_KEY_P8_BASE64: ${{ secrets.ASC_API_KEY_P8_BASE64 }}
+          ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+          ASC_API_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
+        run: |
+          : "${ASC_API_KEY_P8_BASE64:?ASC_API_KEY_P8_BASE64 is required}"
+          : "${ASC_API_KEY_ID:?ASC_API_KEY_ID is required}"
+          : "${ASC_API_ISSUER_ID:?ASC_API_ISSUER_ID is required}"
+          [[ "$ASC_API_KEY_ID" =~ ^[A-Z0-9]{10}$ ]]
+          API_DIR="$RUNNER_TEMP/ok200-asc-key"
+          mkdir -p "$API_DIR"
+          API_PATH="$API_DIR/AuthKey_${ASC_API_KEY_ID}.p8"
+          printf '%s' "$ASC_API_KEY_P8_BASE64" | base64 --decode > "$API_PATH"
+          chmod 600 "$API_PATH"
+          echo "ASC_API_KEY_PATH=$API_PATH" >> "$GITHUB_ENV"
+
+      - name: Build and inspect signed candidate
+        env:
+          IOS_TEAM_ID: ${{ vars.IOS_TEAM_ID }}
+          ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+          ASC_API_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
+          IOS_RELEASE_OUTPUT_DIR: ${{ runner.temp }}/ok200-release
+        run: |
+          if [[ "${{ inputs.release_action }}" == "build-only" ]]; then
+            ios/scripts/release-archive.sh --signed
+          else
+            ios/scripts/release-archive.sh --signed --validate
+          fi
+
+      - name: Upload exact candidate and evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app-store-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/ok200-release/export/*.ipa
+            ${{ runner.temp }}/ok200-release/evidence/
+          if-no-files-found: error
+
+      - name: Remove ephemeral signing material
+        if: always()
+        run: ios/scripts/cleanup-ci-signing.sh
+
+  upload-candidate:
+    needs: build-candidate
+    if: inputs.release_action == 'upload'
+    runs-on: macos-26
+    environment: ios-app-store-upload
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install inspection tools
+        run: brew install ripgrep
+
+      - name: Download exact candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-app-store-${{ github.run_id }}
+          path: ${{ runner.temp }}/candidate
+
+      - name: Prepare ephemeral App Store Connect key
+        env:
+          ASC_API_KEY_P8_BASE64: ${{ secrets.ASC_API_KEY_P8_BASE64 }}
+          ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+          ASC_API_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
+        run: |
+          : "${ASC_API_KEY_P8_BASE64:?ASC_API_KEY_P8_BASE64 is required}"
+          : "${ASC_API_KEY_ID:?ASC_API_KEY_ID is required}"
+          : "${ASC_API_ISSUER_ID:?ASC_API_ISSUER_ID is required}"
+          [[ "$ASC_API_KEY_ID" =~ ^[A-Z0-9]{10}$ ]]
+          API_DIR="$RUNNER_TEMP/ok200-asc-key"
+          mkdir -p "$API_DIR"
+          API_PATH="$API_DIR/AuthKey_${ASC_API_KEY_ID}.p8"
+          printf '%s' "$ASC_API_KEY_P8_BASE64" | base64 --decode > "$API_PATH"
+          chmod 600 "$API_PATH"
+          echo "ASC_API_KEY_PATH=$API_PATH" >> "$GITHUB_ENV"
+
+      - name: Reinspect and upload to App Store Connect
+        env:
+          IOS_TEAM_ID: ${{ vars.IOS_TEAM_ID }}
+          IOS_EXPECTED_MARKETING_VERSION: ${{ needs.build-candidate.outputs.version }}
+          IOS_EXPECTED_BUILD_NUMBER: ${{ needs.build-candidate.outputs.build }}
+          ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+          ASC_API_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
+        run: |
+          IPAS=()
+          while IFS= read -r -d '' CANDIDATE; do
+            IPAS+=("$CANDIDATE")
+          done < <(find "$RUNNER_TEMP/candidate" -type f -name '*.ipa' -print0)
+          if [[ ${#IPAS[@]} -ne 1 ]]; then
+            echo "Expected exactly one candidate IPA; found ${#IPAS[@]}" >&2
+            exit 1
+          fi
+          IPA="${IPAS[0]}"
+          ios/scripts/inspect-release.sh --distribution "$IPA"
+          xcrun altool --upload-app -f "$IPA" \
+            --type ios \
+            --api-key "$ASC_API_KEY_ID" \
+            --api-issuer "$ASC_API_ISSUER_ID" \
+            --p8-file-path "$ASC_API_KEY_PATH" \
+            --output-format json \
+            > "$RUNNER_TEMP/candidate/apple-upload.json"
+
+      - name: Upload private delivery result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app-store-delivery-${{ github.run_id }}
+          path: ${{ runner.temp }}/candidate/apple-upload.json
+          if-no-files-found: ignore
+
+      - name: Remove ephemeral App Store Connect key
+        if: always()
+        run: ios/scripts/cleanup-ci-signing.sh

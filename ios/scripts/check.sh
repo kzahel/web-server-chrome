@@ -3,12 +3,21 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ios_root="$(cd "$script_dir/.." && pwd)"
+repo_root="$(cd "$ios_root/.." && pwd)"
 simulator_name="${IOS_SIMULATOR_NAME:-iPhone 17 Pro}"
 debug_data="$ios_root/build/CheckDerivedData"
 release_data="$ios_root/build/ReleaseDerivedData"
 device_release_data="$ios_root/build/DeviceReleaseDerivedData"
 privacy_manifest="$ios_root/200OK/Resources/PrivacyInfo.xcprivacy"
 app_icon="$ios_root/200OK/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png"
+
+bash -n \
+  "$script_dir/cleanup-ci-signing.sh" \
+  "$script_dir/inspect-release.sh" \
+  "$script_dir/prepare-ci-signing.sh" \
+  "$script_dir/release-archive.sh" \
+  "$repo_root/scripts/release-ios.sh"
+"$script_dir/prepare-ci-signing.sh" --check >/dev/null
 
 plutil -lint "$privacy_manifest"
 

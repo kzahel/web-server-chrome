@@ -94,6 +94,22 @@ Distribution identity and per-app signing configuration are unavailable. The
 signed path can optionally request Apple validation only after an attended
 identity/profile checkpoint and an App Store Connect app record exist.
 
+The third repository slice adds `scripts/release-ios.sh` and the dispatch-only
+`iOS App Store Candidate` workflow. The local helper checks or prepares an
+exact `ios-vX.Y.Z-bN` tag without pushing it. The workflow defaults to
+`build-only`; validation and upload are separate explicit selections, upload
+also requires the exact `UPLOAD` confirmation and the
+`ios-app-store-upload` environment, and a pushed tag alone cannot start it.
+
+CI signing setup uses a disposable keychain and fails unless the imported
+Apple Distribution certificate, selected team, exact `app.ok200.ios` App Store
+profile, distribution entitlements, expiry, and profile certificate all agree.
+The signed archive/IPA is reinspected before delivery, while an always-run
+cleanup removes the decoded `.p12`, installed profile, `.p8`, and keychain.
+The workflow has no App Review, tester, pricing, availability, or publication
+operation. Its secret-dependent path remains intentionally unexecuted until
+the attended Apple identity and credential checkpoints.
+
 ## Implementation sequence
 
 ### 1. Freeze product and distribution identity

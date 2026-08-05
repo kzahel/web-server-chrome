@@ -276,6 +276,14 @@ device Release app, an unsigned archive, and an IPA-shaped extraction harness.
 No team, profile, or credential is committed, and no signed archive, Apple
 validation, or upload has run.
 
+The local iOS release helper now checks or creates an exact version/build tag
+without pushing. A separate workflow can build-only, validate, or explicitly
+upload from that tag; pushing the tag cannot trigger it. Ephemeral CI signing
+proves certificate/profile/team/bundle agreement and cleans all decoded
+material even on failure. The upload job reinspects the downloaded IPA and is
+separated behind an upload confirmation and named GitHub environment. It has
+no path to testers, App Review submission, availability, or publication.
+
 The native HTTP implementation now provides:
 
 - bounded HTTP/1.0 and HTTP/1.1 request heads, clients, and request/response

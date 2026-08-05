@@ -117,6 +117,54 @@ response only in the ignored evidence directory. It does not upload a build.
 The API-key path must name a mode-restricted local `.p8`; never put its contents
 in this repository or a command-line argument.
 
+## Local candidate tag
+
+Prepare a candidate only from clean `main`. The checked local release helper
+requires the exact changelog/version/build tuple, rejects existing local or
+remote tags, and reruns the complete release gate:
+
+```bash
+scripts/release-ios.sh 0.1.0 1 --check
+scripts/release-ios.sh 0.1.0 1
+```
+
+The second command updates and commits `ios/project.yml` plus the generated
+project only when the requested tuple differs from source, then creates a local
+tag such as `ios-v0.1.0-b1`. It never pushes. If source already has the tuple,
+it tags the already accepted commit without manufacturing an empty commit.
+
+After an attended review, the helper prints the explicit atomic push command.
+Pushing this tag does not upload to Apple; the App Store workflow is manual
+dispatch only.
+
+## Guarded GitHub candidate workflow
+
+`.github/workflows/ios-release.yml` must be dispatched from an exact
+`ios-vX.Y.Z-bN` tag. It has three explicit actions:
+
+- `build-only` imports signing into an ephemeral keychain, validates the
+  certificate/profile relationship, produces and inspects the signed IPA, and
+  uploads the IPA plus ignored-style evidence as GitHub run artifacts;
+- `validate` additionally asks Apple to validate that IPA without creating a
+  build; and
+- `upload` requires the separate exact `UPLOAD` confirmation, repeats Apple
+  validation, then enters the `ios-app-store-upload` GitHub environment before
+  downloading, reinspecting, and uploading the exact IPA.
+
+Before the first upload, configure `ios-app-store-upload` with a required
+maintainer reviewer. Configure the `IOS_TEAM_ID` repository variable and the
+secret names listed in the private signing runbook; never put their values in
+workflow source. The setup step proves the imported certificate is current,
+belongs to the expected team, and is one of the profile's developer
+certificates. It also proves that the profile is for the exact bundle, is
+distribution-only, has no devices, is not enterprise provisioning, and is not
+expired.
+
+Both jobs remove the temporary `.p12`, profile copy, decoded `.p8`, and
+ephemeral keychain on success or failure. The workflow never adds TestFlight
+testers, submits for App Review, changes price/territories, chooses a release
+date, or publishes an approved version.
+
 ## Acceptance and handoff
 
 Before any upload, review the ignored evidence and reject the candidate if any

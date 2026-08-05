@@ -33,6 +33,7 @@ case "$component" in
     ;;
   ios)
     ios/scripts/check.sh
+    ios/scripts/release-archive.sh --check
     ;;
 esac
 
@@ -63,7 +64,7 @@ case "$component" in
     echo "Suggested testbed (advisory): exact packaged extension in the affected production browser/platform route"
     ;;
   ios)
-    echo "  No App Store publication lane exists yet; archive/signing/TestFlight remain in Tactical 017."
+    echo "  The archive lane is non-publishing; signed export, upload, TestFlight, and review remain in Tactical 017."
     echo "Suggested testbed (advisory): ios/scripts/device-smoke.sh"
     echo "Also repeat real Files selection, external LAN access, and foreground/background truth when affected."
     ;;

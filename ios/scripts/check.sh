@@ -89,9 +89,11 @@ for built_app in "$release_app" "$device_release_app"; do
   fi
 done
 
+"$script_dir/inspect-release.sh" "$device_release_app" >/dev/null
+
 if rg -q 'DEVELOPMENT_TEAM = [A-Z0-9]+;' "$ios_root/OK200.xcodeproj/project.pbxproj"; then
   echo "The generated project contains a committed development team" >&2
   exit 1
 fi
 
-echo "iOS tests, store declarations, icon, Release bundles, and signing hygiene passed"
+echo "iOS tests, store declarations, exact Release inspection, and signing hygiene passed"

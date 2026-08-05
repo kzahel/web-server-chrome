@@ -13,6 +13,7 @@ android/local.properties
 android/**/build/
 android/**/.cxx/
 ios/build/
+ios/release.local.env
 ios/**/*.xcuserstate
 ios/**/xcuserdata/
 tmp/

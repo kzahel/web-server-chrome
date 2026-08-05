@@ -15,4 +15,5 @@ do, what evidence is required, and what constitutes pass or fail.
 | Runbook | Purpose |
 |---|---|
 | [`desktop-production-validation.md`](desktop-production-validation.md) | Accept or reject the actual public desktop release, production updater/download services, and Chrome Web Store extension on macOS, Windows, and Linux |
+| [`ios-app-store-archive.md`](ios-app-store-archive.md) | Preflight, archive, export, and inspect an iOS App Store candidate without crossing upload or publication authority gates |
 | [`release-evidence-template.md`](release-evidence-template.md) | Record automated gates, exact artifact hashes, advisory testbed passes or explicit skips, and remaining claim limits for any component release |

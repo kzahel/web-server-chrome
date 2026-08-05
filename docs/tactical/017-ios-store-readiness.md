@@ -76,6 +76,24 @@ slice; the latter emitted `/privacy.html` alongside the existing stable routes.
 The physical smoke rerun remains pending because the testbed readiness probe
 reported that its selected phone was disconnected.
 
+The second repository slice adds the machine-neutral
+[`../runbooks/ios-app-store-archive.md`](../runbooks/ios-app-store-archive.md),
+an explicit version/build changelog contract, and checked archive tooling. The
+tooling has a non-mutating preflight, a credential-free unsigned rehearsal,
+and a manual-signing path that generates its private export options only under
+the ignored evidence tree. Its exact-artifact inspector accepts an `.app`,
+`.xcarchive`, or `.ipa` and fails closed on bundle/version/platform drift,
+simulator slices, icon alpha, privacy-manifest drift, DEBUG hooks, unexpected
+embedded frameworks, distribution entitlement/profile mismatches, or an
+expired/non-App-Store profile.
+
+The unsigned device Release app, an unsigned Release `.xcarchive`, and an
+IPA-shaped extraction harness passed the inspector on 2026-08-05. No signed
+archive or export has run: preflight truthfully reports that the local Apple
+Distribution identity and per-app signing configuration are unavailable. The
+signed path can optionally request Apple validation only after an attended
+identity/profile checkpoint and an App Store Connect app record exist.
+
 ## Implementation sequence
 
 ### 1. Freeze product and distribution identity

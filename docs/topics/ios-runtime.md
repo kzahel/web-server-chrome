@@ -268,6 +268,14 @@ The complete canonical iOS gate passed with these declarations present in both
 unsigned Release products. A physical layout/LAN rerun remains pending because
 the testbed readiness probe reported its selected phone disconnected.
 
+The App Store archive runbook and scripts now define the `0.1.0 (1)` candidate,
+positive monotonically increasing build-number policy, unsigned archive
+rehearsal, explicit manual signing/export inputs, ignored evidence outputs, and
+exact `.app`/`.xcarchive`/`.ipa` inspection. The inspector passed the unsigned
+device Release app, an unsigned archive, and an IPA-shaped extraction harness.
+No team, profile, or credential is committed, and no signed archive, Apple
+validation, or upload has run.
+
 The native HTTP implementation now provides:
 
 - bounded HTTP/1.0 and HTTP/1.1 request heads, clients, and request/response
@@ -373,9 +381,9 @@ name during one selection, so provider-specific display naming also merits
 broader review.
 
 There is no App Store Connect record for this bundle, distribution profile,
-signed archive/export workflow, completed App Store Connect privacy response,
-store copy, screenshot set, TestFlight build, review result, or store-delivered
-artifact proof. The privacy policy and manifest exist only in source until the
-website and app are distributed. Tactical 017 owns those separate
-store-readiness gates. Store submission or publication is not implied by the
-completed native MVP.
+completed signed archive/export or Apple validation, completed App Store
+Connect privacy response, store copy, screenshot set, TestFlight build, review
+result, or store-delivered artifact proof. The privacy policy and manifest
+exist only in source until the website and app are distributed. Tactical 017
+owns those separate store-readiness gates. Store submission or publication is
+not implied by the completed native MVP.

@@ -32,6 +32,9 @@ jobs:
       - name: Run iOS source checks
         run: ios/scripts/check.sh
 
+      - name: Run App Store archive preflight
+        run: ios/scripts/release-archive.sh --check
+
       - name: Reject generated project drift
         run: git diff --exit-code -- ios/OK200.xcodeproj
 

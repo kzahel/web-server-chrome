@@ -1,7 +1,9 @@
 describe("200 OK Desktop settings E2E", () => {
   afterEach(async () => {
-    const close = await $('button[aria-label="Close app settings"]');
-    if (await close.isExisting()) await close.click();
+    const dialog = await $('[data-testid="app-settings-dialog"]');
+    if (!(await dialog.isExisting())) return;
+    await browser.keys(["Escape"]);
+    await dialog.waitForExist({ reverse: true, timeout: 5000 });
   });
 
   it("shows every desktop setting and action in a body-level dialog", async () => {

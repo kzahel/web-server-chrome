@@ -60,7 +60,23 @@ export async function clickStop(): Promise<void> {
 export async function waitForServerUrl(timeout = 15000): Promise<string> {
   const link = await $('[data-testid="server-url"]');
   await link.waitForDisplayed({ timeout });
-  return link.getText();
+  let url = "";
+  await browser.waitUntil(
+    async () => {
+      url = await browser.execute(
+        () =>
+          document
+            .querySelector('[data-testid="server-url"]')
+            ?.textContent?.trim() ?? "",
+      );
+      return url.length > 0;
+    },
+    {
+      timeout,
+      timeoutMsg: "The running server URL did not contain text",
+    },
+  );
+  return url;
 }
 
 export async function getError(): Promise<string | null> {

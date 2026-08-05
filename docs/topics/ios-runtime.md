@@ -5,7 +5,7 @@ Topic: ios-native-swift
 Status: **native MVP implemented and accepted on the attached physical phone;
 App Store packaging, TestFlight, and publication have not started.**
 
-Last reconciled: **2026-08-04**.
+Last reconciled: **2026-08-05**.
 
 The bounded first implementation and device campaign are owned by
 [Tactical 016](../tactical/016-native-swift-ios-app.md). This topic owns the
@@ -55,21 +55,23 @@ The first iOS release is one root and one server. Its everyday surface owns:
 - port `0` or `1...65535`, with the assigned port shown when automatic;
 - explicit localhost/LAN binding;
 - directory listing, CORS, and SPA fallback switches;
-- start, stop, starting, stopping, running, and error states from one runtime
-  owner;
+- one native On/Off server switch, with stopped, starting, stopping, running,
+  and error states from one runtime owner;
 - reachable HTTP URLs with Copy and Share actions; and
 - an in-app preview path that does not require backgrounding 200 OK.
 
 The native SwiftUI layout follows the current Android/desktop hierarchy and
 200 OK yellow/black visual identity: compact branded header, prominent server
-status and start/stop control, folder card, network section, serving-behavior
-section, and running URLs. It is not a copy of another App Store application's
-layout, typography, settings order, or marketing screenshots.
+status with a native On/Off switch, running URLs immediately beneath it,
+folder card, network section, and serving-behavior section. When LAN is enabled
+and a Wi-Fi address is available, that address precedes the phone-local URL.
+It is not a copy of another App Store application's layout, typography,
+settings order, or marketing screenshots.
 
 Settings are locked while the listener is running. Point-of-use copy explains
-why, and offers a direct Stop action where practical. Fresh defaults follow the
-safe product contract: port `8080`, LAN access Off, directory listing On, CORS
-Off, and SPA mode Off.
+why, while the server switch remains available to turn it Off. Fresh defaults
+follow the safe product contract: port `8080`, LAN access Off, directory
+listing On, CORS Off, and SPA mode Off.
 
 ## Explicit lifecycle boundary
 
@@ -209,8 +211,8 @@ session output in this repository.
 
 Physical acceptance requires at least:
 
-1. First launch, folder selection, start, status, URL, preview, stop, and
-   restart through accessible controls.
+1. First launch, folder selection, switching On, status, URL, preview,
+   switching Off, and restart through accessible controls.
 2. A known fixture served from the foreground phone to a separate Mac on the
    same Wi-Fi network, with real `curl` checks for representative files and
    HTTP behavior.
@@ -250,13 +252,13 @@ The native HTTP implementation now provides:
 - strict single decoding, encoded-separator rejection, traversal rejection,
   symlink containment, and read-only coordinated access.
 
-`ios/scripts/check.sh` is the repeatable host gate. On 2026-08-04 it passed 26
+`ios/scripts/check.sh` is the repeatable host gate. On 2026-08-05 it passed 26
 declared unit/UI tests, a Debug simulator build/test run, a Release simulator
 build, the check that DEBUG fixtures and launch hooks are absent from the
 Release binary, and the check that no development team is committed in the
 generated project. `ios/scripts/device-smoke.sh` owns the repeatable signed
-build/install/semantic-start/external-fetch/background-stop path through the
-shared device testbed.
+build/install/semantic-switch/external-fetch/background-stop path through the
+shared device testbed without scrolling to discover the displayed LAN URL.
 
 Physical acceptance on 2026-08-04 used the attached iPhone SE (3rd generation)
 running iOS 26.6 and an external Mac peer on the same Wi-Fi network. It proved:
@@ -285,14 +287,24 @@ running iOS 26.6 and an external Mac peer on the same Wi-Fi network. It proved:
    error and enabled Change-folder recovery path on the physical phone.
 7. The available small phone rendered the complete scrollable surface in
    light and dark appearance, including an accessibility-sized text launch.
-   Semantic snapshots exposed named start/stop, folder, port, option, preview,
-   copy, and share controls; settings became disabled while Running. A
+   Semantic snapshots exposed a named server On/Off switch plus folder, port,
+   option, preview, copy, and share controls; settings became disabled while
+   Running. A
    phone-discovered number-pad trap was repaired with an accessible Done
    control before final validation.
 8. No local-network permission alert appeared for this incoming-TCP-only app
    on the tested device/OS. The testbed session exited cleanly after each
    campaign, and no signing team, profile, certificate, account, or device
    identifier was added to source.
+
+On 2026-08-05 a UI-consistency follow-up replaced the prominent start/stop
+button with the native server switch used by the other product surfaces. The
+running URL card moved directly below server status and prioritizes the Wi-Fi
+URL. On the attached phone, turning the switch On revealed both URLs in the
+initial unscrolled viewport, the external Mac fetched the fixture through the
+displayed Wi-Fi URL, and backgrounding still closed the listener. The updated
+simulator UI suite also exercised On, Off, disabled, error, and background
+state reconciliation.
 
 Implementation was committed in logical slices: `87d9882` (accepted plan),
 `bff0594` (physical listener foundation), `322e1a0` (HTTP/storage core),

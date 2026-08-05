@@ -18,12 +18,12 @@ struct ServerScreen: View {
                         informationBanner(message)
                     }
                     serverCard
-                    folderCard
-                    networkCard
-                    behaviorCard
                     if controller.isRunning {
                         urlsCard
                     }
+                    folderCard
+                    networkCard
+                    behaviorCard
                     lifecycleNote
                 }
                 .frame(maxWidth: 620)
@@ -102,39 +102,42 @@ struct ServerScreen: View {
                             .accessibilityIdentifier("server-status")
                     }
                     Spacer()
-                }
 
-                Button {
-                    controller.isRunning || controller.isBusy
-                        ? controller.stop()
-                        : controller.start()
-                } label: {
-                    HStack {
-                        if controller.isBusy {
-                            ProgressView()
-                                .tint(.black)
-                        } else {
-                            Image(systemName: controller.isRunning ? "stop.fill" : "play.fill")
-                        }
-                        Text(controller.isRunning || controller.isBusy ? "Stop Server" : "Start Server")
-                            .fontWeight(.bold)
-                    }
-                    .frame(maxWidth: .infinity)
+                    Toggle("Server", isOn: serverToggleBinding)
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                        .tint(brandYellow)
+                        .disabled(!serverToggleIsOn && !controller.isBusy && !controller.canStart)
+                        .accessibilityLabel("Server")
+                        .accessibilityHint(serverToggleIsOn ? "Stops the web server" : "Starts the web server")
+                        .accessibilityIdentifier("server-toggle")
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .tint(brandYellow)
-                .foregroundStyle(.black)
-                .disabled(!controller.isRunning && !controller.isBusy && !controller.canStart)
-                .accessibilityIdentifier(controller.isRunning || controller.isBusy ? "stop-server" : "start-server")
 
                 if controller.selectedRoot == nil {
-                    Text("Choose a serving folder to enable Start Server.")
+                    Text("Choose a serving folder to enable the server.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
             }
         }
+    }
+
+    private var serverToggleIsOn: Bool {
+        switch controller.phase {
+        case .starting, .running:
+            true
+        case .stopped, .stopping, .error:
+            false
+        }
+    }
+
+    private var serverToggleBinding: Binding<Bool> {
+        Binding(
+            get: { serverToggleIsOn },
+            set: { enabled in
+                enabled ? controller.start() : controller.stop()
+            }
+        )
     }
 
     private var folderCard: some View {
@@ -246,16 +249,17 @@ struct ServerScreen: View {
     private var urlsCard: some View {
         card(title: "Running URLs", symbol: "link") {
             VStack(alignment: .leading, spacing: 14) {
-                ForEach(Array(controller.runningURLs.enumerated()), id: \.element) { index, url in
+                ForEach(Array(displayedRunningURLs.enumerated()), id: \.element) { index, url in
+                    let isLocal = url.host == "127.0.0.1"
                     VStack(alignment: .leading, spacing: 9) {
-                        Text(index == 0 ? "This iPhone" : "Wi-Fi")
+                        Text(isLocal ? "This iPhone" : "Wi-Fi")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.secondary)
                         Text(url.absoluteString)
                             .font(.system(.callout, design: .monospaced))
                             .textSelection(.enabled)
                             .fixedSize(horizontal: false, vertical: true)
-                            .accessibilityIdentifier(index == 0 ? "server-url-local" : "server-url-lan")
+                            .accessibilityIdentifier(isLocal ? "server-url-local" : "server-url-lan")
                         HStack {
                             Button("Copy", systemImage: "doc.on.doc") {
                                 UIPasteboard.general.url = url
@@ -265,7 +269,7 @@ struct ServerScreen: View {
                                 Label("Share", systemImage: "square.and.arrow.up")
                             }
                             .accessibilityIdentifier("share-url")
-                            if index == 0 {
+                            if isLocal {
                                 Button("Preview", systemImage: "safari") {
                                     showsPreview = true
                                 }
@@ -273,8 +277,9 @@ struct ServerScreen: View {
                             }
                         }
                         .buttonStyle(.bordered)
+                        .controlSize(.small)
                     }
-                    if index < controller.runningURLs.count - 1 {
+                    if index < displayedRunningURLs.count - 1 {
                         Divider()
                     }
                 }
@@ -285,6 +290,14 @@ struct ServerScreen: View {
                         .foregroundStyle(.secondary)
                 }
             }
+        }
+    }
+
+    private var displayedRunningURLs: [URL] {
+        controller.runningURLs.sorted { lhs, rhs in
+            let lhsPriority = lhs.host == "127.0.0.1" ? 1 : 0
+            let rhsPriority = rhs.host == "127.0.0.1" ? 1 : 0
+            return lhsPriority < rhsPriority
         }
     }
 

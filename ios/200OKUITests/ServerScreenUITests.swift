@@ -14,17 +14,18 @@ final class ServerScreenUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["server-status"].label, "Stopped")
         XCTAssertTrue(app.staticTexts["folder-name"].label.contains("OK200-QA-Fixture"))
 
-        let start = app.buttons["start-server"]
-        XCTAssertTrue(start.isEnabled)
-        start.tap()
+        let server = app.switches["server-toggle"]
+        XCTAssertTrue(server.isEnabled)
+        XCTAssertEqual(server.value as? String, "0")
+        server.tap()
         XCTAssertTrue(app.staticTexts["server-status"].waitForExistence(timeout: 5))
         XCTAssertEqual(app.staticTexts["server-status"].label, "Running")
+        XCTAssertEqual(server.value as? String, "1")
         XCTAssertFalse(app.buttons["choose-folder"].isEnabled)
 
-        let stop = app.buttons["stop-server"]
-        XCTAssertTrue(stop.exists)
-        stop.tap()
+        server.tap()
         XCTAssertEqual(app.staticTexts["server-status"].label, "Stopped")
+        XCTAssertEqual(server.value as? String, "0")
         XCTAssertTrue(app.buttons["choose-folder"].isEnabled)
     }
 
@@ -43,7 +44,7 @@ final class ServerScreenUITests: XCTestCase {
         port.press(forDuration: 1)
         app.menuItems["Select All"].tap()
         port.typeText("99999")
-        XCTAssertFalse(app.buttons["start-server"].isEnabled)
+        XCTAssertFalse(app.switches["server-toggle"].isEnabled)
     }
 
     @MainActor
@@ -54,7 +55,7 @@ final class ServerScreenUITests: XCTestCase {
 
         XCTAssertTrue(app.staticTexts["folder-name"].waitForExistence(timeout: 5))
         XCTAssertEqual(app.staticTexts["folder-name"].label, "No folder selected")
-        XCTAssertFalse(app.buttons["start-server"].isEnabled)
+        XCTAssertFalse(app.switches["server-toggle"].isEnabled)
         XCTAssertTrue(app.buttons["choose-folder"].isEnabled)
     }
 
@@ -69,8 +70,9 @@ final class ServerScreenUITests: XCTestCase {
 
         XCTAssertTrue(app.staticTexts["folder-name"].waitForExistence(timeout: 5))
         XCTAssertEqual(app.staticTexts["folder-name"].label, "Unavailable folder")
-        app.buttons["start-server"].tap()
+        app.switches["server-toggle"].tap()
         XCTAssertTrue(app.staticTexts["server-status"].label.contains("Choose it again"))
+        XCTAssertEqual(app.switches["server-toggle"].value as? String, "0")
         XCTAssertTrue(app.buttons["choose-folder"].isEnabled)
     }
 
@@ -82,7 +84,7 @@ final class ServerScreenUITests: XCTestCase {
             "-use-ok200-ui-test-fixture"
         ]
         app.launch()
-        app.buttons["start-server"].tap()
+        app.switches["server-toggle"].tap()
         XCTAssertEqual(app.staticTexts["server-status"].label, "Running")
 
         XCUIDevice.shared.press(.home)
@@ -90,6 +92,7 @@ final class ServerScreenUITests: XCTestCase {
 
         XCTAssertTrue(app.staticTexts["background-stop-message"].waitForExistence(timeout: 5))
         XCTAssertEqual(app.staticTexts["server-status"].label, "Stopped")
-        XCTAssertTrue(app.buttons["start-server"].isEnabled)
+        XCTAssertTrue(app.switches["server-toggle"].isEnabled)
+        XCTAssertEqual(app.switches["server-toggle"].value as? String, "0")
     }
 }

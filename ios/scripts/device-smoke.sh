@@ -21,14 +21,14 @@ session_output="$("$device" session -- bash -lc '
     --relaunch
   "$ios" snapshot -i
   "$ios" press id=lan-toggle --settle
-  "$ios" press id=start-server --settle
-  "$ios" swipe 180 590 180 200 --count 3 --pause-ms 250
+  "$ios" press id=server-toggle --settle
   "$ios" snapshot -i
 ')"
 printf '%s\n' "$session_output"
 
 lan_url="$(printf '%s\n' "$session_output" \
   | rg -o 'http://([0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]+/' \
+  | rg -v '^http://127\.0\.0\.1:' \
   | tail -n 1)"
 if [[ -z "$lan_url" ]]; then
   echo "No displayed Wi-Fi URL was found in the physical UI snapshot" >&2

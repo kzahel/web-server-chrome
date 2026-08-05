@@ -22,8 +22,10 @@ management.
 
 The app is a foreground-only, read-only server for one folder selected through
 Files. Port, local-network access, directory listings, CORS, and SPA fallback
-are configured in the native SwiftUI screen. Moving the app to the background
-stops the listener by design.
+are configured in the native SwiftUI screen. A native On/Off switch controls
+the listener. While it is running, connection URLs appear immediately below
+server status, with the Wi-Fi URL first when available. Moving the app to the
+background stops the listener by design.
 
 Simulator UI tests use a fixture installed only in DEBUG builds through the
 `-use-ok200-ui-test-fixture` launch argument. The fixture and reset launch hooks

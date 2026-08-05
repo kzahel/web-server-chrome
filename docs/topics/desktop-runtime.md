@@ -373,9 +373,12 @@ Implementation and release sequencing are recorded in
   [Tactical 007](../tactical/007-linux-desktop-validation.md),
   [Tactical 008](../tactical/008-appimage-first-linux-distribution.md), and
   [Tactical 009](../tactical/009-release-confidence-closeout.md).
-- The existing WebdriverIO E2E specification targets the Rust command path and
-  type-checks, but its direct `tauri-driver` runner is Windows/Linux-only and
-  was not executed on macOS.
+- The WebdriverIO product suite now has one portable Linux runner and a hosted
+  `desktop-e2e` job. It installs locked dependencies, owns one `tauri-driver`
+  process under Xvfb, exercises UI-driven start/serve/stop plus the settings
+  viewport contract, and preserves driver logs and a screenshot on failure.
+  This hosted WebKitGTK result does not substitute for installed macOS,
+  Windows, or Linux package acceptance.
 - The retired TypeScript implementation is no longer available for a shared
   executable harness. Tactical 013 records the behavior disposition; the Rust
   real-socket suite retains the applicable serving and security contract,

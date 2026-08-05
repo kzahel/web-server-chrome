@@ -153,6 +153,8 @@ After editing desktop Rust files, run the canonical source gate:
    Clippy, and test gates for the shared desktop crates.
 2. `desktop/crostini/scripts/check.sh` - Also run this when changing the
    ChromeOS Linux controller, release manifest, or installer.
+3. `desktop/tauri-app/e2e/run-e2e.sh` - On Linux, build and drive the real
+   Tauri/WebKitGTK app through its start/serve/stop and settings-layout suite.
 
 ## Android/Kotlin Editing Workflow
 

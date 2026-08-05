@@ -1,5 +1,6 @@
 domain-ideas.txt
 node_modules/
+desktop/tauri-app/e2e/artifacts/
 dist/
 .vite/
 references/

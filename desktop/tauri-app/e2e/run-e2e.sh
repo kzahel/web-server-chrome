@@ -1,41 +1,33 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-CARGO_BIN="$HOME/.cargo/bin"
-TAURI_DRIVER="$CARGO_BIN/tauri-driver"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+tauri_app_root="$(cd "$script_dir/.." && pwd)"
+repo_root="$(cd "$tauri_app_root/../.." && pwd)"
+artifact_dir="${OK200_E2E_ARTIFACTS:-$script_dir/artifacts}"
 
-cleanup() {
-  if [ -n "${TD_PID:-}" ]; then
-    kill "$TD_PID" 2>/dev/null || true
-    wait "$TD_PID" 2>/dev/null || true
+if [ "$(uname -s)" != "Linux" ]; then
+  echo "Desktop WebDriver E2E requires Linux WebKitGTK; use the hosted desktop-e2e job on other hosts." >&2
+  exit 2
+fi
+
+for command in pnpm npm tauri-driver WebKitWebDriver xvfb-run; do
+  if ! command -v "$command" >/dev/null 2>&1; then
+    echo "Desktop E2E prerequisite is missing: $command" >&2
+    exit 2
   fi
-}
-trap cleanup EXIT
-
-# Kill any stale processes from a previous run
-pkill -9 -f tauri-driver 2>/dev/null || true
-pkill -9 -f ok200-desktop 2>/dev/null || true
-pkill -9 -f WebKitWebDriver 2>/dev/null || true
-sleep 1
-
-# Start tauri-driver in the background
-"$TAURI_DRIVER" &
-TD_PID=$!
-
-# Wait for tauri-driver to be ready
-for i in $(seq 1 30); do
-  if curl -sf http://127.0.0.1:4444/status >/dev/null 2>&1; then
-    echo "tauri-driver ready on port 4444 (PID $TD_PID)"
-    break
-  fi
-  if [ "$i" -eq 30 ]; then
-    echo "ERROR: tauri-driver failed to start within 15s" >&2
-    exit 1
-  fi
-  sleep 0.5
 done
 
-# Run WebdriverIO tests
-cd "$SCRIPT_DIR"
-npx wdio run wdio.conf.ts "$@"
+mkdir -p "$artifact_dir"
+export OK200_E2E_ARTIFACTS="$artifact_dir"
+export NO_AT_BRIDGE=1
+export WEBKIT_DISABLE_COMPOSITING_MODE=1
+
+cd "$repo_root"
+pnpm install --frozen-lockfile
+
+cd "$script_dir"
+npm ci
+
+xvfb-run -a -s '-screen 0 1280x1024x24' \
+  npx wdio run wdio.conf.ts "$@" 2>&1 | tee "$artifact_dir/wdio.log"

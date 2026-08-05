@@ -45,6 +45,45 @@ jobs:
       - name: Run desktop source checks
         run: desktop/scripts/check.sh
 
+  desktop-e2e:
+    needs: test-desktop
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './desktop -> target'
+
+      - name: Install Tauri WebDriver dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libsoup-3.0-dev libjavascriptcoregtk-4.1-dev webkit2gtk-driver xvfb
+          cargo install --locked tauri-driver --version 2.0.6
+
+      - name: Run desktop product E2E
+        run: desktop/tauri-app/e2e/run-e2e.sh
+
+      - name: Upload desktop E2E diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-e2e-diagnostics
+          path: desktop/tauri-app/e2e/artifacts/
+          if-no-files-found: ignore
+
   build-tauri:
     strategy:
       fail-fast: false

@@ -47,6 +47,9 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           workspaces: './desktop -> target'
+          # Target artifacts can contain build scripts linked against the
+          # runner image's libc. Bump this key whenever the pinned image moves.
+          key: ubuntu-22.04
 
       - name: Install Linux desktop test dependencies
         run: |
@@ -77,6 +80,7 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           workspaces: './desktop -> target'
+          key: ubuntu-22.04
 
       - name: Install Tauri WebDriver dependencies
         run: |
@@ -183,6 +187,9 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           workspaces: './desktop -> target'
+          # The action already separates OS/CPU and Rust versions, but not the
+          # runner image whose libc is embedded in cached build scripts.
+          key: ${{ matrix.runner || matrix.platform }}-${{ matrix.rust_target || 'host' }}
 
       # --- Linux system dependencies ---
       - name: Install Linux dependencies

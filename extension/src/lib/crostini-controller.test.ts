@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import compatibilityCorpus from "../../../tests/compatibility/corpus-v1.json";
 import {
   CrostiniControllerClient,
   controllerTokenKey,
@@ -77,7 +78,19 @@ describe("Crostini controller client", () => {
         },
         "fixture-1",
       ),
-    ).toThrow("not the expected 200 OK controller");
+    ).toThrow("different 200 OK controller");
+  });
+
+  it.each(
+    compatibilityCorpus.crostiniController.cases,
+  )("runs frozen health fixture $id", (fixture) => {
+    const validate = () =>
+      validateControllerHealth(fixture.health, "fixture-1");
+    if (fixture.accept) {
+      expect(validate).not.toThrow();
+    } else {
+      expect(validate).toThrow(fixture.errorContains);
+    }
   });
 
   it("surfaces a controller JSON error", async () => {

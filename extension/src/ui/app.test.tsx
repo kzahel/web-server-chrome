@@ -3,6 +3,7 @@
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import compatibilityCorpus from "../../../tests/compatibility/corpus-v1.json";
 import {
   CHROMEOS_HELP_URL,
   CHROMEOS_INTENT_URL,
@@ -116,12 +117,17 @@ describe("extension popup routing", () => {
   });
 
   it("sends a missing desktop app directly to the download page", async () => {
+    const fixture = compatibilityCorpus.nativeHost.recovery.find(
+      ({ id }) => id === "native-missing-host",
+    );
+    expect(fixture).toBeDefined();
     installChromeMock({ os: "mac", desktopConnected: false });
 
     await renderApp();
 
     expect(document.body.textContent).toContain("Install the desktop app");
-    expect(linkHref("Get the Desktop App")).toBe(DESKTOP_DOWNLOAD_URL);
+    expect(linkHref(fixture?.primaryAction ?? "")).toBe(fixture?.primaryUrl);
+    expect(fixture?.primaryUrl).toBe(DESKTOP_DOWNLOAD_URL);
   });
 
   it("launches a detected desktop app through native messaging", async () => {

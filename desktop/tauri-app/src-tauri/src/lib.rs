@@ -96,8 +96,11 @@ fn load_settings(app: &tauri::AppHandle) -> Settings {
     let path = data_dir.join("settings.json");
     std::fs::read_to_string(&path)
         .ok()
-        .and_then(|s| serde_json::from_str(&s).ok())
-        .unwrap_or_default()
+        .map_or_else(Settings::default, |json| parse_settings(&json))
+}
+
+fn parse_settings(json: &str) -> Settings {
+    serde_json::from_str(json).unwrap_or_default()
 }
 
 fn save_settings(app: &tauri::AppHandle, settings: &Settings) -> Result<(), String> {
@@ -767,6 +770,42 @@ mod tests {
         assert!(!s.autostart);
         assert!(s.run_in_background);
         assert!(s.show_tray_icon);
+    }
+
+    #[test]
+    fn frozen_desktop_settings_cover_old_current_future_and_invalid_forms() {
+        let corpus: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../../tests/compatibility/corpus-v1.json"
+        ))
+        .expect("compatibility corpus");
+        let cases = corpus["persistedSettings"]["desktop"]
+            .as_array()
+            .expect("desktop settings fixtures");
+
+        for fixture in cases {
+            let settings = parse_settings(&fixture["json"].to_string());
+            let expected = &fixture["expected"];
+            assert_eq!(
+                settings.autostart,
+                expected["autostart"].as_bool().expect("autostart"),
+                "{} autostart",
+                fixture["id"]
+            );
+            assert_eq!(
+                settings.run_in_background,
+                expected["runInBackground"]
+                    .as_bool()
+                    .expect("runInBackground"),
+                "{} runInBackground",
+                fixture["id"]
+            );
+            assert_eq!(
+                settings.show_tray_icon,
+                expected["showTrayIcon"].as_bool().expect("showTrayIcon"),
+                "{} showTrayIcon",
+                fixture["id"]
+            );
+        }
     }
 
     #[test]

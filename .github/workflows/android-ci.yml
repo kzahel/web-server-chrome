@@ -8,12 +8,14 @@ on:
     paths:
       - 'android/**'
       - 'tests/http-conformance/**'
+      - 'tests/compatibility/**'
       - '.github/workflows/android-ci.yml'
   pull_request:
     branches: [main]
     paths:
       - 'android/**'
       - 'tests/http-conformance/**'
+      - 'tests/compatibility/**'
       - '.github/workflows/android-ci.yml'
 
 permissions:

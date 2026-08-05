@@ -647,6 +647,40 @@ mod platform {
         }
 
         #[test]
+        fn frozen_install_version_contract_covers_repair_upgrade_and_rollback() {
+            let corpus: serde_json::Value =
+                serde_json::from_str(include_str!("../../../tests/compatibility/corpus-v1.json"))
+                    .expect("compatibility corpus");
+            let cases = corpus["crostiniRelease"]["cases"]
+                .as_array()
+                .expect("Crostini release fixtures");
+
+            for fixture in cases
+                .iter()
+                .filter(|fixture| fixture["kind"] == "install-version")
+            {
+                let current = format!(
+                    "versions/{}",
+                    fixture["current"].as_str().expect("current version")
+                );
+                let candidate =
+                    Version::parse(fixture["candidate"].as_str().expect("candidate version"))
+                        .expect("semantic candidate version");
+                let result = reject_downgrade(Some(Path::new(&current)), &candidate);
+                if fixture["accept"] == true {
+                    assert!(result.is_ok(), "{} failed: {result:?}", fixture["id"]);
+                } else {
+                    let error = result.expect_err("fixture must be rejected");
+                    assert!(
+                        error.contains(fixture["errorContains"].as_str().expect("expected error")),
+                        "{} unexpected error: {error}",
+                        fixture["id"]
+                    );
+                }
+            }
+        }
+
+        #[test]
         fn repeated_uninstall_accepts_an_already_absent_service() {
             assert!(service_is_already_absent(
                 "Failed to stop app.ok200.service: Unit app.ok200.service not loaded."

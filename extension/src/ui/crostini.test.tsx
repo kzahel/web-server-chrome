@@ -3,6 +3,7 @@
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import compatibilityCorpus from "../../../tests/compatibility/corpus-v1.json";
 import { controllerTokenKey } from "../lib/crostini-controller";
 import { CrostiniController, readLaunchParameters } from "./crostini";
 
@@ -160,6 +161,27 @@ describe("Crostini controller UI", () => {
     );
     expect(document.body.textContent).toContain("Linux setup and recovery");
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("explains the frozen protocol-1 incompatibility and keeps recovery available", async () => {
+    const fixture = compatibilityCorpus.crostiniController.cases.find(
+      ({ id }) => id === "controller-protocol-1-historical-gap",
+    );
+    expect(fixture).toBeDefined();
+    installChromeMock(true);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(jsonResponse(fixture?.health)),
+    );
+
+    await renderController();
+    await settle();
+
+    expect(document.body.textContent).toContain(fixture?.errorContains);
+    expect(document.body.textContent).toContain(
+      "Update the extension and Linux component together",
+    );
+    expect(document.body.textContent).toContain("Linux setup and recovery");
   });
 
   it("requires terminal recovery when pairing exists but the local token is gone", async () => {

@@ -285,6 +285,51 @@ mod tests {
         assert_eq!(response["error"], "test launch failure");
     }
 
+    #[test]
+    fn frozen_native_host_messages_cover_old_and_new_extension_pairs() {
+        let corpus: serde_json::Value =
+            serde_json::from_str(include_str!("../../../tests/compatibility/corpus-v1.json"))
+                .expect("compatibility corpus");
+        let cases = corpus["nativeHost"]["cases"]
+            .as_array()
+            .expect("native host fixtures");
+
+        for fixture in cases {
+            let request = &fixture["request"];
+            let launcher_ok = fixture["launcherResult"].as_str() != Some("error");
+            let response = handle_message_with_services(
+                request,
+                || {},
+                || {
+                    if launcher_ok {
+                        Ok(())
+                    } else {
+                        Err("fixture launch failure".to_owned())
+                    }
+                },
+            );
+
+            if let Some(expected) = fixture["expected"].as_object() {
+                for (key, value) in expected {
+                    assert_eq!(
+                        &response[key], value,
+                        "{} response field {key}",
+                        fixture["id"]
+                    );
+                }
+            }
+            if let Some(expected_error) = fixture["expectedErrorContains"].as_str() {
+                assert!(
+                    response["error"]
+                        .as_str()
+                        .is_some_and(|error| error.contains(expected_error)),
+                    "{} expected error containing {expected_error}, got {response}",
+                    fixture["id"]
+                );
+            }
+        }
+    }
+
     #[cfg(target_os = "linux")]
     #[test]
     #[serial]

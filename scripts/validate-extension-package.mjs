@@ -94,6 +94,10 @@ assert(
   "manifest contains unexpected content scripts",
 );
 assert(
+  !Object.hasOwn(manifest, "content_security_policy"),
+  "manifest must use Chrome's strict default extension-page CSP",
+);
+assert(
   JSON.stringify(manifest.permissions) === JSON.stringify(["nativeMessaging"]),
   "permissions must contain only nativeMessaging",
 );

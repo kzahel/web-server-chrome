@@ -17,6 +17,17 @@ the current protocol-1 store extension until the submitted update is live.**
 
 Last reconciled: **2026-08-04**.
 
+### Executable compatibility fixtures
+
+As of 2026-08-05, the versioned cross-component corpus freezes protocol-2
+health, old/new extension directions, the accepted protocol-1/protocol-2
+rollout gap and recovery, canonical signed manifests, previous/current
+versions, incompatible protocol ranges, both supported architectures, unknown
+fields, repair/upgrade/downgrade behavior, and oldest/current/future/invalid
+controller settings. Extension and Rust production parsers consume these
+fixtures directly. The local controller suite passes 22 tests; the Linux-only
+installer version fixtures are compiled and run by the hosted Crostini lane.
+
 Unreleased source now labels the registered ChromeOS Linux Launcher item
 **200 OK Web Server**, with **Web Server** as its generic name and explicit
 web/server/HTTP search keywords. The stable

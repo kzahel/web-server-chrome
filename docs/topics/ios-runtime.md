@@ -234,6 +234,14 @@ Mac-to-phone LAN gates.
 
 ## Implemented state and evidence
 
+The 2026-08-05 compatibility slice added frozen oldest, current, additive-
+future, and invalid settings fixtures. `ServerConfiguration` now supplies
+defaults for fields absent from an older stored form, continues to ignore
+unknown future fields, and recovers an invalid form through the existing safe
+store default. The complete canonical iOS check passed afterward: simulator
+tests, simulator Release, unsigned device Release, fixture rejection, and
+signing hygiene.
+
 The repository now contains a generated Xcode project and its xcodegen source
 under `ios/`, with application, Swift Testing, and XCTest UI targets. The app
 is native SwiftUI/Swift and links no Android, Rust, React, Tauri, or third-party

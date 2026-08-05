@@ -256,12 +256,18 @@ export function validateControllerHealth(
   health: ControllerHealth,
   expectedInstanceId: string,
 ): void {
-  if (
-    health.product !== CONTROLLER_PRODUCT ||
-    health.protocolVersion !== CONTROLLER_PROTOCOL_VERSION ||
-    health.instanceId !== expectedInstanceId
-  ) {
+  if (health.product !== CONTROLLER_PRODUCT) {
     throw new Error("The listener is not the expected 200 OK controller.");
+  }
+  if (health.protocolVersion !== CONTROLLER_PROTOCOL_VERSION) {
+    throw new Error(
+      `This extension requires Linux controller protocol ${CONTROLLER_PROTOCOL_VERSION}, but the installed component reported protocol ${health.protocolVersion}. Update the extension and Linux component together.`,
+    );
+  }
+  if (health.instanceId !== expectedInstanceId) {
+    throw new Error(
+      "The listener belongs to a different 200 OK controller. Launch 200 OK Web Server again.",
+    );
   }
 }
 

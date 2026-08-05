@@ -139,6 +139,14 @@ hash unchanged.
 
 ## Latest release evidence
 
+The 2026-08-05 compatibility corpus is consumed by the desktop native-host
+handler, Tauri stored-settings parser, Crostini release/controller parsers, and
+desktop release-finalizer tests. It exercises old/new native messages,
+additive fields, unsupported actions, previous/current/future updater metadata,
+wrong packages, and oldest/current/future/invalid settings. Local native-host,
+Tauri library, Crostini, and finalizer tests pass; the first hosted Linux Tauri
+unit/E2E run for this slice remains pending the next push.
+
 Public desktop release: **`desktop-v0.1.10`**, published 2026-08-04 from commit
 `1f712ae2f0e919c6dd04906ad6d2208a10ebdccc`.
 

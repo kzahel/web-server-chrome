@@ -200,6 +200,12 @@ They require explicit product decisions rather than accidental parity work.
   hosted execution remains pending: the SDK-boundary matrix runs on the next
   Android change, while the artifact and Release-smoke gates run on the next
   Android tag.
+- The versioned compatibility corpus supplies oldest, current, unknown-future,
+  and invalid SharedPreferences forms to instrumentation on both API
+  boundaries. Settings reads now recover to bounded defaults when a key has
+  the wrong stored type; port and battery-threshold reads also normalize
+  invalid ranges. The instrumented test APK compiled locally on 2026-08-05;
+  its first hosted API-26/API-36 execution remains pending the next push.
 - `jstorrent-dev` passed filesystem and SAF HTTP checks, persisted-grant update
   checks, all-files revocation, foreground/background transitions, all wake
   modes, notification Stop, low-battery shutdown, valid and revoked-grant boot,

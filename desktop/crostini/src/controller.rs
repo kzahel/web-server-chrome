@@ -1818,6 +1818,34 @@ mod tests {
         controller.stop().await.expect("stop");
     }
 
+    #[test]
+    fn frozen_controller_settings_cover_old_current_future_and_invalid_forms() {
+        let corpus: serde_json::Value =
+            serde_json::from_str(include_str!("../../../tests/compatibility/corpus-v1.json"))
+                .expect("compatibility corpus");
+        let cases = corpus["persistedSettings"]["crostini"]
+            .as_array()
+            .expect("Crostini settings fixtures");
+
+        for fixture in cases {
+            let result = serde_json::from_value::<PersistedController>(fixture["json"].clone())
+                .map_err(|error| error.to_string())
+                .and_then(|persisted| {
+                    validate_persisted_config(&persisted).map_err(|error| error.to_string())
+                });
+            if fixture["accept"] == true {
+                assert!(result.is_ok(), "{} failed: {result:?}", fixture["id"]);
+            } else {
+                let error = result.expect_err("fixture must be rejected");
+                assert!(
+                    error.contains(fixture["errorContains"].as_str().expect("expected error")),
+                    "{} unexpected error: {error}",
+                    fixture["id"]
+                );
+            }
+        }
+    }
+
     #[tokio::test]
     async fn claim_enables_authenticated_status_and_rejects_bad_tokens() {
         let (_temp, controller) = fixture().await;

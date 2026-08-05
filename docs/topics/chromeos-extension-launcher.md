@@ -19,6 +19,25 @@ the exact store-delivered `0.1.8` package is exercised.**
 
 Last reconciled: **2026-08-04**.
 
+### Automated packaged-browser and compatibility gate
+
+As of 2026-08-05, `extension/scripts/browser-check.sh` builds the same
+store-safe ZIP used for release, revalidates its 14-file allowlist and strict
+default extension-page CSP, extracts it, and loads it in a fresh real Chrome
+profile. The smoke opens the actual packaged popup at the supported 340×500
+viewport and asserts manifest identity, the missing-native-host recovery link,
+visibility and viewport containment of the primary action, and absence of
+private development origins. It retains a screenshot, structured DOM result,
+and browser log. The local installed-Chrome run passed; the first hosted run
+remains pending the next push.
+
+The versioned corpus at `tests/compatibility/corpus-v1.json` now drives the
+popup/controller tests for missing desktop hosts, additive native-host fields,
+current protocol 2, unknown additive health fields, the historical protocol-1
+gap, a future protocol, and wrong controller identity. Protocol mismatch now
+names both reported and required protocols and keeps Linux setup/rollback
+recovery visible instead of collapsing to a generic listener error.
+
 Implementation and release sequencing live in
 [Tactical 011](../tactical/011-extension-launcher-and-chromeos-network-readiness.md).
 The bounded implementation path for the Play-free Linux fallback lives in

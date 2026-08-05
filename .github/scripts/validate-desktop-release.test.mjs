@@ -12,6 +12,14 @@ const tag = "desktop-v1.2.3";
 const repository = "kzahel/web-server-chrome";
 const version = "1.2.3";
 const digest = `sha256:${"a".repeat(64)}`;
+const compatibilityCorpus = JSON.parse(
+  fs.readFileSync(
+    fileURLToPath(
+      new URL("../../tests/compatibility/corpus-v1.json", import.meta.url),
+    ),
+    "utf8",
+  ),
+);
 
 function fixture() {
   const installerAssets = [
@@ -70,6 +78,42 @@ test("accepts a complete draft release", () => {
     version,
   );
 });
+
+for (const compatibilityCase of compatibilityCorpus.desktopUpdater.cases) {
+  test(`frozen updater metadata fixture ${compatibilityCase.id}`, () => {
+    const data = fixture();
+    switch (compatibilityCase.mutation) {
+      case "none":
+        break;
+      case "previous-version":
+        data.latest.version = "1.2.2";
+        break;
+      case "future-version":
+        data.latest.version = "1.2.4";
+        break;
+      case "missing-platforms":
+        delete data.latest.platforms;
+        break;
+      case "linux-deb":
+        data.release.assets.push({
+          name: `200.OK_${version}_amd64.deb.sig`,
+          digest,
+        });
+        data.latest.platforms["linux-x86_64"].url =
+          `https://github.com/${repository}/releases/download/${tag}/200.OK_${version}_amd64.deb`;
+        break;
+      default:
+        assert.fail(`unknown fixture mutation ${compatibilityCase.mutation}`);
+    }
+
+    const validate = () => validateDesktopRelease({ ...data, tag, repository });
+    if (compatibilityCase.accept) {
+      assert.doesNotThrow(validate);
+    } else {
+      assert.throws(validate, new RegExp(compatibilityCase.errorContains));
+    }
+  });
+}
 
 test("rejects an already-public release", () => {
   const data = fixture();

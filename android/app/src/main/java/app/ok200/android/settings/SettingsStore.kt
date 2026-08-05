@@ -6,7 +6,7 @@ import androidx.annotation.StringRes
 import androidx.core.content.edit
 import app.ok200.android.R
 
-private const val PREFS_NAME = "ok200_prefs"
+const val PREFS_NAME = "ok200_prefs"
 internal const val DEFAULT_CORS_ENABLED = false
 
 /**
@@ -21,40 +21,40 @@ class SettingsStore(context: Context) {
     // --- Server settings (existing) ---
 
     var port: Int
-        get() = prefs.getInt(KEY_PORT, 8080)
+        get() = prefs.safeInt(KEY_PORT, 8080).takeIf { it in 1..65_535 } ?: 8080
         set(value) = prefs.edit { putInt(KEY_PORT, value) }
 
     var rootUri: String?
-        get() = prefs.getString(KEY_ROOT_URI, null)
+        get() = prefs.safeString(KEY_ROOT_URI, null)
         set(value) = prefs.edit { putString(KEY_ROOT_URI, value) }
 
     var rootDisplayName: String?
-        get() = prefs.getString(KEY_ROOT_DISPLAY, null)
+        get() = prefs.safeString(KEY_ROOT_DISPLAY, null)
         set(value) = prefs.edit { putString(KEY_ROOT_DISPLAY, value) }
 
     var allFilesAccess: Boolean
-        get() = prefs.getBoolean(KEY_ALL_FILES_ACCESS, false)
+        get() = prefs.safeBoolean(KEY_ALL_FILES_ACCESS, false)
         set(value) = prefs.edit { putBoolean(KEY_ALL_FILES_ACCESS, value) }
 
     var lanEnabled: Boolean
-        get() = prefs.getBoolean(KEY_LAN_ENABLED, true)
+        get() = prefs.safeBoolean(KEY_LAN_ENABLED, true)
         set(value) = prefs.edit { putBoolean(KEY_LAN_ENABLED, value) }
 
     var directoryListing: Boolean
-        get() = prefs.getBoolean(KEY_DIRECTORY_LISTING, true)
+        get() = prefs.safeBoolean(KEY_DIRECTORY_LISTING, true)
         set(value) = prefs.edit { putBoolean(KEY_DIRECTORY_LISTING, value) }
 
     var corsEnabled: Boolean
-        get() = prefs.getBoolean(KEY_CORS_ENABLED, DEFAULT_CORS_ENABLED)
+        get() = prefs.safeBoolean(KEY_CORS_ENABLED, DEFAULT_CORS_ENABLED)
         set(value) = prefs.edit { putBoolean(KEY_CORS_ENABLED, value) }
 
     var spaEnabled: Boolean
-        get() = prefs.getBoolean(KEY_SPA_ENABLED, false)
+        get() = prefs.safeBoolean(KEY_SPA_ENABLED, false)
         set(value) = prefs.edit { putBoolean(KEY_SPA_ENABLED, value) }
 
     /** True only for a background-service run that Android may recreate. */
     var desiredRunning: Boolean
-        get() = prefs.getBoolean(KEY_DESIRED_RUNNING, false)
+        get() = prefs.safeBoolean(KEY_DESIRED_RUNNING, false)
         set(value) = prefs.edit { putBoolean(KEY_DESIRED_RUNNING, value) }
 
     // --- Lifecycle and power management settings ---
@@ -66,14 +66,14 @@ class SettingsStore(context: Context) {
      */
     var lifetimeMode: ServerLifetimeMode
         get() = ServerLifetimeMode.fromString(
-            prefs.getString(KEY_LIFETIME_MODE, ServerLifetimeMode.BACKGROUND.key)
+            prefs.safeString(KEY_LIFETIME_MODE, ServerLifetimeMode.BACKGROUND.key)
                 ?: ServerLifetimeMode.BACKGROUND.key
         )
         set(value) = prefs.edit { putString(KEY_LIFETIME_MODE, value.key) }
 
     /** A reliable run was blocked or stopped because its notification was unavailable. */
     var reliableNotificationBlockedNotice: Boolean
-        get() = prefs.getBoolean(KEY_RELIABLE_NOTIFICATION_BLOCKED_NOTICE, false)
+        get() = prefs.safeBoolean(KEY_RELIABLE_NOTIFICATION_BLOCKED_NOTICE, false)
         set(value) = prefs.edit { putBoolean(KEY_RELIABLE_NOTIFICATION_BLOCKED_NOTICE, value) }
 
     /**
@@ -82,7 +82,7 @@ class SettingsStore(context: Context) {
      */
     var wakeLockMode: WakeLockMode
         get() = WakeLockMode.fromString(
-            prefs.getString(KEY_WAKE_LOCK_MODE, WakeLockMode.DEFAULT.key) ?: WakeLockMode.DEFAULT.key
+            prefs.safeString(KEY_WAKE_LOCK_MODE, WakeLockMode.DEFAULT.key) ?: WakeLockMode.DEFAULT.key
         )
         set(value) = prefs.edit { putString(KEY_WAKE_LOCK_MODE, value.key) }
 
@@ -91,7 +91,7 @@ class SettingsStore(context: Context) {
      * Default OFF — user must opt in.
      */
     var startOnBoot: Boolean
-        get() = prefs.getBoolean(KEY_START_ON_BOOT, false)
+        get() = prefs.safeBoolean(KEY_START_ON_BOOT, false)
         set(value) = prefs.edit { putBoolean(KEY_START_ON_BOOT, value) }
 
     /**
@@ -99,7 +99,7 @@ class SettingsStore(context: Context) {
      * Default OFF.
      */
     var shutdownOnLowBattery: Boolean
-        get() = prefs.getBoolean(KEY_SHUTDOWN_ON_LOW_BATTERY, false)
+        get() = prefs.safeBoolean(KEY_SHUTDOWN_ON_LOW_BATTERY, false)
         set(value) = prefs.edit { putBoolean(KEY_SHUTDOWN_ON_LOW_BATTERY, value) }
 
     /**
@@ -107,7 +107,7 @@ class SettingsStore(context: Context) {
      * Default 15%.
      */
     var shutdownBatteryThreshold: Int
-        get() = prefs.getInt(KEY_SHUTDOWN_BATTERY_THRESHOLD, 15)
+        get() = prefs.safeInt(KEY_SHUTDOWN_BATTERY_THRESHOLD, 15).coerceIn(5, 50)
         set(value) = prefs.edit { putInt(KEY_SHUTDOWN_BATTERY_THRESHOLD, value.coerceIn(5, 50)) }
 
     companion object {
@@ -131,6 +131,27 @@ class SettingsStore(context: Context) {
         private const val KEY_SHUTDOWN_BATTERY_THRESHOLD = "shutdown_battery_threshold"
     }
 }
+
+private fun SharedPreferences.safeBoolean(key: String, default: Boolean): Boolean =
+    try {
+        getBoolean(key, default)
+    } catch (_: ClassCastException) {
+        default
+    }
+
+private fun SharedPreferences.safeInt(key: String, default: Int): Int =
+    try {
+        getInt(key, default)
+    } catch (_: ClassCastException) {
+        default
+    }
+
+private fun SharedPreferences.safeString(key: String, default: String?): String? =
+    try {
+        getString(key, default)
+    } catch (_: ClassCastException) {
+        default
+    }
 
 /** Server ownership after the application leaves the foreground. */
 enum class ServerLifetimeMode(val key: String, @StringRes val labelRes: Int) {

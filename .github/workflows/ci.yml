@@ -22,6 +22,7 @@ jobs:
       - run: pnpm build
       - run: pnpm test
       - run: node --test tests/http-conformance/validate.test.mjs
+      - run: node --test tests/compatibility/validate.test.mjs
       - run: node --test .github/scripts/write-crostini-release-manifest.test.mjs
       - name: Validate Linux launcher metadata
         run: |

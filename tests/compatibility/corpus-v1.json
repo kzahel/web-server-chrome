@@ -1,0 +1,508 @@
+{
+  "schemaVersion": 1,
+  "corpusVersion": "1.0.0",
+  "nativeHost": {
+    "oldestPublic": "desktop-v0.1.4",
+    "current": "desktop-v0.1.5",
+    "cases": [
+      {
+        "id": "native-old-ping-current-host",
+        "direction": "old-producer-new-consumer",
+        "request": { "action": "ping" },
+        "expected": { "action": "pong" }
+      },
+      {
+        "id": "native-current-handshake-extra-field",
+        "direction": "new-producer-old-consumer",
+        "request": { "action": "handshake", "capabilities": ["launch"] },
+        "expected": { "action": "handshake", "name": "ok200-host" }
+      },
+      {
+        "id": "native-launch-extra-field",
+        "direction": "new-producer-old-consumer",
+        "request": { "action": "launch", "requestVersion": 2 },
+        "launcherResult": "ok",
+        "expected": { "action": "launch", "ok": true }
+      },
+      {
+        "id": "native-future-action-old-host",
+        "direction": "new-producer-old-consumer",
+        "request": { "action": "status", "requestVersion": 2 },
+        "expectedErrorContains": "unknown action: status"
+      }
+    ],
+    "recovery": [
+      {
+        "id": "native-missing-host",
+        "state": "not-installed",
+        "primaryAction": "Get the Desktop App",
+        "primaryUrl": "https://ok200.app/download"
+      }
+    ]
+  },
+  "crostiniController": {
+    "oldestPublic": "crostini-v0.1.1",
+    "current": "crostini-v0.1.5",
+    "cases": [
+      {
+        "id": "controller-protocol-2-current",
+        "direction": "current-current",
+        "health": {
+          "claimed": false,
+          "instanceId": "fixture-1",
+          "product": "ok200-crostini-controller",
+          "protocolVersion": 2,
+          "version": "0.1.5"
+        },
+        "accept": true
+      },
+      {
+        "id": "controller-protocol-2-unknown-field",
+        "direction": "new-producer-old-consumer",
+        "health": {
+          "claimed": false,
+          "instanceId": "fixture-1",
+          "product": "ok200-crostini-controller",
+          "protocolVersion": 2,
+          "version": "0.1.6",
+          "capabilities": ["folder-picker"]
+        },
+        "accept": true
+      },
+      {
+        "id": "controller-protocol-1-historical-gap",
+        "direction": "old-producer-new-consumer",
+        "health": {
+          "claimed": false,
+          "instanceId": "fixture-1",
+          "product": "ok200-crostini-controller",
+          "protocolVersion": 1,
+          "version": "0.1.0"
+        },
+        "accept": false,
+        "errorContains": "protocol 2"
+      },
+      {
+        "id": "controller-protocol-3-future",
+        "direction": "new-producer-old-consumer",
+        "health": {
+          "claimed": false,
+          "instanceId": "fixture-1",
+          "product": "ok200-crostini-controller",
+          "protocolVersion": 3,
+          "version": "0.2.0"
+        },
+        "accept": false,
+        "errorContains": "protocol 2"
+      },
+      {
+        "id": "controller-wrong-instance",
+        "direction": "current-current",
+        "health": {
+          "claimed": true,
+          "instanceId": "other-controller",
+          "product": "ok200-crostini-controller",
+          "protocolVersion": 2,
+          "version": "0.1.5"
+        },
+        "accept": false,
+        "errorContains": "different 200 OK controller"
+      }
+    ]
+  },
+  "crostiniRelease": {
+    "cases": [
+      { "id": "manifest-current", "kind": "manifest", "accept": true },
+      {
+        "id": "manifest-previous",
+        "kind": "manifest",
+        "replace": [
+          ["version=0.1.0", "version=0.0.9"],
+          ["tag=crostini-v0.1.0", "tag=crostini-v0.0.9"]
+        ],
+        "accept": true
+      },
+      {
+        "id": "manifest-protocol-1",
+        "kind": "manifest",
+        "replace": [
+          ["extension_protocol_min=2", "extension_protocol_min=1"],
+          ["extension_protocol_max=2", "extension_protocol_max=1"]
+        ],
+        "accept": false,
+        "errorContains": "incompatible"
+      },
+      {
+        "id": "manifest-protocol-3",
+        "kind": "manifest",
+        "replace": [
+          ["extension_protocol_min=2", "extension_protocol_min=3"],
+          ["extension_protocol_max=2", "extension_protocol_max=3"]
+        ],
+        "accept": false,
+        "errorContains": "incompatible"
+      },
+      {
+        "id": "manifest-unknown-field",
+        "kind": "manifest",
+        "append": "future_capability=true\n",
+        "accept": false,
+        "errorContains": "unsupported shape"
+      },
+      {
+        "id": "manifest-x86-64",
+        "kind": "architecture",
+        "architecture": "x86_64",
+        "accept": true
+      },
+      {
+        "id": "manifest-aarch64",
+        "kind": "architecture",
+        "architecture": "aarch64",
+        "accept": true
+      },
+      {
+        "id": "manifest-unknown-architecture",
+        "kind": "architecture",
+        "architecture": "riscv64",
+        "accept": false,
+        "errorContains": "unsupported architecture"
+      },
+      {
+        "id": "installer-repair-current",
+        "kind": "install-version",
+        "current": "1.2.3",
+        "candidate": "1.2.3",
+        "accept": true
+      },
+      {
+        "id": "installer-upgrade",
+        "kind": "install-version",
+        "current": "1.2.3",
+        "candidate": "1.3.0",
+        "accept": true
+      },
+      {
+        "id": "installer-rollback-rejected",
+        "kind": "install-version",
+        "current": "1.2.3",
+        "candidate": "1.2.2",
+        "accept": false,
+        "errorContains": "use rollback"
+      }
+    ]
+  },
+  "desktopUpdater": {
+    "cases": [
+      { "id": "updater-current", "mutation": "none", "accept": true },
+      {
+        "id": "updater-previous-public",
+        "mutation": "previous-version",
+        "accept": false,
+        "errorContains": "does not match"
+      },
+      {
+        "id": "updater-future-no-downgrade",
+        "mutation": "future-version",
+        "accept": false,
+        "errorContains": "does not match"
+      },
+      {
+        "id": "updater-malformed",
+        "mutation": "missing-platforms",
+        "accept": false,
+        "errorContains": "platforms are missing"
+      },
+      {
+        "id": "updater-wrong-package",
+        "mutation": "linux-deb",
+        "accept": false,
+        "errorContains": "recommended primary package"
+      }
+    ]
+  },
+  "persistedSettings": {
+    "ios": [
+      {
+        "id": "ios-settings-oldest",
+        "form": "oldest",
+        "json": { "port": 9000 },
+        "expected": {
+          "port": 9000,
+          "allowLocalNetwork": false,
+          "directoryListing": true,
+          "cors": false,
+          "spaFallback": false
+        }
+      },
+      {
+        "id": "ios-settings-current",
+        "form": "current",
+        "json": {
+          "port": 8081,
+          "allowLocalNetwork": true,
+          "directoryListing": false,
+          "cors": true,
+          "spaFallback": true
+        },
+        "expected": {
+          "port": 8081,
+          "allowLocalNetwork": true,
+          "directoryListing": false,
+          "cors": true,
+          "spaFallback": true
+        }
+      },
+      {
+        "id": "ios-settings-unknown-future",
+        "form": "unknown-future",
+        "json": {
+          "port": 8082,
+          "allowLocalNetwork": true,
+          "directoryListing": true,
+          "cors": false,
+          "spaFallback": false,
+          "futureMode": "safe"
+        },
+        "expected": {
+          "port": 8082,
+          "allowLocalNetwork": true,
+          "directoryListing": true,
+          "cors": false,
+          "spaFallback": false
+        }
+      },
+      {
+        "id": "ios-settings-invalid",
+        "form": "invalid",
+        "json": { "port": "broken" },
+        "expected": {
+          "port": 8080,
+          "allowLocalNetwork": false,
+          "directoryListing": true,
+          "cors": false,
+          "spaFallback": false
+        }
+      }
+    ],
+    "android": [
+      {
+        "id": "android-settings-oldest",
+        "form": "oldest",
+        "values": { "port": 9000 },
+        "expected": {
+          "port": 9000,
+          "lanEnabled": true,
+          "directoryListing": true,
+          "corsEnabled": false,
+          "spaEnabled": false,
+          "lifetimeMode": "background",
+          "wakeLockMode": "none",
+          "shutdownBatteryThreshold": 15
+        }
+      },
+      {
+        "id": "android-settings-current",
+        "form": "current",
+        "values": {
+          "port": 8081,
+          "lan_enabled": false,
+          "directory_listing": false,
+          "cors_enabled": true,
+          "spa_enabled": true,
+          "lifetime_mode": "reliable",
+          "wake_lock_mode": "full",
+          "shutdown_battery_threshold": 25
+        },
+        "expected": {
+          "port": 8081,
+          "lanEnabled": false,
+          "directoryListing": false,
+          "corsEnabled": true,
+          "spaEnabled": true,
+          "lifetimeMode": "reliable",
+          "wakeLockMode": "full",
+          "shutdownBatteryThreshold": 25
+        }
+      },
+      {
+        "id": "android-settings-unknown-future",
+        "form": "unknown-future",
+        "values": { "port": 8082, "future_mode": "safe" },
+        "expected": {
+          "port": 8082,
+          "lanEnabled": true,
+          "directoryListing": true,
+          "corsEnabled": false,
+          "spaEnabled": false,
+          "lifetimeMode": "background",
+          "wakeLockMode": "none",
+          "shutdownBatteryThreshold": 15
+        }
+      },
+      {
+        "id": "android-settings-invalid",
+        "form": "invalid",
+        "values": {
+          "port": "broken",
+          "lifetime_mode": "future",
+          "wake_lock_mode": 42,
+          "shutdown_battery_threshold": 999
+        },
+        "expected": {
+          "port": 8080,
+          "lanEnabled": true,
+          "directoryListing": true,
+          "corsEnabled": false,
+          "spaEnabled": false,
+          "lifetimeMode": "background",
+          "wakeLockMode": "none",
+          "shutdownBatteryThreshold": 50
+        }
+      }
+    ],
+    "desktop": [
+      {
+        "id": "desktop-settings-oldest",
+        "form": "oldest",
+        "json": { "show_in_menu_bar": false },
+        "expected": {
+          "autostart": false,
+          "runInBackground": true,
+          "showTrayIcon": false
+        }
+      },
+      {
+        "id": "desktop-settings-current",
+        "form": "current",
+        "json": {
+          "autostart": true,
+          "run_in_background": false,
+          "show_tray_icon": false
+        },
+        "expected": {
+          "autostart": true,
+          "runInBackground": false,
+          "showTrayIcon": false
+        }
+      },
+      {
+        "id": "desktop-settings-unknown-future",
+        "form": "unknown-future",
+        "json": { "autostart": true, "future_field": 42 },
+        "expected": {
+          "autostart": true,
+          "runInBackground": true,
+          "showTrayIcon": true
+        }
+      },
+      {
+        "id": "desktop-settings-invalid",
+        "form": "invalid",
+        "json": { "autostart": "broken" },
+        "expected": {
+          "autostart": false,
+          "runInBackground": true,
+          "showTrayIcon": true
+        }
+      }
+    ],
+    "crostini": [
+      {
+        "id": "crostini-settings-oldest",
+        "form": "oldest",
+        "json": {
+          "schemaVersion": 1,
+          "instanceId": "fixture-1",
+          "controllerToken": null,
+          "settings": {
+            "root": "/home/test/Downloads/200 OK",
+            "port": 8080,
+            "lan": false,
+            "directoryListing": true,
+            "cors": false,
+            "spa": false
+          }
+        },
+        "accept": true
+      },
+      {
+        "id": "crostini-settings-current",
+        "form": "current",
+        "json": {
+          "schemaVersion": 1,
+          "instanceId": "fixture-1",
+          "controllerToken": null,
+          "settings": {
+            "root": "/home/test/Downloads/200 OK",
+            "port": 8081,
+            "lan": true,
+            "directoryListing": false,
+            "cors": true,
+            "spa": true,
+            "automaticUpdates": true,
+            "keepServingOnClose": false
+          }
+        },
+        "accept": true
+      },
+      {
+        "id": "crostini-settings-unknown-future",
+        "form": "unknown-future",
+        "json": {
+          "schemaVersion": 2,
+          "instanceId": "fixture-1",
+          "controllerToken": null,
+          "settings": {
+            "root": "/home/test/Downloads/200 OK",
+            "port": 8080,
+            "lan": false,
+            "directoryListing": true,
+            "cors": false,
+            "spa": false,
+            "automaticUpdates": false,
+            "keepServingOnClose": false
+          },
+          "futureField": true
+        },
+        "accept": false,
+        "errorContains": "unknown field"
+      },
+      {
+        "id": "crostini-settings-invalid",
+        "form": "invalid",
+        "json": {
+          "schemaVersion": 1,
+          "instanceId": "fixture-1",
+          "controllerToken": null,
+          "settings": {
+            "root": "/home/test/Downloads/200 OK",
+            "port": 80,
+            "lan": false,
+            "directoryListing": true,
+            "cors": false,
+            "spa": false,
+            "automaticUpdates": false,
+            "keepServingOnClose": false
+          }
+        },
+        "accept": false,
+        "errorContains": "content port"
+      }
+    ]
+  },
+  "historicalIncompatibilities": [
+    {
+      "id": "crostini-protocol-1-to-2-rollout",
+      "affectedPublicVersions": [
+        "extension-v0.1.7",
+        "extension-v0.1.8",
+        "crostini-v0.1.0",
+        "crostini-v0.1.1"
+      ],
+      "reason": "The signed controller bootstrap moved to protocol 2 before Chrome Web Store delivery of extension 0.1.8.",
+      "recovery": "Update both the Chrome extension and Linux component; the controller UI exposes Linux setup and rollback recovery.",
+      "removalPoint": "Retain permanently as rollout-history regression evidence; do not advertise protocol 1 support."
+    }
+  ]
+}

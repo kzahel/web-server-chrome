@@ -31,6 +31,7 @@
 		EA8369A2B8A55D01E5C2301D /* SwiftHTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D135B97B9690362902695634 /* SwiftHTTPServer.swift */; };
 		EFD9A13CF71FAA83FD89274C /* NetworkAddressMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76870087664A9F354E2581DD /* NetworkAddressMonitor.swift */; };
 		F71A6C86900B835310EFD418 /* ServerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E7739834AF0023BC469F3B /* ServerScreen.swift */; };
+		F879E17DF41DE84435616825 /* SettingsCompatibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D3B5F5F64A42A64073B501 /* SettingsCompatibilityTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		39083A4E94AC6ACFAA3432CA /* HTTPTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPTypes.swift; sourceTree = "<group>"; };
 		43A1CC27E4FFFD2F50A8867E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45E7739834AF0023BC469F3B /* ServerScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerScreen.swift; sourceTree = "<group>"; };
+		49D3B5F5F64A42A64073B501 /* SettingsCompatibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCompatibilityTests.swift; sourceTree = "<group>"; };
 		4D2E650548EE59AF09461CC8 /* ServerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfiguration.swift; sourceTree = "<group>"; };
 		52EF28765BB03CA068368611 /* OK200.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OK200.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E74D460A9AAA60ED357AD3C /* HTTPFileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPFileService.swift; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 				A89C56CBD0B083C61244D67E /* HTTPRequestParserTests.swift */,
 				FDF36EC37CEE80313A79C2E5 /* IOSServerControllerTests.swift */,
 				87618E6A9EE3A11522A8AD0A /* RequestPathTests.swift */,
+				49D3B5F5F64A42A64073B501 /* SettingsCompatibilityTests.swift */,
 				8F9FAD625D77C56DE1E2B6B9 /* SwiftHTTPServerTests.swift */,
 			);
 			path = 200OKTests;
@@ -332,6 +335,7 @@
 				027B874265DAF51328187F8A /* HTTPRequestParserTests.swift in Sources */,
 				56C0EDE3A9BA2B91586C044A /* IOSServerControllerTests.swift in Sources */,
 				6FDA75E31660CFF97A377289 /* RequestPathTests.swift in Sources */,
+				F879E17DF41DE84435616825 /* SettingsCompatibilityTests.swift in Sources */,
 				A003DEC8A5A7AE01DFBEF039 /* SwiftHTTPServerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

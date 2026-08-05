@@ -586,6 +586,57 @@ mod tests {
     }
 
     #[test]
+    fn frozen_release_manifest_contract_covers_versions_architectures_and_protocols() {
+        let corpus: serde_json::Value =
+            serde_json::from_str(include_str!("../../../tests/compatibility/corpus-v1.json"))
+                .expect("compatibility corpus");
+        let cases = corpus["crostiniRelease"]["cases"]
+            .as_array()
+            .expect("Crostini release fixtures");
+
+        for fixture in cases {
+            let kind = fixture["kind"].as_str().expect("fixture kind");
+            if kind == "install-version" {
+                continue;
+            }
+
+            let mut text = String::from_utf8(manifest(b"fixture asset")).unwrap();
+            if let Some(replacements) = fixture["replace"].as_array() {
+                for replacement in replacements {
+                    let pair = replacement.as_array().expect("replacement pair");
+                    text = text.replace(
+                        pair[0].as_str().expect("replacement source"),
+                        pair[1].as_str().expect("replacement target"),
+                    );
+                }
+            }
+            if let Some(addition) = fixture["append"].as_str() {
+                text.push_str(addition);
+            }
+
+            let result = parse_release_manifest(text.as_bytes()).and_then(|release| {
+                if kind == "architecture" {
+                    release
+                        .asset_for_arch(fixture["architecture"].as_str().expect("architecture"))
+                        .map(|_| ())
+                } else {
+                    Ok(())
+                }
+            });
+            if fixture["accept"] == true {
+                assert!(result.is_ok(), "{} failed: {result:?}", fixture["id"]);
+            } else {
+                let error = result.expect_err("fixture must be rejected");
+                assert!(
+                    error.contains(fixture["errorContains"].as_str().expect("expected error")),
+                    "{} unexpected error: {error}",
+                    fixture["id"]
+                );
+            }
+        }
+    }
+
+    #[test]
     fn verifies_release_asset_size_and_hash() {
         let temp = tempfile::tempdir().unwrap();
         let asset_path = temp.path().join("asset");

@@ -173,6 +173,9 @@ After editing the Chrome extension:
 1. `pnpm install --frozen-lockfile` - Install the locked workspace dependencies.
 2. `extension/scripts/check.sh` - Typecheck, test, then build and inspect a
    store-safe extension package.
+3. `extension/scripts/browser-check.sh` - With Chrome/Chromium available, load
+   that inspected package in a fresh real browser profile and exercise the
+   actual popup. Diagnostics go to `extension/browser-artifacts/`.
 
 ## iOS/Swift Editing Workflow
 
@@ -198,6 +201,12 @@ defined in `tests/http-conformance/corpus-v1.json`. Run
 or fixtures. The canonical iOS, Android, and desktop source gates each run their
 native adapter; every case must name each runtime as claimed or give an explicit
 exclusion reason.
+
+Cross-version messages, signed metadata, and persisted settings are frozen in
+`tests/compatibility/corpus-v1.json`. Run
+`node --test tests/compatibility/validate.test.mjs` after editing it. Each
+component test consumes its own section through production handlers or parsers;
+retain a bounded recovery record for any intentionally incompatible rollout.
 
 ## Android Emulator Management
 

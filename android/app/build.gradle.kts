@@ -96,6 +96,7 @@ android {
             isReturnDefaultValues = true
         }
     }
+    sourceSets.getByName("androidTest").assets.srcDir(rootProject.file("../tests/compatibility"))
 }
 
 dependencies {

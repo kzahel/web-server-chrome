@@ -21,3 +21,4 @@ wsc-crx/
 legacy-app.zip
 extension/*.zip
 extension/*.zip.sha256
+extension/browser-artifacts/

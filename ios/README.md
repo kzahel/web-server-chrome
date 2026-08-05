@@ -31,7 +31,8 @@ Simulator UI tests use a fixture installed only in DEBUG builds through the
 `-use-ok200-ui-test-fixture` launch argument. The fixture and reset launch hooks
 are compiled out of Release builds.
 
-Run the complete simulator test suite plus the Release fixture/signing checks:
+Run the complete simulator test suite plus the Release fixture/signing checks
+and an unsigned generic-device Release compile:
 
 ```bash
 ios/scripts/check.sh

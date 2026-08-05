@@ -175,7 +175,8 @@ After editing the Chrome extension:
 After editing Swift or iOS project files under `ios/`:
 
 1. `ios/scripts/check.sh` - Regenerate the project, run simulator unit/UI tests,
-   build Release, reject DEBUG hooks in Release, and reject a committed team.
+   build unsigned simulator and generic-device Release products, reject DEBUG
+   hooks in Release, and reject a committed team.
 2. `ios/scripts/build-device.sh` - Produce the explicit development-signed app
    using ignored signing selection from `~/code/ios-device-testbed`.
 3. `ios/scripts/device-smoke.sh` - When the physical phone is available, install

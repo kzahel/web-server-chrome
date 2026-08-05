@@ -1,0 +1,38 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ios/**'
+      - '.github/workflows/ios-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ios/**'
+      - '.github/workflows/ios-ci.yml'
+
+jobs:
+  check-ios:
+    runs-on: macos-26
+    env:
+      IOS_SIMULATOR_NAME: iPhone 17 Pro
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install project and source-check tools
+        run: brew install xcodegen ripgrep
+
+      - name: Run iOS source checks
+        run: ios/scripts/check.sh
+
+      - name: Reject generated project drift
+        run: git diff --exit-code -- ios/OK200.xcodeproj
+
+      - name: Upload failed test result
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-test-result
+          path: ios/build/CheckDerivedData/Logs/Test/*.xcresult
+          if-no-files-found: ignore

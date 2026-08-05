@@ -6,6 +6,7 @@ ios_root="$(cd "$script_dir/.." && pwd)"
 simulator_name="${IOS_SIMULATOR_NAME:-iPhone 17 Pro}"
 debug_data="$ios_root/build/CheckDerivedData"
 release_data="$ios_root/build/ReleaseDerivedData"
+device_release_data="$ios_root/build/DeviceReleaseDerivedData"
 
 "$script_dir/generate-project.sh"
 
@@ -29,6 +30,16 @@ xcodebuild \
   -quiet \
   build
 
+xcodebuild \
+  -project "$ios_root/OK200.xcodeproj" \
+  -scheme OK200 \
+  -configuration Release \
+  -destination 'generic/platform=iOS' \
+  -derivedDataPath "$device_release_data" \
+  CODE_SIGNING_ALLOWED=NO \
+  -quiet \
+  build
+
 release_binary="$release_data/Build/Products/Release-iphonesimulator/OK200.app/OK200"
 if strings "$release_binary" | rg -q \
   'OK200-QA-Fixture|use-ok200-ui-test-fixture|reset-ok200-ui-test-state|use-ok200-invalid-root|hello from ios'; then
@@ -41,4 +52,4 @@ if rg -q 'DEVELOPMENT_TEAM = [A-Z0-9]+;' "$ios_root/OK200.xcodeproj/project.pbxp
   exit 1
 fi
 
-echo "iOS Debug tests and Release fixture/signing checks passed"
+echo "iOS Debug tests, simulator Release checks, and unsigned device Release build passed"

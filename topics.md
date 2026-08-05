@@ -33,3 +33,6 @@ Keep each string exact across its commit series so
 - `chromeos-crostini-launcher` — provide a Play-free ChromeOS route through an
   extension control surface, authenticated Rust controller, verified
   per-user installer, and non-terminal Linux Launcher entry.
+- `cross-platform-release-confidence` — align repository-owned source,
+  integration, artifact, and compatibility tests across independently
+  implemented platform apps while keeping physical testbeds advisory.

@@ -26,6 +26,9 @@ The native iOS MVP is complete in
 [docs/tactical/016-native-swift-ios-app.md](docs/tactical/016-native-swift-ios-app.md);
 its separate store-readiness follow-up is
 [docs/tactical/017-ios-store-readiness.md](docs/tactical/017-ios-store-readiness.md).
+Cross-platform CI, shared HTTP conformance, product E2E, artifact validation,
+and advisory testbed improvements are planned in
+[docs/tactical/018-cross-platform-ci-and-test-confidence.md](docs/tactical/018-cross-platform-ci-and-test-confidence.md).
 
 ## Quick Context
 

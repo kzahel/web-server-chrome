@@ -23,10 +23,10 @@ const webStoreUrl = `https://chromewebstore.google.com/detail/${extensionId}`;
         </div>
 
         <div id="has-extension" class="state" hidden>
-          <h1>You're all set!</h1>
-          <p>You already have the <strong>200 OK Web Server</strong> extension installed. It can launch the desktop or Android app and set up the ChromeOS Linux version; the old Chrome App has been removed.</p>
+          <h1>The extension is installed</h1>
+          <p>The old Chrome App has been removed. Finish setting up the desktop, Android, or ChromeOS server app, then serve a test file before considering the migration complete.</p>
           <div class="cta-buttons">
-            <a href="/" class="btn btn-primary">Learn more</a>
+            <a href="/migrate?ref=legacy-uninstall" class="btn btn-primary">Finish server setup</a>
           </div>
         </div>
 
@@ -34,8 +34,8 @@ const webStoreUrl = `https://chromewebstore.google.com/detail/${extensionId}`;
           <h1>Thanks for using Web Server for Chrome</h1>
           <p>The original Chrome App has been discontinued by Google. Its successor is 200 OK Web Server: a small server for desktop, Android, and compatible Chromebooks with a companion Chrome extension.</p>
           <div class="cta-buttons">
-            <a href={webStoreUrl} class="btn btn-primary">Get the 200 OK extension</a>
-            <a href="/" class="btn btn-secondary">Learn more</a>
+            <a href="/migrate?ref=legacy-uninstall" class="btn btn-primary">Choose setup for this device</a>
+            <a href={webStoreUrl} class="btn btn-secondary">Get the Chrome extension</a>
           </div>
         </div>
 
@@ -43,7 +43,7 @@ const webStoreUrl = `https://chromewebstore.google.com/detail/${extensionId}`;
           <h1>Thanks for using Web Server for Chrome</h1>
           <p>The original Chrome App has been discontinued by Google, but 200 OK Web Server carries its workflow forward on desktop, Android, and ChromeOS.</p>
           <div class="cta-buttons">
-            <a href="/" class="btn btn-primary">See all platforms</a>
+            <a href="/migrate?ref=legacy-uninstall" class="btn btn-primary">See all platforms</a>
           </div>
         </div>
       </div>

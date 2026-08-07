@@ -4,34 +4,99 @@ import Header from "../components/Header.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const extensionId = "lpkjdhnmgkhaabhimpdinmdgejoaejic";
-const legacyAppId = "ofhbbkphhbklhfoeikjpcbhemlocgigb";
 const webStoreUrl = `https://chromewebstore.google.com/detail/${extensionId}`;
+const playStoreUrl =
+  "https://play.google.com/store/apps/details?id=app.ok200.android";
 ---
 
 <BaseLayout
   title="Migrate from Web Server for Chrome — 200 OK Web Server"
-  description="Move from the legacy Web Server for Chrome App to 200 OK Web Server on desktop, Android, and ChromeOS."
+  description="Move from the legacy Web Server for Chrome App to 200 OK Web Server on Windows, macOS, Linux, Android, or ChromeOS."
 >
   <Header activePage="" />
 
   <main>
-    <section class="migrate">
-      <div class="container">
-        <img src="/logo-256.png" alt="200 OK!" class="logo-img">
-        <h1>Move to 200 OK Web Server</h1>
-        <p>The original Web Server for Chrome App is being discontinued. The new extension provides familiar browser access and launches the 200 OK desktop or Android server app.</p>
+    <section class="migration-hero">
+      <div class="container narrow">
+        <img src="/logo-256.png" alt="200 OK Web Server" class="logo-img">
+        <p class="eyebrow">Web Server for Chrome migration</p>
+        <h1>Keep serving with 200 OK</h1>
+        <p class="lede">
+          Google has ended support for the original Chrome App. Its successor is
+          generally available, but setup now has two clear parts: a server app
+          for your platform and a Chrome extension for browser launch and
+          control.
+        </p>
+        <div class="safety-note">
+          The old Chrome App no longer works on current Chrome and can be
+          removed now. Set up 200 OK separately for the device you plan to use.
+        </div>
+      </div>
+    </section>
 
-        <div class="cards">
-          <div class="card">
-            <h3>Legacy Chrome App</h3>
-            <div id="legacy-status" class="status checking">Checking...</div>
-            <button id="launch-btn" class="btn btn-secondary" hidden>Launch Web Server</button>
+    <section class="migration-options">
+      <div class="container narrow">
+        <h2>1. Install the server for your device</h2>
+        <p class="section-intro">
+          We will put the detected option first. Every supported route remains
+          available below.
+        </p>
+
+        <div class="platform-grid" id="platform-options">
+          <article class="platform-card" data-route="desktop">
+            <p class="detected-badge" data-detected-badge hidden>Recommended for this device</p>
+            <p class="card-label">Windows · macOS · Linux</p>
+            <h3>Install the desktop server</h3>
+            <p>
+              Download the signed desktop app. It serves your folder; the
+              extension can then launch it and show server status in Chrome.
+            </p>
+            <a class="btn btn-primary" href="/download?ref=legacy-app" data-desktop-link>
+              Download the desktop app
+            </a>
+          </article>
+
+          <article class="platform-card" data-route="chromeos">
+            <p class="detected-badge" data-detected-badge hidden>Recommended for this device</p>
+            <p class="card-label">Chromebook · ChromeOS Flex</p>
+            <h3>Choose a ChromeOS server</h3>
+            <p>
+              Use the Android app when Google Play is available, or use the
+              ChromeOS Linux setup for full extension control without Play.
+            </p>
+            <a class="btn btn-primary" href="/chromeos?ref=legacy-app">
+              Compare ChromeOS options
+            </a>
+          </article>
+
+          <article class="platform-card" data-route="android">
+            <p class="detected-badge" data-detected-badge hidden>Recommended for this device</p>
+            <p class="card-label">Android phone · tablet</p>
+            <h3>Install the Android server</h3>
+            <p>
+              Get the 200 OK Web Server app from Google Play. You can use it
+              directly or launch it from the Chrome extension where supported.
+            </p>
+            <a class="btn btn-primary" href={playStoreUrl} target="_blank" rel="noopener">
+              Get the Android app
+            </a>
+          </article>
+        </div>
+
+        <div class="extension-step">
+          <div>
+            <p class="card-label">Chrome companion</p>
+            <h2>2. Add the 200 OK extension</h2>
+            <p>
+              The extension is the browser launcher and controller; it does
+              not contain the web server by itself.
+            </p>
           </div>
-
-          <div class="card">
-            <h3>200 OK Extension</h3>
-            <div id="ext-status" class="status checking">Checking...</div>
-            <a id="install-btn" href={webStoreUrl} class="btn btn-primary" hidden>Install 200 OK extension</a>
+          <div class="extension-action">
+            <div id="ext-status" class="status checking">Checking in Chrome…</div>
+            <a id="install-btn" href={webStoreUrl} class="btn btn-primary">
+              Add the Chrome extension
+            </a>
           </div>
         </div>
       </div>
@@ -41,130 +106,227 @@ const webStoreUrl = `https://chromewebstore.google.com/detail/${extensionId}`;
   <Footer />
 </BaseLayout>
 
-<script define:vars={{ extensionId, legacyAppId }}>
-  var legacyStatus = document.getElementById('legacy-status')
+<script define:vars={{ extensionId }}>
   var extStatus = document.getElementById('ext-status')
-  var launchBtn = document.getElementById('launch-btn')
   var installBtn = document.getElementById('install-btn')
 
-  function checkExtension(id, label, statusEl, callback) {
-    if (typeof chrome === 'undefined' || !chrome.runtime?.sendMessage) {
-      statusEl.textContent = label + ': Not in Chrome'
-      statusEl.className = 'status not-found'
-      callback(false)
-      return
+  function detectRoute() {
+    var requested = new URLSearchParams(window.location.search).get('platform')
+    if (requested === 'chromeos' || requested === 'android') return requested
+    if (requested === 'windows' || requested === 'macos' || requested === 'linux' || requested === 'desktop') {
+      return 'desktop'
     }
-    try {
-      chrome.runtime.sendMessage(id, { type: 'ping' }, function(response) {
-        if (chrome.runtime.lastError || !response?.installed) {
-          statusEl.textContent = 'Not installed'
-          statusEl.className = 'status not-found'
-          callback(false)
-        } else {
-          statusEl.textContent = 'Installed (v' + response.version + ')'
-          statusEl.className = 'status found'
-          callback(true)
-        }
-      })
-      setTimeout(function() {
-        if (statusEl.className === 'status checking') {
-          statusEl.textContent = 'Not installed'
-          statusEl.className = 'status not-found'
-          callback(false)
-        }
-      }, 3000)
-    } catch(e) {
-      statusEl.textContent = 'Not installed'
-      statusEl.className = 'status not-found'
-      callback(false)
+
+    var agentData = navigator.userAgentData
+    var probe = (
+      (agentData && agentData.platform ? agentData.platform : '') + ' ' +
+      (navigator.platform || '') + ' ' +
+      (navigator.userAgent || '')
+    ).toLowerCase()
+    if (probe.indexOf('cros') !== -1) return 'chromeos'
+    if (probe.indexOf('android') !== -1) return 'android'
+    if (probe.indexOf('win') !== -1 || probe.indexOf('mac') !== -1 || probe.indexOf('linux') !== -1 || probe.indexOf('x11') !== -1) {
+      return 'desktop'
+    }
+    return null
+  }
+
+  function recommendRoute(route) {
+    if (!route) return
+    var card = document.querySelector('[data-route="' + route + '"]')
+    if (!card) return
+    card.classList.add('detected')
+    var badge = card.querySelector('[data-detected-badge]')
+    if (badge) badge.hidden = false
+    var options = document.getElementById('platform-options')
+    if (options) options.prepend(card)
+
+    if (route === 'desktop') {
+      var platform = new URLSearchParams(window.location.search).get('platform')
+      var link = card.querySelector('[data-desktop-link]')
+      if (link && (platform === 'windows' || platform === 'macos' || platform === 'linux')) {
+        link.href = '/download?ref=legacy-app#' + (platform === 'macos' ? 'mac' : platform)
+      }
     }
   }
 
-  // Check legacy app
-  checkExtension(legacyAppId, 'Legacy app', legacyStatus, function(found) {
-    if (found) {
-      launchBtn.hidden = false
-    }
-  })
+  recommendRoute(detectRoute())
 
-  // Check new extension
-  checkExtension(extensionId, 'Extension', extStatus, function(found) {
-    if (!found) {
-      installBtn.hidden = false
-    }
-  })
+  function showExtensionMissing() {
+    extStatus.textContent = 'Extension not detected'
+    extStatus.className = 'status not-found'
+    installBtn.hidden = false
+  }
 
-  // Launch legacy app
-  launchBtn.addEventListener('click', function() {
-    chrome.runtime.sendMessage(legacyAppId, { type: 'launch' }, function(response) {
-      if (chrome.runtime.lastError) {
-        launchBtn.textContent = 'Failed to launch'
-      } else {
-        launchBtn.textContent = 'Launched!'
-        setTimeout(function() { launchBtn.textContent = 'Launch Web Server' }, 2000)
-      }
-    })
-  })
+  if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.sendMessage) {
+    extStatus.textContent = 'Open this page in Chrome to check installation'
+    extStatus.className = 'status neutral'
+  } else {
+    var settled = false
+    try {
+      chrome.runtime.sendMessage(extensionId, { type: 'ping' }, function(response) {
+        if (settled) return
+        settled = true
+        if (chrome.runtime.lastError || !response || !response.installed) {
+          showExtensionMissing()
+          return
+        }
+        extStatus.textContent = 'Extension installed (v' + response.version + ') — finish the server setup above'
+        extStatus.className = 'status found'
+        installBtn.hidden = true
+      })
+      setTimeout(function() {
+        if (settled) return
+        settled = true
+        showExtensionMissing()
+      }, 2500)
+    } catch (error) {
+      settled = true
+      showExtensionMissing()
+    }
+  }
 </script>
 
 <style>
-  .migrate {
-    padding: 80px 0 60px;
+  .narrow {
+    max-width: 900px;
+  }
+
+  .migration-hero {
+    padding: 72px 0 44px;
     text-align: center;
-    min-height: 60vh;
   }
 
   .logo-img {
-    width: 96px;
-    height: 96px;
-    margin-bottom: 32px;
+    width: 88px;
+    height: 88px;
+    margin-bottom: 20px;
   }
 
-  .migrate h1 {
-    font-size: clamp(24px, 4vw, 36px);
+  .eyebrow,
+  .card-label {
+    color: var(--accent);
+    font-size: 0.78rem;
     font-weight: 700;
-    margin-bottom: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
-  .migrate > .container > p {
-    font-size: 17px;
+  h1 {
+    margin: 8px 0 16px;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    line-height: 1.08;
+  }
+
+  .lede {
+    max-width: 720px;
+    margin: 0 auto;
     color: var(--text-secondary);
-    max-width: 520px;
-    margin: 0 auto 32px;
+    font-size: 1.1rem;
     line-height: 1.7;
   }
 
-  .cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    max-width: 520px;
-    margin: 0 auto;
+  .safety-note {
+    max-width: 650px;
+    margin: 24px auto 0;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
   }
 
-  .card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
+  .migration-options {
+    padding: 12px 0 80px;
+  }
+
+  .migration-options > .container > h2 {
+    margin-bottom: 8px;
     text-align: center;
   }
 
-  .card h3 {
-    font-size: 15px;
-    margin-bottom: 12px;
+  .section-intro {
+    margin: 0 0 28px;
+    color: var(--text-secondary);
+    text-align: center;
+  }
+
+  .platform-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .platform-card,
+  .extension-step {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--bg-secondary);
+  }
+
+  .platform-card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+  }
+
+  .platform-card.detected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .detected-badge {
+    align-self: flex-start;
+    margin: 0 0 14px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: rgba(248, 210, 3, 0.16);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .platform-card h3,
+  .extension-step h2 {
+    margin: 6px 0 10px;
+  }
+
+  .platform-card > p:not(.card-label):not(.detected-badge),
+  .extension-step p:not(.card-label) {
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .platform-card .btn {
+    margin-top: auto;
+    text-align: center;
+  }
+
+  .extension-step {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 28px;
+    margin-top: 22px;
+    padding: 28px;
+  }
+
+  .extension-action {
+    min-width: 250px;
+    text-align: center;
   }
 
   .status {
-    font-size: 13px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    border-radius: 7px;
+    font-size: 0.82rem;
   }
 
-  .status.checking {
-    background: rgba(248, 210, 3, 0.15);
-    color: var(--accent);
+  .status.checking,
+  .status.neutral {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
   }
 
   .status.found {
@@ -177,43 +339,26 @@ const webStoreUrl = `https://chromewebstore.google.com/detail/${extensionId}`;
     color: #ef4444;
   }
 
-  .btn {
-    display: inline-block;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    text-decoration: none;
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #1a1a1a;
-  }
-
-  .btn-primary:hover {
-    background: var(--accent-hover);
-  }
-
-  .btn-secondary {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    border: 1px solid var(--border);
-  }
-
-  .btn-secondary:hover {
-    background: var(--bg-primary);
-  }
-
-  @media (max-width: 600px) {
-    .migrate {
-      padding: 48px 0 40px;
+  @media (max-width: 760px) {
+    .migration-hero {
+      padding-top: 48px;
     }
 
-    .cards {
+    .platform-grid {
       grid-template-columns: 1fr;
+    }
+
+    .extension-step {
+      grid-template-columns: 1fr;
+    }
+
+    .extension-action {
+      min-width: 0;
+    }
+
+    .extension-action .btn {
+      width: 100%;
+      text-align: center;
     }
   }
 </style>

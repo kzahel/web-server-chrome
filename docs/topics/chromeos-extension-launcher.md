@@ -17,7 +17,32 @@ Android intent, contextual permission,
 claim, popup fallback, ChromeOS Linux control, LAN, and lifecycle claims until
 the exact store-delivered `0.1.8` package is exercised.**
 
-Last reconciled: **2026-08-05**.
+Last reconciled: **2026-10-03**.
+
+### Website Android entry point
+
+The ChromeOS options page now makes **Get it on Google Play** the primary
+Android action. **Already installed? Open app** remains a secondary text link
+using the existing intent. The page recommends the Chromebook Launcher after
+installation and explains how to recover from a blank intent tab. It also
+explains that Play may require setup and keeps Linux and other-device routes
+available.
+
+On 2026-10-03, physical ChromeOS inspection reproduced a blank, untitled
+`intent:` tab from the live page's former primary **Open Android app** action.
+DevTools exposed an empty accessibility root, and the encoded HTTPS fallback
+was not followed. The ordinary HTTPS Play link opened the native Play Store
+at the exact 200 OK listing with an **Install** button, while preserving the
+original browser page. No app was installed during this check; this evidence
+does not establish installed-app launch behavior or store-delivered runtime
+acceptance.
+
+This website rollout is independent of the extension and Android releases.
+The Play package ID, intent scheme, fallback URL, and existing query parameters
+remain compatible with previously released components. Publish the page
+without requiring either component to update; retain the secondary intent
+for installed users, with no scheduled removal. The extension's existing
+best-effort intent contract below remains unchanged.
 
 ### Automated packaged-browser and compatibility gate
 

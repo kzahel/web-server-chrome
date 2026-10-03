@@ -1,5 +1,3 @@
-<!-- IMPORTANT: This file has a twin in ~/code/jstorrent/archive/legacy-app/migrate.html
-     Any changes here should almost certainly be mirrored there (and vice versa). Ask before proceeding. -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -97,30 +95,36 @@
     <div class="icon">
       <img src="images/200ok-128.png" alt="Web Server">
     </div>
-    <h1>Web Server for Chrome has moved!</h1>
-    <p>
-      Chrome Apps are being discontinued. Web Server for Chrome is now
-      available as a Chrome Extension with the same features and more.
+    <h1>Web Server for Chrome has ended</h1>
+    <p id="migration-copy">
+      This old Chrome App can be removed now. Set up 200 OK separately with a
+      server app for your platform and its Chrome extension.
     </p>
 
-    <div id="status" class="status checking">Checking for new extension...</div>
+    <div id="status" class="status checking">Checking for the 200 OK extension...</div>
 
     <div id="actions-not-installed">
       <a class="btn btn-primary" id="install-btn" href="https://ok200.app/migrate?ref=legacy-app" target="_blank">
-        Get the new extension
+        See setup for this device
       </a>
-      <button class="btn btn-secondary" id="dismiss-btn">Remind me later</button>
     </div>
 
     <div id="actions-installed" class="hidden">
       <p style="color: #155724; font-weight: 600;">
-        You're all set! You can remove this old app.
+        The 200 OK extension is installed. You can remove this obsolete app
+        now and finish setting up the server separately.
       </p>
-      <button class="btn btn-danger" id="uninstall-btn">Remove old app</button>
-      <button class="btn btn-secondary" id="keep-btn">Keep for now</button>
+      <a class="btn btn-primary" id="finish-btn" href="https://ok200.app/migrate?ref=legacy-app" target="_blank">
+        Finish server setup
+      </a>
     </div>
+
+    <button class="btn btn-danger" id="uninstall-btn">Remove old app</button>
+    <button class="btn btn-secondary" id="dismiss-btn">Remind me in 7 days</button>
+    <button class="btn btn-secondary" id="stop-btn">Stop reminders</button>
   </div>
 
+  <script src="migration.js"></script>
   <script src="migrate.js"></script>
 </body>
 </html>

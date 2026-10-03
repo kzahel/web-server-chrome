@@ -1,29 +1,15 @@
 console.log('background.js')
 var ALARMID = "check_wsc_periodic"
 var WSCID = "ofhbbkphhbklhfoeikjpcbhemlocgigb"
-var NEW_EXTENSION_ID = "lpkjdhnmgkhaabhimpdinmdgejoaejic"
 var HADEVENT = false
 
-// Migration nag configuration
-// Each trigger calls showMigrationNags() which shows both notification + migrate window
-var MIGRATE_ON_SCRIPT_LOAD = true   // nag every time the event page loads (any event)
-var MIGRATE_ON_STARTUP = true       // nag on chrome.runtime.onStartup (ChromeOS boot)
-var MIGRATE_ON_INSTALLED = true     // nag on chrome.runtime.onInstalled (install/update from CWS)
-var MIGRATE_ON_LAUNCHED = true      // nag on chrome.app.runtime.onLaunched (user opens app) — has daily throttle. Probably won't fire after Chrome 144 (Chrome Apps sunset)
-var MIGRATE_USE_ALARM = true        // set repeating alarm to nag periodically
-var MIGRATE_ALARM_MINUTES = 10      // alarm interval in minutes
-var MIGRATE_SNOOZE_HOURS = 24       // how long "remind me later" suppresses nags
-var MIGRATE_SET_UNINSTALL_URL = true // set uninstall URL to ok200.app/uninstall
+// Migration reminders are deliberately bounded. Version 0.5.4 shows one
+// notification after update, then at most one per week until the user removes
+// the obsolete app or explicitly stops reminders. It never opens a migration
+// window on startup or an arbitrary background event-page load.
 var MIGRATE_UNINSTALL_URL = 'https://ok200.app/uninstall?ref=legacy-app'
-var OS
+var OS = getMigrationPlatform(navigator.userAgent)
 var localOptions
-if (navigator.userAgent.match('OS X')) {
-    OS = 'Mac'
-} else if (navigator.userAgent.match("Windows")) {
-    OS = "Win"
-} else {
-    OS = "Chrome"
-}
 
 function onchoosefolder(entry) {
     if (entry) {
@@ -72,7 +58,7 @@ function maybeStartup() {
 function onAlarm( alarm ) {
     console.log('alarm fired',alarm)
     if (alarm.name == 'migration') {
-        showMigrationNags('alarm')
+        maybeShowMigrationPrompt('alarm', false, false)
     }
 }
 
@@ -122,22 +108,127 @@ function onAllAlarms( alarms ) {
 
 var migrateWindowCreating = false
 function showMigrateWindow() {
-    if (OS !== 'Chrome') return
     if (migrateWindowCreating) return
     var existing = chrome.app.window.get('migrate')
     if (existing) { existing.show(); existing.focus(); return }
     migrateWindowCreating = true
     chrome.app.window.create('migrate.html', {
         id: 'migrate',
-        outerBounds: { width: 400, height: 420 }
+        outerBounds: { width: 440, height: 560 }
     }, function() { migrateWindowCreating = false })
+}
+
+function openMigrationPage() {
+    var url = getMigrationUrl(OS)
+    // chrome.browser.openTab is ChromeOS-only. Retired Chrome Apps can still
+    // execute their event page on Windows, where window.open is the working
+    // fallback.
+    if (chrome.browser && typeof chrome.browser.openTab === 'function') {
+        try {
+            chrome.browser.openTab({ url: url })
+            return
+        } catch (error) {
+            console.warn('chrome.browser.openTab failed; using window.open', error)
+        }
+    }
+    window.open(url)
+}
+
+function checkForNewExtension(callback) {
+    try {
+        chrome.runtime.sendMessage(NEW_EXTENSION_ID, {type: 'ping'}, function(response) {
+            var installed = !chrome.runtime.lastError && !!(response && response.installed)
+            callback(installed)
+        })
+    } catch (error) {
+        callback(false)
+    }
+}
+
+function resetMigrationAlarm(callback) {
+    chrome.alarms.clear('migration', function() {
+        chrome.alarms.create('migration', { periodInMinutes: MIGRATION_ALARM_MINUTES })
+        if (callback) callback()
+    })
+}
+
+function ensureMigrationAlarm() {
+    chrome.storage.local.get('migrationRemindersDisabledAt', function(data) {
+        if (data.migrationRemindersDisabledAt) {
+            chrome.alarms.clear('migration')
+            return
+        }
+        chrome.alarms.get('migration', function(alarm) {
+            if (!alarm || alarm.periodInMinutes !== MIGRATION_ALARM_MINUTES) {
+                resetMigrationAlarm()
+            }
+        })
+    })
+}
+
+function stopMigrationReminders() {
+    chrome.storage.local.set({ migrationRemindersDisabledAt: Date.now() }, function() {
+        chrome.alarms.clear('migration')
+        chrome.notifications.clear('deprecation')
+        var migrateWindow = chrome.app.window.get('migrate')
+        if (migrateWindow) migrateWindow.close()
+    })
+}
+
+function requestLegacyUninstall() {
+    chrome.management.uninstallSelf({ showConfirmDialog: true }, function() {
+        if (chrome.runtime.lastError) {
+            console.warn('Unable to remove the old app', chrome.runtime.lastError.message)
+        }
+    })
+}
+
+function maybeShowMigrationPrompt(reason, force, useWindow) {
+    chrome.storage.local.get(
+        ['migrationLastPromptedAt', 'migrationSnoozedUntil', 'migrationRemindersDisabledAt'],
+        function(data) {
+            var now = Date.now()
+            if (data.migrationRemindersDisabledAt) {
+                console.log('migration reminders disabled, skipping [' + reason + ']')
+                chrome.alarms.clear('migration')
+                return
+            }
+            if (!force && !isMigrationReminderDue(
+                data.migrationLastPromptedAt,
+                data.migrationSnoozedUntil,
+                now
+            )) {
+                console.log('migration reminder not due, skipping [' + reason + ']')
+                return
+            }
+            if (data.migrationSnoozedUntil && now < data.migrationSnoozedUntil) {
+                console.log('migration reminder snoozed, skipping [' + reason + ']')
+                return
+            }
+
+            checkForNewExtension(function(installed) {
+                if (installed) {
+                    chrome.storage.local.set({ migrationExtensionDetectedAt: now })
+                } else {
+                    chrome.storage.local.remove('migrationExtensionDetectedAt')
+                }
+
+                chrome.storage.local.set({ migrationLastPromptedAt: now })
+                if (useWindow) {
+                    showMigrateWindow()
+                } else {
+                    showDeprecationNotification(installed)
+                }
+            })
+        }
+    )
 }
 
 function onStartup(evt) {
 	HADEVENT = true
     window.ONSTARTUP_FIRED = true
     console.log('onStartup',evt)
-    if (MIGRATE_ON_STARTUP) showMigrationNags('onStartup')
+    ensureMigrationAlarm()
 }
 chrome.runtime.onStartup.addListener(onStartup)
 function createNotification(msg, prio) {
@@ -150,38 +241,37 @@ function createNotification(msg, prio) {
     chrome.notifications.create( "suspending", opts, function(){} )
 }
 
-function showMigrationNags(reason) {
-    chrome.storage.local.get('migrationSnoozedUntil', function(data) {
-        if (data.migrationSnoozedUntil && Date.now() < data.migrationSnoozedUntil) {
-            console.log('migration nags snoozed, skipping [' + reason + ']')
-            return
-        }
-        showDeprecationNotification(reason)
-        showMigrateWindow()
-    })
-}
-
 // Deprecation notification for Chrome Apps sunset
-function showDeprecationNotification(reason) {
-    var msg = 'A new version is available as a Chrome Extension. Click here to upgrade.'
-    if (reason) msg += ' [' + reason + ']'
+function showDeprecationNotification(extensionInstalled) {
+    var copy = getMigrationNotificationCopy(OS, extensionInstalled)
     var opts = {
         type: 'basic',
-        title: 'Web Server for Chrome has moved!',
-        message: msg,
+        title: copy.title,
+        message: copy.message,
         iconUrl: '/images/200ok-256.png',
         priority: 2,
-        requireInteraction: true
+        requireInteraction: true,
+        buttons: [
+            { title: 'Remove old app' },
+            { title: 'Stop reminders' }
+        ]
     }
-    chrome.notifications.create('deprecation', opts, function() {
-        chrome.storage.local.set({ deprecationLastNotified: Date.now() })
-    })
+    chrome.notifications.create('deprecation', opts, function() {})
 }
 
 chrome.notifications.onClicked.addListener(function(notificationId) {
     if (notificationId === 'deprecation') {
-        showMigrateWindow()
+        openMigrationPage()
         chrome.notifications.clear('deprecation')
+    }
+})
+
+chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex) {
+    if (notificationId !== 'deprecation') return
+    if (buttonIndex === 0) {
+        requestLegacyUninstall()
+    } else if (buttonIndex === 1) {
+        stopMigrationReminders()
     }
 })
 
@@ -273,15 +363,9 @@ function launch(launchData) {
     //if (launchData.source == 'reload') { console.log('app was reloaded'); return }
     if (launchData.source == 'restart') { console.log('chrome restarted'); return }
 
-    // ChromeOS: show deprecation notification daily until clicked through
-    if (OS === 'Chrome') {
-        chrome.storage.local.get(['deprecationClickedThrough', 'deprecationLastNotified'], function(data) {
-            if (data.deprecationClickedThrough) return
-            var dayMs = 24 * 60 * 60 * 1000
-            if (data.deprecationLastNotified && (Date.now() - data.deprecationLastNotified) < dayMs) return
-            if (MIGRATE_ON_LAUNCHED) showMigrationNags('onLaunched')
-        })
-    }
+    // A launch is an explicit user request, so show the richer migration
+    // prompt whenever the retired platform still delivers this event.
+    maybeShowMigrationPrompt('onLaunched', true, true)
 
     //console.log('onLaunched with launchdata',launchData)
 
@@ -323,19 +407,23 @@ function teststart() {
 
 chrome.runtime.onInstalled.addListener(function() {
     HADEVENT = true
-    if (MIGRATE_SET_UNINSTALL_URL) {
-        chrome.runtime.setUninstallURL(MIGRATE_UNINSTALL_URL)
-    }
-    if (MIGRATE_USE_ALARM) {
-        chrome.alarms.create('migration', { periodInMinutes: MIGRATE_ALARM_MINUTES })
-    }
-    if (MIGRATE_ON_INSTALLED) showMigrationNags('onInstalled')
+    chrome.runtime.setUninstallURL(MIGRATE_UNINSTALL_URL)
+    chrome.storage.local.get('migrationRemindersDisabledAt', function(data) {
+        if (data.migrationRemindersDisabledAt) {
+            chrome.alarms.clear('migration')
+            return
+        }
+        resetMigrationAlarm(function() {
+            maybeShowMigrationPrompt('onInstalled', true, false)
+        })
+    })
 })
 
 chrome.app.runtime.onLaunched.addListener(launch);
 
-// Fire on every event page load (catch-all)
-if (MIGRATE_ON_SCRIPT_LOAD) showMigrationNags('scriptLoad')
+// Repair a missing weekly alarm whenever another event wakes the page. This
+// does not display a prompt by itself.
+ensureMigrationAlarm()
 
 function get_webapp(opts) {
     if (! window.app) {
@@ -371,7 +459,7 @@ function hidden_click_configure() {
 }
 
 function create_hidden() {
-    if (OS != 'Chrome') { return }
+    if (OS !== 'chromeos') { return }
 
     if (app.opts && app.opts.optBackground && app.opts.optAllInterfaces) {
         console.log('creating hidden window')

@@ -3,35 +3,26 @@
 # Deploy legacy Chrome App to Chromebook for testing (load as unpacked).
 #
 # Prerequisites:
-#   - SSH access: ssh chromebook works
+#   - ChromeOS testbed checkout and a healthy `bin/chromeos doctor`
 #   - Load unpacked once from ~/Downloads/crostini-shared/wsc-legacy-app/
 #
 # Usage:
 #   ./scripts/deploy-legacy-chromebook.sh
 #
-set -e
+set -euo pipefail
 cd "$(dirname "$0")/.."
 
-CHROMEBOOK_HOST="${CHROMEBOOK_HOST:-chromebook}"
-REMOTE_PATH="/mnt/chromeos/MyFiles/Downloads/crostini-shared/wsc-legacy-app"
+CHROMEOS_TESTBED_CLI="${CHROMEOS_TESTBED_CLI:-$HOME/code/chromeos-testbed/bin/chromeos}"
+CHROMEOS_LEGACY_NAME="${CHROMEOS_LEGACY_NAME:-crostini-shared/wsc-legacy-app}"
 
-# Warn if running from Crostini
-if [[ -f /etc/apt/sources.list.d/cros.list ]]; then
-    echo "Warning: Running from Crostini. This script is meant for external dev machines."
-    echo "   Press Ctrl+C to cancel, or wait 3s to continue anyway..."
-    sleep 3
+if [[ ! -x "$CHROMEOS_TESTBED_CLI" ]]; then
+    echo "ChromeOS testbed CLI not found: $CHROMEOS_TESTBED_CLI" >&2
+    echo "Set CHROMEOS_TESTBED_CLI to the checkout's bin/chromeos path." >&2
+    exit 1
 fi
 
-echo "Deploying legacy app to $CHROMEBOOK_HOST:$REMOTE_PATH/"
+"$CHROMEOS_TESTBED_CLI" deploy-ext "$PWD/legacy" \
+    --name "$CHROMEOS_LEGACY_NAME"
 
-# Create target directory if needed
-ssh "$CHROMEBOOK_HOST" "mkdir -p '$REMOTE_PATH'"
-
-rsync -av --delete \
-    --exclude='.git' \
-    --exclude='README.md' \
-    legacy/ \
-    "$CHROMEBOOK_HOST:$REMOTE_PATH/"
-
-echo "Done! Legacy app deployed to $REMOTE_PATH"
-echo "Load as unpacked Chrome App at chrome://extensions/ (enable Developer mode)"
+echo "Done! Legacy app deployed to ChromeOS Downloads/$CHROMEOS_LEGACY_NAME/."
+echo "Reload it at chrome://extensions/ (or load it unpacked there once)."

@@ -60915,6 +60915,15 @@ function registerAlgorithm(name, mode) {
   forge.cipher.registerAlgorithm(name, factory);
 }
 
+// Ensure that the jsbn modInverse function always returns a positive result
+const originalModInverse = forge.jsbn.BigInteger.prototype.modInverse;
+const positiveModInverse = function(m) {
+  const inv = originalModInverse.apply(this, [m]);
+  return inv.mod(m);
+}
+
+forge.jsbn.BigInteger.prototype.modInverse = positiveModInverse;
+
 /** DES implementation **/
 
 var spfunction1 = [0x1010400,0,0x10000,0x1010404,0x1010004,0x10404,0x4,0x10000,0x400,0x1010400,0x1010404,0x400,0x1000404,0x1010004,0x1000000,0x4,0x404,0x1000400,0x1000400,0x10400,0x10400,0x1010000,0x1010000,0x1000404,0x10004,0x1000004,0x1000004,0x10004,0,0x404,0x10404,0x1000000,0x10000,0x1010404,0x4,0x1010000,0x1010400,0x1000000,0x1000000,0x400,0x1010004,0x10000,0x10400,0x1000004,0x400,0x4,0x1000404,0x10404,0x1010404,0x10004,0x1010000,0x1000404,0x1000004,0x404,0x10404,0x1010400,0x404,0x1000400,0x1000400,0,0x10004,0x10400,0,0x1010004];
@@ -63460,6 +63469,7 @@ function barrettRevert(x) { return x; }
 
 //x = x mod m (HAC 14.42)
 function barrettReduce(x) {
+if (x.s < 0) { throw Error("Barrett reduction on negative input"); }
 x.drShiftTo(this.m.t-1,this.r2);
 if(x.t > this.m.t+1) { x.t = this.m.t+1; x.clamp(); }
 this.mu.multiplyUpperTo(this.r2,this.m.t+1,this.q3);

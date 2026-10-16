@@ -2,8 +2,8 @@
 
 Topic: chrome-web-store-publishing
 
-Status: tag-driven submission implemented; live read-only authentication must
-pass after cloud/GitHub configuration. No release is created to test setup.
+Status: tag-driven submission configured; live read-only authentication passed
+on 2026-10-16. No release was created to test setup.
 
 The existing production extension is `lpkjdhnmgkhaabhimpdinmdgejoaejic`.
 `extension/fullpubkey.txt` is its public identity; the publisher verifies the

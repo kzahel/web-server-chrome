@@ -16,7 +16,7 @@ decisions, evidence, or recommended next work changes.
 
 | Tactical | Status | Purpose |
 |---|---|---|
-| [`019-chrome-web-store-ci-publishing.md`](019-chrome-web-store-ci-publishing.md) | implemented; live configuration/check pending | Submit the exact browser-accepted ZIP through keyless Google authentication |
+| [`019-chrome-web-store-ci-publishing.md`](019-chrome-web-store-ci-publishing.md) | complete; live read-only authentication passes | Submit the exact browser-accepted ZIP through keyless Google authentication |
 | [`000-desktop-native-core-and-release-readiness.md`](000-desktop-native-core-and-release-readiness.md) | historical parent record; continuing release/store work moved to 009 and 011 | Sequence the completed desktop Rust-core migration and original release/legacy dependency graph |
 | [`001-fail-closed-desktop-releases.md`](001-fail-closed-desktop-releases.md) | complete; `desktop-v0.1.4` tagged proof accepted | Stage signed desktop assets in a draft, validate completeness, and publish once |
 | [`002-standalone-rust-http-core.md`](002-standalone-rust-http-core.md) | complete | Build a Tauri-independent native HTTP core and development CLI |

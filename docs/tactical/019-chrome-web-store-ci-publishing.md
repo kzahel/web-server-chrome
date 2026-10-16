@@ -1,6 +1,6 @@
 # 019 — Chrome Web Store CI publishing
 
-Status: implemented locally; cloud configuration and hosted verification pending.
+Status: complete; source/package/browser gates and live read-only authentication pass.
 Owning topic: [Chrome Web Store publishing](../topics/chrome-web-store-publishing.md).
 
 ## Objective and scope
@@ -65,6 +65,21 @@ Hosted acceptance now passes at
 [38859125467](https://github.com/kzahel/web-server-chrome/actions/runs/38859125467),
 source `0a461d135cb0bf744223d0c7690b789b4bd54507`. Build, source tests, package
 inspection and exact-ZIP Linux browser smoke are green. GitHub environment
-variables and main/release-tag rules are configured. The private cloud identity
-bootstrap and live read-only authentication still await Google CLI login; do
-not call the store lane verified until that check passes.
+variables and main/release-tag rules are configured. Cloud identity and live
+authentication acceptance are recorded below.
+
+## Completion — 2026-10-16
+
+The dedicated cloud provider and exact service-account grant are configured.
+The main-only read-only authentication check passes at
+[38860611872, attempt 3](https://github.com/kzahel/web-server-chrome/actions/runs/38860611872/attempts/3),
+source `4876a22d21c45fb13df598113e0d1f1523bcc16e`. It verified the pinned
+production item/key and reported 0.1.8 published with no submitted candidate.
+The first two attempts returned permission errors while the new IAM grants
+propagated; no roles were widened to work around those transient failures.
+Local CLI impersonation and the same read-only API status also pass. Account
+details remain in the private inventory.
+
+The requested CI setup is complete. The next separately authorized release
+tag will provide live upload/submission evidence; no version was submitted or
+published during this setup.

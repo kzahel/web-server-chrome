@@ -50,3 +50,8 @@ tests; eight publisher race/integrity tests (0.05 s); strict package validation;
 source-built and prebuilt exact-ZIP browser smoke in separately identified
 Playwright Chrome for Testing 154; actionlint, shell syntax and touched-file
 Biome checks. No extension runtime files changed and no release tag was made.
+
+The first hosted run exposed the existing package helper resolving a relative
+output after changing into temporary staging. Resolve the output at entry so
+the CI working-directory-relative invocation creates the requested artifact.
+The failed run did not reach publication; rerun hosted acceptance after repair.

@@ -5,6 +5,8 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 EXTENSION_DIR="$REPO_ROOT/extension"
 OUTPUT_PATH="${1:-$EXTENSION_DIR/package.zip}"
+# Resolve against the caller before the build changes into temporary staging.
+OUTPUT_PATH="$(node -e 'console.log(require("node:path").resolve(process.argv[1]))' "$OUTPUT_PATH")"
 STAGING_DIR="$(mktemp -d "${TMPDIR:-/tmp}/ok200-extension-stage.XXXXXX")"
 ARCHIVE_DIR="$(mktemp -d "${TMPDIR:-/tmp}/ok200-extension-archive.XXXXXX")"
 ARCHIVE_PATH="$ARCHIVE_DIR/ok200-extension.zip"

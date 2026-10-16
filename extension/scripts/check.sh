@@ -10,4 +10,5 @@ trap 'rm -rf "$package_dir"' EXIT
 cd "$extension_root"
 pnpm run typecheck
 pnpm run test
+node --test "$repo_root/scripts/publish-extension-store.test.mjs"
 "$repo_root/scripts/package-extension.sh" "$package_dir/ok200-extension.zip"

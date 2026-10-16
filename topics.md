@@ -36,3 +36,5 @@ Keep each string exact across its commit series so
 - `cross-platform-release-confidence` — align repository-owned source,
   integration, artifact, and compatibility tests across independently
   implemented platform apps while keeping physical testbeds advisory.
+
+- `chrome-web-store-publishing` — keyless extension submission and exact-package gates.

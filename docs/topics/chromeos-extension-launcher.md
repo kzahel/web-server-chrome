@@ -19,6 +19,9 @@ the exact store-delivered `0.1.8` package is exercised.**
 
 Last reconciled: **2026-10-03**.
 
+Release tooling now supports [keyless CI Web Store submission](chrome-web-store-publishing.md).
+This does not change the outstanding store-delivered acceptance gates below.
+
 ### Website Android entry point
 
 The ChromeOS options page now makes **Get it on Google Play** the primary

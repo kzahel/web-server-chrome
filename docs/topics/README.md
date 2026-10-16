@@ -14,6 +14,9 @@ status. Do not create a topic for every small standalone change.
 
 ## Current topics
 
+- [`chrome-web-store-publishing.md`](chrome-web-store-publishing.md) — keyless
+  tag-driven submission, exact-package gates, retries and read-only diagnostics.
+
 - [`product-branding.md`](product-branding.md) — canonical **200 OK Web
   Server** identity, compact naming, and legacy/search-language rules.
 - [`product-feedback-and-support.md`](product-feedback-and-support.md) —

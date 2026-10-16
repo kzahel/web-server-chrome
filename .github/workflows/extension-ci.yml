@@ -1,6 +1,13 @@
 name: Extension CI
 
 on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Build a package or check Web Store authentication without store writes
+        type: choice
+        options: [package, check]
+        default: package
   push:
     branches: [main]
     tags:
@@ -10,6 +17,8 @@ on:
       - 'pnpm-lock.yaml'
       - 'scripts/package-extension.sh'
       - 'scripts/validate-extension-package.mjs'
+      - 'scripts/record-extension-build.mjs'
+      - 'scripts/publish-extension-store.test.mjs'
       - 'tests/compatibility/**'
       - 'scripts/release-extension.sh'
       - 'scripts/release-check.sh'
@@ -21,14 +30,21 @@ on:
       - 'pnpm-lock.yaml'
       - 'scripts/package-extension.sh'
       - 'scripts/validate-extension-package.mjs'
+      - 'scripts/record-extension-build.mjs'
+      - 'scripts/publish-extension-store.test.mjs'
       - 'tests/compatibility/**'
       - 'scripts/release-extension.sh'
       - 'scripts/release-check.sh'
       - '.github/workflows/extension-ci.yml'
 
+permissions:
+  contents: read
+
 jobs:
   build:
+    if: github.event_name != 'workflow_dispatch' || inputs.mode != 'check'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: extension
@@ -53,9 +69,30 @@ jobs:
       - name: Run extension source and package checks
         run: scripts/check.sh
 
+      - name: Build and record the exact store candidate
+        run: |
+          mkdir -p ../store-candidate
+          ../scripts/package-extension.sh ../store-candidate/ok200-extension.zip
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            node ../scripts/validate-extension-package.mjs ../store-candidate/ok200-extension.zip --expected-version "${GITHUB_REF_NAME#extension-v}"
+            grep -Fq "## [${GITHUB_REF_NAME#extension-v}]" CHANGELOG.md
+          fi
+          node ../scripts/record-extension-build.mjs ../store-candidate/ok200-extension.zip ../store-candidate/build.json
+          test "$(node -p "require('../store-candidate/build.json').sourceDirty")" = false
+          cd ../store-candidate
+          sha256sum ok200-extension.zip > ok200-extension.zip.sha256
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: extension-store-candidate
+          path: store-candidate/*
+          if-no-files-found: error
+          retention-days: 30
+
   browser-smoke:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: extension
@@ -80,7 +117,14 @@ jobs:
       - name: Show browser version
         run: google-chrome --version
 
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: extension-store-candidate
+          path: store-candidate
+
       - name: Exercise inspected package in Chrome
+        env:
+          OK200_EXTENSION_ZIP: ${{ github.workspace }}/store-candidate/ok200-extension.zip
         run: scripts/browser-check.sh
 
       - name: Preserve browser diagnostics
@@ -92,69 +136,120 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-  release:
+  publish:
+    name: Submit to Chrome Web Store
+    if: github.repository == 'kzahel/web-server-chrome' && startsWith(github.ref, 'refs/tags/extension-v')
     needs: [build, browser-smoke]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: chrome-web-store
+    concurrency:
+      group: chrome-web-store
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - run: git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: extension-store-candidate
+          path: store-candidate
+      - name: Authenticate without a service-account key
+        id: google
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          workload_identity_provider: ${{ vars.CWS_WIF_PROVIDER }}
+          service_account: ${{ vars.CWS_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/chromewebstore
+          create_credentials_file: false
+          export_environment_variables: false
+      - name: Submit the verified ZIP for automatic publication after review
+        env:
+          CWS_ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
+          CWS_PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
+        run: node extension/scripts/publish-store.mjs publish store-candidate store-receipt.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: always()
+        with:
+          name: chrome-web-store-receipt
+          path: store-receipt.json
+          if-no-files-found: ignore
+
+  check-publishing:
+    name: Verify Web Store authentication (read only)
+    if: github.repository == 'kzahel/web-server-chrome' && github.event_name == 'workflow_dispatch' && inputs.mode == 'check' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: chrome-web-store
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+      - name: Authenticate without a service-account key
+        id: google
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          workload_identity_provider: ${{ vars.CWS_WIF_PROVIDER }}
+          service_account: ${{ vars.CWS_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/chromewebstore
+          create_credentials_file: false
+          export_environment_variables: false
+      - name: Read store status and verify identity
+        env:
+          CWS_ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
+          CWS_PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
+        run: node extension/scripts/publish-store.mjs check . store-receipt.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: chrome-web-store-status
+          path: store-receipt.json
+
+  release:
+    needs: [build, browser-smoke, publish]
     if: startsWith(github.ref, 'refs/tags/extension-v')
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    defaults:
-      run:
-        working-directory: extension
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
-          version: 9
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+          name: extension-store-candidate
+          path: release
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
-          node-version: '20'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build and inspect store-safe package
-        run: ../scripts/package-extension.sh "$PWD/ok200-extension.zip"
-
-      - name: Extract version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#extension-v}" >> $GITHUB_OUTPUT
-
-      - name: Verify package version and write checksum
-        run: |
-          node ../scripts/validate-extension-package.mjs ok200-extension.zip \
-            --expected-version "${GITHUB_REF_NAME#extension-v}"
-          sha256sum ok200-extension.zip > ok200-extension.zip.sha256
-
-      - name: Extract changelog
+          name: chrome-web-store-receipt
+          path: release
+      - name: Record the submitted store release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           VERSION="${GITHUB_REF_NAME#extension-v}"
-          awk "/^## \\[$VERSION\\]/{found=1; next} /^## \\[/{found=0} found" CHANGELOG.md > /tmp/release-notes.md
-          CORPUS_VERSION=$(node -p "require('../tests/compatibility/corpus-v1.json').corpusVersion")
-          {
-            echo
-            echo "## Automated release evidence"
-            echo
-            echo "- Tagged workflow: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-            echo "- Commit: \`${GITHUB_SHA}\`"
-            echo "- Compatibility corpus: \`${CORPUS_VERSION}\`"
-            echo "- Exact ZIP hash: attached \`ok200-extension.zip.sha256\`"
-            echo "- Browser/platform testbeds: advisory and recorded separately; CI does not report them as passed"
-          } >> /tmp/release-notes.md
-          echo "Release notes for $VERSION:"
-          cat /tmp/release-notes.md
+          awk "/^## \\[$VERSION\\]/{found=1; next} /^## \\[/{found=0} found" extension/CHANGELOG.md > /tmp/release-notes.md
+          cat >> /tmp/release-notes.md <<'NOTES'
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: Extension v${{ steps.version.outputs.VERSION }}
-          body_path: /tmp/release-notes.md
-          files: |
-            extension/ok200-extension.zip
-            extension/ok200-extension.zip.sha256
+          Submitted to the Chrome Web Store for automatic publication after Google's review. A successful workflow and GitHub release establish submission, not completed review or installed-copy acceptance.
+
+          The attached ZIP is the exact package accepted by the source and real-browser checks. Its checksum, source build record and store receipt are attached. Listing and privacy changes still require the developer dashboard.
+          NOTES
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" release/* --clobber
+            gh release edit "$GITHUB_REF_NAME" --draft=false --latest=false --notes-file /tmp/release-notes.md
+          else
+            gh release create "$GITHUB_REF_NAME" release/* --verify-tag --latest=false \
+              --title "Extension v$VERSION" --notes-file /tmp/release-notes.md
+          fi

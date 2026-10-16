@@ -282,7 +282,7 @@ All components follow the same release pattern:
 | Component | Tag | CI builds | Publishing |
 |-----------|-----|-----------|------------|
 | **Desktop** | `desktop-v{ver}` | Targets signed Mac/Win/Linux installers | Auto-updates only after the release-readiness gate passes |
-| **Extension** | `extension-v{ver}` | ZIP | Manual upload to Chrome Web Store |
+| **Extension** | `extension-v{ver}` | ZIP | CI submits to Chrome Web Store; Google review is asynchronous |
 | **Android** | `android-v{ver}` | Signed APK + AAB | Manual upload to Google Play Console |
 | **ChromeOS Linux** | `crostini-v{ver}` | Signed static x86_64 + ARM64 binaries and manifest | CI creates a separate GitHub release; website/update-service rollout is a coordinated maintainer step |
 
@@ -315,10 +315,14 @@ All components follow the same release pattern:
 - Creates the version commit and local tag `extension-v{version}` without
   pushing either one
 - **Maintainer release step:** Push `main` and the approved tag; the tag starts
-  the GitHub Release workflow
+  the CI package, browser acceptance, Web Store submission and GitHub release
 - CI independently runs extension tests, rejects development material or
-  manifest/tag mismatch, and creates a GitHub Release with ZIP and checksum
-- **Manual step:** Download ZIP from GitHub Release and upload to Chrome Web Store
+  manifest/tag mismatch, submits the exact browser-accepted ZIP, and creates a
+  GitHub release with ZIP, checksum, source record and submission receipt
+- Review is asynchronous; successful CI does not establish Google approval.
+  Listing/privacy changes remain developer-dashboard work. See
+  [Chrome Web Store publishing](docs/topics/chrome-web-store-publishing.md)
+  for configuration and read-only checks.
 - Changelog: `extension/CHANGELOG.md`
 
 ### Android Releases

@@ -60,3 +60,11 @@ The next hosted run passed package/browser assertions but failed removing the
 temporary profile while Chromium helpers finished writing. Teardown now waits
 for closed browser stdio and retries transient directory-removal races. This
 changes cleanup only, not an assertion or test time budget.
+
+Hosted acceptance now passes at
+[38859125467](https://github.com/kzahel/web-server-chrome/actions/runs/38859125467),
+source `0a461d135cb0bf744223d0c7690b789b4bd54507`. Build, source tests, package
+inspection and exact-ZIP Linux browser smoke are green. GitHub environment
+variables and main/release-tag rules are configured. The private cloud identity
+bootstrap and live read-only authentication still await Google CLI login; do
+not call the store lane verified until that check passes.

@@ -55,3 +55,8 @@ The first hosted run exposed the existing package helper resolving a relative
 output after changing into temporary staging. Resolve the output at entry so
 the CI working-directory-relative invocation creates the requested artifact.
 The failed run did not reach publication; rerun hosted acceptance after repair.
+
+The next hosted run passed package/browser assertions but failed removing the
+temporary profile while Chromium helpers finished writing. Teardown now waits
+for closed browser stdio and retries transient directory-removal races. This
+changes cleanup only, not an assertion or test time budget.

@@ -147,14 +147,22 @@ try {
   );
   process.exitCode = 1;
 } finally {
+  const closed = new Promise((resolve) => browser.once("close", resolve));
   browser.kill("SIGTERM");
-  await Promise.race([
-    new Promise((resolve) => browser.once("exit", resolve)),
-    delay(3_000),
-  ]);
-  if (browser.exitCode === null) browser.kill("SIGKILL");
+  await Promise.race([closed, delay(3_000)]);
+  if (browser.exitCode === null && browser.signalCode === null) {
+    browser.kill("SIGKILL");
+    await closed;
+  }
   browserLog.end();
-  fs.rmSync(scratchDirectory, { recursive: true, force: true });
+  // Chromium helpers can finish profile writes just after the main process
+  // closes. Retry transient ENOTEMPTY rather than failing an accepted package.
+  fs.rmSync(scratchDirectory, {
+    recursive: true,
+    force: true,
+    maxRetries: 10,
+    retryDelay: 100,
+  });
 }
 
 function resolveChromeBinary() {

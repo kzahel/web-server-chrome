@@ -38,3 +38,4 @@ Keep each string exact across its commit series so
   implemented platform apps while keeping physical testbeds advisory.
 
 - `chrome-web-store-publishing` — keyless extension submission and exact-package gates.
+- `dependency-security` — dependency advisory remediation, audit gates, and upstream warning review.

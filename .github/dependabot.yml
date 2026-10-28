@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      javascript-development:
+        dependency-type: development
+  - package-ecosystem: npm
+    directory: /desktop/tauri-app/e2e
+    schedule:
+      interval: weekly
+    groups:
+      webdriverio:
+        patterns:
+          - '@wdio/*'
+          - webdriverio
+          - expect-webdriverio
+  - package-ecosystem: cargo
+    directory: /desktop
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

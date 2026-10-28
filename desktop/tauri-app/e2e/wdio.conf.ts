@@ -2,7 +2,7 @@ import { type ChildProcess, execSync, spawn } from "node:child_process";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { Options } from "@wdio/types";
+import type { Capabilities, Options } from "@wdio/types";
 
 const BINARY_PATH = process.env.OK200_E2E_BINARY
   ? path.resolve(process.env.OK200_E2E_BINARY)
@@ -35,13 +35,10 @@ async function waitForPort(port: number, timeout = 15000): Promise<void> {
   throw new Error(`Port ${port} not ready within ${timeout}ms`);
 }
 
-export const config: Options.Testrunner = {
+export const config: Options.Testrunner &
+  Capabilities.WithRequestedTestrunnerCapabilities = {
   runner: "local",
-  autoCompileOpts: {
-    tsNodeOpts: {
-      project: "./tsconfig.json",
-    },
-  },
+  tsConfigPath: "./tsconfig.json",
   hostname: "127.0.0.1",
   port: 4444,
   specs: ["./specs/**/*.e2e.ts"],

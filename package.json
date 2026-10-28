@@ -23,6 +23,14 @@
     "ext:build": "pnpm --filter @ok200/extension build"
   },
   "packageManager": "pnpm@9.1.0",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "pnpm": {
+    "overrides": {
+      "tsx": "^4.23.15"
+    }
+  },
   "devDependencies": {
     "@biomejs/biome": "2.4.4"
   }

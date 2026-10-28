@@ -1,0 +1,48 @@
+name: Dependency Security
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/package.json'
+      - '**/package-lock.json'
+      - pnpm-lock.yaml
+      - desktop/Cargo.lock
+      - '**/Cargo.toml'
+      - .github/workflows/dependency-security.yml
+  pull_request:
+    paths:
+      - '**/package.json'
+      - '**/package-lock.json'
+      - pnpm-lock.yaml
+      - desktop/Cargo.lock
+      - '**/Cargo.toml'
+      - .github/workflows/dependency-security.yml
+  schedule:
+    - cron: '23 8 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  javascript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm audit
+      - run: npm audit --prefix desktop/tauri-app/e2e
+
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: taiki-e/install-action@cargo-audit
+      - run: cargo audit --file desktop/Cargo.lock

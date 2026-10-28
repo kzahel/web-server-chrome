@@ -35,6 +35,13 @@ functional repair and exact public-release acceptance are owned by
 
 ## Source of truth
 
+The October 2026 [dependency security refresh](dependency-security.md) is
+source-only until a new release passes this topic's artifact and updater gates.
+Its Tauri/updater dependency changes require the usual cross-platform package,
+signed update, native-host, and production-extension acceptance before any
+promotion claim. Existing signed-release evidence below remains historical
+evidence for those exact artifacts.
+
 The operator runbook is:
 
 ```text

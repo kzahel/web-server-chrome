@@ -28,6 +28,7 @@ pnpm install --frozen-lockfile
 
 cd "$script_dir"
 npm ci
+npm run typecheck
 
 xvfb-run -a -s '-screen 0 1280x1024x24' \
   npx wdio run wdio.conf.ts "$@" 2>&1 | tee "$artifact_dir/wdio.log"

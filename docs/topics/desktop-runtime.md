@@ -343,6 +343,12 @@ Implementation and release sequencing are recorded in
 
 ## Known gaps
 
+- The October 2026 dependency refresh updates Tauri/updater, TLS, archive,
+  certificate-root, and Tokio dependencies in source. Source gates pass, but
+  old public artifacts retain their original dependencies. Linux's GTK3
+  `glib` soundness warning remains open; see the
+  [dependency security topic](dependency-security.md) for its bounded follow-up
+  and the exact audit disposition.
 - Exact public `v0.1.6` packaged UI validation is complete on macOS arm64,
   Windows 11 ARM64 running the x64 NSIS build through Windows emulation, and
   Ubuntu ARM64. The main settings route, icon visibility, autostart, manual

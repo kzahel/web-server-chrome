@@ -3,7 +3,7 @@ name: Deploy Site
 on:
   push:
     branches: [main]
-    paths: [website/**]
+    paths: [website/**, pnpm-lock.yaml, package.json, .github/workflows/deploy-site.yml]
   workflow_dispatch:
 
 permissions:
@@ -25,7 +25,7 @@ jobs:
           version: 9.1.0
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '24'
           cache: pnpm
       - name: Validate Linux installer
         run: |

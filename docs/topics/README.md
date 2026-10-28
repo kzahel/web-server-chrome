@@ -14,6 +14,8 @@ status. Do not create a topic for every small standalone change.
 
 ## Current topics
 
+- [`dependency-security.md`](dependency-security.md) — dependency audit gates,
+  advisory triage, remaining upstream warnings, and independent release rollout.
 - [`chrome-web-store-publishing.md`](chrome-web-store-publishing.md) — keyless
   tag-driven submission, exact-package gates, retries and read-only diagnostics.
 

@@ -2656,7 +2656,7 @@ dependencies = [
 
 [[package]]
 name = "ok200-common"
-version = "0.1.10"
+version = "0.1.11"
 dependencies = [
  "dirs 5.0.1",
  "serial_test",
@@ -2666,7 +2666,7 @@ dependencies = [
 
 [[package]]
 name = "ok200-core"
-version = "0.1.10"
+version = "0.1.11"
 dependencies = [
  "axum",
  "httpdate",
@@ -2704,7 +2704,7 @@ dependencies = [
 
 [[package]]
 name = "ok200-desktop"
-version = "0.1.10"
+version = "0.1.11"
 dependencies = [
  "base64 0.22.1",
  "dirs 5.0.1",
@@ -2730,7 +2730,7 @@ dependencies = [
 
 [[package]]
 name = "ok200-host"
-version = "0.1.10"
+version = "0.1.11"
 dependencies = [
  "dirs 5.0.1",
  "ok200-common",

@@ -146,6 +146,37 @@ hash unchanged.
 
 ## Latest release evidence
 
+### Desktop 0.1.11 maintenance preparation — 2026-10-28
+
+The maintainer authorized a new desktop release after the dependency cleanup
+and a review of existing update-check aggregates. Candidate commit `0b44953`
+passes [Tauri App CI 40659230304](https://github.com/kzahel/web-server-chrome/actions/runs/40659230304):
+the desktop source gate, actual Linux WebDriver suite, all five platform package
+legs, launcher identity, and configured platform-signing checks. General CI
+also passes after Node 24 and the JavaScript/Rust Tauri minor-version alignment
+repairs. Non-tag packages are retained as seven-day Actions artifacts so exact
+candidates can be installed without creating a public debugging release.
+
+The exact candidate ARM64 AppImage was installed in a native Ubuntu ARM64 VM.
+The main settings surface is exposed, its background/tray choices persist,
+native folder selection and HTTP fixture serving pass, and closing with
+background=false plus a hidden tray exits and releases the port. The production
+Chrome Web Store extension 0.1.8 cold-launches the candidate and the selected
+folder survives. These checks do not establish the complete production runbook.
+
+Routine maintenance publication follows the current source/artifact gates and
+advisory testbed policy in Tactical 018. The older private three-VM repair-loop
+guide must not silently add a mandatory publication gate for this maintenance
+candidate. Exact previous-public signed updates and complete installed-package
+acceptance on Windows/macOS/Linux remain separate post-publication evidence;
+macOS's existing saved VM cannot resume while its controller is locked.
+
+Observability work is confined to private aggregate reporting over existing
+update-check logs: one latest app version per identified installation, separate
+helper-only counts, exact UTC windows, and observed offer/upgrade cohorts. No
+new app telemetry, identifiers, server API, protocol, or collection policy is
+introduced. Private operational context owns audience counts and machine data.
+
 The 2026-08-05 compatibility corpus is consumed by the desktop native-host
 handler, Tauri stored-settings parser, Crostini release/controller parsers, and
 desktop release-finalizer tests. It exercises old/new native messages,

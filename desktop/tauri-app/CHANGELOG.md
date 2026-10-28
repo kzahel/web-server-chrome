@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+## [0.1.11]
+
+### Changed
+
+- Refresh the desktop runtime, TLS certificate roots, signed updater, and archive dependencies.
+- Keep JavaScript and Rust Tauri packages aligned and validate desktop builds on Node 24.
+
+### Fixed
+
+- Reject encoded path separators and NUL bytes consistently across the native HTTP implementations.
+- Return missing-asset responses instead of the SPA entry page for paths with file extensions.
+- Honor If-Modified-Since and comma-separated or wildcard If-None-Match conditions while preserving ETag precedence.
+
+### Validation
+
+- Exercise old/current/future native messages and stored settings through the shared compatibility corpus.
+- Use the refreshed desktop WebDriver runner for the real Linux start/serve/stop and settings-layout suite.
+
 ## [0.1.10]
 
 ### Changed

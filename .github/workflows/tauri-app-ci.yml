@@ -107,7 +107,7 @@ jobs:
       # replacement: parallel tagged jobs can both decide to upload latest.json
       # and one fails with ReleaseAsset already_exists. Serialize the matrix so
       # every platform merges and replaces updater metadata deterministically.
-      max-parallel: 1
+      max-parallel: ${{ startsWith(github.ref, 'refs/tags/desktop-v') && 1 || 5 }}
       matrix:
         include:
           # macos-latest is mid-migration to macOS 26 (runner-images#14167, rolling
@@ -543,6 +543,23 @@ jobs:
           echo "::error::macOS packaging failed. Inspect the failing build, signing, PKG, or notarization step before rerunning: gh run rerun ${{ github.run_id }} --failed"
 
       # --- Cleanup ---
+      - name: Retain candidate packages for installed validation
+        if: success() && !startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-candidate-${{ matrix.platform }}-${{ matrix.rust_target || 'native' }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            desktop/target/**/release/bundle/**/*.dmg
+            desktop/target/**/release/bundle/**/*.pkg
+            desktop/target/**/release/bundle/**/*.app.tar.gz
+            desktop/target/**/release/bundle/**/*.AppImage
+            desktop/target/**/release/bundle/**/*.deb
+            desktop/target/**/release/bundle/**/*.rpm
+            desktop/target/**/release/bundle/**/*.exe
+            desktop/target/**/release/bundle/**/*.msi
+
       - name: Clean up macOS keychain
         if: matrix.platform == 'macos-latest' && always()
         run: |

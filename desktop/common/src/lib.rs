@@ -101,7 +101,7 @@ mod tests {
         std::env::set_var(key, tmp.path());
 
         let id1 = get_or_create_cfu_id().expect("should create cfu-id");
-        assert!(!id1.is_empty());
+        assert_ne!(id1, "");
         assert_eq!(id1.len(), 36, "should be a UUID with hyphens");
 
         let id2 = get_or_create_cfu_id().expect("should read existing cfu-id");

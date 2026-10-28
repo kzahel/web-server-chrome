@@ -114,8 +114,10 @@ Chrome Web Store extension, ChromeOS Linux controller and installers, Android
 and iOS apps, update service, and static website. This cleanup does not change
 their protocols, updater signature/key or endpoint, persisted settings, app
 identities, extension allowlists, or installer URLs. The desktop JavaScript
-Tauri API/plugin versions stay at their previous versions while the compatible
-Rust implementation updates within Tauri 2.
+Tauri API and updater plugin must match their Rust counterparts' minor release
+families (2.12 and 2.14 respectively); the packaging tool rejects mismatches.
+These in-process dependencies ship together inside a desktop artifact and do
+not require an extension or controller protocol change.
 
 The existing old/current/future compatibility corpus and production parser
 tests remain the compatibility window. The website may deploy first; desktop,
@@ -172,3 +174,10 @@ gates, extension package inspection, and real packaged-popup smoke in the
 separately identified Playwright Chrome for Testing. The E2E npm project passes
 clean install and typechecking. Actual Tauri/WebKitGTK product E2E requires
 Linux and remains a hosted check for this change.
+
+The first hosted run exposed three gaps missed by that local validation:
+Node 22 resolved to 22.23.3, below Astro's minimum; Rust 1.99 added an assertion
+lint rejected by `-D warnings`; and Tauri packaging rejected the JavaScript/Rust
+minor-version mismatch. The desktop 0.1.11 preparation aligns the in-process
+packages, uses Node 24 for desktop/general CI, and fixes the assertion. A clean
+hosted rerun and actual packaging remain required before release.

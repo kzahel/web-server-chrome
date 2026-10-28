@@ -136,7 +136,7 @@ mod tests {
     #[test]
     fn test_tauri_target_mapping() {
         let target = tauri_target();
-        assert!(!target.is_empty());
+        assert_ne!(target, "");
         #[cfg(target_os = "macos")]
         assert_eq!(target, "darwin");
         #[cfg(target_os = "linux")]

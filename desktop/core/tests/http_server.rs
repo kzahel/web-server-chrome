@@ -123,7 +123,7 @@ async fn serves_files_indexes_mime_and_head_over_real_sockets() {
 
     let head = request(&server, &close_request("HEAD", "/sub/data.json", &[])).await;
     assert_eq!(head.status, 200);
-    assert!(head.body.is_empty());
+    assert_eq!(head.body.as_slice(), b"");
     assert_eq!(head.header("content-length"), Some("11"));
 
     let utf8 = request(&server, &close_request("GET", "/caf%C3%A9.txt", &[])).await;
@@ -132,7 +132,7 @@ async fn serves_files_indexes_mime_and_head_over_real_sockets() {
 
     let missing_head = request(&server, &close_request("HEAD", "/missing.txt", &[])).await;
     assert_eq!(missing_head.status, 404);
-    assert!(missing_head.body.is_empty());
+    assert_eq!(missing_head.body.as_slice(), b"");
 
     server.stop().await.expect("stop server");
 }
@@ -267,7 +267,7 @@ async fn supports_etags_and_single_byte_ranges() {
     )
     .await;
     assert_eq!(cached.status, 304);
-    assert!(cached.body.is_empty());
+    assert_eq!(cached.body.as_slice(), b"");
 
     let range = request(
         &server,
@@ -309,7 +309,7 @@ async fn supports_etags_and_single_byte_ranges() {
     )
     .await;
     assert_eq!(head.status, 206);
-    assert!(head.body.is_empty());
+    assert_eq!(head.body.as_slice(), b"");
     assert_eq!(head.header("content-length"), Some("3"));
 
     let invalid = request(
@@ -350,7 +350,7 @@ async fn handles_spa_cors_options_and_method_rejection() {
 
     let options = request(&server, &close_request("OPTIONS", "/anything", &[])).await;
     assert_eq!(options.status, 204);
-    assert!(options.body.is_empty());
+    assert_eq!(options.body.as_slice(), b"");
     assert_eq!(
         options.header("access-control-allow-methods"),
         Some("GET, HEAD, OPTIONS")

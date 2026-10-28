@@ -40,6 +40,10 @@ Current locked-source results:
 - `cargo audit --file desktop/Cargo.lock`: zero vulnerability entries, with
   the six informational warnings below still visible.
 
+After [commit da3d4f3](https://github.com/kzahel/web-server-chrome/commit/da3d4f30b92e6d58bd411855ee6fb25c13130ec4)
+was pushed to main, GitHub completed dependency-graph reprocessing and reported
+**zero open Dependabot alerts**. No alerts were manually dismissed.
+
 These are source dependency results. Existing public desktop, extension, and
 ChromeOS Linux artifacts retain their original dependencies until separately
 rebuilt, validated, and released. This work does not promote any existing
@@ -139,8 +143,28 @@ scanning, and secret push protection. CodeQL default setup was requested for
 JavaScript/TypeScript and Actions; its setup run is
 [40653623017](https://github.com/kzahel/web-server-chrome/actions/runs/40653623017).
 Rust is not accepted by this repository's CodeQL default-setup API; Rust
-dependency coverage is provided by cargo-audit. A queued setup run is not
-evidence of completed code analysis.
+dependency coverage is provided by cargo-audit. The JavaScript analysis
+completed against the pre-cleanup commit `6b95ecc`; Actions analysis and the
+cleanup commit's hosted source/product checks were still queued at closeout.
+
+The first JavaScript analysis produced four separate code-scanning findings:
+
+- [Alert 4](https://github.com/kzahel/web-server-chrome/security/code-scanning/4)
+  flags the build-time `startsWith("http://local.ok200.app")` check in
+  `extension/vite.config.ts`. This is a **deny/removal filter** over the
+  checked-in manifest's development entries, not an allowlist for untrusted
+  requests. A broader prefix removes extra entries rather than allowing an
+  attacker-controlled origin. The finding appears to be a false positive;
+  the strict store-package inspection and packaged-popup smoke pass. It has
+  not been dismissed.
+- [Alerts 1](https://github.com/kzahel/web-server-chrome/security/code-scanning/1),
+  [2](https://github.com/kzahel/web-server-chrome/security/code-scanning/2), and
+  [3](https://github.com/kzahel/web-server-chrome/security/code-scanning/3)
+  concern DOM-to-HTML handling in `legacy/index.js` and prototype-pollution
+  behavior in `legacy/assets/bundle.js`. These require a separate legacy
+  source/released-artifact reachability review. They are not fixed or
+  dismissed by this dependency cleanup. The legacy migration topic owns any
+  resulting release or behavior change.
 
 Local validation passed with Node 26.7.0 and Rust 1.98.1: frozen pnpm install,
 workspace typechecks, tests, Biome, builds, desktop source gates, ChromeOS Linux

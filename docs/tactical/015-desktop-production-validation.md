@@ -1,13 +1,17 @@
 # 015: Desktop Production Validation and Repair
 
-Status: **active; signed public repair candidate `desktop-v0.1.10` passes the
-complete automated artifact, signing, updater, checksum, and launcher-identity
-gates.** It implements the settings, process-lifecycle, native-host
-child-reaping, and AppImage isolation repairs exposed by `v0.1.6`. It must now
-pass the repository-owned
-[production validation runbook](../runbooks/desktop-production-validation.md)
-using exact public artifacts and the real Chrome Web Store extension on macOS,
-Windows, and Linux.
+Status: **active; signed public maintenance candidate `desktop-v0.1.11` passes
+source/product E2E, five-platform artifacts, signing, updater metadata/routes,
+checksums, and launcher-identity gates.** It retains the settings, lifecycle,
+native-host child-reaping, and AppImage isolation repairs published in
+`v0.1.10`, with updated dependencies and shared HTTP conformance corrections.
+The [current release evidence](../topics/desktop-release-readiness.md) includes
+bounded October Linux candidate smoke with production Store extension 0.1.8.
+Full [production validation](../runbooks/desktop-production-validation.md) of
+exact public packages, updater installation, and the real extension remains
+open on macOS, Windows, and Linux. Testbeds are advisory for routine maintenance
+publication under Tactical 018; they remain required evidence for a complete
+production-acceptance claim.
 
 Topics:
 

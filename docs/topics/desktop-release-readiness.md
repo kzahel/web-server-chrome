@@ -6,18 +6,17 @@
 
 Topic: desktop-release-readiness
 
-Status: **`desktop-v0.1.10` is the current complete signed Rust-core repair
-release. Its five-platform build matrix, launcher-identity and platform-signing
-checks, one-job finalizer, public checksums, and updater metadata pass. The
-release repairs the settings layout, background=false exit/recovery behavior,
-native-host child reaping, and AppImage GIO isolation exposed by exact
-`v0.1.6` smoke. It remains a public candidate rather than promotion-accepted
-until the repository-owned production runbook passes against exact packages
-and the real Chrome Web Store extension. `desktop-v0.1.5` remains the latest
-accepted prior-public update and production-extension baseline; `v0.1.6`
-retains the failed functional evidence that motivated this repair.**
+Status: **`desktop-v0.1.11` is the current complete signed maintenance release,
+published 2026-10-28. Source checks, Linux product E2E, the five-platform package
+and signing matrix, finalization, public checksums, and live updater routes pass.
+It includes the dependency refresh and shared HTTP conformance fixes since
+`v0.1.10`. Full exact-public installed-product and signed-update acceptance on
+Windows/macOS/Linux remains open; do not describe this as promotion-accepted.
+`v0.1.10` is the preceding settings/lifecycle repair candidate, `v0.1.6` retains
+the failed functional evidence, and `v0.1.5` remains the accepted prior-public
+update and production-extension baseline.**
 
-Last reconciled: **2026-08-05**.
+Last reconciled: **2026-10-28**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
@@ -35,12 +34,11 @@ functional repair and exact public-release acceptance are owned by
 
 ## Source of truth
 
-The October 2026 [dependency security refresh](dependency-security.md) is
-source-only until a new release passes this topic's artifact and updater gates.
-Its Tauri/updater dependency changes require the usual cross-platform package,
-signed update, native-host, and production-extension acceptance before any
-promotion claim. Existing signed-release evidence below remains historical
-evidence for those exact artifacts.
+The October 2026 [dependency security refresh](dependency-security.md) ships in
+`desktop-v0.1.11`, which passes the artifact and live updater-metadata gates
+below. Exact signed-update installation, native-host, and production-extension
+acceptance remain required before a full promotion claim. Older signed-release
+evidence below applies only to those exact artifacts.
 
 The operator runbook is:
 
@@ -102,16 +100,15 @@ Repository configuration currently preserves:
 The shipped Rust-core release keeps the identifier, updater key, and endpoint
 so installed desktop apps can update in place.
 
-Unreleased macOS source now packages the searchable
+Signed `v0.1.10` and later macOS releases package the searchable
 `200 OK Web Server.app`, with `CFBundleDisplayName` set to the full descriptive
 name and the short `CFBundleName` retained as `200 OK`. The technical identity
 remains `app.ok200.desktop`. The macOS PKG payload, local install helpers,
 signed-build checks, release asset validation, and generated release links now
 follow that bundle name. An unsigned production build on 2026-08-04 confirmed
 the expected bundle path, full display name, short bundle name, identifier,
-executable, sidecar, and updater archive. Signed/notarized artifact acceptance
-remains a gate for the next release rather than an inference from that local
-build.
+executable, sidecar, and updater archive. Subsequent `v0.1.10` and `v0.1.11` signed/notarized artifact
+acceptance is recorded below; that unsigned local build alone was not proof.
 
 Unreleased Windows source now uses **200 OK Web Server** as the installed
 product and shortcut name while retaining `ok200-desktop.exe`, the stable
@@ -146,6 +143,39 @@ hash unchanged.
 
 ## Latest release evidence
 
+### Desktop 0.1.11 publication — 2026-10-28
+
+[Public `desktop-v0.1.11`](https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.11)
+was published at 09:56 UTC from `758d6e22c0813ce86b1064a8ad11637b4415749c`.
+[Tagged workflow 40665116561](https://github.com/kzahel/web-server-chrome/actions/runs/40665116561)
+passes the source gate, real Linux product E2E, both macOS architectures, both
+Linux architectures, Windows x64, and fail-closed finalization. General CI and
+dependency audits also pass on the release commit.
+
+All 15 assets named by the public
+[SHA256SUMS](https://github.com/kzahel/web-server-chrome/releases/download/desktop-v0.1.11/SHA256SUMS)
+were downloaded and independently matched. The ledger itself has SHA-256
+`b7c03422530d31e0f667e87ab4b1169a3e5739f8804e0d76141c12bf8fb8b466`. `latest.json` has version `0.1.11`,
+15 default/package-specific entries, usable signatures, and URLs naming only
+that immutable release. All 45 live route checks pass: previous `0.1.10`
+receives matching signed `0.1.11` metadata, while current `0.1.11` and future
+`9.0.0` receive HTTP 204 for every entry. Service health passes.
+
+Both downloaded macOS app archives independently pass version/architecture/
+identifier checks, deep/strict signing, Gatekeeper, notarization, and stapling.
+Both downloaded recommended PKGs pass Installer signature, Gatekeeper,
+notarization, and stapling. This is cryptographic/package evidence, not proof
+of installation or an executed updater transition.
+
+The bounded Linux candidate checks below are advisory. Exact public 0.1.11
+clean installs, prior-public updater installation, and the complete real-store
+extension/lifecycle runbook on all three operating systems remain explicitly
+**not run**. No supported counterpart is dropped: app identity, updater key and
+endpoint, extension protocol, stored settings, and package policy are retained.
+The website download fallback and per-user Linux installer fallback advance to
+0.1.11 after publication; the live metadata lookup continues to choose releases
+independently of those fallbacks.
+
 ### Desktop 0.1.11 maintenance preparation — 2026-10-28
 
 The maintainer authorized a new desktop release after the dependency cleanup
@@ -176,6 +206,8 @@ update-check logs: one latest app version per identified installation, separate
 helper-only counts, exact UTC windows, and observed offer/upgrade cohorts. No
 new app telemetry, identifiers, server API, protocol, or collection policy is
 introduced. Private operational context owns audience counts and machine data.
+
+### Prior 0.1.10 publication and August compatibility evidence
 
 The 2026-08-05 compatibility corpus is consumed by the desktop native-host
 handler, Tauri stored-settings parser, Crostini release/controller parsers, and

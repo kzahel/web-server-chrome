@@ -6,22 +6,19 @@
 
 Topic: desktop-native-core
 
-Status: **Rust-native desktop `v0.1.6` is published with complete signed
-macOS arm64/x64, Windows x64, and Linux arm64/x64 artifacts. Exact
-post-publication macOS arm64 app, Windows NSIS, and Linux arm64 AppImage smoke
-passes artifact identity, server, persistence, updater, autostart, tray-state,
-native-host, and cleanup checks. It also exposes two hard-rule defects: the
-main-window settings dialog is clipped or scrolls out of view on Windows and
-Linux, and disabling Run in Background does not exit when the last window is
-closed. On Windows, combining that behavior with a hidden tray can leave an
-unrecoverable invisible instance and subsequent stuck processes. The signed
-distribution remains valid, but `v0.1.6` is not accepted as a promotion-ready
-settings/recovery release. Exact prior-public update and production-extension
-acceptance remains recorded against `v0.1.5`. A native ARM64 Linux Chrome test
-now proves `v0.1.6` store delivery and cold extension launch, but every repeated
-launch leaves another defunct desktop child under the connected native host.**
+Status: **Rust-native desktop `v0.1.11` is the current signed maintenance
+release. Its source, shared compatibility/conformance checks, Linux product E2E,
+five-platform package/signing matrix, public checksums, and live update metadata
+pass; the [desktop release topic](desktop-release-readiness.md) records exact
+evidence and limits. It includes the runtime dependency refresh and HTTP path,
+SPA missing-asset, and conditional-cache corrections. Full exact-public
+installed-product/update acceptance remains open. The earlier `v0.1.6`
+settings/background/recovery and Linux child-reaping failures remain historical
+evidence; `v0.1.10` carried their repairs, and October Linux candidate smoke
+passes the bounded lifecycle, serving, and real-store extension checks. Those
+candidate observations do not establish three-OS production acceptance.**
 
-Last reconciled: **2026-08-04**.
+Last reconciled: **2026-10-28**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);

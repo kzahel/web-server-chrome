@@ -44,10 +44,13 @@ After [commit da3d4f3](https://github.com/kzahel/web-server-chrome/commit/da3d4f
 was pushed to main, GitHub completed dependency-graph reprocessing and reported
 **zero open Dependabot alerts**. No alerts were manually dismissed.
 
-These are source dependency results. Existing public desktop, extension, and
-ChromeOS Linux artifacts retain their original dependencies until separately
-rebuilt, validated, and released. This work does not promote any existing
-desktop candidate or change store delivery claims.
+These dependency changes now ship in signed
+[`desktop-v0.1.11`](https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.11).
+Its [release evidence](desktop-release-readiness.md)
+records source/product E2E, package/signing, public-checksum and updater-route
+passes, with exact installed-product/update acceptance still open. Extension
+and ChromeOS Linux artifacts retain their original dependencies until separately
+rebuilt and released. No store delivery claim changes.
 
 ## Investigation of alerts without patched versions
 
@@ -125,10 +128,12 @@ extension, and ChromeOS Linux releases can follow independently without
 requiring their counterparts to update together. Existing fallback and
 unsupported-version behavior is unchanged, and no legacy support is removed.
 
-Before publishing a new desktop artifact, retain signed updater-transition,
-native-host/production-extension, and Linux WebKitGTK product acceptance from
-the [desktop release topic](desktop-release-readiness.md). Local source checks
-do not substitute for those artifact gates.
+Desktop publication requires the source, hosted Linux product E2E, platform
+package/signing, and fail-closed finalizer gates in the
+[desktop release topic](desktop-release-readiness.md). Testbeds are advisory
+under Tactical 018; record explicit skips. Full production promotion additionally
+requires exact signed updater-transition and native-host/production-extension
+acceptance. Local source checks do not substitute for artifact gates.
 
 ## Checks and repository protection
 
@@ -146,8 +151,9 @@ JavaScript/TypeScript and Actions; its setup run is
 [40653623017](https://github.com/kzahel/web-server-chrome/actions/runs/40653623017).
 Rust is not accepted by this repository's CodeQL default-setup API; Rust
 dependency coverage is provided by cargo-audit. The JavaScript analysis
-completed against the pre-cleanup commit `6b95ecc`; Actions analysis and the
-cleanup commit's hosted source/product checks were still queued at closeout.
+completed initially against the pre-cleanup commit `6b95ecc`. JavaScript and
+Actions analysis now complete successfully on the 0.1.11 release commit; a
+successful scan does not mean its findings are resolved.
 
 The first JavaScript analysis produced four separate code-scanning findings:
 
@@ -168,16 +174,22 @@ The first JavaScript analysis produced four separate code-scanning findings:
   dismissed by this dependency cleanup. The legacy migration topic owns any
   resulting release or behavior change.
 
+Actions analysis additionally reports missing explicit permissions in
+[general CI](https://github.com/kzahel/web-server-chrome/security/code-scanning/5)
+and [iOS CI](https://github.com/kzahel/web-server-chrome/security/code-scanning/6).
+These are separate workflow-hardening findings, still open.
+
 Local validation passed with Node 26.7.0 and Rust 1.98.1: frozen pnpm install,
 workspace typechecks, tests, Biome, builds, desktop source gates, ChromeOS Linux
 gates, extension package inspection, and real packaged-popup smoke in the
 separately identified Playwright Chrome for Testing. The E2E npm project passes
-clean install and typechecking. Actual Tauri/WebKitGTK product E2E requires
-Linux and remains a hosted check for this change.
+clean install and typechecking. Actual Tauri/WebKitGTK product E2E runs on Linux and passed in the
+hosted candidate and tagged release workflows.
 
 The first hosted run exposed three gaps missed by that local validation:
 Node 22 resolved to 22.23.3, below Astro's minimum; Rust 1.99 added an assertion
 lint rejected by `-D warnings`; and Tauri packaging rejected the JavaScript/Rust
 minor-version mismatch. The desktop 0.1.11 preparation aligns the in-process
 packages, uses Node 24 for desktop/general CI, and fixes the assertion. A clean
-hosted rerun and actual packaging remain required before release.
+hosted rerun and actual packaging passed in the 0.1.11 tagged release workflow
+linked above. The subsequent canonical local preflight used Rust 1.99.0.

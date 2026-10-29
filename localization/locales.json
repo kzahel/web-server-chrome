@@ -93,7 +93,8 @@
       "tr",
       "ja",
       "ko",
-      "zh-CN"
+      "zh-CN",
+      "zh-TW"
     ],
     "desktop": [
       "en",
@@ -113,7 +114,8 @@
       "tr",
       "ja",
       "ko",
-      "zh-CN"
+      "zh-CN",
+      "zh-TW"
     ],
     "extension": [
       "en",
@@ -133,7 +135,8 @@
       "tr",
       "ja",
       "ko",
-      "zh-CN"
+      "zh-CN",
+      "zh-TW"
     ],
     "ios": [
       "en",
@@ -153,7 +156,8 @@
       "tr",
       "ja",
       "ko",
-      "zh-CN"
+      "zh-CN",
+      "zh-TW"
     ],
     "web": [
       "en",
@@ -173,7 +177,8 @@
       "tr",
       "ja",
       "ko",
-      "zh-CN"
+      "zh-CN",
+      "zh-TW"
     ]
   },
   "testLocales": [

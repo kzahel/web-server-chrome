@@ -112,6 +112,12 @@
             "state": "translated",
             "value": "200 OK 在前台运行时，可让局域网内的设备访问所选文件夹的内容。"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK 僅在此 App 於前景開啟時，向區域網路上的裝置提供所選資料夾的內容。"
+          }
         }
       }
     }

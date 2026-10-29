@@ -68,7 +68,7 @@ this supervisor setup.
 | ja | qualified | [bound evidence](../../localization/qualification/ja.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 | ko | qualified | [bound evidence](../../localization/qualification/ko.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 | zh-CN | qualified | [bound evidence](../../localization/qualification/zh-CN.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
-| zh-TW | queued | Preserve frozen jobs and manifest order |
+| zh-TW | qualified | [bound evidence](../../localization/qualification/zh-TW.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 
 Compatibility is additive and presentation-only. English/German and completed
 locales remain available, independently released apps/extensions keep their

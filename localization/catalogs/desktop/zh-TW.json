@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "無法開啟 200 OK。",
+  "about_200_ok_ba8aa9": "關於 200 OK",
+  "check_for_updates_9ed79e": "檢查更新",
+  "choose_folder_to_serve_d488f4": "選擇要提供存取的資料夾",
+  "close_7d9eb7": "關閉",
+  "hide_200_ok_981b92": "隱藏 200 OK",
+  "hide_others_1753e2": "隱藏其他應用程式",
+  "launching_b1601d": "正在啟動…",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "開啟 ChromeOS Linux 版 200 OK Web Server",
+  "quit_200_ok_686f8f": "結束 200 OK",
+  "quit_b3eb37": "結束",
+  "run_in_background_0db775": "在背景執行",
+  "settings_74a883": "設定",
+  "show_all_e1c326": "全部顯示",
+  "show_app_ec462a": "顯示應用程式",
+  "show_icon_in_menu_bar_0ad9f3": "在選單列顯示圖示",
+  "show_icon_in_system_tray_25b481": "在系統匣顯示圖示",
+  "start_at_login_5952eb": "登入時啟動",
+  "try_again_df0fe9": "再試一次",
+  "unknown_launch_error_3585c0": "不明的啟動錯誤",
+  "web_server_fc0480": "HTTP 伺服器"
+}

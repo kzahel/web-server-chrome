@@ -16,3 +16,4 @@ tr
 ja
 ko
 zh-rCN
+zh-rTW

@@ -112,6 +112,12 @@
             "state": "translated",
             "value": "允许浏览器发送跨源请求。"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "允許瀏覽器傳送跨來源請求。"
+          }
         }
       }
     },
@@ -225,6 +231,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "允许同一 Wi-Fi 网络中的其他设备连接。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "允許此 Wi-Fi 網路上的其他裝置連線。"
           }
         }
       }
@@ -340,6 +352,12 @@
             "state": "translated",
             "value": "错误请求"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錯誤的請求"
+          }
         }
       }
     },
@@ -450,6 +468,12 @@
           }
         },
         "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更改"
+          }
+        },
+        "zh-TW": {
           "stringUnit": {
             "state": "translated",
             "value": "更改"
@@ -568,6 +592,12 @@
             "state": "translated",
             "value": "选择"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選取"
+          }
         }
       }
     },
@@ -681,6 +711,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "请先选择文件夹，再启动 HTTP 服务器。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請先選取資料夾，再啟動 HTTP 伺服器。"
           }
         }
       }
@@ -796,6 +832,12 @@
             "state": "translated",
             "value": "选择要共享的文件夹后，即可启用 HTTP 服务器。"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選取要提供檔案的資料夾後，即可啟用 HTTP 伺服器。"
+          }
         }
       }
     },
@@ -909,6 +951,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "复制"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "複製"
           }
         }
       }
@@ -1024,6 +1072,12 @@
             "state": "translated",
             "value": "文件夹内容列表"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "資料夾內容清單"
+          }
         }
       }
     },
@@ -1134,6 +1188,12 @@
           }
         },
         "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成"
+          }
+        },
+        "zh-TW": {
           "stringUnit": {
             "state": "translated",
             "value": "完成"
@@ -1252,6 +1312,12 @@
             "state": "translated",
             "value": "请输入 0 或 1 至 65535 之间的端口号。"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請輸入 0 或 1 到 65535 之間的連接埠號碼。"
+          }
         }
       }
     },
@@ -1365,6 +1431,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "错误：%@"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "錯誤：%@"
           }
         }
       }
@@ -1480,6 +1552,12 @@
             "state": "translated",
             "value": "反馈与支持"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "意見回饋與支援"
+          }
         }
       }
     },
@@ -1593,6 +1671,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "局域网访问"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "區域網路存取"
           }
         }
       }
@@ -1708,6 +1792,12 @@
             "state": "translated",
             "value": "HTTP 请求格式错误。\\n"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 請求格式錯誤。\\n"
+          }
         }
       }
     },
@@ -1821,6 +1911,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "当前没有可用的 Wi-Fi 地址。Wi-Fi 就绪前，HTTP 服务器仅可在此 iPhone 上访问。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目前沒有可用的 Wi-Fi 位址。在 Wi-Fi 就緒前，HTTP 伺服器僅限這部 iPhone 存取。"
           }
         }
       }
@@ -1936,6 +2032,12 @@
             "state": "translated",
             "value": "未选择文件夹"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未選取資料夾"
+          }
         }
       }
     },
@@ -2049,6 +2151,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "端口"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "連接埠"
           }
         }
       }
@@ -2164,6 +2272,12 @@
             "state": "translated",
             "value": "预览"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "預覽"
+          }
         }
       }
     },
@@ -2277,6 +2391,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "隐私"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隱私權"
           }
         }
       }
@@ -2392,6 +2512,12 @@
             "state": "translated",
             "value": "通过“文件”以只读方式访问"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "透過「檔案」以唯讀方式存取"
+          }
         }
       }
     },
@@ -2505,6 +2631,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "请求超时"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請求逾時"
           }
         }
       }
@@ -2620,6 +2752,12 @@
             "state": "translated",
             "value": "请求已超时。\\n"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請求已逾時。\\n"
+          }
         }
       }
     },
@@ -2733,6 +2871,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "运行中"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "執行中"
           }
         }
       }
@@ -2848,6 +2992,12 @@
             "state": "translated",
             "value": "访问 URL"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "伺服器網址"
+          }
         }
       }
     },
@@ -2961,6 +3111,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "请求的路由不存在且不含文件扩展名时，返回根目录下的 index.html。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "當不含副檔名的路由不存在時，提供根目錄中的 index.html。"
           }
         }
       }
@@ -3076,6 +3232,12 @@
             "state": "translated",
             "value": "HTTP 服务器"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 伺服器"
+          }
         }
       }
     },
@@ -3189,6 +3351,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "文件服务设置"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "檔案提供方式"
           }
         }
       }
@@ -3304,6 +3472,12 @@
             "state": "translated",
             "value": "共享文件夹"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提供檔案的資料夾"
+          }
         }
       }
     },
@@ -3418,6 +3592,12 @@
             "state": "translated",
             "value": "200 OK 仅在前台运行时提供文件访问。应用进入后台时，iOS 会停止 HTTP 服务器。"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK 僅在前景開啟時提供檔案。App 進入背景時，iOS 會停止 HTTP 伺服器。"
+          }
         }
       }
     },
@@ -3528,6 +3708,12 @@
           }
         },
         "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分享"
+          }
+        },
+        "zh-TW": {
           "stringUnit": {
             "state": "translated",
             "value": "分享"
@@ -3646,6 +3832,12 @@
             "state": "translated",
             "value": "文件夹中没有 index.html 时，显示文件列表。"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "資料夾中沒有 index.html 時，顯示檔案清單。"
+          }
         }
       }
     },
@@ -3759,6 +3951,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "单页应用回退"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "單頁應用程式備援"
           }
         }
       }
@@ -3874,6 +4072,12 @@
             "state": "translated",
             "value": "源代码 · MIT"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原始碼 · MIT"
+          }
         }
       }
     },
@@ -3987,6 +4191,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "正在启动…"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在啟動…"
           }
         }
       }
@@ -4102,6 +4312,12 @@
             "state": "translated",
             "value": "启动 HTTP 服务器"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟動 HTTP 伺服器"
+          }
         }
       }
     },
@@ -4216,6 +4432,12 @@
             "state": "translated",
             "value": "请先停止 HTTP 服务器，再更改此设置。"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請先停止 HTTP 伺服器，再更改此設定。"
+          }
         }
       }
     },
@@ -4326,6 +4548,12 @@
           }
         },
         "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已停止"
+          }
+        },
+        "zh-TW": {
           "stringUnit": {
             "state": "translated",
             "value": "已停止"
@@ -4444,6 +4672,12 @@
             "state": "translated",
             "value": "正在停止…"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在停止…"
+          }
         }
       }
     },
@@ -4557,6 +4791,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "停止 HTTP 服务器"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止 HTTP 伺服器"
           }
         }
       }
@@ -4672,6 +4912,12 @@
             "state": "translated",
             "value": "已保存的文件夹访问权限已过期。请重新选择文件夹。"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已儲存的資料夾存取權限已過期。請重新選取資料夾。"
+          }
         }
       }
     },
@@ -4785,6 +5031,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "所选文件夹不可用。请在“文件”中重新选择。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所選資料夾無法使用。請在「檔案」中重新選取。"
           }
         }
       }
@@ -4900,6 +5152,12 @@
             "state": "translated",
             "value": "所选项目不是文件夹。"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所選項目不是資料夾。"
+          }
         }
       }
     },
@@ -5013,6 +5271,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP 服务器无法启动。请检查文件夹和端口，然后重试。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 伺服器無法啟動。請檢查資料夾和連接埠，然後再試一次。"
           }
         }
       }
@@ -5128,6 +5392,12 @@
             "state": "translated",
             "value": "HTTP 服务器已在运行。"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 伺服器已在執行中。"
+          }
         }
       }
     },
@@ -5241,6 +5511,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP 服务器正忙。"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 伺服器忙碌中。"
           }
         }
       }
@@ -5356,6 +5632,12 @@
             "state": "translated",
             "value": "200 OK 进入后台时，HTTP 服务器已停止。准备就绪后可重新启动。"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK 進入背景時，HTTP 伺服器已停止。準備就緒後，請重新啟動伺服器。"
+          }
         }
       }
     },
@@ -5469,6 +5751,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "此 iPhone"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這部 iPhone"
           }
         }
       }
@@ -5584,6 +5872,12 @@
             "state": "translated",
             "value": "输入 0 可自动选择可用端口"
           }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸入 0 以自動選取可用的連接埠"
+          }
         }
       }
     },
@@ -5697,6 +5991,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP 服务器"
+          }
+        },
+        "zh-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 伺服器"
           }
         }
       }

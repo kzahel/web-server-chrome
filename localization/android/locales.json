@@ -67,6 +67,10 @@
     "zh-CN": {
       "catalog": "android/app/src/main/res/values-zh-rCN/strings.xml",
       "quantities": ["other"]
+    },
+    "zh-TW": {
+      "catalog": "android/app/src/main/res/values-zh-rTW/strings.xml",
+      "quantities": ["other"]
     }
   },
   "schemaVersion": 1

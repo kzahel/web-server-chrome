@@ -28,6 +28,12 @@
             "state": "translated",
             "value": "Autoriser les requêtes du navigateur provenant d’autres origines."
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consentire le richieste del browser da origini diverse."
+          }
         }
       }
     },
@@ -57,6 +63,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Autoriser les autres appareils de ce réseau Wi-Fi à se connecter."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consentire agli altri dispositivi su questa rete Wi-Fi di connettersi."
           }
         }
       }
@@ -88,6 +100,12 @@
             "state": "translated",
             "value": "Requête incorrecte"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Richiesta non valida"
+          }
         }
       }
     },
@@ -117,6 +135,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modifier"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modificare"
           }
         }
       }
@@ -148,6 +172,12 @@
             "state": "translated",
             "value": "Choisir"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegliere"
+          }
         }
       }
     },
@@ -177,6 +207,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Choisissez un dossier avant de démarrer le serveur HTTP."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegliere una cartella prima di avviare il server."
           }
         }
       }
@@ -208,6 +244,12 @@
             "state": "translated",
             "value": "Choisissez un dossier à mettre à disposition pour pouvoir démarrer le serveur HTTP."
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegliere una cartella da rendere disponibile per abilitare il server."
+          }
         }
       }
     },
@@ -237,6 +279,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copier"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiare"
           }
         }
       }
@@ -268,6 +316,12 @@
             "state": "translated",
             "value": "Liste des fichiers du dossier"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elenco dei file della cartella"
+          }
         }
       }
     },
@@ -297,6 +351,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Terminer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminare"
           }
         }
       }
@@ -328,6 +388,12 @@
             "state": "translated",
             "value": "Saisissez 0 ou un port compris entre 1 et 65535."
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inserire 0 o una porta da 1 a 65535."
+          }
         }
       }
     },
@@ -357,6 +423,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Erreur : %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Errore: %@"
           }
         }
       }
@@ -388,6 +460,12 @@
             "state": "translated",
             "value": "Commentaires et assistance"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feedback e assistenza"
+          }
         }
       }
     },
@@ -417,6 +495,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Accès au réseau local"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesso alla rete locale"
           }
         }
       }
@@ -448,6 +532,12 @@
             "state": "translated",
             "value": "Requête HTTP mal formée.\\n"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Richiesta HTTP malformata.\\n"
+          }
         }
       }
     },
@@ -477,6 +567,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aucune adresse Wi-Fi n’est disponible pour le moment. Le serveur HTTP reste accessible uniquement sur cet iPhone tant que le Wi-Fi n’est pas prêt."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Al momento non è disponibile alcun indirizzo Wi-Fi. Il server resta accessibile solo da questo iPhone finché il Wi-Fi non è pronto."
           }
         }
       }
@@ -508,6 +604,12 @@
             "state": "translated",
             "value": "Aucun dossier sélectionné"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna cartella selezionata"
+          }
         }
       }
     },
@@ -537,6 +639,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Port"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porta"
           }
         }
       }
@@ -568,6 +676,12 @@
             "state": "translated",
             "value": "Prévisualiser"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visualizzare l’anteprima"
+          }
         }
       }
     },
@@ -597,6 +711,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Confidentialité"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy"
           }
         }
       }
@@ -628,6 +748,12 @@
             "state": "translated",
             "value": "Accès en lecture seule via Fichiers"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesso in sola lettura tramite File"
+          }
         }
       }
     },
@@ -657,6 +783,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Délai de la requête dépassé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo di attesa della richiesta scaduto"
           }
         }
       }
@@ -688,6 +820,12 @@
             "state": "translated",
             "value": "Le délai de la requête est dépassé.\\n"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il tempo di attesa della richiesta è scaduto.\\n"
+          }
         }
       }
     },
@@ -717,6 +855,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "En cours d’exécution"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In esecuzione"
           }
         }
       }
@@ -748,6 +892,12 @@
             "state": "translated",
             "value": "URL du serveur en cours d’exécution"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL attivi"
+          }
         }
       }
     },
@@ -777,6 +927,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Renvoyer le fichier index.html du dossier racine pour les routes introuvables sans extension."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fornire il file index.html della cartella radice per i percorsi non trovati senza estensione."
           }
         }
       }
@@ -808,6 +964,12 @@
             "state": "translated",
             "value": "Serveur HTTP"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server"
+          }
         }
       }
     },
@@ -837,6 +999,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Comportement du serveur HTTP"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comportamento del server"
           }
         }
       }
@@ -868,6 +1036,12 @@
             "state": "translated",
             "value": "Dossier partagé"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cartella da rendere disponibile"
+          }
         }
       }
     },
@@ -897,6 +1071,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Les fichiers sont accessibles tant que 200 OK reste au premier plan. iOS arrête le serveur HTTP lorsque l’application passe en arrière-plan."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il server funziona mentre 200 OK è in primo piano. iOS arresta il server quando l’app passa in background."
           }
         }
       }
@@ -928,6 +1108,12 @@
             "state": "translated",
             "value": "Partager"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Condividere"
+          }
         }
       }
     },
@@ -957,6 +1143,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Afficher la liste des fichiers du dossier s’il ne contient pas de fichier index.html."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrare l’elenco dei file quando una cartella non contiene index.html."
           }
         }
       }
@@ -988,6 +1180,12 @@
             "state": "translated",
             "value": "Repli pour application monopage"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fallback per app a pagina singola"
+          }
         }
       }
     },
@@ -1017,6 +1215,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Code source · MIT"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codice sorgente · MIT"
           }
         }
       }
@@ -1048,6 +1252,12 @@
             "state": "translated",
             "value": "Démarrage en cours…"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avvio in corso…"
+          }
         }
       }
     },
@@ -1077,6 +1287,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Démarre le serveur HTTP"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avviare il server web"
           }
         }
       }
@@ -1108,6 +1324,12 @@
             "state": "translated",
             "value": "Arrêtez le serveur HTTP pour modifier ce réglage."
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrestare il server per modificare questa impostazione."
+          }
         }
       }
     },
@@ -1137,6 +1359,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Arrêté"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrestato"
           }
         }
       }
@@ -1168,6 +1396,12 @@
             "state": "translated",
             "value": "Arrêt en cours…"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arresto in corso…"
+          }
         }
       }
     },
@@ -1197,6 +1431,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Arrête le serveur HTTP"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrestare il server web"
           }
         }
       }
@@ -1228,6 +1468,12 @@
             "state": "translated",
             "value": "L’autorisation d’accès enregistrée pour ce dossier a expiré. Choisissez à nouveau le dossier."
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’autorizzazione salvata per la cartella è scaduta. Scegliere di nuovo la cartella."
+          }
         }
       }
     },
@@ -1257,6 +1503,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Le dossier sélectionné est indisponible. Sélectionnez-le à nouveau dans Fichiers."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La cartella selezionata non è disponibile. Selezionarla di nuovo in File."
           }
         }
       }
@@ -1288,6 +1540,12 @@
             "state": "translated",
             "value": "L’élément sélectionné n’est pas un dossier."
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’elemento selezionato non è una cartella."
+          }
         }
       }
     },
@@ -1317,6 +1575,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Le serveur HTTP n’a pas pu démarrer. Vérifiez le dossier et le port, puis réessayez."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossibile avviare il server. Controllare la cartella e la porta, quindi riprovare."
           }
         }
       }
@@ -1348,6 +1612,12 @@
             "state": "translated",
             "value": "Le serveur HTTP est déjà en cours d’exécution."
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il server è già in esecuzione."
+          }
         }
       }
     },
@@ -1377,6 +1647,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Le serveur HTTP est occupé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il server è occupato."
           }
         }
       }
@@ -1408,6 +1684,12 @@
             "state": "translated",
             "value": "Le serveur HTTP s’est arrêté lorsque 200 OK est passé en arrière-plan. Redémarrez-le lorsque vous le souhaitez."
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il server si è arrestato quando 200 OK è passato in background. Riavviarlo quando si desidera."
+          }
         }
       }
     },
@@ -1437,6 +1719,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cet iPhone"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questo iPhone"
           }
         }
       }
@@ -1468,6 +1756,12 @@
             "state": "translated",
             "value": "Utiliser 0 pour choisir un port disponible"
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usare 0 per scegliere una porta disponibile"
+          }
         }
       }
     },
@@ -1497,6 +1791,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Serveur HTTP"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server web"
           }
         }
       }

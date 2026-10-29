@@ -28,6 +28,12 @@
             "state": "translated",
             "value": "200 OK met le dossier de votre choix à la disposition des appareils de votre réseau local tant que l’application reste au premier plan."
           }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK rende disponibile la cartella selezionata ai dispositivi sulla rete locale mentre l’app è in primo piano."
+          }
         }
       }
     }

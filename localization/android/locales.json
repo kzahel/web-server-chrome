@@ -11,6 +11,10 @@
     "fr": {
       "catalog": "android/app/src/main/res/values-fr/strings.xml",
       "quantities": ["one", "many", "other"]
+    },
+    "it": {
+      "catalog": "android/app/src/main/res/values-it/strings.xml",
+      "quantities": ["one", "many", "other"]
     }
   },
   "schemaVersion": 1

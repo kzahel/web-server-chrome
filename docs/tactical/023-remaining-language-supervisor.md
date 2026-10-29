@@ -2,15 +2,16 @@
 
 Topic: localization
 
-Status: localization queue and aggregate qualification complete, 2026-10-29;
-final hosted-CI closeout in progress. All seventeen remaining locales are
+Status: complete, 2026-10-29. Localization queue, aggregate qualification and
+all seven final hosted workflows passed. All seventeen remaining locales are
 reviewed, qualified, committed and pushed, with nineteen ordinary app locales
 including English/German. Started 13:14 UTC; the final locale completed about
 19:35 UTC within the ten-hour bound. No model workers remain.
 
 The maintainer requested an overnight supervisor/runbook like JSTorrent after
-German device validation and release. The initial slice prepared the campaign; the maintainer then explicitly
-authorized its full execution. Publication authority remains separate.
+German device validation and release. The initial slice prepared the campaign;
+the maintainer then explicitly authorized its full execution. Publication
+authority remains separate.
 Continuing instructions live in the [overnight runbook](../runbooks/localization-overnight.md).
 
 ## Implementation
@@ -211,3 +212,28 @@ Local macOS browser checks also observed a separate working-tree
 `--use-mock-keychain` test-browser flag. That edit is preserved outside this
 campaign's commits; it changes browser credential storage, not product code or
 assertions. Hosted extension checks exercise the committed browser runner.
+
+## Final hosted CI and cleanup
+
+The complete nineteen-language source and release-input notes at
+`01f8c5903668aa31c1b7d3260b464e08b094da17` passed every applicable workflow:
+
+| Workflow | Result |
+|---|---|
+| CI | [passed](https://github.com/kzahel/web-server-chrome/actions/runs/40942109556) |
+| Android CI | [passed](https://github.com/kzahel/web-server-chrome/actions/runs/40942110120) |
+| iOS CI | [passed](https://github.com/kzahel/web-server-chrome/actions/runs/40942109468) |
+| Extension CI | [passed](https://github.com/kzahel/web-server-chrome/actions/runs/40942109521) |
+| Tauri App CI | [passed](https://github.com/kzahel/web-server-chrome/actions/runs/40942109524) |
+| ChromeOS Linux CI | [passed](https://github.com/kzahel/web-server-chrome/actions/runs/40942109596) |
+| CodeQL | [passed](https://github.com/kzahel/web-server-chrome/actions/runs/40942109003) |
+
+The final locale cohort `04d3a0b522d30d23f744997e5e9a88dd00bfd3b8` also passed
+all seven workflows. All seventeen locale commits are retained on `origin/main`.
+Owned workers/qualification/browser processes, temporary Android AVDs and the
+smoke emulator are gone; no simulators remain booted. No machine-control claims
+were acquired by this campaign. The separate mock-keychain browser flag edit
+remains uncommitted, with all campaign-owned changes committed and pushed.
+
+Future work covers release/store/localized listings, iOS distribution, and
+broader exact-artifact OS/device acceptance.

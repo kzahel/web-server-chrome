@@ -1,6 +1,18 @@
 # Changelog
 
+## [0.2.3]
+
+### Added
+- Add German translations and an in-app language picker, with persistent
+  Android app and notification language selection.
+
+### Fixed
+- Keep the server running while changing the app language.
+
+
 ## [0.2.2]
+
+Unpublished CI candidate; artifact validation stopped before Play upload.
 
 ### Added
 - Add German translations and an in-app language picker, with Android system

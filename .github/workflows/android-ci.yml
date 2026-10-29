@@ -12,6 +12,7 @@ on:
       - 'scripts/release-android.sh'
       - 'scripts/android-play.py'
       - 'scripts/test_android_play.py'
+      - 'scripts/test_android_release.py'
       - '.github/workflows/android-play-*.yml'
       - 'scripts/release-check.sh'
       - '.github/workflows/android-ci.yml'
@@ -24,6 +25,7 @@ on:
       - 'scripts/release-android.sh'
       - 'scripts/android-play.py'
       - 'scripts/test_android_play.py'
+      - 'scripts/test_android_release.py'
       - '.github/workflows/android-play-*.yml'
       - 'scripts/release-check.sh'
       - '.github/workflows/android-ci.yml'
@@ -59,7 +61,7 @@ jobs:
         uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
 
       - name: Test Play publisher and release policy
-        run: python3 -m unittest discover -s ../scripts -p 'test_android_play*.py'
+        run: python3 -m unittest discover -s ../scripts -p 'test_android*.py'
 
       - name: Run Android source checks
         run: scripts/check.sh
@@ -217,10 +219,12 @@ jobs:
           path: android/app/build/outputs/mapping/release/mapping.txt.gz
 
       - name: Upload Release verification
+        if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: android-release-verification
           path: android/app/build/outputs/release-verification/
+          if-no-files-found: ignore
 
       - name: Extract changelog
         run: |

@@ -18,20 +18,22 @@ output_dir="$7"
 
 find_sdk_tool() {
   local tool="$1"
-  if command -v "$tool" >/dev/null 2>&1; then
-    command -v "$tool"
-    return
-  fi
   local sdk_root="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-}}"
+  local candidate
   if [ -n "$sdk_root" ]; then
-    local match
-    match="$(find "$sdk_root" -type f -name "$tool" 2>/dev/null | sort | tail -1)"
-    if [ -n "$match" ]; then
-      echo "$match"
+    case "$tool" in
+      apksigner) candidate="$sdk_root/build-tools/36.0.0/apksigner" ;;
+      apkanalyzer) candidate="$sdk_root/cmdline-tools/latest/bin/apkanalyzer" ;;
+      *) echo "Unsupported SDK tool: $tool" >&2; exit 2 ;;
+    esac
+    if [ -x "$candidate" ]; then
+      echo "$candidate"
       return
     fi
+    echo "Required pinned SDK tool is missing: $candidate" >&2
+    exit 2
   fi
-  echo "Required Android SDK tool is missing: $tool" >&2
+  echo "Set ANDROID_HOME or ANDROID_SDK_ROOT to the Android SDK" >&2
   exit 2
 }
 
@@ -47,12 +49,8 @@ apkanalyzer="$(find_sdk_tool apkanalyzer)"
 mkdir -p "$output_dir"
 
 "$apksigner" verify --verbose --print-certs "$apk" > "$output_dir/apk-signature.txt"
-actual_apk_cert="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' "$output_dir/apk-signature.txt" | head -1 | tr '[:upper:]' '[:lower:]')"
 expected_cert="${EXPECTED_CERT_SHA256:-$(tr -d '[:space:]' < "$android_root/release/expected-upload-cert-sha256.txt")}"
-if [ "$actual_apk_cert" != "$expected_cert" ]; then
-  echo "APK signer mismatch: expected $expected_cert, got $actual_apk_cert" >&2
-  exit 1
-fi
+python3 "$script_dir/verify-apk-signer.py" "$output_dir/apk-signature.txt" "$expected_cert"
 
 keytool -printcert -jarfile "$aab" > "$output_dir/aab-certificate.txt"
 actual_aab_cert="$(sed -n 's/^[[:space:]]*SHA256: //p' "$output_dir/aab-certificate.txt" | head -1 | tr -d ':' | tr '[:upper:]' '[:lower:]')"

@@ -2683,7 +2683,7 @@ dependencies = [
 
 [[package]]
 name = "ok200-crostini"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "axum",
  "base64 0.22.1",

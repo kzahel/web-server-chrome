@@ -86,6 +86,7 @@ const browser = spawn(
   chromeBinary,
   [
     "--headless=new",
+    ...(process.platform === "darwin" ? ["--use-mock-keychain"] : []),
     "--disable-dev-shm-usage",
     "--disable-features=DisableLoadExtensionCommandLineSwitch,DisableDisableExtensionsExceptCommandLineSwitch",
     `--disable-extensions-except=${extensionDirectory}`,

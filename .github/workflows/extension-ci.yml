@@ -43,7 +43,7 @@ permissions:
 jobs:
   build:
     if: github.event_name != 'workflow_dispatch' || inputs.mode != 'check'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     defaults:
       run:
@@ -91,7 +91,7 @@ jobs:
 
   browser-smoke:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     defaults:
       run:
@@ -140,7 +140,7 @@ jobs:
     name: Submit to Chrome Web Store
     if: github.repository == 'kzahel/web-server-chrome' && (startsWith(github.ref, 'refs/tags/extension-v') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'stage' && github.ref == 'refs/heads/main'))
     needs: [build, browser-smoke]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment: chrome-web-store
     concurrency:
@@ -188,7 +188,7 @@ jobs:
   check-publishing:
     name: Verify Web Store authentication (read only)
     if: github.repository == 'kzahel/web-server-chrome' && github.event_name == 'workflow_dispatch' && inputs.mode == 'check' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     environment: chrome-web-store
     permissions:
@@ -224,7 +224,7 @@ jobs:
   release:
     needs: [build, browser-smoke, publish]
     if: startsWith(github.ref, 'refs/tags/extension-v')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:

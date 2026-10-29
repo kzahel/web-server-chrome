@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## [0.1.9]
+
+### Added
+
+- Add German translations, a language picker, and persistent language selection
+  to the popup and ChromeOS Linux controls.
+- Localize the Chrome Web Store package name and description through native
+  extension message catalogs.
+
+### Changed
+
+- Improve control wrapping for longer translated text.
+
 ## [0.1.8]
 
 ### Added

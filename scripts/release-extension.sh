@@ -4,8 +4,8 @@ set -euo pipefail
 VERSION="${1:-}"
 MODE="${2:-}"
 
-if [[ -z "$VERSION" || ( -n "$MODE" && "$MODE" != "--check" ) ]]; then
-  echo "Usage: $0 <version> [--check]"
+if [[ -z "$VERSION" || ( -n "$MODE" && "$MODE" != "--check" && "$MODE" != "--stage" ) ]]; then
+  echo "Usage: $0 <version> [--check|--stage]"
   exit 1
 fi
 
@@ -103,6 +103,12 @@ node "$SCRIPT_DIR/validate-extension-package.mjs" \
 
 git add "$MANIFEST" "$PACKAGE_JSON" "$CHANGELOG"
 git commit -m "Release Extension v${VERSION}"
+if [[ "$MODE" == "--stage" ]]; then
+  echo "Prepared Extension v${VERSION} at $(git rev-parse HEAD), without a release tag."
+  echo "Push main, then run: gh workflow run extension-ci.yml --ref main -f mode=stage"
+  echo "After reviewing the staged candidate, tag this exact commit as $TAG to request review."
+  exit 0
+fi
 git tag "$TAG"
 
 echo "Prepared Extension v${VERSION} commit and local tag $TAG."

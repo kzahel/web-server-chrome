@@ -65,7 +65,13 @@ reads status, verifies the production item/key and retains the sanitized
 without submitting. `mode=stage` on main builds and browser-tests the same
 ZIP, then uploads without submitting for review. Staging refuses an active
 submission before any write, so listing work cannot cancel a review. All
-workflow actions are pinned by commit. Tags use the release lane.
+workflow actions are pinned by commit. To prepare a new candidate without
+creating a submission-triggering tag, add its changelog entry and run
+`scripts/release-extension.sh VERSION --stage` from clean main. Push main,
+then dispatch mode=stage. The receipt records the exact source commit and ZIP
+checksum. After inspecting that candidate, an intentional extension-vVERSION
+tag on the recorded source commit requests review through the ordinary lane;
+do not rerun the version bump against the already prepared version. Tags use the release lane.
 
 For local diagnostics, `extension/scripts/publish-store.mjs check . receipt.json`
 accepts `CWS_ACCESS_TOKEN` and `CWS_PUBLISHER_ID` in the environment. Obtain a

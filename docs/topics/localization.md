@@ -5,7 +5,8 @@ Topic: localization
 Status: **English/German catalogs and local qualification are complete. The
 actual Play-delivered Android 0.2.4/code 9 passed physical Pixel smoke;
 production promotion at 1% was accepted by the API. Extension 0.1.9 is pending
-Google review (public 0.1.8). Desktop 0.1.12 signed release is building.
+Google review (public 0.1.8). Desktop 0.1.12 is publicly signed/notarized and passed a basic installed macOS
+German smoke, checksum, website and updater-route checks.
 [Tactical 022](../tactical/022-german-release-and-device-smoke.md) owns current
 distribution/device evidence. The remaining seventeen-language supervisor is
 prepared in [Tactical 023](../tactical/023-remaining-language-supervisor.md);

@@ -2,7 +2,7 @@
 
 Topic: localization
 
-Status: active, 2026-10-29. Maintainer explicitly authorized physical Pixel
+Status: complete within the bounded release scope, 2026-10-29. Maintainer explicitly authorized physical Pixel
 validation, basic desktop validation on one platform through Machine Control,
 then German releases. Remaining-language overnight supervision follows this
 release slice; it does not itself authorize publishing unqualified languages.
@@ -93,6 +93,73 @@ and the bounded installed-artifact rerun follow below.
 Quit/relaunch retained German and the selected folder, and restarted stopped.
 A second confirmed start served the same marker. Native menu copy and the
 settings panel fit the default portrait window. Explicit stop refused HTTP;
-the app was quit and the VM was suspended after use and its claim released. The common shutdown
-command returned a testbed adapter error; this was recorded in the private
-Machine Control usage journal.
+the app was quit, the VM suspended and its claim released. The common shutdown
+command returned a testbed adapter error, recorded in the private Machine
+Control journal. A later resume was blocked by the locked host; only this
+campaign's already-quit VM was cold-booted through common recovery. Its normal
+resident became ready without changing host lock/power settings or grants.
+
+
+### Desktop signed publication and installed smoke
+
+[`desktop-v0.1.12`](https://github.com/kzahel/web-server-chrome/releases/tag/desktop-v0.1.12)
+was published from `dec3015a7cd89050b47449e61004e92e43c892db` by
+[40871442482](https://github.com/kzahel/web-server-chrome/actions/runs/40871442482).
+Source checks, Linux product E2E, all five package/signing legs and the
+fail-closed finalizer passed. Every one of the fifteen final public assets was
+independently downloaded and verified against SHA256SUMS. Package/updater identities
+and the existing signing keys remain unchanged.
+
+On a macOS ARM64 VM through Machine Control, the recommended signed/notarized
+`200_OK_0.1.12_aarch64.pkg` installed successfully into `/Applications`.
+The installed bundle's version, signature and Gatekeeper assessment passed;
+the running executable was independently confirmed in the installed bundle.
+The PKG SHA-256 is
+`f35fc25ef734d76a2c4cb58a9d437b3a93db65170242b6ce04d2a18381931925`.
+Its companion signed app archive SHA-256 is
+`871ae5dd68467a68c265f4c8bd8b120c1a8c0ab5260e7f0d00cb23bf4016497c`.
+The independently downloaded public files exactly match the candidate bytes
+used for installation/signature checks.
+
+The installed public app retained German and the selected folder, showed
+localized native menu and settings copy with an unclipped default portrait
+layout, confirmed out-of-home sharing in German, and served the exact fixture
+marker through a separate HTTP client. Explicit stop refused HTTP. Quit and
+relaunch retained German/folder and remained stopped. The app was quit (independent process check), the owned fixture file and old
+unsigned test bundle removed, and the VM gracefully shut down through Machine
+Control's supported guest administration escape. Power-off and claim release
+were independently confirmed. Host lock/power settings and the original other
+VM snapshot were preserved. This is a basic one-platform installed smoke, **not** full
+three-OS installed/update or exact store-extension/native-host acceptance.
+No Windows/Linux installed-product claim, signed update installation, iOS
+store release or separate Crostini binary release is inferred.
+
+The production website deployment
+[40874649593](https://github.com/kzahel/web-server-chrome/actions/runs/40874649593)
+passed. A bundled-browser check of the real download page verified all ten
+artifact links, the recommended ARM64 PKG, no page errors and the JavaScript-off
+fallback at 0.1.12. The Linux install script fallback also points to this tag.
+After the ordinary five-minute feed cache expired, **twenty live Tauri routes**
+passed: all five platform/CPU pairs with clients 0.1.5 and 0.1.11 returned exact
+0.1.12 URLs/signatures matching the public latest.json, while 0.1.12 and future
+99.0.0 received HTTP 204. Health remained successful throughout.
+
+### Rollout observation and remaining external gates
+
+Read-only report run
+[40873784083](https://github.com/kzahel/web-server-chrome/actions/runs/40873784083)
+confirmed code 9 at 1%, pinned standard-7d, and waiting until
+2026-10-30 12:08:50 UTC for the first dwell interval. It made no Play change.
+The report-count fallback was explicitly identified because rate data had fewer
+than 200 rollout user-days; no absence-of-crash or exposure-rate claim is made.
+A later read-only Web Store query still reported 0.1.9 pending review and 0.1.8
+public. Store approval/availability and future Android fraction increases
+remain external/follow-up gates; the automated extension path publishes after
+Google approval. Android scheduled advancement remains report-only.
+
+Remaining-language supervisor setup is complete in
+[Tactical 023](023-remaining-language-supervisor.md) and its maintained runbook.
+No new-language model workers or overnight scheduler were launched by setup.
+
+Source/setup CI [40874649652](https://github.com/kzahel/web-server-chrome/actions/runs/40874649652)
+and the website deployment passed; final evidence updates are documentation only.

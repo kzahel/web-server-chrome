@@ -6,17 +6,27 @@
 
 Topic: desktop-release-readiness
 
-Status: **`desktop-v0.1.11` is the current complete signed maintenance release,
-published 2026-10-28. Source checks, Linux product E2E, the five-platform package
-and signing matrix, finalization, public checksums, and live updater routes pass.
-It includes the dependency refresh and shared HTTP conformance fixes since
-`v0.1.10`. Full exact-public installed-product and signed-update acceptance on
-Windows/macOS/Linux remains open; do not describe this as promotion-accepted.
-`v0.1.10` is the preceding settings/lifecycle repair candidate, `v0.1.6` retains
-the failed functional evidence, and `v0.1.5` remains the accepted prior-public
-update and production-extension baseline.**
+Status: **`desktop-v0.1.12` is the current complete signed release, published
+2026-10-29 with German app controls and native menus. Source checks, Linux
+product E2E, all five package/signing legs, finalization, public checksums,
+website links and older/current/future updater routes pass. The exact public
+recommended macOS ARM64 PKG passed installation, signature/Gatekeeper checks
+and a basic German serve/stop/settings/persistence/quit smoke through Machine
+Control. Full three-OS installed-product and signed-update acceptance remains
+open; this bounded smoke does not establish promotion acceptance. `v0.1.11`
+is the preceding signed dependency/HTTP maintenance release; older functional
+acceptance and failure records remain specific to their versions.**
 
-Last reconciled: **2026-10-28**.
+Last reconciled: **2026-10-29**.
+
+Current evidence is in
+[Tactical 022](../tactical/022-german-release-and-device-smoke.md): signed
+[release run 40871442482](https://github.com/kzahel/web-server-chrome/actions/runs/40871442482),
+fifteen independently verified public assets, exact PKG hash/installed smoke,
+and twenty live updater routes. The update identity/keys remain unchanged;
+old 0.1.5/0.1.11 clients receive 0.1.12, current/future clients receive 204.
+Store extension 0.1.9 remains pending review, so its exact production
+extension/native-host round trip is not inferred.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);

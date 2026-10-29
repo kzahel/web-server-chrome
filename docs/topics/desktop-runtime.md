@@ -6,19 +6,19 @@
 
 Topic: desktop-native-core
 
-Status: **Rust-native desktop `v0.1.11` is the current signed maintenance
+Status: **Rust-native desktop `v0.1.12` is the current signed
 release. Its source, shared compatibility/conformance checks, Linux product E2E,
 five-platform package/signing matrix, public checksums, and live update metadata
 pass; the [desktop release topic](desktop-release-readiness.md) records exact
-evidence and limits. It includes the runtime dependency refresh and HTTP path,
-SPA missing-asset, and conditional-cache corrections. Full exact-public
+evidence and limits. It adds German controls/native menus to the dependency
+refresh and HTTP path, SPA missing-asset, and conditional-cache corrections. Full exact-public
 installed-product/update acceptance remains open. The earlier `v0.1.6`
 settings/background/recovery and Linux child-reaping failures remain historical
 evidence; `v0.1.10` carried their repairs, and October Linux candidate smoke
 passes the bounded lifecycle, serving, and real-store extension checks. Those
 candidate observations do not establish three-OS production acceptance.**
 
-Last reconciled: **2026-10-28**.
+Last reconciled: **2026-10-29**.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);
@@ -408,7 +408,8 @@ English/German app release inputs and a source-aware translation pipeline.
 The [localization topic](localization.md) and
 [workflow](../../scripts/LOCALIZATION.md) own locale availability, independent
 review, native catalogs and qualification evidence. Website/store translations
-remain separate. This source change does not establish a published or
-store-delivered German build. Presentation preferences do not change server
+remain separate. [Tactical 022](../tactical/022-german-release-and-device-smoke.md)
+records the later signed 0.1.12 publication and basic installed macOS German
+smoke; full three-OS/update/production-extension acceptance remains open. Presentation preferences do not change server
 settings, folder grants, HTTP behavior or extension/controller protocol values;
 unknown peer diagnostics retain their original text.

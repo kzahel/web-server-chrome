@@ -53,6 +53,12 @@
             "value": "ブラウザからのクロスオリジンリクエストを許可します。"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브라우저의 교차 출처 요청을 허용합니다."
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -153,6 +159,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "同じ Wi-Fi ネットワーク上の他のデバイスからの接続を許可します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 Wi-Fi 네트워크의 다른 기기가 접속하도록 허용합니다."
           }
         },
         "nl": {
@@ -257,6 +269,12 @@
             "value": "不正なリクエスト"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "잘못된 요청"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -357,6 +375,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "変更"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "변경"
           }
         },
         "nl": {
@@ -461,6 +485,12 @@
             "value": "選択"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -561,6 +591,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP サーバーを開始する前に、フォルダーを選択してください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 서버를 시작하기 전에 폴더를 선택하십시오."
           }
         },
         "nl": {
@@ -665,6 +701,12 @@
             "value": "配信するフォルダーを選択すると、HTTP サーバーを開始できます。"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 서버를 사용하려면 파일을 제공할 폴더를 선택하십시오."
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -765,6 +807,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "コピー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "복사"
           }
         },
         "nl": {
@@ -869,6 +917,12 @@
             "value": "フォルダー内のファイル一覧"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "폴더 내 파일 목록"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -969,6 +1023,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "完了"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "완료"
           }
         },
         "nl": {
@@ -1073,6 +1133,12 @@
             "value": "0、または 1 から 65535 までのポート番号を入力してください。"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0 또는 1부터 65535까지의 포트 번호를 입력하십시오."
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -1173,6 +1239,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "エラー: %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오류: %@"
           }
         },
         "nl": {
@@ -1277,6 +1349,12 @@
             "value": "フィードバックとサポート"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "의견 및 지원"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -1377,6 +1455,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ローカルネットワークへのアクセス"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "로컬 네트워크 접근"
           }
         },
         "nl": {
@@ -1481,6 +1565,12 @@
             "value": "HTTP リクエストの形式が正しくありません。\\n"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 요청 형식이 잘못되었습니다.\\n"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -1581,6 +1671,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "現在、利用できる Wi-Fi アドレスがありません。Wi-Fi が利用可能になるまでは、この iPhone からのみ HTTP サーバーに接続できます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "현재 사용할 수 있는 Wi-Fi 주소가 없습니다. Wi-Fi가 준비될 때까지 HTTP 서버에는 이 iPhone에서만 접속할 수 있습니다."
           }
         },
         "nl": {
@@ -1685,6 +1781,12 @@
             "value": "フォルダー未選択"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택한 폴더 없음"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -1785,6 +1887,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ポート"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "포트"
           }
         },
         "nl": {
@@ -1889,6 +1997,12 @@
             "value": "プレビュー"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "미리보기"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -1989,6 +2103,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "プライバシー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "개인정보 보호"
           }
         },
         "nl": {
@@ -2093,6 +2213,12 @@
             "value": "「ファイル」経由の読み取り専用アクセス"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "파일 앱을 통한 읽기 전용 접근"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -2193,6 +2319,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "リクエストのタイムアウト"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "요청 시간 초과"
           }
         },
         "nl": {
@@ -2297,6 +2429,12 @@
             "value": "リクエストがタイムアウトしました。\\n"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "요청 시간이 초과되었습니다.\\n"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -2397,6 +2535,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "稼働中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "실행 중"
           }
         },
         "nl": {
@@ -2501,6 +2645,12 @@
             "value": "配信中の URL"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접속 URL"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -2601,6 +2751,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "拡張子のないルートが見つからない場合は、ルートフォルダーの index.html を配信します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "확장자가 없는 경로가 존재하지 않으면 루트 폴더의 index.html을 제공합니다."
           }
         },
         "nl": {
@@ -2705,6 +2861,12 @@
             "value": "HTTP サーバー"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 서버"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -2805,6 +2967,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "配信設定"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "파일 제공 방식"
           }
         },
         "nl": {
@@ -2909,6 +3077,12 @@
             "value": "配信フォルダー"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "파일 제공 폴더"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -3009,6 +3183,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "200 OK を画面に表示している間のみ、ファイルを配信できます。アプリがバックグラウンドに移ると、iOS が HTTP サーバーを停止します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK가 화면에 열려 있는 동안에만 파일을 제공합니다. 앱이 백그라운드로 전환되면 iOS가 HTTP 서버를 중지합니다."
           }
         },
         "nl": {
@@ -3113,6 +3293,12 @@
             "value": "共有"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "공유"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -3213,6 +3399,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "フォルダーに index.html がない場合は、フォルダー内のファイル一覧を表示します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "폴더에 index.html이 없으면 폴더 내 파일 목록을 표시합니다."
           }
         },
         "nl": {
@@ -3317,6 +3509,12 @@
             "value": "シングルページアプリのフォールバック"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "단일 페이지 앱 폴백"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -3417,6 +3615,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ソースコード · MIT"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "소스 코드 · MIT"
           }
         },
         "nl": {
@@ -3521,6 +3725,12 @@
             "value": "開始処理中…"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시작 중…"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -3621,6 +3831,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP サーバーを開始します"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 서버를 시작합니다."
           }
         },
         "nl": {
@@ -3725,6 +3941,12 @@
             "value": "この設定を変更するには、HTTP サーバーを停止してください。"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 설정을 변경하려면 HTTP 서버를 중지하십시오."
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -3825,6 +4047,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "停止中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "중지됨"
           }
         },
         "nl": {
@@ -3929,6 +4157,12 @@
             "value": "停止処理中…"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "중지 중…"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -4029,6 +4263,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP サーバーを停止します"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 서버를 중지합니다."
           }
         },
         "nl": {
@@ -4133,6 +4373,12 @@
             "value": "保存済みのアクセス権が失効しました。フォルダーをもう一度選択してください。"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장된 폴더 접근 권한이 만료되었습니다. 폴더를 다시 선택하십시오."
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -4233,6 +4479,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "選択したフォルダーを利用できません。「ファイル」でもう一度選択してください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택한 폴더를 사용할 수 없습니다. 파일 앱에서 다시 선택하십시오."
           }
         },
         "nl": {
@@ -4337,6 +4589,12 @@
             "value": "選択した項目はフォルダーではありません。"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택한 항목은 폴더가 아닙니다."
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -4437,6 +4695,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP サーバーを開始できませんでした。フォルダーとポートを確認してから、もう一度お試しください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 서버를 시작할 수 없습니다. 폴더와 포트를 확인한 후 다시 시도하십시오."
           }
         },
         "nl": {
@@ -4541,6 +4805,12 @@
             "value": "HTTP サーバーはすでに稼働しています。"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 서버가 이미 실행 중입니다."
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -4641,6 +4911,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP サーバーが混み合っています。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 서버가 혼잡합니다."
           }
         },
         "nl": {
@@ -4745,6 +5021,12 @@
             "value": "200 OK がバックグラウンドに移ったため、HTTP サーバーを停止しました。準備ができたら、もう一度開始してください。"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK가 백그라운드로 전환되어 HTTP 서버가 중지되었습니다. 준비되면 다시 시작하십시오."
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -4845,6 +5127,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "この iPhone"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 iPhone"
           }
         },
         "nl": {
@@ -4949,6 +5237,12 @@
             "value": "0 を指定すると、空いているポートを自動で選択します。"
           }
         },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사용 가능한 포트를 자동으로 선택하려면 0을 입력하십시오."
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -5049,6 +5343,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP サーバー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 서버"
           }
         },
         "nl": {

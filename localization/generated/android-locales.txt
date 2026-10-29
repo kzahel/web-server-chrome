@@ -14,3 +14,4 @@ ru
 uk
 tr
 ja
+ko

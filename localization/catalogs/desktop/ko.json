@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "200 OK를 열 수 없습니다.",
+  "about_200_ok_ba8aa9": "200 OK에 관하여",
+  "check_for_updates_9ed79e": "업데이트 확인",
+  "choose_folder_to_serve_d488f4": "파일을 제공할 폴더 선택",
+  "close_7d9eb7": "닫기",
+  "hide_200_ok_981b92": "200 OK 가리기",
+  "hide_others_1753e2": "기타 가리기",
+  "launching_b1601d": "실행 중...",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "ChromeOS Linux용 200 OK Web Server 열기",
+  "quit_200_ok_686f8f": "200 OK 종료",
+  "quit_b3eb37": "종료",
+  "run_in_background_0db775": "백그라운드에서 실행",
+  "settings_74a883": "설정",
+  "show_all_e1c326": "모두 보기",
+  "show_app_ec462a": "앱 보기",
+  "show_icon_in_menu_bar_0ad9f3": "메뉴 막대에 아이콘 표시",
+  "show_icon_in_system_tray_25b481": "시스템 트레이에 아이콘 표시",
+  "start_at_login_5952eb": "로그인 시 실행",
+  "try_again_df0fe9": "다시 시도",
+  "unknown_launch_error_3585c0": "알 수 없는 실행 오류",
+  "web_server_fc0480": "HTTP 서버"
+}

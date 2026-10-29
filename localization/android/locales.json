@@ -28,6 +28,10 @@
       "catalog": "android/app/src/main/res/values-ja/strings.xml",
       "quantities": ["other"]
     },
+    "ko": {
+      "catalog": "android/app/src/main/res/values-ko/strings.xml",
+      "quantities": ["other"]
+    },
     "nl": {
       "catalog": "android/app/src/main/res/values-nl/strings.xml",
       "quantities": ["one", "other"]

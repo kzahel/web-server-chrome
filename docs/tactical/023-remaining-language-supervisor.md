@@ -66,7 +66,7 @@ this supervisor setup.
 | uk | qualified | [bound evidence](../../localization/qualification/uk.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 | tr | qualified | [bound evidence](../../localization/qualification/tr.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 | ja | qualified | [bound evidence](../../localization/qualification/ja.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
-| ko | queued | Preserve frozen jobs and manifest order |
+| ko | qualified | [bound evidence](../../localization/qualification/ko.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 | zh-CN | queued | Preserve frozen jobs and manifest order |
 | zh-TW | queued | Preserve frozen jobs and manifest order |
 
@@ -175,3 +175,9 @@ completion records and tracked receipts bind the revised harness and new actual
 native/browser runs; reviewed catalogs and session identities are unchanged.
 Ukrainian resumes from its preserved frozen jobs, followed by the final five
 locales.
+
+The thirteen-language cohort through Turkish
+`65b9371634dfe585115cc430d0a7c6661f8d888e` passed all seven hosted workflows,
+including [iOS CI](https://github.com/kzahel/web-server-chrome/actions/runs/40931799909).
+Japanese then passed full local qualification and committed with its bound
+receipt; Korean and the two Chinese variants form the final remaining queue.

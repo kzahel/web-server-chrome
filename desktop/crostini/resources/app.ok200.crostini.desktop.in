@@ -41,3 +41,5 @@ GenericName[tr]=Web sunucusu
 Comment[tr]=ChromeOS Linux için 200 OK Web Server uygulamasını açın
 GenericName[ja]=HTTP サーバー
 Comment[ja]=ChromeOS Linux用の200 OK Web Serverを開く
+GenericName[ko]=HTTP 서버
+Comment[ko]=ChromeOS Linux용 200 OK Web Server 열기

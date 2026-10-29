@@ -1,0 +1,62 @@
+{
+  "locale": "ko",
+  "register": "Use natural Korean, concise conventional noun/action labels and consistent formal polite 합니다/하십시오 sentences; choose natural particles around placeholders. Preserve 200 OK, URLs, paths, index.html, HTTP, CORS, SPA, IPv4/IPv6 and code/port examples. Inflect terminology naturally. Never imply HTTPS, uploads, public-internet access or indefinite iOS background serving. Distinguish launcher/controller and the HTTP server.",
+  "schemaVersion": 1,
+  "terms": {
+    "background": {
+      "meaning": "Android/desktop policy differs; iOS stops on background.",
+      "preferred": "백그라운드",
+      "sourceTerms": ["background"]
+    },
+    "choose": {
+      "meaning": "Select and authorize a folder.",
+      "preferred": "선택 / 선택하기",
+      "sourceTerms": ["choose", "select"]
+    },
+    "folder": {
+      "meaning": "A user-selected serving folder, not an arbitrary system directory.",
+      "preferred": "폴더 / 루트 폴더",
+      "sourceTerms": ["folder", "directory", "root"]
+    },
+    "lan": {
+      "meaning": "Access on the local network does not imply public internet access.",
+      "preferred": "로컬 네트워크 / LAN / Wi-Fi",
+      "sourceTerms": ["local network", "LAN", "Wi-Fi"]
+    },
+    "launcher": {
+      "meaning": "Browser surface controls a separately installed native server.",
+      "preferred": "실행 도구 / 제어판",
+      "sourceTerms": ["launcher", "controller"]
+    },
+    "listing": {
+      "meaning": "List files when no index.html exists, not upload permission.",
+      "preferred": "폴더 내 파일 목록",
+      "sourceTerms": ["directory listing", "file list"]
+    },
+    "port": {
+      "meaning": "Numeric port; 0 selects an available port.",
+      "preferred": "포트",
+      "sourceTerms": ["port"]
+    },
+    "readonly": {
+      "meaning": "Serving does not grant file modification.",
+      "preferred": "읽기 전용",
+      "sourceTerms": ["read-only"]
+    },
+    "server": {
+      "meaning": "The native app serves files; the extension launches or controls it.",
+      "preferred": "HTTP 서버 / 파일 제공",
+      "sourceTerms": ["server", "serving"]
+    },
+    "start": {
+      "meaning": "Explicitly start the listener; opening a launcher is distinct.",
+      "preferred": "시작 / 시작 중",
+      "sourceTerms": ["start", "starting"]
+    },
+    "stop": {
+      "meaning": "Stops serving, retaining the selected folder and settings.",
+      "preferred": "중지 / 중지됨 / 중지 중",
+      "sourceTerms": ["stop", "stopped", "stopping"]
+    }
+  }
+}

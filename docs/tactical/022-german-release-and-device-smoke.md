@@ -75,7 +75,10 @@ The scheduled advancer remains report-only; further increases are separate.
 Tag `extension-v0.1.9` points to the exact staged source
 `ad3692b6bb8239e0a2d217e5b1817dc1046084c0`.
 [40870810213](https://github.com/kzahel/web-server-chrome/actions/runs/40870810213)
-passed build, real-browser smoke and Web Store submission. An independent
+passed build, real-browser smoke and Web Store submission. Its exact
+browser-tested submission ZIP SHA-256 is
+`9f3ca1ade9e39c5ab5eed107e39c608f2c936a2743983659bd8bb6eb50d02a9a`.
+An independent
 read-only store query reports **0.1.9 PENDING_REVIEW**, public **0.1.8**, no
 warning/takedown. Store review and installability remain independent gates.
 

@@ -159,3 +159,19 @@ helper before this test-only correction was committed. The remaining ten prior
 locales are being requalified serially; their old records keep their original
 hashes until actual new native/browser runs finish. Hosted verification of the
 correction runs alongside this bounded local refresh.
+
+The input-driver correction commit
+`69fd5527d63a86eb16c3b1e5776e8d9470423fb0` passed all seven applicable hosted
+workflows, including [iOS CI](https://github.com/kzahel/web-server-chrome/actions/runs/40921097045)
+and [Android CI](https://github.com/kzahel/web-server-chrome/actions/runs/40921096616).
+Their first attempts failed before tests (missing hosted iOS simulator; corrupt
+Android emulator SDK download); each failed job was rerun once on a fresh
+runner and passed. Source and assertions were unchanged for those retries.
+
+All eleven completed locales passed fresh full five-surface qualification
+against the input-driver correction: French, Spanish, Italian, Brazilian
+Portuguese, Dutch, Swedish, Danish, Czech, Polish, Romanian and Russian. Current
+completion records and tracked receipts bind the revised harness and new actual
+native/browser runs; reviewed catalogs and session identities are unchanged.
+Ukrainian resumes from its preserved frozen jobs, followed by the final five
+locales.

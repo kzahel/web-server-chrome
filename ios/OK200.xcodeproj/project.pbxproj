@@ -316,6 +316,7 @@
 				sv,
 				tr,
 				uk,
+				"zh-CN",
 			);
 			mainGroup = B72141085C34D735A799950E;
 			minimizedProjectReferenceProxies = 1;

@@ -106,6 +106,12 @@
             "state": "translated",
             "value": "Дозволяти браузерні запити з інших джерел."
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "允许浏览器发送跨源请求。"
+          }
         }
       }
     },
@@ -213,6 +219,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Дозволяти підключення інших пристроїв у цій мережі Wi-Fi."
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "允许同一 Wi-Fi 网络中的其他设备连接。"
           }
         }
       }
@@ -322,6 +334,12 @@
             "state": "translated",
             "value": "Некоректний запит"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "错误请求"
+          }
         }
       }
     },
@@ -429,6 +447,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Змінити"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更改"
           }
         }
       }
@@ -538,6 +562,12 @@
             "state": "translated",
             "value": "Вибрати"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择"
+          }
         }
       }
     },
@@ -645,6 +675,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Виберіть папку перед запуском HTTP-сервера."
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请先选择文件夹，再启动 HTTP 服务器。"
           }
         }
       }
@@ -754,6 +790,12 @@
             "state": "translated",
             "value": "Виберіть кореневу папку, щоб можна було запустити HTTP-сервер."
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择要共享的文件夹后，即可启用 HTTP 服务器。"
+          }
         }
       }
     },
@@ -861,6 +903,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Скопіювати"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "复制"
           }
         }
       }
@@ -970,6 +1018,12 @@
             "state": "translated",
             "value": "Список файлів у папці"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文件夹内容列表"
+          }
         }
       }
     },
@@ -1077,6 +1131,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Готово"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成"
           }
         }
       }
@@ -1186,6 +1246,12 @@
             "state": "translated",
             "value": "Введіть 0 або номер порту від 1 до 65535."
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请输入 0 或 1 至 65535 之间的端口号。"
+          }
         }
       }
     },
@@ -1293,6 +1359,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Помилка: %@"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "错误：%@"
           }
         }
       }
@@ -1402,6 +1474,12 @@
             "state": "translated",
             "value": "Відгуки й підтримка"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "反馈与支持"
+          }
         }
       }
     },
@@ -1509,6 +1587,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Доступ із локальної мережі"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "局域网访问"
           }
         }
       }
@@ -1618,6 +1702,12 @@
             "state": "translated",
             "value": "Неправильно сформований HTTP-запит.\\n"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 请求格式错误。\\n"
+          }
         }
       }
     },
@@ -1725,6 +1815,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Наразі адреса Wi-Fi недоступна. HTTP-сервер залишатиметься доступним лише на цьому iPhone, доки з’єднання Wi-Fi не буде готове до роботи."
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前没有可用的 Wi-Fi 地址。Wi-Fi 就绪前，HTTP 服务器仅可在此 iPhone 上访问。"
           }
         }
       }
@@ -1834,6 +1930,12 @@
             "state": "translated",
             "value": "Папку не вибрано"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未选择文件夹"
+          }
         }
       }
     },
@@ -1941,6 +2043,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Порт"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端口"
           }
         }
       }
@@ -2050,6 +2158,12 @@
             "state": "translated",
             "value": "Попередній перегляд"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "预览"
+          }
         }
       }
     },
@@ -2157,6 +2271,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Конфіденційність"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐私"
           }
         }
       }
@@ -2266,6 +2386,12 @@
             "state": "translated",
             "value": "Доступ лише для читання через «Файли»"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通过“文件”以只读方式访问"
+          }
         }
       }
     },
@@ -2373,6 +2499,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Час очікування запиту вичерпано"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请求超时"
           }
         }
       }
@@ -2482,6 +2614,12 @@
             "state": "translated",
             "value": "Час очікування запиту вичерпано.\\n"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请求已超时。\\n"
+          }
         }
       }
     },
@@ -2589,6 +2727,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Працює"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "运行中"
           }
         }
       }
@@ -2698,6 +2842,12 @@
             "state": "translated",
             "value": "Активні URL-адреси"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "访问 URL"
+          }
         }
       }
     },
@@ -2805,6 +2955,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Надавати index.html із кореневої папки для відсутніх маршрутів без розширень."
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请求的路由不存在且不含文件扩展名时，返回根目录下的 index.html。"
           }
         }
       }
@@ -2914,6 +3070,12 @@
             "state": "translated",
             "value": "HTTP-сервер"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 服务器"
+          }
         }
       }
     },
@@ -3021,6 +3183,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Налаштування доступу до файлів"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文件服务设置"
           }
         }
       }
@@ -3130,6 +3298,12 @@
             "state": "translated",
             "value": "Коренева папка"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "共享文件夹"
+          }
         }
       }
     },
@@ -3237,6 +3411,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Доступ до файлів надається, поки 200 OK відкрито на екрані. iOS зупиняє HTTP-сервер, коли застосунок переходить у фоновий режим."
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK 仅在前台运行时提供文件访问。应用进入后台时，iOS 会停止 HTTP 服务器。"
           }
         }
       }
@@ -3346,6 +3526,12 @@
             "state": "translated",
             "value": "Поширити"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分享"
+          }
         }
       }
     },
@@ -3453,6 +3639,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Показувати список файлів у папці, якщо в ній немає index.html."
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文件夹中没有 index.html 时，显示文件列表。"
           }
         }
       }
@@ -3562,6 +3754,12 @@
             "state": "translated",
             "value": "Резервна обробка маршрутів SPA"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "单页应用回退"
+          }
         }
       }
     },
@@ -3669,6 +3867,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Вихідний код · MIT"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "源代码 · MIT"
           }
         }
       }
@@ -3778,6 +3982,12 @@
             "state": "translated",
             "value": "Запуск…"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在启动…"
+          }
         }
       }
     },
@@ -3885,6 +4095,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Запускає HTTP-сервер"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启动 HTTP 服务器"
           }
         }
       }
@@ -3994,6 +4210,12 @@
             "state": "translated",
             "value": "Зупиніть HTTP-сервер, щоб змінити це налаштування."
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请先停止 HTTP 服务器，再更改此设置。"
+          }
         }
       }
     },
@@ -4101,6 +4323,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Зупинено"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已停止"
           }
         }
       }
@@ -4210,6 +4438,12 @@
             "state": "translated",
             "value": "Зупинення…"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在停止…"
+          }
         }
       }
     },
@@ -4317,6 +4551,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Зупиняє HTTP-сервер"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止 HTTP 服务器"
           }
         }
       }
@@ -4426,6 +4666,12 @@
             "state": "translated",
             "value": "Термін дії збереженого дозволу на доступ до папки минув. Виберіть папку ще раз."
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已保存的文件夹访问权限已过期。请重新选择文件夹。"
+          }
         }
       }
     },
@@ -4533,6 +4779,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Вибрана папка недоступна. Виберіть її ще раз у застосунку «Файли»."
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所选文件夹不可用。请在“文件”中重新选择。"
           }
         }
       }
@@ -4642,6 +4894,12 @@
             "state": "translated",
             "value": "Вибраний елемент не є папкою."
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所选项目不是文件夹。"
+          }
         }
       }
     },
@@ -4749,6 +5007,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Не вдалося запустити HTTP-сервер. Перевірте папку й порт, а потім спробуйте ще раз."
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 服务器无法启动。请检查文件夹和端口，然后重试。"
           }
         }
       }
@@ -4858,6 +5122,12 @@
             "state": "translated",
             "value": "HTTP-сервер уже працює."
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 服务器已在运行。"
+          }
         }
       }
     },
@@ -4965,6 +5235,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP-сервер зайнятий."
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 服务器正忙。"
           }
         }
       }
@@ -5074,6 +5350,12 @@
             "state": "translated",
             "value": "HTTP-сервер зупинився, коли 200 OK перейшов у фоновий режим. Запустіть його знову, коли будете готові."
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK 进入后台时，HTTP 服务器已停止。准备就绪后可重新启动。"
+          }
         }
       }
     },
@@ -5181,6 +5463,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Цей iPhone"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此 iPhone"
           }
         }
       }
@@ -5290,6 +5578,12 @@
             "state": "translated",
             "value": "Введіть 0 для автоматичного вибору вільного порту"
           }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "输入 0 可自动选择可用端口"
+          }
         }
       }
     },
@@ -5397,6 +5691,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Вебсервер"
+          }
+        },
+        "zh-CN": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP 服务器"
           }
         }
       }

@@ -43,3 +43,5 @@ GenericName[ja]=HTTP サーバー
 Comment[ja]=ChromeOS Linux用の200 OK Web Serverを開く
 GenericName[ko]=HTTP 서버
 Comment[ko]=ChromeOS Linux용 200 OK Web Server 열기
+GenericName[zh_CN]=HTTP 服务器
+Comment[zh_CN]=打开适用于 ChromeOS Linux 的 200 OK Web Server

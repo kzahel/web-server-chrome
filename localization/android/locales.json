@@ -63,6 +63,10 @@
     "uk": {
       "catalog": "android/app/src/main/res/values-uk/strings.xml",
       "quantities": ["one", "few", "many", "other"]
+    },
+    "zh-CN": {
+      "catalog": "android/app/src/main/res/values-zh-rCN/strings.xml",
+      "quantities": ["other"]
     }
   },
   "schemaVersion": 1

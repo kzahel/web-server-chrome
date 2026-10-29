@@ -1,0 +1,62 @@
+{
+  "locale": "zh-CN",
+  "register": "Use Simplified Chinese and mainland software terminology, concise action labels and neutral instructions; use 您 only when necessary and never mix Traditional characters. Preserve 200 OK, URLs, paths, index.html, HTTP, CORS, SPA, IPv4/IPv6 and code/port examples. Inflect terminology naturally. Never imply HTTPS, uploads, public-internet access or indefinite iOS background serving. Distinguish launcher/controller and the HTTP server.",
+  "schemaVersion": 1,
+  "terms": {
+    "background": {
+      "meaning": "Android/desktop policy differs; iOS stops on background.",
+      "preferred": "后台",
+      "sourceTerms": ["background"]
+    },
+    "choose": {
+      "meaning": "Select and authorize a folder.",
+      "preferred": "选择",
+      "sourceTerms": ["choose", "select"]
+    },
+    "folder": {
+      "meaning": "A user-selected serving folder, not an arbitrary system directory.",
+      "preferred": "文件夹 / 根目录",
+      "sourceTerms": ["folder", "directory", "root"]
+    },
+    "lan": {
+      "meaning": "Access on the local network does not imply public internet access.",
+      "preferred": "局域网 / LAN / Wi-Fi",
+      "sourceTerms": ["local network", "LAN", "Wi-Fi"]
+    },
+    "launcher": {
+      "meaning": "Browser surface controls a separately installed native server.",
+      "preferred": "启动器 / 控制面板",
+      "sourceTerms": ["launcher", "controller"]
+    },
+    "listing": {
+      "meaning": "List files when no index.html exists, not upload permission.",
+      "preferred": "文件夹内容列表 / 文件列表",
+      "sourceTerms": ["directory listing", "file list"]
+    },
+    "port": {
+      "meaning": "Numeric port; 0 selects an available port.",
+      "preferred": "端口",
+      "sourceTerms": ["port"]
+    },
+    "readonly": {
+      "meaning": "Serving does not grant file modification.",
+      "preferred": "只读",
+      "sourceTerms": ["read-only"]
+    },
+    "server": {
+      "meaning": "The native app serves files; the extension launches or controls it.",
+      "preferred": "HTTP 服务器 / 提供文件",
+      "sourceTerms": ["server", "serving"]
+    },
+    "start": {
+      "meaning": "Explicitly start the listener; opening a launcher is distinct.",
+      "preferred": "启动 / 正在启动",
+      "sourceTerms": ["start", "starting"]
+    },
+    "stop": {
+      "meaning": "Stops serving, retaining the selected folder and settings.",
+      "preferred": "停止 / 已停止 / 正在停止",
+      "sourceTerms": ["stop", "stopped", "stopping"]
+    }
+  }
+}

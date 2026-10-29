@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "无法打开 200 OK。",
+  "about_200_ok_ba8aa9": "关于 200 OK",
+  "check_for_updates_9ed79e": "检查更新",
+  "choose_folder_to_serve_d488f4": "选择要提供访问的文件夹",
+  "close_7d9eb7": "关闭",
+  "hide_200_ok_981b92": "隐藏 200 OK",
+  "hide_others_1753e2": "隐藏其他",
+  "launching_b1601d": "正在启动…",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "打开适用于 ChromeOS Linux 的 200 OK Web Server",
+  "quit_200_ok_686f8f": "退出 200 OK",
+  "quit_b3eb37": "退出",
+  "run_in_background_0db775": "在后台运行",
+  "settings_74a883": "设置",
+  "show_all_e1c326": "显示全部",
+  "show_app_ec462a": "显示应用",
+  "show_icon_in_menu_bar_0ad9f3": "在菜单栏中显示图标",
+  "show_icon_in_system_tray_25b481": "在系统托盘中显示图标",
+  "start_at_login_5952eb": "登录时启动",
+  "try_again_df0fe9": "重试",
+  "unknown_launch_error_3585c0": "未知启动错误",
+  "web_server_fc0480": "HTTP 服务器"
+}

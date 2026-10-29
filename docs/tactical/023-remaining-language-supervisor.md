@@ -129,3 +129,33 @@ The corrected source commit `61741bd80e20c4cc57d00eb7e49093c1c635431e` passed
 [hosted iOS CI](https://github.com/kzahel/web-server-chrome/actions/runs/40910200301),
 main CI and CodeQL. This closes the synchronization correction; no retry of the
 known-racing source is used as acceptance.
+
+
+## Hosted iOS switch-input follow-up
+
+The Romanian cohort's hosted iOS result failed the English background lifecycle
+test while waiting for its initial Running state; the translated serving test
+passed. The retained event record places a center tap at the server switch, but
+the recording and accessibility snapshots keep its value at `0`, status Stopped,
+valid fixture selected, and no error or background-stop message. Waiting for the
+label alone therefore did not resolve the missed-input case.
+
+The UI driver now waits for an existing, enabled, hittable server switch and
+taps its visible thumb once, using its current value to select the thumb side.
+It preserves the bounded status assertions and never retries a toggle, skips a
+test, changes app behavior, or relaxes lifecycle acceptance. The same input
+helper is used by translated serving and existing lifecycle/recovery tests.
+
+Russian completed its full local qualification and commit before the queue was
+stopped. Ukrainian web workers were stopped and joined through their owner,
+leaving frozen jobs and cancelled state for exact resume. Only the UI test
+fingerprint was explicitly reconciled again; old plans/results remain private.
+All eleven completed locales require fresh full qualification against this
+input correction before current completion records are accepted. Hosted CI of
+the corrected source is required as well.
+
+French passed the complete five-surface qualification with the revised input
+helper before this test-only correction was committed. The remaining ten prior
+locales are being requalified serially; their old records keep their original
+hashes until actual new native/browser runs finish. Hosted verification of the
+correction runs alongside this bounded local refresh.

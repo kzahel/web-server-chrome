@@ -11,6 +11,23 @@ final class ServerScreenUITests: XCTestCase {
     }
 
     @MainActor
+    private func tapServerSwitch(in app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
+        let server = app.switches["server-toggle"]
+        let ready = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+            object: server
+        )
+        guard XCTWaiter.wait(for: [ready], timeout: 10) == .completed else {
+            XCTFail("Server switch is not ready for input", file: file, line: line)
+            return
+        }
+        // The SwiftUI accessibility wrapper's center tap can leave the native
+        // switch unchanged on hosted simulators. Tap its visible thumb once.
+        let thumbX = server.value as? String == "1" ? 0.75 : 0.25
+        server.coordinate(withNormalizedOffset: CGVector(dx: thumbX, dy: 0.5)).tap()
+    }
+
+    @MainActor
     func testTranslatedServingAndPersistedFolder() {
         let environment = ProcessInfo.processInfo.environment
         let locale = environment["OK200_TEST_LOCALE"] ?? "de"
@@ -22,10 +39,10 @@ final class ServerScreenUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["server-status"].waitForExistence(timeout: 5))
         assertStatus(stopped, in: app)
         let folder = app.staticTexts["folder-name"].label
-        app.switches["server-toggle"].tap()
+        tapServerSwitch(in: app)
         assertStatus(running, in: app)
         XCTAssertFalse(app.buttons["choose-folder"].isEnabled)
-        app.switches["server-toggle"].tap()
+        tapServerSwitch(in: app)
         app.terminate()
         app.launchArguments = ["-AppleLanguages", "(\(locale))", "-AppleLocale", locale.replacingOccurrences(of: "-", with: "_")]
         app.launch()
@@ -50,13 +67,13 @@ final class ServerScreenUITests: XCTestCase {
         let server = app.switches["server-toggle"]
         XCTAssertTrue(server.isEnabled)
         XCTAssertEqual(server.value as? String, "0")
-        server.tap()
+        tapServerSwitch(in: app)
         XCTAssertTrue(app.staticTexts["server-status"].waitForExistence(timeout: 5))
         assertStatus("Running", in: app)
         XCTAssertEqual(server.value as? String, "1")
         XCTAssertFalse(app.buttons["choose-folder"].isEnabled)
 
-        server.tap()
+        tapServerSwitch(in: app)
         assertStatus("Stopped", in: app)
         XCTAssertEqual(server.value as? String, "0")
         XCTAssertTrue(app.buttons["choose-folder"].isEnabled)
@@ -112,7 +129,7 @@ final class ServerScreenUITests: XCTestCase {
 
         XCTAssertTrue(app.staticTexts["folder-name"].waitForExistence(timeout: 5))
         XCTAssertEqual(app.staticTexts["folder-name"].label, "Unavailable folder")
-        app.switches["server-toggle"].tap()
+        tapServerSwitch(in: app)
         XCTAssertTrue(app.staticTexts["server-status"].label.contains("Choose it again"))
         XCTAssertEqual(app.switches["server-toggle"].value as? String, "0")
         XCTAssertTrue(app.buttons["choose-folder"].isEnabled)
@@ -126,7 +143,7 @@ final class ServerScreenUITests: XCTestCase {
             "-use-ok200-ui-test-fixture"
         ]
         app.launch()
-        app.switches["server-toggle"].tap()
+        tapServerSwitch(in: app)
         assertStatus("Running", in: app)
 
         XCUIDevice.shared.press(.home)

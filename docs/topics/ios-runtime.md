@@ -430,3 +430,9 @@ The UI suite now waits on the expected status predicate with a bounded timeout.
 This changes test synchronization only; server lifecycle, HTTP behavior, native
 settings and compatibility remain unchanged. [Tactical 023](../tactical/023-remaining-language-supervisor.md)
 records the failure, fresh qualification and hosted-CI follow-up.
+
+A later hosted lifecycle run showed a recorded center tap leaving the native
+server switch off. The UI driver additionally waits for enabled/hittable input
+and taps the visible switch thumb once, while retaining strict status/lifecycle
+assertions. This remains a test-only change; refreshed per-locale qualification
+and hosted CI are recorded in Tactical 023.

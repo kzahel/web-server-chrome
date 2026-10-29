@@ -6,27 +6,27 @@
 
 Topic: desktop-release-readiness
 
-Status: **`desktop-v0.1.12` is the current complete signed release, published
-2026-10-29 with German app controls and native menus. Source checks, Linux
-product E2E, all five package/signing legs, finalization, public checksums,
-website links and older/current/future updater routes pass. The exact public
-recommended macOS ARM64 PKG passed installation, signature/Gatekeeper checks
-and a basic German serve/stop/settings/persistence/quit smoke through Machine
-Control. Full three-OS installed-product and signed-update acceptance remains
-open; this bounded smoke does not establish promotion acceptance. `v0.1.11`
-is the preceding signed dependency/HTTP maintenance release; older functional
-acceptance and failure records remain specific to their versions.**
+Status: **`desktop-v0.1.13` is the current complete signed release, published
+2026-10-29 with nineteen offline app languages and native menus. Source checks,
+Linux product E2E, all five package/signing legs and fail-closed finalization
+passed. All sixteen public asset digests and the checksum ledger were independently
+verified. Both macOS architectures pass app/PKG signing, Gatekeeper and stapling.
+Twenty live older/current/future updater routes pass; download and installer
+fallbacks are deployed for the verified release. The real signed 0.1.12 → 0.1.13
+update passed on macOS ARM64, including its normal administrator authorization;
+the installed binary matches the independent public payload SHA-256 exactly.
+Basic Spanish native-menu/settings and visible start/serve/stop smoke pass
+through Machine Control; Tactical 024 records its scope and cleanup.
+Full three-OS installed-product and production-extension acceptance remains open.**
 
 Last reconciled: **2026-10-29**.
 
-Current evidence is in
-[Tactical 022](../tactical/022-german-release-and-device-smoke.md): signed
-[release run 40871442482](https://github.com/kzahel/web-server-chrome/actions/runs/40871442482),
-fifteen independently verified public assets, exact PKG hash/installed smoke,
-and twenty live updater routes. The update identity/keys remain unchanged;
-old 0.1.5/0.1.11 clients receive 0.1.12, current/future clients receive 204.
-Store extension 0.1.9 remains pending review, so its exact production
-extension/native-host round trip is not inferred.
+Current publication evidence is in [Tactical 024](../tactical/024-nineteen-language-publication.md):
+[release run 40953035519](https://github.com/kzahel/web-server-chrome/actions/runs/40953035519).
+The update identity and keys remain unchanged: 0.1.5/0.1.12 clients receive
+0.1.13; current/future clients receive 204. Store extension 0.1.10 remains
+pending review (public 0.1.8), so an exact production extension round trip is
+not inferred. Tactical 022 retains the preceding 0.1.12 German smoke evidence.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);

@@ -301,6 +301,7 @@
 				Base,
 				de,
 				en,
+				es,
 				fr,
 			);
 			mainGroup = B72141085C34D735A799950E;

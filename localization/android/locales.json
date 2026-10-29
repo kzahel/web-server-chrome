@@ -4,6 +4,10 @@
       "catalog": "android/app/src/main/res/values-de/strings.xml",
       "quantities": ["one", "other"]
     },
+    "es": {
+      "catalog": "android/app/src/main/res/values-es/strings.xml",
+      "quantities": ["one", "many", "other"]
+    },
     "fr": {
       "catalog": "android/app/src/main/res/values-fr/strings.xml",
       "quantities": ["one", "many", "other"]

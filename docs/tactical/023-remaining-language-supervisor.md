@@ -53,7 +53,7 @@ this supervisor setup.
 | Locale | State | Evidence/commit |
 |---|---|---|
 | fr | qualified | [bound evidence](../../localization/qualification/fr.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
-| es | queued | Preserve frozen jobs and manifest order |
+| es | qualified | [bound evidence](../../localization/qualification/es.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 | it | queued | Preserve frozen jobs and manifest order |
 | pt-BR | queued | Preserve frozen jobs and manifest order |
 | nl | queued | Preserve frozen jobs and manifest order |

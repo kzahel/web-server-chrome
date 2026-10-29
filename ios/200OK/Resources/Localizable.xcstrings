@@ -17,6 +17,12 @@
             "value": "Allow cross-origin browser requests."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permitir solicitudes del navegador desde otros orígenes."
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -39,6 +45,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Allow other devices on this Wi-Fi network to connect."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permitir que otros dispositivos de esta red Wi-Fi se conecten."
           }
         },
         "fr": {
@@ -65,6 +77,12 @@
             "value": "Bad Request"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solicitud incorrecta"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -87,6 +105,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Change"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambiar"
           }
         },
         "fr": {
@@ -113,6 +137,12 @@
             "value": "Choose"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seleccionar"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -135,6 +165,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Choose a folder before starting the server."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seleccione una carpeta antes de iniciar el servidor."
           }
         },
         "fr": {
@@ -161,6 +197,12 @@
             "value": "Choose a serving folder to enable the server."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seleccione una carpeta para poder activar el servidor."
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -183,6 +225,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copy"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar"
           }
         },
         "fr": {
@@ -209,6 +257,12 @@
             "value": "Directory listing"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista de archivos de la carpeta"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -231,6 +285,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Done"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aceptar"
           }
         },
         "fr": {
@@ -257,6 +317,12 @@
             "value": "Enter 0 or a port from 1 to 65535."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Introduzca 0 o un puerto del 1 al 65535."
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -276,6 +342,12 @@
           }
         },
         "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error: %@"
+          }
+        },
+        "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Error: %@"
@@ -305,6 +377,12 @@
             "value": "Feedback & support"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comentarios y asistencia"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -327,6 +405,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Local network access"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acceso a la red local"
           }
         },
         "fr": {
@@ -353,6 +437,12 @@
             "value": "Malformed HTTP request.\\n"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solicitud HTTP mal formada.\\n"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -375,6 +465,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No current Wi-Fi address is available. The server remains local to this iPhone until Wi-Fi is ready."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay ninguna dirección Wi-Fi disponible en este momento. Solo se puede acceder al servidor desde este iPhone hasta que la conexión Wi-Fi esté lista."
           }
         },
         "fr": {
@@ -401,6 +497,12 @@
             "value": "No folder selected"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ninguna carpeta seleccionada"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -423,6 +525,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Port"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puerto"
           }
         },
         "fr": {
@@ -449,6 +557,12 @@
             "value": "Preview"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previsualizar"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -471,6 +585,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Privacy"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacidad"
           }
         },
         "fr": {
@@ -497,6 +617,12 @@
             "value": "Read-only access through Files"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acceso de solo lectura a través de Archivos"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -519,6 +645,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Request Timeout"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiempo de espera de la solicitud agotado"
           }
         },
         "fr": {
@@ -545,6 +677,12 @@
             "value": "Request timed out.\\n"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se agotó el tiempo de espera de la solicitud.\\n"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -567,6 +705,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Running"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En ejecución"
           }
         },
         "fr": {
@@ -593,6 +737,12 @@
             "value": "Running URLs"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL activas"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -615,6 +765,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Serve the root index.html for missing routes without extensions."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servir el archivo index.html de la carpeta raíz para las rutas sin extensión que no existan."
           }
         },
         "fr": {
@@ -641,6 +797,12 @@
             "value": "Server"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servidor"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -663,6 +825,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Serving behavior"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comportamiento del servidor"
           }
         },
         "fr": {
@@ -689,6 +857,12 @@
             "value": "Serving folder"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carpeta del servidor"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -711,6 +885,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Serving works while 200 OK is open. iOS stops the server when the app moves to the background."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El servidor funciona mientras 200 OK está en primer plano. iOS detiene el servidor cuando la aplicación pasa a segundo plano."
           }
         },
         "fr": {
@@ -737,6 +917,12 @@
             "value": "Share"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compartir"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -759,6 +945,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Show a file list when a folder has no index.html."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar una lista de archivos cuando una carpeta no tenga index.html."
           }
         },
         "fr": {
@@ -785,6 +977,12 @@
             "value": "Single-page app fallback"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Página alternativa para SPA"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -807,6 +1005,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Source code · MIT"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Código fuente · MIT"
           }
         },
         "fr": {
@@ -833,6 +1037,12 @@
             "value": "Starting…"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciando…"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -855,6 +1065,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Starts the web server"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia el servidor web"
           }
         },
         "fr": {
@@ -881,6 +1097,12 @@
             "value": "Stop the server to change this setting."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detenga el servidor para cambiar este ajuste."
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -903,6 +1125,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stopped"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detenido"
           }
         },
         "fr": {
@@ -929,6 +1157,12 @@
             "value": "Stopping…"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deteniendo…"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -951,6 +1185,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stops the web server"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detiene el servidor web"
           }
         },
         "fr": {
@@ -977,6 +1217,12 @@
             "value": "The saved folder permission has expired. Choose the folder again."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El permiso guardado para acceder a la carpeta ha caducado. Seleccione la carpeta de nuevo."
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -999,6 +1245,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "The selected folder is unavailable. Choose it again in Files."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La carpeta seleccionada no está disponible. Selecciónela de nuevo en Archivos."
           }
         },
         "fr": {
@@ -1025,6 +1277,12 @@
             "value": "The selected item is not a folder."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El elemento seleccionado no es una carpeta."
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -1047,6 +1305,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "The server could not start. Check the folder and port, then try again."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo iniciar el servidor. Compruebe la carpeta y el puerto e inténtelo de nuevo."
           }
         },
         "fr": {
@@ -1073,6 +1337,12 @@
             "value": "The server is already running."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El servidor ya está en ejecución."
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -1095,6 +1365,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "The server is busy."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El servidor está ocupado."
           }
         },
         "fr": {
@@ -1121,6 +1397,12 @@
             "value": "The server stopped when 200 OK moved to the background. Start it again when you’re ready."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El servidor se detuvo cuando 200 OK pasó a segundo plano. Vuelva a iniciarlo cuando lo desee."
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -1143,6 +1425,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "This iPhone"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este iPhone"
           }
         },
         "fr": {
@@ -1169,6 +1457,12 @@
             "value": "Use 0 to choose an available port"
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use 0 para seleccionar un puerto disponible"
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",
@@ -1191,6 +1485,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Web Server"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servidor web"
           }
         },
         "fr": {

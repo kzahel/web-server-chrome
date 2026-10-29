@@ -17,6 +17,12 @@
             "value": "200 OK serves the folder you choose to devices on your local network while this app is open."
           }
         },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK permite acceder a la carpeta que seleccione desde dispositivos de su red local mientras esta aplicación está en primer plano."
+          }
+        },
         "fr": {
           "stringUnit": {
             "state": "translated",

@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "No se pudo abrir 200 OK.",
+  "about_200_ok_ba8aa9": "Acerca de 200 OK",
+  "check_for_updates_9ed79e": "Buscar actualizaciones",
+  "choose_folder_to_serve_d488f4": "Elegir carpeta para servir archivos",
+  "close_7d9eb7": "Cerrar",
+  "hide_200_ok_981b92": "Ocultar 200 OK",
+  "hide_others_1753e2": "Ocultar las demás aplicaciones",
+  "launching_b1601d": "Abriendo...",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "Abrir 200 OK Web Server para Linux en ChromeOS",
+  "quit_200_ok_686f8f": "Salir de 200 OK",
+  "quit_b3eb37": "Salir",
+  "run_in_background_0db775": "Ejecutar en segundo plano",
+  "settings_74a883": "Configuración",
+  "show_all_e1c326": "Mostrar todas las aplicaciones",
+  "show_app_ec462a": "Mostrar la aplicación",
+  "show_icon_in_menu_bar_0ad9f3": "Mostrar icono en la barra de menús",
+  "show_icon_in_system_tray_25b481": "Mostrar icono en la bandeja del sistema",
+  "start_at_login_5952eb": "Iniciar al iniciar sesión",
+  "try_again_df0fe9": "Reintentar",
+  "unknown_launch_error_3585c0": "Error desconocido al abrir la aplicación",
+  "web_server_fc0480": "Servidor web"
+}

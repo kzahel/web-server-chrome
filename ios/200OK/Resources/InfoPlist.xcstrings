@@ -35,6 +35,12 @@
             "value": "200 OK rende disponibile la cartella selezionata ai dispositivi sulla rete locale mentre l’app è in primo piano."
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK maakt de map die je kiest toegankelijk voor apparaten op je lokale netwerk zolang deze app op de voorgrond staat."
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",

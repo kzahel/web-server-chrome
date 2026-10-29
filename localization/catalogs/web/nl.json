@@ -1,0 +1,1022 @@
+{
+  "desktop..path.to.directory.ae256f": {
+    "defaultMessage": "/path/to/directory",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.0.automatic.4c2328": {
+    "defaultMessage": "0 = automatisch",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.200.ok.value0.is.available.31c835": {
+    "defaultMessage": "200 OK {value0} is beschikbaar",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.200.ok.value0.is.the.newest.version.98822f": {
+    "defaultMessage": "200 OK{value0} is de nieuwste versie.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.200.ok.web.server.bf6c0d": {
+    "defaultMessage": "200 OK Web Server",
+    "description": "packages/ui/src/components/Layout.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "desktop.app.settings.d43fb8": {
+    "defaultMessage": "App-instellingen",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.cancel.19766e": {
+    "defaultMessage": "Annuleren",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.change.a6b470": {
+    "defaultMessage": "Wijzigen…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.check.again.fb7099": {
+    "defaultMessage": "Opnieuw controleren",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.check.for.updates.9ed79e": {
+    "defaultMessage": "Controleren op updates",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.checking.for.updates.497a19": {
+    "defaultMessage": "Controleren op updates…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.choose.7ca416": {
+    "defaultMessage": "Kiezen…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.choose.a.folder.to.start.the.server.337adc": {
+    "defaultMessage": "Kies een map om de HTTP-server te starten",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.choosing.fe2076": {
+    "defaultMessage": "Map kiezen…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.close.app.settings.4168da": {
+    "defaultMessage": "App-instellingen sluiten",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.contacting.the.200.ok.update.server.663342": {
+    "defaultMessage": "Verbinding maken met de updateserver van 200 OK.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.copied.8d525e": {
+    "defaultMessage": "Gekopieerd",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.copy.url.b26d10": {
+    "defaultMessage": "URL kopiëren",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.could.not.open.value0.value1.fe47fa": {
+    "defaultMessage": "Kan {value0} niet openen: {value1}",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.desktop.9bd88f": {
+    "defaultMessage": "Desktop",
+    "description": "packages/ui/src/components/Layout.tsx"
+  },
+  "desktop.directory.listing.bc706d": {
+    "defaultMessage": "Bestandslijst",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.dismiss.48845b": {
+    "defaultMessage": "Sluiten",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.dismiss.update.notice.6a124b": {
+    "defaultMessage": "Updatemelding sluiten",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.downloading.200.ok.value0.19b49e": {
+    "defaultMessage": "200 OK {value0} downloaden…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.error.54a0e8": {
+    "defaultMessage": "Fout",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.failed.to.open.external.link.29fcf0": {
+    "defaultMessage": "Kan externe link niet openen:",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.feedback.suggestions.and.support.d1acad": {
+    "defaultMessage": "Feedback, suggesties en ondersteuning",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.feedback.support.2d5632": {
+    "defaultMessage": "Feedback en ondersteuning",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.folder.74ccd4": {
+    "defaultMessage": "Map",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.install.restart.223cb1": {
+    "defaultMessage": "Installeren en opnieuw starten",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.install.updates.manually.60762c": {
+    "defaultMessage": "Updates handmatig installeren",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.installing.update.29e74e": {
+    "defaultMessage": "Update installeren…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.keep.a.shortcut.to.200.ok.in.the.system.area.6f0b61": {
+    "defaultMessage": "Een snelkoppeling naar 200 OK in het systeemvak houden.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.keep.running.when.the.main.window.is.closed.c46cc8": {
+    "defaultMessage": "Blijven draaien als het hoofdvenster wordt gesloten.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.lan.access.708f4a": {
+    "defaultMessage": "LAN-toegang",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.later.73b6e4": {
+    "defaultMessage": "Later",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.launch.200.ok.when.you.sign.in.b9ed74": {
+    "defaultMessage": "200 OK starten wanneer je je aanmeldt.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.loading.47d2a5": {
+    "defaultMessage": "Laden…",
+    "description": "packages/ui/src/components/ServerPage.tsx"
+  },
+  "desktop.loading.settings.e71a13": {
+    "defaultMessage": "Instellingen laden…",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.locked.a424e3": {
+    "defaultMessage": "Vergrendeld",
+    "description": "packages/ui/src/components/SettingsZone.tsx"
+  },
+  "desktop.native.0ad9f346a7": {
+    "defaultMessage": "Pictogram in menubalk tonen",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.0fdab34df1": {
+    "defaultMessage": "Deze map bevat je persoonlijke map en kan persoonlijke bestanden toegankelijk maken.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.147cb2aad4": {
+    "defaultMessage": "Windows-installatieprogramma",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.25b4818674": {
+    "defaultMessage": "Pictogram in systeemvak tonen",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3318275f29": {
+    "defaultMessage": "Windows MSI",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3a63e9846a": {
+    "defaultMessage": "RPM-pakket",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3e7a639282": {
+    "defaultMessage": "Je deelt hiermee je volledige persoonlijke map, inclusief persoonlijke en verborgen bestanden. Met LAN-toegang is deze map ook bereikbaar voor andere apparaten op dit netwerk.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.45e6d69dbe": {
+    "defaultMessage": "macOS-app",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.5021888e79": {
+    "defaultMessage": "Kies een map voordat je de HTTP-server start",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.589cb3c9a9": {
+    "defaultMessage": "deze installatie",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.65e51a8997": {
+    "defaultMessage": "Stop de HTTP-server voordat je de configuratie wijzigt",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.7ee24bab5c": {
+    "defaultMessage": "De app kon deze map niet vergelijken met je persoonlijke map. Bevestig dat je deze veilig kunt delen.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.879a60672f": {
+    "defaultMessage": "Hiermee deel je je volledige persoonlijke map, inclusief persoonlijke en verborgen bestanden.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.93a5653143": {
+    "defaultMessage": "De app kon deze map niet vergelijken met je persoonlijke map. Bevestig dat je deze map veilig kunt delen. Met LAN-toegang is deze map ook bereikbaar voor andere apparaten op dit netwerk.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.9e62e3b15f": {
+    "defaultMessage": "Deze map bevindt zich buiten je persoonlijke map. Bevestig dat je deze map veilig kunt delen. Met LAN-toegang is deze map ook bereikbaar voor andere apparaten op dit netwerk.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.ac5419d69a": {
+    "defaultMessage": "De geselecteerde map kan niet via de HTTP-server worden aangeboden",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.bf8670ceff": {
+    "defaultMessage": "Deze map bevindt zich buiten je persoonlijke map. Bevestig dat je deze veilig kunt delen.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.e119a30af0": {
+    "defaultMessage": "LAN-toegang maakt deze map bereikbaar voor andere apparaten op dit netwerk.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.e295fe0e69": {
+    "defaultMessage": "DEB-pakket",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.fec5ce9934": {
+    "defaultMessage": "Deze map bevat je persoonlijke map en kan persoonlijke bestanden toegankelijk maken. Met LAN-toegang is deze map ook bereikbaar voor andere apparaten op dit netwerk.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.no.folder.selected.d987e0": {
+    "defaultMessage": "Geen map geselecteerd",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.open.downloads.3e4ad2": {
+    "defaultMessage": "Downloads openen",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.open.in.default.browser.d1f5a8": {
+    "defaultMessage": "Openen in standaardbrowser",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.port.72e9a5": {
+    "defaultMessage": "Poort",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.port.must.be.between.0.and.65535.e3ecee": {
+    "defaultMessage": "De poort moet tussen 0 en 65535 liggen",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.quit.200.ok.686f8f": {
+    "defaultMessage": "200 OK afsluiten",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.restart.after.update": {
+    "defaultMessage": "200 OK start opnieuw op zodra de installatie is voltooid.",
+    "description": "Updater installation status."
+  },
+  "desktop.run.in.background.0db775": {
+    "defaultMessage": "Op de achtergrond draaien",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.running.f4ccae": {
+    "defaultMessage": "Actief",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.server.not.found.d7783f": {
+    "defaultMessage": "HTTP-server niet gevonden",
+    "description": "packages/ui/src/components/ServerPage.tsx"
+  },
+  "desktop.serving.options.ac430f": {
+    "defaultMessage": "Opties voor het aanbieden van bestanden",
+    "description": "packages/ui/src/components/SettingsZone.tsx"
+  },
+  "desktop.share.this.folder.cdaecd": {
+    "defaultMessage": "Deze map delen?",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.source.mit.32896a": {
+    "defaultMessage": "Broncode · MIT",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.spa.mode.4695bd": {
+    "defaultMessage": "SPA-modus",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.start.anyway.a330c2": {
+    "defaultMessage": "Toch starten",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.start.at.login.5952eb": {
+    "defaultMessage": "Starten bij aanmelden",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.start.web.server.9b82f9": {
+    "defaultMessage": "HTTP-server starten",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.starting.aeed4d": {
+    "defaultMessage": "Bezig met starten",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stop.the.server.to.change.this.setting.27acb7": {
+    "defaultMessage": "Stop de HTTP-server om deze instelling te wijzigen",
+    "description": "packages/ui/src/components/LockedControl.tsx"
+  },
+  "desktop.stop.web.server.a00a97": {
+    "defaultMessage": "HTTP-server stoppen",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stopped.1a4f63": {
+    "defaultMessage": "Gestopt",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stopping.a71ee1": {
+    "defaultMessage": "Bezig met stoppen",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.the.update.is.signed.and.ready.to.install.4abbcb": {
+    "defaultMessage": "De update is ondertekend en klaar voor installatie.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.these.controls.are.always.available.here.49809b": {
+    "defaultMessage": "Deze bedieningsopties zijn hier altijd beschikbaar.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.update.failed.e58282": {
+    "defaultMessage": "Update mislukt",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.updates.for.the.value0.stay.with.that.package.type.down.686fbe": {
+    "defaultMessage": "Updates voor {value0} blijven hetzelfde pakkettype gebruiken. Download het bijbehorende pakket van ok200.app.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.url.copied.0017bd": {
+    "defaultMessage": "URL gekopieerd",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.view.the.mit.licensed.source.code.017168": {
+    "defaultMessage": "Broncode onder de MIT-licentie bekijken",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.web.server.1643cf": {
+    "defaultMessage": "HTTP-server",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.you.re.up.to.date.8d757d": {
+    "defaultMessage": "Je hebt de nieuwste versie",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "extension..tag0.advanced.tag0.tag1.directory.behavior.access.and.305a04": {
+    "defaultMessage": "<tag0>Geavanceerd</tag0> <tag1>Mapinstellingen, toegang en updates</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension..tag0.compare.chromeos.options.tag0.081566": {
+    "defaultMessage": "<tag0>ChromeOS-opties vergelijken</tag0>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.feedback.support.tag0.tag1.source.mit.tag1.83ed4c": {
+    "defaultMessage": "<tag0>Feedback en ondersteuning</tag0> <tag1>Broncode · MIT</tag1>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.google.play.tag0.60819d": {
+    "defaultMessage": "<tag0>Google Play</tag0>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.port.tag0.tag1.used.in.the.server.address.tag1.1ad047": {
+    "defaultMessage": "<tag0>Poort</tag0> <tag1>Gebruikt in het serveradres</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension..tag1.linux.component.v.value0.tag1.tag2.tag2.tag3.cont.193b14": {
+    "defaultMessage": "<tag1>Linux-component v{value0}</tag1> <tag2>•</tag2> <tag3>Poort 20080 van het bedieningspaneel blijft privé</tag3>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.1.step.3ce601": {
+    "defaultMessage": "1 stap",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.200.ok.web.server.bf6c0d": {
+    "defaultMessage": "200 OK Web Server",
+    "description": "extension/src/ui/app.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.action.failed.f71340": {
+    "defaultMessage": "Actie mislukt.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.200.ok.to.communicate.with.your.chromebook.s.linu.76c804": {
+    "defaultMessage": "Sta toe dat 200 OK communiceert met de Linux-omgeving van je Chromebook op <tag0>penguin.linux.test</tag0>. Dit privéadres blijft op je Chromebook.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.chromeos.to.forward.this.port.to.your.network.5e770a": {
+    "defaultMessage": "ChromeOS toestaan deze poort door te sturen naar je netwerk",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.linux.access.38fc0e": {
+    "defaultMessage": "Toegang tot Linux toestaan",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.pages.on.other.origins.to.request.these.files.7a07f1": {
+    "defaultMessage": "Pagina’s van andere origins toestaan deze bestanden op te vragen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.app.launched.931931": {
+    "defaultMessage": "App gestart!",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.automatic.linux.updates.04a336": {
+    "defaultMessage": "Automatische Linux-updates",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.available.on.local.network.f4bd53": {
+    "defaultMessage": "Beschikbaar op lokaal netwerk",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.cancel.19766e": {
+    "defaultMessage": "Annuleren",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.change.c0bf75": {
+    "defaultMessage": "Wijzigen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.check.again.fb7099": {
+    "defaultMessage": "Opnieuw controleren",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.check.now.2937cf": {
+    "defaultMessage": "Nu controleren",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.ec963f": {
+    "defaultMessage": "Controleren…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.for.a.signed.update.8e194a": {
+    "defaultMessage": "Controleren op een ondertekende update…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.linux.access.2a9213": {
+    "defaultMessage": "Toegang tot Linux controleren…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.different.folder.1792fc": {
+    "defaultMessage": "Een andere map kiezen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.folder.5c71b8": {
+    "defaultMessage": "Een map kiezen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.folder.then.turn.the.server.on.3707c6": {
+    "defaultMessage": "Kies een map en schakel daarna de HTTP-server in",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.tag0.share.with.linux.tag0.then.return.here.d837a8": {
+    "defaultMessage": "Kies <tag0>Delen met Linux</tag0> en keer daarna hier terug.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.the.implementation.you.prefer.chromeos.linux.avo.737672": {
+    "defaultMessage": "Kies de uitvoering die je wilt gebruiken. ChromeOS Linux werkt zonder Google Play en laat je de HTTP-server volledig bedienen via deze extensie; Android is het snelst in te stellen als Play beschikbaar is.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.choose.this.folder.0f3b23": {
+    "defaultMessage": "Deze map kiezen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.chromebook.ipv4.address.94e487": {
+    "defaultMessage": "IPv4-adres van de Chromebook",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.chromeos.shows.this.address.just.above.the.port.forward.3c5208": {
+    "defaultMessage": "ChromeOS toont dit adres vlak boven de instellingen voor poortdoorschakeling.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.7d9eb7": {
+    "defaultMessage": "Sluiten",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.folder.picker.2db6d3": {
+    "defaultMessage": "Mapkiezer sluiten",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.the.200.ok.controls.and.any.tag0.opening.200.ok.t.79941c": {
+    "defaultMessage": "Sluit het 200 OK-bedieningspaneel en alle vensters met <tag0>200 OK openen…</tag0> voordat je de installatie verwijdert. ChromeOS verwijdert het item uit het startprogramma met enige vertraging; wacht tot het verdwenen is voordat je Linux stopt. Als er een niet-vastgezet laadpictogram achterblijft, open dit dan niet opnieuw. Start ChromeOS opnieuw om dat tijdelijke pictogram uit de plank te verwijderen.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.connect.to.linux.67d25d": {
+    "defaultMessage": "Verbinding maken met Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.connecting.5f04ae": {
+    "defaultMessage": "Verbinding maken…",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.connecting.to.your.linux.controller.095b18": {
+    "defaultMessage": "Verbinding maken met je Linux-bedieningspaneel…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.47bd29": {
+    "defaultMessage": "Inhoud",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.port.838a49": {
+    "defaultMessage": "HTTP-poort",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.server.port.9f26d1": {
+    "defaultMessage": "Poort van de HTTP-server",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.connection.failed.f25b70": {
+    "defaultMessage": "Verbinding met het bedieningspaneel mislukt.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.different": {
+    "defaultMessage": "De luisterende service hoort bij een ander 200 OK-bedieningspaneel. Start 200 OK Web Server opnieuw.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.http": {
+    "defaultMessage": "Het bedieningspaneel gaf HTTP {status} terug",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.port.20080.stays.on.this.chromebook.and.shou.270d00": {
+    "defaultMessage": "Poort 20080 van het bedieningspaneel blijft op deze Chromebook en mag nooit worden doorgestuurd.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.protocol": {
+    "defaultMessage": "Deze extensie vereist protocol {required} van het Linux-bedieningspaneel, maar de geïnstalleerde component meldde protocol {actual}. Controleer of er updates zijn voor de extensie en de Linux-component.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.unexpected": {
+    "defaultMessage": "De luisterende service is niet het verwachte 200 OK-bedieningspaneel.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.copied.8d525e": {
+    "defaultMessage": "Gekopieerd",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.copy.e21f93": {
+    "defaultMessage": "Kopiëren",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.copy.server.url.3f8f6c": {
+    "defaultMessage": "Server-URL kopiëren",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.create.folder.13a151": {
+    "defaultMessage": "Kan de map niet maken.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.open.folder.bcd29f": {
+    "defaultMessage": "Kan de map niet openen.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.read.folder.locations.871ce6": {
+    "defaultMessage": "Kan de maplocaties niet lezen.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.select.folder.4293fe": {
+    "defaultMessage": "Kan de map niet selecteren.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.couldn.t.connect.to.linux.6e31bc": {
+    "defaultMessage": "Kan geen verbinding maken met Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.create.475949": {
+    "defaultMessage": "Maken",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.cross.origin.requests.86c1f5": {
+    "defaultMessage": "Cross-origin-verzoeken",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.automatic.check.pending.acd44c": {
+    "defaultMessage": "Up-to-date · automatische controle volgt",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.checked.value0.c23fb5": {
+    "defaultMessage": "Up-to-date · gecontroleerd op {value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.folder.1a5db5": {
+    "defaultMessage": "Huidige map",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.desktop.app.detected.value0.6e9c58": {
+    "defaultMessage": "Desktopapp gedetecteerd{value0}.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.detect.again.bf6732": {
+    "defaultMessage": "Opnieuw detecteren",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detect.chromebook.address.again.198bd4": {
+    "defaultMessage": "Chromebook-adres opnieuw detecteren",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detected.automatically.from.chromeos.04302a": {
+    "defaultMessage": "Automatisch gedetecteerd via ChromeOS.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detecting.805eb9": {
+    "defaultMessage": "Detecteren…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detecting.this.chromebook.s.address.c5a43d": {
+    "defaultMessage": "Adres van deze Chromebook detecteren…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.directory.listings.a49eb4": {
+    "defaultMessage": "Bestandslijsten",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.error.54a0e8": {
+    "defaultMessage": "Fout",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.failed.to.launch.app.fba450": {
+    "defaultMessage": "Kan de app niet starten",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.failed.to.open.android.app.73ba16": {
+    "defaultMessage": "Kan de Android-app niet openen",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.failed.to.open.the.linux.setup.guide.a903f0": {
+    "defaultMessage": "Kan de installatiehandleiding voor Linux niet openen",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.finish.chromeos.forwarding.39f117": {
+    "defaultMessage": "Poortdoorschakeling in ChromeOS voltooien",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.folder.and.address.d090b6": {
+    "defaultMessage": "Map en adres",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.folder.locations.23edda": {
+    "defaultMessage": "Maplocaties",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.get.the.desktop.app.39b7d5": {
+    "defaultMessage": "Desktopapp downloaden",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.if.the.launcher.cannot.wake.linux.open.terminal.once.wa.27611b": {
+    "defaultMessage": "Als het startprogramma Linux niet kan activeren, open dan Terminal, wacht tot de opdrachtprompt verschijnt, sluit Terminal en probeer het opnieuw.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.in.chromeos.settings.open.tag0.developers.linux.port.fo.49e854": {
+    "defaultMessage": "Open in de ChromeOS-instellingen <tag0>Ontwikkelaars → Linux → Poortdoorschakeling</tag0> en voeg TCP-poort {value1} toe.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.in.files.right.click.the.folder.and.choose.tag0.share.w.f5a943": {
+    "defaultMessage": "Klik in Bestanden met de rechtermuisknop op de map en kies <tag0>Delen met Linux</tag0>. De mapkiezer van 200 OK detecteert de nieuwe gedeelde map zodra je terugkeert.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.install.signed.linux.component.updates.while.stopped.6155e8": {
+    "defaultMessage": "Ondertekende updates voor de Linux-component installeren terwijl de HTTP-server is gestopt",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.install.the.verified.200.ok.linux.component.tag0.curl.f.93b255": {
+    "defaultMessage": "Installeer de geverifieerde Linux-component van 200 OK: <tag0>curl -fsSL https://ok200.app/install-crostini.sh | bash</tag0> <tag1>Het installatieprogramma verifieert de ondertekende release, installeert de component alleen voor je Linux-gebruikersaccount en laat de HTTP-server gestopt.</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.installing.and.reconnecting.eea5c0": {
+    "defaultMessage": "Installeren en opnieuw verbinding maken…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.installing.the.signed.update.the.controller.will.briefl.ab10e2": {
+    "defaultMessage": "De ondertekende update wordt geïnstalleerd. De verbinding met het bedieningspaneel wordt kort onderbroken en daarna hersteld…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.keep.serving.when.controls.close.3afb77": {
+    "defaultMessage": "Bestanden blijven aanbieden als het bedieningspaneel wordt gesloten",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.launching.b1601d": {
+    "defaultMessage": "Bezig met starten…",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.linux.component.v.value0.23fcc0": {
+    "defaultMessage": "Linux-component v{value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.linux.connected.a353b4": {
+    "defaultMessage": "Verbonden met Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.linux.setup.and.recovery.803759": {
+    "defaultMessage": "Linux installeren en herstellen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.local.network.4fda69": {
+    "defaultMessage": "Lokaal netwerk",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.my.files.985698": {
+    "defaultMessage": "Mijn bestanden",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.native.disconnected": {
+    "defaultMessage": "Verbinding met native host verbroken",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.new.folder.cf28f4": {
+    "defaultMessage": "Nieuwe map",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.new.folder.name.489b9f": {
+    "defaultMessage": "Naam van nieuwe map",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.not.detected.9f4a10": {
+    "defaultMessage": "Niet gedetecteerd",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.not.shared.yet.bd0b09": {
+    "defaultMessage": "Nog niet gedeeld",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.ok200.crostini.check.update.value0.ok200.crostini.updat.a13096": {
+    "defaultMessage": "ok200-crostini check-update{value0} ok200-crostini update{value1} ok200-crostini rollback{value2} ok200-crostini uninstall",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.200.ok.06ebd0": {
+    "defaultMessage": "200 OK openen",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.open.chromeos.settings.about.chromeos.developers.linux.b6dec2": {
+    "defaultMessage": "Open ChromeOS-instellingen → Over ChromeOS → Ontwikkelaars → Linux-ontwikkelomgeving en kies <tag0>Instellen</tag0>.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.ed077f": {
+    "defaultMessage": "Openen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.installed.android.app.82b23f": {
+    "defaultMessage": "Geïnstalleerde Android-app openen",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.open.server.520174": {
+    "defaultMessage": "HTTP-server openen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.server.url.646642": {
+    "defaultMessage": "Server-URL openen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.tag0.200.ok.web.server.tag0.from.the.chromeos.laun.75dcac": {
+    "defaultMessage": "Open <tag0>200 OK Web Server</tag0> vanuit het ChromeOS-startprogramma.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.open.terminal.once.after.linux.finishes.installing.a18d10": {
+    "defaultMessage": "Open Terminal een keer nadat Linux is geïnstalleerd.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.the.chromeos.files.app.ce4973": {
+    "defaultMessage": "Open de app Bestanden van ChromeOS.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.opening.android.app.708ae6": {
+    "defaultMessage": "Android-app openen…",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.opening.folder.c3ab98": {
+    "defaultMessage": "Map openen…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.other.devices.4e027d": {
+    "defaultMessage": "Andere apparaten",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.check.failed.144b96": {
+    "defaultMessage": "Controle van toestemming mislukt.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.request.failed.4c774d": {
+    "defaultMessage": "Aanvragen van toestemming mislukt.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.was.not.granted.setup.instructions.remain.av.41abf6": {
+    "defaultMessage": "Er is geen toestemming verleend. De installatie-instructies blijven beschikbaar, maar de extensie kan Linux niet bedienen.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.reach.the.server.from.another.device.7f1eab": {
+    "defaultMessage": "De HTTP-server bereiken vanaf een ander apparaat",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.right.click.the.folder.you.want.to.serve.ed4508": {
+    "defaultMessage": "Klik met de rechtermuisknop op de map die je wilt aanbieden.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.running.f4ccae": {
+    "defaultMessage": "Actief",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.see.supported.platforms.bc2221": {
+    "defaultMessage": "Ondersteunde platforms bekijken",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.serve.any.folder.over.http.install.the.desktop.app.to.g.cbebff": {
+    "defaultMessage": "Bied bestanden uit een map aan via HTTP. Installeer de desktopapp om te beginnen.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.serve.index.html.for.routes.that.do.not.match.a.file.07862d": {
+    "defaultMessage": "index.html aanbieden voor routes die niet overeenkomen met een bestand",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.server.action.failed.c2bc8c": {
+    "defaultMessage": "Actie voor de HTTP-server mislukt.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.server.lifetime.b391f8": {
+    "defaultMessage": "Werkingsduur van de HTTP-server",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.serving.continues.when.this.window.closes.b6048a": {
+    "defaultMessage": "Bestanden worden nog steeds aangeboden als dit venster wordt gesloten",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.serving.stops.when.this.window.closes.49b856": {
+    "defaultMessage": "Het aanbieden van bestanden stopt als dit venster wordt gesloten",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.set.up.the.linux.version.8554b6": {
+    "defaultMessage": "De Linux-versie instellen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.setup.sharing.and.recovery.e978bc": {
+    "defaultMessage": "Installeren, delen en herstellen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.share.a.chromebook.folder.with.linux.e50ee9": {
+    "defaultMessage": "Een Chromebook-map delen met Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.sharing.chromebook.folders.8bf65f": {
+    "defaultMessage": "Chromebook-mappen delen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.show.an.index.when.a.folder.has.no.index.file.dd0caa": {
+    "defaultMessage": "Een bestandslijst tonen als een map geen indexbestand heeft",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.single.page.app.fallback.f6dac9": {
+    "defaultMessage": "Terugvaloptie voor single-page-apps",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.start.web.server.9b82f9": {
+    "defaultMessage": "HTTP-server starten",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.starting.aeed4d": {
+    "defaultMessage": "Bezig met starten",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.the.server.to.change.settings.fd75f3": {
+    "defaultMessage": "Stop de HTTP-server om instellingen te wijzigen.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.to.make.changes.a30d16": {
+    "defaultMessage": "Stoppen om wijzigingen aan te brengen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.web.server.a00a97": {
+    "defaultMessage": "HTTP-server stoppen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stopped.1a4f63": {
+    "defaultMessage": "Gestopt",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stopping.a71ee1": {
+    "defaultMessage": "Bezig met stoppen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.successor.to.tag0.web.server.for.chrome.tag0.7ca3a6": {
+    "defaultMessage": "Opvolger van <tag0>Web Server for Chrome</tag0>",
+    "description": "extension/src/ui/app.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.the.last.update.check.failed.c03ab6": {
+    "defaultMessage": "De laatste controle op updates is mislukt.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.component.is.already.current.b8579d": {
+    "defaultMessage": "De Linux-component is al up-to-date.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.component.update.failed.426563": {
+    "defaultMessage": "De update van de Linux-component is mislukt.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.control.session.expired.fbba79": {
+    "defaultMessage": "De sessie voor de Linux-bediening is verlopen.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.one.time.controller.claim.is.missing.launch.200.ok.f9593f": {
+    "defaultMessage": "De eenmalige koppelcode voor het bedieningspaneel ontbreekt. Start 200 OK Web Server opnieuw.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.the.server.keeps.running.until.you.stop.it.or.linux.shu.c725a6": {
+    "defaultMessage": "De HTTP-server blijft draaien totdat je deze stopt of Linux wordt afgesloten",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.server.stops.after.the.final.200.ok.control.window.e84d80": {
+    "defaultMessage": "De HTTP-server stopt zodra het laatste 200 OK-bedieningsvenster wordt gesloten",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.update.is.taking.longer.than.expected.launch.200.ok.449ff3": {
+    "defaultMessage": "De update duurt langer dan verwacht. Start 200 OK Web Server opnieuw of voer ‘ok200-crostini update’ uit in Terminal.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.this.chrome.platform.does.not.have.a.supported.200.ok.l.154016": {
+    "defaultMessage": "Op dit Chrome-platform is geen ondersteunde manier beschikbaar om 200 OK te starten.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.this.chromebook.31f18d": {
+    "defaultMessage": "Deze Chromebook",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.this.folder.has.no.subfolders.7b6d8d": {
+    "defaultMessage": "Deze map heeft geen submappen.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.this.linux.controller.is.already.paired.but.this.extens.ed282f": {
+    "defaultMessage": "Dit Linux-bedieningspaneel is al gekoppeld, maar deze extensie heeft het bijbehorende token niet meer. Voer ‘ok200-crostini reset-controller’ uit in Terminal en start daarna 200 OK Web Server opnieuw.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.try.again.d8b839": {
+    "defaultMessage": "Opnieuw proberen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.try.again.df0fe9": {
+    "defaultMessage": "Opnieuw proberen",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.turn.on.tag0.available.on.local.network.tag0.then.add.t.571f67": {
+    "defaultMessage": "Schakel <tag0>Beschikbaar op lokaal netwerk</tag0> in en voeg daarna de HTTP-poort toe onder ChromeOS-instellingen → Ontwikkelaars → Linux → Poortdoorschakeling. Gebruik het IPv4-adres van de Wi-Fi-verbinding van je Chromebook. Stuur poort 20080 van het bedieningspaneel nooit door.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.uninstall.preserves.settings.and.never.deletes.a.served.d54c53": {
+    "defaultMessage": "Bij het verwijderen van de installatie blijven de instellingen behouden en worden aangeboden mappen nooit verwijderd. Gebruik <tag0>uninstall --purge</tag0> alleen als je ook de koppeling en de instellingen van het bedieningspaneel wilt verwijderen.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.failed.f1d764": {
+    "defaultMessage": "Update mislukt.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.rollback.and.uninstall.2121a4": {
+    "defaultMessage": "Bijwerken, terugdraaien en verwijderen",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.to.v.value0.d7bb82": {
+    "defaultMessage": "Bijwerken naar v{value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.updated.to.linux.component.v.value0.the.web.server.rema.b21a35": {
+    "defaultMessage": "Bijgewerkt naar Linux-component v{value0}. De HTTP-server blijft gestopt.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.updating.stops.the.web.server.and.does.not.restart.it.a.8f22e4": {
+    "defaultMessage": "Bijwerken stopt de HTTP-server. Deze start daarna niet automatisch opnieuw. Doorgaan?",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.url.copied.0017bd": {
+    "defaultMessage": "URL gekopieerd",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.use.chromeos.linux.1c2722": {
+    "defaultMessage": "ChromeOS Linux gebruiken",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.v.value0.is.available.46d0d0": {
+    "defaultMessage": "v{value0} is beschikbaar.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.wait.for.the.current.action.to.finish.a99bab": {
+    "defaultMessage": "Wacht tot de huidige actie is voltooid.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.wait.for.the.server.to.finish.value0.da806d": {
+    "defaultMessage": "{value0, select, starting {Wacht tot de HTTP-server is gestart.} stopping {Wacht tot de HTTP-server is gestopt.} other {Wacht tot de HTTP-server de huidige actie heeft voltooid.}}",
+    "description": "Complete status sentence. value0 is a stable starting/stopping protocol enum; do not translate selector keys."
+  },
+  "extension.waiting.for.a.shared.folder.676047": {
+    "defaultMessage": "Wachten op een gedeelde map…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.web.server.1643cf": {
+    "defaultMessage": "HTTP-server",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.web.server.for.chromeos.linux.9d8ef3": {
+    "defaultMessage": "HTTP-server voor ChromeOS Linux",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.when.controls.close.8a761e": {
+    "defaultMessage": "Als het bedieningspaneel wordt gesloten",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "language.label": {
+    "defaultMessage": "Taal",
+    "description": "App-local display language; does not change server settings."
+  },
+  "language.system": {
+    "defaultMessage": "Systeemtaal",
+    "description": "Follow OS or browser language preferences."
+  }
+}

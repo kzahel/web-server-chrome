@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "200 OK kon niet worden geopend.",
+  "about_200_ok_ba8aa9": "Over 200 OK",
+  "check_for_updates_9ed79e": "Controleren op updates",
+  "choose_folder_to_serve_d488f4": "Kies een map om bestanden aan te bieden",
+  "close_7d9eb7": "Sluiten",
+  "hide_200_ok_981b92": "Verberg 200 OK",
+  "hide_others_1753e2": "Verberg andere",
+  "launching_b1601d": "Bezig met openen...",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "Open 200 OK Web Server voor ChromeOS Linux",
+  "quit_200_ok_686f8f": "Stop 200 OK",
+  "quit_b3eb37": "Afsluiten",
+  "run_in_background_0db775": "Op de achtergrond uitvoeren",
+  "settings_74a883": "Instellingen",
+  "show_all_e1c326": "Toon alles",
+  "show_app_ec462a": "App tonen",
+  "show_icon_in_menu_bar_0ad9f3": "Pictogram in menubalk tonen",
+  "show_icon_in_system_tray_25b481": "Pictogram in systeemvak tonen",
+  "start_at_login_5952eb": "Starten bij inloggen",
+  "try_again_df0fe9": "Opnieuw proberen",
+  "unknown_launch_error_3585c0": "Onbekende fout bij het openen",
+  "web_server_fc0480": "HTTP-server"
+}

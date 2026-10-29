@@ -1,0 +1,62 @@
+{
+  "locale": "nl",
+  "register": "Use concise natural Dutch and consistent je/jouw when addressing the user; use normal Dutch software terminology. Preserve 200 OK, URLs, paths, index.html, HTTP, CORS, SPA, IPv4/IPv6 and code/port examples. Inflect terminology naturally. Never imply HTTPS, uploads, public-internet access or indefinite iOS background serving. Distinguish launcher/controller and the HTTP server.",
+  "schemaVersion": 1,
+  "terms": {
+    "background": {
+      "meaning": "Android/desktop policy differs; iOS stops on background.",
+      "preferred": "achtergrond",
+      "sourceTerms": ["background"]
+    },
+    "choose": {
+      "meaning": "Select and authorize a folder.",
+      "preferred": "kiezen / selecteren",
+      "sourceTerms": ["choose", "select"]
+    },
+    "folder": {
+      "meaning": "A user-selected serving folder, not an arbitrary system directory.",
+      "preferred": "map / hoofdmap",
+      "sourceTerms": ["folder", "directory", "root"]
+    },
+    "lan": {
+      "meaning": "Access on the local network does not imply public internet access.",
+      "preferred": "lokaal netwerk / LAN / Wi-Fi",
+      "sourceTerms": ["local network", "LAN", "Wi-Fi"]
+    },
+    "launcher": {
+      "meaning": "Browser surface controls a separately installed native server.",
+      "preferred": "startprogramma / bedieningspaneel",
+      "sourceTerms": ["launcher", "controller"]
+    },
+    "listing": {
+      "meaning": "List files when no index.html exists, not upload permission.",
+      "preferred": "bestandslijst",
+      "sourceTerms": ["directory listing", "file list"]
+    },
+    "port": {
+      "meaning": "Numeric port; 0 selects an available port.",
+      "preferred": "poort",
+      "sourceTerms": ["port"]
+    },
+    "readonly": {
+      "meaning": "Serving does not grant file modification.",
+      "preferred": "alleen-lezen",
+      "sourceTerms": ["read-only"]
+    },
+    "server": {
+      "meaning": "The native app serves files; the extension launches or controls it.",
+      "preferred": "HTTP-server / bestanden aanbieden",
+      "sourceTerms": ["server", "serving"]
+    },
+    "start": {
+      "meaning": "Explicitly start the listener; opening a launcher is distinct.",
+      "preferred": "starten / bezig met starten",
+      "sourceTerms": ["start", "starting"]
+    },
+    "stop": {
+      "meaning": "Stops serving, retaining the selected folder and settings.",
+      "preferred": "stoppen / gestopt / bezig met stoppen",
+      "sourceTerms": ["stop", "stopped", "stopping"]
+    }
+  }
+}

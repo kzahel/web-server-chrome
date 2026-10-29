@@ -304,6 +304,7 @@
 				es,
 				fr,
 				it,
+				nl,
 				"pt-BR",
 			);
 			mainGroup = B72141085C34D735A799950E;

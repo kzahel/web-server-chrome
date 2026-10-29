@@ -35,6 +35,12 @@
             "value": "Consentire le richieste del browser da origini diverse."
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sta cross-originverzoeken van browsers toe."
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -75,6 +81,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Consentire agli altri dispositivi su questa rete Wi-Fi di connettersi."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sta verbindingen van andere apparaten op dit Wi-Fi-netwerk toe."
           }
         },
         "pt-BR": {
@@ -119,6 +131,12 @@
             "value": "Richiesta non valida"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ongeldig verzoek"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -159,6 +177,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modificare"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wijzigen"
           }
         },
         "pt-BR": {
@@ -203,6 +227,12 @@
             "value": "Scegliere"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kiezen"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -243,6 +273,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scegliere una cartella prima di avviare il server."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kies een map voordat je de HTTP-server start."
           }
         },
         "pt-BR": {
@@ -287,6 +323,12 @@
             "value": "Scegliere una cartella da rendere disponibile per abilitare il server."
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kies een map om aan te bieden, zodat je de HTTP-server kunt inschakelen."
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -327,6 +369,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copiare"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopiëren"
           }
         },
         "pt-BR": {
@@ -371,6 +419,12 @@
             "value": "Elenco dei file della cartella"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bestandslijst"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -411,6 +465,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Terminare"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gereed"
           }
         },
         "pt-BR": {
@@ -455,6 +515,12 @@
             "value": "Inserire 0 o una porta da 1 a 65535."
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voer 0 of een poort van 1 tot en met 65535 in."
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -495,6 +561,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Errore: %@"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fout: %@"
           }
         },
         "pt-BR": {
@@ -539,6 +611,12 @@
             "value": "Feedback e assistenza"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feedback en ondersteuning"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -579,6 +657,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Accesso alla rete locale"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toegang via het lokale netwerk"
           }
         },
         "pt-BR": {
@@ -623,6 +707,12 @@
             "value": "Richiesta HTTP malformata.\\n"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ongeldig HTTP-verzoek.\\n"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -663,6 +753,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Al momento non è disponibile alcun indirizzo Wi-Fi. Il server resta accessibile solo da questo iPhone finché il Wi-Fi non è pronto."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Er is momenteel geen Wi-Fi-adres beschikbaar. De HTTP-server blijft alleen op deze iPhone bereikbaar totdat Wi-Fi beschikbaar is."
           }
         },
         "pt-BR": {
@@ -707,6 +803,12 @@
             "value": "Nessuna cartella selezionata"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geen map geselecteerd"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -747,6 +849,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Porta"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poort"
           }
         },
         "pt-BR": {
@@ -791,6 +899,12 @@
             "value": "Visualizzare l’anteprima"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voorbeeld"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -828,6 +942,12 @@
           }
         },
         "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy"
+          }
+        },
+        "nl": {
           "stringUnit": {
             "state": "translated",
             "value": "Privacy"
@@ -875,6 +995,12 @@
             "value": "Accesso in sola lettura tramite File"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alleen leestoegang via Bestanden"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -915,6 +1041,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tempo di attesa della richiesta scaduto"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time-out van verzoek"
           }
         },
         "pt-BR": {
@@ -959,6 +1091,12 @@
             "value": "Il tempo di attesa della richiesta è scaduto.\\n"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De wachttijd voor het verzoek is verstreken.\\n"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -999,6 +1137,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "In esecuzione"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actief"
           }
         },
         "pt-BR": {
@@ -1043,6 +1187,12 @@
             "value": "URL attivi"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actieve URL's"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -1083,6 +1233,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fornire il file index.html della cartella radice per i percorsi non trovati senza estensione."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bied index.html uit de hoofdmap aan voor ontbrekende routes zonder bestandsextensie."
           }
         },
         "pt-BR": {
@@ -1127,6 +1283,12 @@
             "value": "Server"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-server"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -1167,6 +1329,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Comportamento del server"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bestanden aanbieden"
           }
         },
         "pt-BR": {
@@ -1211,6 +1379,12 @@
             "value": "Cartella da rendere disponibile"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aangeboden map"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -1251,6 +1425,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Il server funziona mentre 200 OK è in primo piano. iOS arresta il server quando l’app passa in background."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bestanden aanbieden werkt zolang 200 OK op de voorgrond staat. iOS stopt de HTTP-server zodra de app naar de achtergrond gaat."
           }
         },
         "pt-BR": {
@@ -1295,6 +1475,12 @@
             "value": "Condividere"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delen"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -1335,6 +1521,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostrare l’elenco dei file quando una cartella non contiene index.html."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toon een bestandslijst als een map geen index.html bevat."
           }
         },
         "pt-BR": {
@@ -1379,6 +1571,12 @@
             "value": "Fallback per app a pagina singola"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fallback voor single-page apps"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -1419,6 +1617,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Codice sorgente · MIT"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Broncode · MIT"
           }
         },
         "pt-BR": {
@@ -1463,6 +1667,12 @@
             "value": "Avvio in corso…"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bezig met starten…"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -1503,6 +1713,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Avviare il server web"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start de webserver"
           }
         },
         "pt-BR": {
@@ -1547,6 +1763,12 @@
             "value": "Arrestare il server per modificare questa impostazione."
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop de HTTP-server om deze instelling te wijzigen."
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -1587,6 +1809,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Arrestato"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestopt"
           }
         },
         "pt-BR": {
@@ -1631,6 +1859,12 @@
             "value": "Arresto in corso…"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bezig met stoppen…"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -1671,6 +1905,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Arrestare il server web"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stopt de webserver"
           }
         },
         "pt-BR": {
@@ -1715,6 +1955,12 @@
             "value": "L’autorizzazione salvata per la cartella è scaduta. Scegliere di nuovo la cartella."
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De opgeslagen toegangsmachtiging voor de map is verlopen. Kies de map opnieuw."
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -1755,6 +2001,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "La cartella selezionata non è disponibile. Selezionarla di nuovo in File."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De geselecteerde map is niet beschikbaar. Kies de map opnieuw in Bestanden."
           }
         },
         "pt-BR": {
@@ -1799,6 +2051,12 @@
             "value": "L’elemento selezionato non è una cartella."
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het geselecteerde item is geen map."
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -1839,6 +2097,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Impossibile avviare il server. Controllare la cartella e la porta, quindi riprovare."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De HTTP-server kon niet starten. Controleer de map en de poort en probeer het opnieuw."
           }
         },
         "pt-BR": {
@@ -1883,6 +2147,12 @@
             "value": "Il server è già in esecuzione."
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De HTTP-server is al actief."
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -1923,6 +2193,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Il server è occupato."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De HTTP-server is bezet."
           }
         },
         "pt-BR": {
@@ -1967,6 +2243,12 @@
             "value": "Il server si è arrestato quando 200 OK è passato in background. Riavviarlo quando si desidera."
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De HTTP-server is gestopt omdat 200 OK naar de achtergrond ging. Start de server opnieuw wanneer je er klaar voor bent."
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -2007,6 +2289,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Questo iPhone"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deze iPhone"
           }
         },
         "pt-BR": {
@@ -2051,6 +2339,12 @@
             "value": "Usare 0 per scegliere una porta disponibile"
           }
         },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gebruik 0 om een beschikbare poort te kiezen"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
@@ -2091,6 +2385,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Server web"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Webserver"
           }
         },
         "pt-BR": {

@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Android release tag (android-vX.Y.Z)
-        required: true
+        description: Android release tag (android-vX.Y.Z); omit only for an access check
+        required: false
         type: string
       track:
         description: Play track
@@ -69,7 +69,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}
           NOTES: ${{ inputs.release_notes }}
-        run: python3 scripts/android-play.py verify --tag "$TAG" --notes "$NOTES"
+          STATUS: ${{ inputs.status }}
+        run: |
+          if [ -z "$TAG" ]; then
+            test "$STATUS" = check || { echo 'A release tag is required for store changes' >&2; exit 1; }
+          else
+            python3 scripts/android-play.py verify --tag "$TAG" --notes "$NOTES"
+          fi
 
   publish:
     needs: verify
@@ -92,6 +98,7 @@ jobs:
           persist-credentials: false
 
       - name: Download and verify the candidate before Google authentication
+        if: inputs.tag != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -108,7 +115,7 @@ jobs:
           workload_identity_provider: ${{ vars.ANDROID_PLAY_WIF_PROVIDER }}
           service_account: ${{ vars.ANDROID_PLAY_SERVICE_ACCOUNT }}
           token_format: access_token
-          access_token_scopes: https://www.googleapis.com/auth/androidpublisher
+          access_token_scopes: https://www.googleapis.com/auth/androidpublisher,https://www.googleapis.com/auth/playdeveloperreporting
           create_credentials_file: false
           export_environment_variables: false
 
@@ -122,6 +129,10 @@ jobs:
           PLAN: ${{ inputs.plan }}
           NOTES: ${{ needs.verify.outputs.notes }}
         run: |
+          if [ -z "$TAG" ]; then
+            python3 scripts/android-play.py access --track "$TRACK" --receipt "$RUNNER_TEMP/publication.json"
+            exit 0
+          fi
           printf '%s' "$NOTES" > "$RUNNER_TEMP/notes.txt"
           localized_notes=()
           notes_path="android/play/release-notes/$TAG.json"

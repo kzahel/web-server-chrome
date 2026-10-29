@@ -386,6 +386,13 @@ class AdvanceTest(unittest.TestCase):
         self.assertEqual(stats[33], {'userDays': 400.0, 'rate': 0.0025})
 
 
+class NoEvidenceTest(unittest.TestCase):
+    def test_empty_report_counts_hold_instead_of_proving_health(self):
+        reporting = FakeReporting({})
+        result = play.vitals(reporting, play.load_policy()['gate'], 33, 32, NOW - timedelta(days=2), 0.01)
+        self.assertEqual(result['decision'], 'hold')
+
+
 class LedgerTest(unittest.TestCase):
     def test_latest_matches_version_and_decodes_payload(self):
         log = ledger([deployment(NOW, userFraction=0.01),

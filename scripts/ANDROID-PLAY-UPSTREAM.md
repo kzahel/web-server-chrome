@@ -10,8 +10,9 @@ The version/changelog parsers are adapted from `scripts/release-android.py`.
 Local differences: package identity, existing `app-release.aab` asset name,
 Android CI workflow, native repository paths, and exact-source main CI. No
 JSTorrent compatibility-ledger exception is accepted here. Upstream defaults
-for vitals and rollout dwell times are retained; missing/low-volume data holds
-the rollout rather than relaxing the gate.
+for vitals and rollout dwell times are retained. Local safety additions:
+empty report-count evidence holds instead of passing; a tag-free access check
+verifies Publisher and Reporting permissions without a release.
 
 MIT License
 

@@ -6,6 +6,18 @@ All publishing workflows run from main. They consume permanent, verified
 GitHub release assets; they never rebuild or re-sign. Use an Android tag built
 by the receipt-aware release lane. Older releases deliberately fail verification.
 
+## Verify setup without a candidate
+
+```sh
+gh workflow run android-play-publish.yml --ref main -f track=internal -f status=check
+gh workflow run android-play-publish.yml --ref main -f track=production -f status=check
+```
+
+Omitting the tag is allowed only for check. This reads the selected track and
+all three Reporting metric-set metadata endpoints, then discards the temporary
+edit. It does not upload a bundle or commit a store change. Production still
+uses its normal GitHub environment review.
+
 ## Build and internal release
 
 Prepare the changelog, then run `scripts/release-android.sh VERSION` on clean

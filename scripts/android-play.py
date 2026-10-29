@@ -631,6 +631,10 @@ def vitals(reporting, gate, version_code, previous_code, since, fraction):
                 'rateReasons': rate_reasons}
     rows = query_rows(reporting, 'errorCountMetricSet', ['errorReportCount', 'distinctUsers'],
                       ['versionCode', 'reportType'], start, end)
+    if not any(row_dimensions(row).get('versionCode') in (str(version_code), str(previous_code)) for row in rows):
+        return {'decision': 'hold', 'source': 'reports',
+                'reasons': ['No report evidence for rollout or previous version'],
+                'stats': {}, 'rateReasons': rate_reasons}
     verdict = evaluate_reports(gate['reports'], report_stats(rows), version_code, previous_code, fraction)
     verdict['rateReasons'] = rate_reasons
     return verdict
@@ -705,6 +709,19 @@ def emit(result, path):
     if path:
         Path(path).write_text(text)
     print(text, end='')
+
+
+def command_access(args):
+    """Verify app-scoped Publisher and Reporting access without committing an edit."""
+    google = Http(os.environ.get('PLAY_ACCESS_TOKEN'))
+    with edit(google) as transaction:
+        releases = track_releases(transaction, args.track)
+    reporting = {}
+    for metric_set in ('crashRateMetricSet', 'anrRateMetricSet', 'errorCountMetricSet'):
+        info = google.call('GET', f'{REPORTING}/{metric_set}')
+        reporting[metric_set] = {'name': info.get('name'), 'freshnessInfo': info.get('freshnessInfo', {})}
+    emit({'status': 'access_verified', 'package': PACKAGE, 'track': args.track,
+          'releases': summarize(releases), 'reporting': reporting, 'committed': False}, args.receipt)
 
 
 def command_receipt(args):
@@ -807,6 +824,11 @@ def fraction_argument(value):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
+
+    access = commands.add_parser('access', help='verify app-scoped store and vitals access without a release')
+    access.add_argument('--track', choices=TRACKS, required=True)
+    access.add_argument('--receipt', type=Path)
+    access.set_defaults(run=command_access)
 
     receipt = commands.add_parser('receipt', help='write build.json for a signed release bundle')
     receipt.add_argument('--bundle', type=Path, required=True)

@@ -310,6 +310,7 @@
 				pl,
 				"pt-BR",
 				ro,
+				ru,
 				sv,
 			);
 			mainGroup = B72141085C34D735A799950E;

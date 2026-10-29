@@ -71,6 +71,12 @@
             "value": "200 OK oferă dispozitivelor din rețeaua locală acces la fișierele din folderul selectat cât timp aplicația este deschisă în prim-plan."
           }
         },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK предоставляет устройствам в вашей локальной сети доступ к выбранной папке, пока приложение открыто на экране."
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",

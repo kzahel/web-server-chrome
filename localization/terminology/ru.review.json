@@ -1,0 +1,22 @@
+{
+  "candidateHash": "6a73c9b7c9a73e031fc7515b2cf477922f2d6d461f5c35054cdd028bd3a46ded",
+  "locale": "ru",
+  "reviewState": "agent-reviewed",
+  "reviewer": {
+    "actualModel": "gpt-6.1-sol",
+    "effort": "high",
+    "permissionMode": "acceptEdits",
+    "serviceTier": "normal",
+    "sessionId": "01a187ce-2a7c-7551-a021-95e87fa89535"
+  },
+  "schemaVersion": 1,
+  "sourceHash": "e9c69a14f949ca430d7c90f3d9213c892ad3f80b27426a63c7196f5065e9ba2d",
+  "translationHash": "6a73c9b7c9a73e031fc7515b2cf477922f2d6d461f5c35054cdd028bd3a46ded",
+  "translator": {
+    "actualModel": "gpt-6.1-sol",
+    "effort": "high",
+    "permissionMode": "acceptEdits",
+    "serviceTier": "normal",
+    "sessionId": "01a187cc-c910-7a42-859c-19a0b96c7e68"
+  }
+}

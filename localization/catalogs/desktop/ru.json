@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "Не удалось открыть 200 OK.",
+  "about_200_ok_ba8aa9": "О программе 200 OK",
+  "check_for_updates_9ed79e": "Проверить обновления",
+  "choose_folder_to_serve_d488f4": "Выберите папку для HTTP-сервера",
+  "close_7d9eb7": "Закрыть",
+  "hide_200_ok_981b92": "Скрыть 200 OK",
+  "hide_others_1753e2": "Скрыть другие",
+  "launching_b1601d": "Запуск…",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "Открыть 200 OK Web Server для Linux в ChromeOS",
+  "quit_200_ok_686f8f": "Завершить 200 OK",
+  "quit_b3eb37": "Выйти",
+  "run_in_background_0db775": "Работать в фоновом режиме",
+  "settings_74a883": "Настройки",
+  "show_all_e1c326": "Показать все",
+  "show_app_ec462a": "Показать приложение",
+  "show_icon_in_menu_bar_0ad9f3": "Показывать значок в строке меню",
+  "show_icon_in_system_tray_25b481": "Показывать значок в системном трее",
+  "start_at_login_5952eb": "Запускать при входе в систему",
+  "try_again_df0fe9": "Повторить попытку",
+  "unknown_launch_error_3585c0": "Неизвестная ошибка запуска",
+  "web_server_fc0480": "HTTP-сервер"
+}

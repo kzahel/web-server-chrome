@@ -10,3 +10,4 @@ da
 cs
 pl
 ro
+ru

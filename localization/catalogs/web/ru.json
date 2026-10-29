@@ -1,0 +1,1022 @@
+{
+  "desktop..path.to.directory.ae256f": {
+    "defaultMessage": "/path/to/directory",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.0.automatic.4c2328": {
+    "defaultMessage": "0 = автоматически",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.200.ok.value0.is.available.31c835": {
+    "defaultMessage": "Доступна версия 200 OK {value0}",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.200.ok.value0.is.the.newest.version.98822f": {
+    "defaultMessage": "200 OK{value0} — последняя версия.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.200.ok.web.server.bf6c0d": {
+    "defaultMessage": "200 OK Web Server",
+    "description": "packages/ui/src/components/Layout.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "desktop.app.settings.d43fb8": {
+    "defaultMessage": "Настройки приложения",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.cancel.19766e": {
+    "defaultMessage": "Отмена",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.change.a6b470": {
+    "defaultMessage": "Изменить…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.check.again.fb7099": {
+    "defaultMessage": "Проверить ещё раз",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.check.for.updates.9ed79e": {
+    "defaultMessage": "Проверить обновления",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.checking.for.updates.497a19": {
+    "defaultMessage": "Проверка обновлений…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.choose.7ca416": {
+    "defaultMessage": "Выбрать…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.choose.a.folder.to.start.the.server.337adc": {
+    "defaultMessage": "Выберите папку для запуска HTTP-сервера",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.choosing.fe2076": {
+    "defaultMessage": "Выбор…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.close.app.settings.4168da": {
+    "defaultMessage": "Закрыть настройки приложения",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.contacting.the.200.ok.update.server.663342": {
+    "defaultMessage": "Подключение к серверу обновлений 200 OK.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.copied.8d525e": {
+    "defaultMessage": "Скопировано",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.copy.url.b26d10": {
+    "defaultMessage": "Копировать URL",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.could.not.open.value0.value1.fe47fa": {
+    "defaultMessage": "Не удалось открыть {value0}: {value1}",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.desktop.9bd88f": {
+    "defaultMessage": "Для компьютера",
+    "description": "packages/ui/src/components/Layout.tsx"
+  },
+  "desktop.directory.listing.bc706d": {
+    "defaultMessage": "Список файлов в папке",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.dismiss.48845b": {
+    "defaultMessage": "Закрыть",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.dismiss.update.notice.6a124b": {
+    "defaultMessage": "Закрыть уведомление об обновлении",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.downloading.200.ok.value0.19b49e": {
+    "defaultMessage": "Скачивание 200 OK {value0}…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.error.54a0e8": {
+    "defaultMessage": "Ошибка",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.failed.to.open.external.link.29fcf0": {
+    "defaultMessage": "Не удалось открыть внешнюю ссылку:",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.feedback.suggestions.and.support.d1acad": {
+    "defaultMessage": "Отзывы, предложения и поддержка",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.feedback.support.2d5632": {
+    "defaultMessage": "Отзывы и поддержка",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.folder.74ccd4": {
+    "defaultMessage": "Папка",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.install.restart.223cb1": {
+    "defaultMessage": "Установить и перезапустить",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.install.updates.manually.60762c": {
+    "defaultMessage": "Установить обновления вручную",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.installing.update.29e74e": {
+    "defaultMessage": "Установка обновления…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.keep.a.shortcut.to.200.ok.in.the.system.area.6f0b61": {
+    "defaultMessage": "Показывать значок 200 OK в системной области.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.keep.running.when.the.main.window.is.closed.c46cc8": {
+    "defaultMessage": "Продолжать работу после закрытия главного окна.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.lan.access.708f4a": {
+    "defaultMessage": "Доступ по локальной сети",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.later.73b6e4": {
+    "defaultMessage": "Позже",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.launch.200.ok.when.you.sign.in.b9ed74": {
+    "defaultMessage": "Запускать 200 OK при входе в систему.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.loading.47d2a5": {
+    "defaultMessage": "Загрузка…",
+    "description": "packages/ui/src/components/ServerPage.tsx"
+  },
+  "desktop.loading.settings.e71a13": {
+    "defaultMessage": "Загрузка настроек…",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.locked.a424e3": {
+    "defaultMessage": "Недоступно",
+    "description": "packages/ui/src/components/SettingsZone.tsx"
+  },
+  "desktop.native.0ad9f346a7": {
+    "defaultMessage": "Показывать значок в строке меню",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.0fdab34df1": {
+    "defaultMessage": "Эта папка содержит вашу домашнюю папку. Если открыть к ней доступ, личные файлы могут стать доступны другим.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.147cb2aad4": {
+    "defaultMessage": "Установщик для Windows",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.25b4818674": {
+    "defaultMessage": "Показывать значок в системном трее",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3318275f29": {
+    "defaultMessage": "MSI для Windows",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3a63e9846a": {
+    "defaultMessage": "Пакет RPM",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3e7a639282": {
+    "defaultMessage": "Это открывает доступ ко всей вашей домашней папке, включая личные и скрытые файлы. При включении доступа по локальной сети папка становится доступна и другим устройствам в этой сети.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.45e6d69dbe": {
+    "defaultMessage": "Приложение macOS",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.5021888e79": {
+    "defaultMessage": "Выберите папку перед запуском HTTP-сервера",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.589cb3c9a9": {
+    "defaultMessage": "эта копия приложения",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.65e51a8997": {
+    "defaultMessage": "Остановите HTTP-сервер перед изменением его настроек",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.7ee24bab5c": {
+    "defaultMessage": "Приложению не удалось сравнить эту папку с вашей домашней папкой. Подтвердите, что предоставлять к ней доступ безопасно.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.879a60672f": {
+    "defaultMessage": "Доступ будет предоставлен ко всей вашей домашней папке, включая личные и скрытые файлы.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.93a5653143": {
+    "defaultMessage": "Приложению не удалось сравнить эту папку с вашей домашней папкой. Подтвердите, что предоставлять к ней доступ безопасно. При включении доступа по локальной сети папка становится доступна и другим устройствам в этой сети.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.9e62e3b15f": {
+    "defaultMessage": "Эта папка находится за пределами вашей домашней папки. Подтвердите, что предоставлять к ней доступ безопасно. При включении доступа по локальной сети папка становится доступна и другим устройствам в этой сети.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.ac5419d69a": {
+    "defaultMessage": "Невозможно предоставить доступ к выбранной папке через HTTP-сервер",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.bf8670ceff": {
+    "defaultMessage": "Эта папка находится за пределами вашей домашней папки. Подтвердите, что предоставлять к ней доступ безопасно.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.e119a30af0": {
+    "defaultMessage": "При включении доступа по локальной сети эта папка станет доступна другим устройствам в этой сети.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.e295fe0e69": {
+    "defaultMessage": "Пакет DEB",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.fec5ce9934": {
+    "defaultMessage": "Эта папка содержит вашу домашнюю папку, и предоставление доступа к ней может сделать личные файлы доступными другим. При включении доступа по локальной сети папка становится доступна и другим устройствам в этой сети.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.no.folder.selected.d987e0": {
+    "defaultMessage": "Папка не выбрана",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.open.downloads.3e4ad2": {
+    "defaultMessage": "Открыть страницу скачивания",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.open.in.default.browser.d1f5a8": {
+    "defaultMessage": "Открыть в браузере по умолчанию",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.port.72e9a5": {
+    "defaultMessage": "Порт",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.port.must.be.between.0.and.65535.e3ecee": {
+    "defaultMessage": "Порт должен быть в диапазоне от 0 до 65535",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.quit.200.ok.686f8f": {
+    "defaultMessage": "Завершить работу 200 OK",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.restart.after.update": {
+    "defaultMessage": "200 OK перезапустится после завершения установки.",
+    "description": "Updater installation status."
+  },
+  "desktop.run.in.background.0db775": {
+    "defaultMessage": "Работа в фоновом режиме",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.running.f4ccae": {
+    "defaultMessage": "Работает",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.server.not.found.d7783f": {
+    "defaultMessage": "HTTP-сервер не найден",
+    "description": "packages/ui/src/components/ServerPage.tsx"
+  },
+  "desktop.serving.options.ac430f": {
+    "defaultMessage": "Параметры предоставления файлов",
+    "description": "packages/ui/src/components/SettingsZone.tsx"
+  },
+  "desktop.share.this.folder.cdaecd": {
+    "defaultMessage": "Предоставить доступ к этой папке?",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.source.mit.32896a": {
+    "defaultMessage": "Исходный код · MIT",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.spa.mode.4695bd": {
+    "defaultMessage": "Режим SPA",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.start.anyway.a330c2": {
+    "defaultMessage": "Всё равно запустить",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.start.at.login.5952eb": {
+    "defaultMessage": "Запуск при входе в систему",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.start.web.server.9b82f9": {
+    "defaultMessage": "Запустить HTTP-сервер",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.starting.aeed4d": {
+    "defaultMessage": "Запуск",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stop.the.server.to.change.this.setting.27acb7": {
+    "defaultMessage": "Остановите HTTP-сервер, чтобы изменить этот параметр",
+    "description": "packages/ui/src/components/LockedControl.tsx"
+  },
+  "desktop.stop.web.server.a00a97": {
+    "defaultMessage": "Остановить HTTP-сервер",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stopped.1a4f63": {
+    "defaultMessage": "Остановлен",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stopping.a71ee1": {
+    "defaultMessage": "Остановка",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.the.update.is.signed.and.ready.to.install.4abbcb": {
+    "defaultMessage": "Обновление подписано и готово к установке.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.these.controls.are.always.available.here.49809b": {
+    "defaultMessage": "Эти элементы управления всегда доступны здесь.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.update.failed.e58282": {
+    "defaultMessage": "Не удалось обновить",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.updates.for.the.value0.stay.with.that.package.type.down.686fbe": {
+    "defaultMessage": "При обновлении используется тот же тип пакета ({value0}). Скачайте подходящий пакет с ok200.app.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.url.copied.0017bd": {
+    "defaultMessage": "URL скопирован",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.view.the.mit.licensed.source.code.017168": {
+    "defaultMessage": "Посмотреть исходный код под лицензией MIT",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.web.server.1643cf": {
+    "defaultMessage": "HTTP-сервер",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.you.re.up.to.date.8d757d": {
+    "defaultMessage": "Установлена последняя версия",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "extension..tag0.advanced.tag0.tag1.directory.behavior.access.and.305a04": {
+    "defaultMessage": "<tag0>Дополнительно</tag0> <tag1>Работа с папками, доступ и обновления</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension..tag0.compare.chromeos.options.tag0.081566": {
+    "defaultMessage": "<tag0>Сравнить варианты для ChromeOS</tag0>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.feedback.support.tag0.tag1.source.mit.tag1.83ed4c": {
+    "defaultMessage": "<tag0>Отзывы и поддержка</tag0> <tag1>Исходный код · MIT</tag1>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.google.play.tag0.60819d": {
+    "defaultMessage": "<tag0>Google Play</tag0>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.port.tag0.tag1.used.in.the.server.address.tag1.1ad047": {
+    "defaultMessage": "<tag0>Порт</tag0> <tag1>Используется в адресе HTTP-сервера</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension..tag1.linux.component.v.value0.tag1.tag2.tag2.tag3.cont.193b14": {
+    "defaultMessage": "<tag1>Компонент Linux v{value0}</tag1> <tag2>•</tag2> <tag3>Порт управления 20080 остаётся закрытым для сети</tag3>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.1.step.3ce601": {
+    "defaultMessage": "1 шаг",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.200.ok.web.server.bf6c0d": {
+    "defaultMessage": "200 OK Web Server",
+    "description": "extension/src/ui/app.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.action.failed.f71340": {
+    "defaultMessage": "Не удалось выполнить действие.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.200.ok.to.communicate.with.your.chromebook.s.linu.76c804": {
+    "defaultMessage": "Разрешите 200 OK подключаться к среде Linux на вашем Chromebook по адресу <tag0>penguin.linux.test</tag0>. Этот частный адрес доступен только на вашем Chromebook.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.chromeos.to.forward.this.port.to.your.network.5e770a": {
+    "defaultMessage": "Разрешить ChromeOS перенаправлять этот порт в вашу сеть",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.linux.access.38fc0e": {
+    "defaultMessage": "Разрешить доступ к Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.pages.on.other.origins.to.request.these.files.7a07f1": {
+    "defaultMessage": "Разрешить страницам из других источников запрашивать эти файлы",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.app.launched.931931": {
+    "defaultMessage": "Приложение запущено!",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.automatic.linux.updates.04a336": {
+    "defaultMessage": "Автоматические обновления компонента Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.available.on.local.network.f4bd53": {
+    "defaultMessage": "Доступ по локальной сети",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.cancel.19766e": {
+    "defaultMessage": "Отмена",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.change.c0bf75": {
+    "defaultMessage": "Изменить",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.check.again.fb7099": {
+    "defaultMessage": "Проверить ещё раз",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.check.now.2937cf": {
+    "defaultMessage": "Проверить сейчас",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.ec963f": {
+    "defaultMessage": "Проверка…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.for.a.signed.update.8e194a": {
+    "defaultMessage": "Проверка наличия подписанного обновления…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.linux.access.2a9213": {
+    "defaultMessage": "Проверка доступа к Linux…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.different.folder.1792fc": {
+    "defaultMessage": "Выбрать другую папку",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.folder.5c71b8": {
+    "defaultMessage": "Выбрать папку",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.folder.then.turn.the.server.on.3707c6": {
+    "defaultMessage": "Выберите папку, затем запустите HTTP-сервер",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.tag0.share.with.linux.tag0.then.return.here.d837a8": {
+    "defaultMessage": "Выберите <tag0>Открыть доступ для Linux</tag0>, затем вернитесь сюда.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.the.implementation.you.prefer.chromeos.linux.avo.737672": {
+    "defaultMessage": "Выберите подходящий вариант. Вариант для Linux в ChromeOS обходится без Google Play и позволяет полностью управлять HTTP-сервером из расширения; Android быстрее всего настроить, если доступен Google Play.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.choose.this.folder.0f3b23": {
+    "defaultMessage": "Выбрать эту папку",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.chromebook.ipv4.address.94e487": {
+    "defaultMessage": "Адрес IPv4 Chromebook",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.chromeos.shows.this.address.just.above.the.port.forward.3c5208": {
+    "defaultMessage": "ChromeOS показывает этот адрес прямо над настройками перенаправления портов.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.7d9eb7": {
+    "defaultMessage": "Закрыть",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.folder.picker.2db6d3": {
+    "defaultMessage": "Закрыть окно выбора папки",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.the.200.ok.controls.and.any.tag0.opening.200.ok.t.79941c": {
+    "defaultMessage": "Перед удалением закройте панель управления 200 OK и все окна <tag0>Открытие 200 OK…</tag0>. ChromeOS удаляет значок из меню приложений не сразу; дождитесь его исчезновения, прежде чем завершать работу Linux. Если остаётся незакреплённый значок загрузки, не открывайте его повторно: перезапустите ChromeOS, чтобы убрать этот временный значок с панели запуска.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.connect.to.linux.67d25d": {
+    "defaultMessage": "Подключиться к Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.connecting.5f04ae": {
+    "defaultMessage": "Подключение…",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.connecting.to.your.linux.controller.095b18": {
+    "defaultMessage": "Подключение к компоненту управления Linux…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.47bd29": {
+    "defaultMessage": "Содержимое",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.port.838a49": {
+    "defaultMessage": "Порт для файлов",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.server.port.9f26d1": {
+    "defaultMessage": "Порт HTTP-сервера файлов",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.connection.failed.f25b70": {
+    "defaultMessage": "Не удалось подключиться к компоненту управления.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.different": {
+    "defaultMessage": "Служба по этому адресу относится к другой панели управления 200 OK. Запустите 200 OK Web Server снова.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.http": {
+    "defaultMessage": "Панель управления вернула код HTTP {status}",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.port.20080.stays.on.this.chromebook.and.shou.270d00": {
+    "defaultMessage": "Порт управления 20080 доступен только на этом Chromebook. Никогда не настраивайте для него перенаправление.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.protocol": {
+    "defaultMessage": "Это расширение требует протокола панели управления для Linux версии {required}, но установленный компонент сообщил о протоколе версии {actual}. Проверьте наличие обновлений расширения и компонента Linux.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.unexpected": {
+    "defaultMessage": "Служба по этому адресу не является ожидаемой панелью управления 200 OK.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.copied.8d525e": {
+    "defaultMessage": "Скопировано",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.copy.e21f93": {
+    "defaultMessage": "Копировать",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.copy.server.url.3f8f6c": {
+    "defaultMessage": "Копировать URL HTTP-сервера",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.create.folder.13a151": {
+    "defaultMessage": "Не удалось создать папку.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.open.folder.bcd29f": {
+    "defaultMessage": "Не удалось открыть папку.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.read.folder.locations.871ce6": {
+    "defaultMessage": "Не удалось прочитать расположения папок.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.select.folder.4293fe": {
+    "defaultMessage": "Не удалось выбрать папку.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.couldn.t.connect.to.linux.6e31bc": {
+    "defaultMessage": "Не удалось подключиться к Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.create.475949": {
+    "defaultMessage": "Создать",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.cross.origin.requests.86c1f5": {
+    "defaultMessage": "Запросы между источниками",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.automatic.check.pending.acd44c": {
+    "defaultMessage": "Актуальная версия · ожидается автоматическая проверка",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.checked.value0.c23fb5": {
+    "defaultMessage": "Актуальная версия · проверено {value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.folder.1a5db5": {
+    "defaultMessage": "Текущая папка",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.desktop.app.detected.value0.6e9c58": {
+    "defaultMessage": "Обнаружено приложение для компьютера{value0}.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.detect.again.bf6732": {
+    "defaultMessage": "Определить ещё раз",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detect.chromebook.address.again.198bd4": {
+    "defaultMessage": "Определить адрес Chromebook ещё раз",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detected.automatically.from.chromeos.04302a": {
+    "defaultMessage": "Определён автоматически средствами ChromeOS.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detecting.805eb9": {
+    "defaultMessage": "Определение…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detecting.this.chromebook.s.address.c5a43d": {
+    "defaultMessage": "Определение адреса этого Chromebook…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.directory.listings.a49eb4": {
+    "defaultMessage": "Списки файлов в папках",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.error.54a0e8": {
+    "defaultMessage": "Ошибка",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.failed.to.launch.app.fba450": {
+    "defaultMessage": "Не удалось запустить приложение",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.failed.to.open.android.app.73ba16": {
+    "defaultMessage": "Не удалось открыть приложение Android",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.failed.to.open.the.linux.setup.guide.a903f0": {
+    "defaultMessage": "Не удалось открыть руководство по настройке Linux",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.finish.chromeos.forwarding.39f117": {
+    "defaultMessage": "Завершить настройку перенаправления в ChromeOS",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.folder.and.address.d090b6": {
+    "defaultMessage": "Папка и адрес",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.folder.locations.23edda": {
+    "defaultMessage": "Расположения папок",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.get.the.desktop.app.39b7d5": {
+    "defaultMessage": "Скачать приложение для компьютера",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.if.the.launcher.cannot.wake.linux.open.terminal.once.wa.27611b": {
+    "defaultMessage": "Если средство запуска не может запустить Linux, откройте терминал, дождитесь приглашения командной строки, закройте его и повторите попытку.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.in.chromeos.settings.open.tag0.developers.linux.port.fo.49e854": {
+    "defaultMessage": "В настройках ChromeOS откройте <tag0>Разработчикам → Linux → Перенаправление портов</tag0> и добавьте порт TCP {value1}.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.in.files.right.click.the.folder.and.choose.tag0.share.w.f5a943": {
+    "defaultMessage": "В приложении «Файлы» нажмите на папку правой кнопкой мыши и выберите <tag0>Открыть доступ для Linux</tag0>. Когда вы вернётесь, окно выбора папки 200 OK обнаружит новую доступную папку.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.install.signed.linux.component.updates.while.stopped.6155e8": {
+    "defaultMessage": "Устанавливать подписанные обновления компонента Linux, пока HTTP-сервер остановлен",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.install.the.verified.200.ok.linux.component.tag0.curl.f.93b255": {
+    "defaultMessage": "Установите проверенный компонент 200 OK для Linux: <tag0>curl -fsSL https://ok200.app/install-crostini.sh | bash</tag0> <tag1>Установщик проверяет подписанный выпуск, выполняет установку только для вашего пользователя Linux и оставляет HTTP-сервер остановленным.</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.installing.and.reconnecting.eea5c0": {
+    "defaultMessage": "Установка и повторное подключение…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.installing.the.signed.update.the.controller.will.briefl.ab10e2": {
+    "defaultMessage": "Установка подписанного обновления. Подключение к компоненту управления ненадолго прервётся, затем восстановится…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.keep.serving.when.controls.close.3afb77": {
+    "defaultMessage": "Продолжать предоставлять файлы после закрытия панели управления",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.launching.b1601d": {
+    "defaultMessage": "Запуск…",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.linux.component.v.value0.23fcc0": {
+    "defaultMessage": "Компонент Linux v{value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.linux.connected.a353b4": {
+    "defaultMessage": "Linux подключён",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.linux.setup.and.recovery.803759": {
+    "defaultMessage": "Настройка и восстановление Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.local.network.4fda69": {
+    "defaultMessage": "Локальная сеть",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.my.files.985698": {
+    "defaultMessage": "Мои файлы",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.native.disconnected": {
+    "defaultMessage": "Соединение с нативным хостом разорвано",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.new.folder.cf28f4": {
+    "defaultMessage": "Новая папка",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.new.folder.name.489b9f": {
+    "defaultMessage": "Имя новой папки",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.not.detected.9f4a10": {
+    "defaultMessage": "Не определён",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.not.shared.yet.bd0b09": {
+    "defaultMessage": "Доступ ещё не предоставлен",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.ok200.crostini.check.update.value0.ok200.crostini.updat.a13096": {
+    "defaultMessage": "ok200-crostini check-update{value0} ok200-crostini update{value1} ok200-crostini rollback{value2} ok200-crostini uninstall",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.200.ok.06ebd0": {
+    "defaultMessage": "Открыть 200 OK",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.open.chromeos.settings.about.chromeos.developers.linux.b6dec2": {
+    "defaultMessage": "Откройте настройки ChromeOS → О ChromeOS → Разработчикам → Среда разработки Linux и выберите <tag0>Настроить</tag0>.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.ed077f": {
+    "defaultMessage": "Открыть",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.installed.android.app.82b23f": {
+    "defaultMessage": "Открыть установленное приложение Android",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.open.server.520174": {
+    "defaultMessage": "Открыть HTTP-сервер",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.server.url.646642": {
+    "defaultMessage": "Открыть URL HTTP-сервера",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.tag0.200.ok.web.server.tag0.from.the.chromeos.laun.75dcac": {
+    "defaultMessage": "Откройте <tag0>200 OK Web Server</tag0> в меню приложений ChromeOS.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.open.terminal.once.after.linux.finishes.installing.a18d10": {
+    "defaultMessage": "После завершения установки Linux один раз откройте терминал.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.the.chromeos.files.app.ce4973": {
+    "defaultMessage": "Откройте приложение «Файлы» в ChromeOS.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.opening.android.app.708ae6": {
+    "defaultMessage": "Открытие приложения Android…",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.opening.folder.c3ab98": {
+    "defaultMessage": "Открытие папки…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.other.devices.4e027d": {
+    "defaultMessage": "Другие устройства",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.check.failed.144b96": {
+    "defaultMessage": "Не удалось проверить разрешение.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.request.failed.4c774d": {
+    "defaultMessage": "Не удалось запросить разрешение.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.was.not.granted.setup.instructions.remain.av.41abf6": {
+    "defaultMessage": "Разрешение не предоставлено. Инструкции по настройке по-прежнему доступны, но расширение не может управлять Linux.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.reach.the.server.from.another.device.7f1eab": {
+    "defaultMessage": "Доступ к HTTP-серверу с другого устройства",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.right.click.the.folder.you.want.to.serve.ed4508": {
+    "defaultMessage": "Нажмите правой кнопкой мыши на папку, к которой хотите предоставить доступ через HTTP-сервер.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.running.f4ccae": {
+    "defaultMessage": "Работает",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.see.supported.platforms.bc2221": {
+    "defaultMessage": "Посмотреть поддерживаемые платформы",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.serve.any.folder.over.http.install.the.desktop.app.to.g.cbebff": {
+    "defaultMessage": "Предоставляйте доступ к любой папке по HTTP. Для начала установите приложение для компьютера.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.serve.index.html.for.routes.that.do.not.match.a.file.07862d": {
+    "defaultMessage": "Возвращать index.html для маршрутов, которым не соответствует файл",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.server.action.failed.c2bc8c": {
+    "defaultMessage": "Не удалось выполнить действие с HTTP-сервером.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.server.lifetime.b391f8": {
+    "defaultMessage": "Время работы HTTP-сервера",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.serving.continues.when.this.window.closes.b6048a": {
+    "defaultMessage": "Предоставление файлов продолжается после закрытия этого окна",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.serving.stops.when.this.window.closes.49b856": {
+    "defaultMessage": "Предоставление файлов прекращается после закрытия этого окна",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.set.up.the.linux.version.8554b6": {
+    "defaultMessage": "Настроить версию для Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.setup.sharing.and.recovery.e978bc": {
+    "defaultMessage": "Настройка, общий доступ и восстановление",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.share.a.chromebook.folder.with.linux.e50ee9": {
+    "defaultMessage": "Открыть доступ к папке Chromebook для Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.sharing.chromebook.folders.8bf65f": {
+    "defaultMessage": "Доступ к папкам Chromebook",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.show.an.index.when.a.folder.has.no.index.file.dd0caa": {
+    "defaultMessage": "Показывать список файлов, если в папке нет индексного файла",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.single.page.app.fallback.f6dac9": {
+    "defaultMessage": "Резервная обработка маршрутов SPA",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.start.web.server.9b82f9": {
+    "defaultMessage": "Запустить HTTP-сервер",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.starting.aeed4d": {
+    "defaultMessage": "Запуск",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.the.server.to.change.settings.fd75f3": {
+    "defaultMessage": "Остановите HTTP-сервер, чтобы изменить настройки.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.to.make.changes.a30d16": {
+    "defaultMessage": "Остановите HTTP-сервер для внесения изменений",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.web.server.a00a97": {
+    "defaultMessage": "Остановить HTTP-сервер",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stopped.1a4f63": {
+    "defaultMessage": "Остановлен",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stopping.a71ee1": {
+    "defaultMessage": "Остановка",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.successor.to.tag0.web.server.for.chrome.tag0.7ca3a6": {
+    "defaultMessage": "Преемник <tag0>Web Server for Chrome</tag0>",
+    "description": "extension/src/ui/app.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.the.last.update.check.failed.c03ab6": {
+    "defaultMessage": "Последняя проверка обновлений завершилась ошибкой.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.component.is.already.current.b8579d": {
+    "defaultMessage": "Уже установлена последняя версия компонента Linux.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.component.update.failed.426563": {
+    "defaultMessage": "Не удалось обновить компонент Linux.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.control.session.expired.fbba79": {
+    "defaultMessage": "Срок действия сеанса управления Linux истёк.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.one.time.controller.claim.is.missing.launch.200.ok.f9593f": {
+    "defaultMessage": "Отсутствуют данные для одноразового подключения к компоненту управления. Запустите 200 OK Web Server ещё раз.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.the.server.keeps.running.until.you.stop.it.or.linux.shu.c725a6": {
+    "defaultMessage": "HTTP-сервер работает, пока вы его не остановите или не завершится работа Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.server.stops.after.the.final.200.ok.control.window.e84d80": {
+    "defaultMessage": "HTTP-сервер останавливается после закрытия последнего окна управления 200 OK",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.update.is.taking.longer.than.expected.launch.200.ok.449ff3": {
+    "defaultMessage": "Обновление занимает больше времени, чем ожидалось. Запустите 200 OK Web Server ещё раз или выполните «ok200-crostini update» в терминале.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.this.chrome.platform.does.not.have.a.supported.200.ok.l.154016": {
+    "defaultMessage": "Для этой платформы Chrome нет поддерживаемого способа запуска 200 OK.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.this.chromebook.31f18d": {
+    "defaultMessage": "Этот Chromebook",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.this.folder.has.no.subfolders.7b6d8d": {
+    "defaultMessage": "В этой папке нет вложенных папок.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.this.linux.controller.is.already.paired.but.this.extens.ed282f": {
+    "defaultMessage": "Этот компонент управления Linux уже сопряжён, но у расширения больше нет его токена. Выполните «ok200-crostini reset-controller» в терминале, затем запустите 200 OK Web Server ещё раз.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.try.again.d8b839": {
+    "defaultMessage": "Повторить",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.try.again.df0fe9": {
+    "defaultMessage": "Повторить",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.turn.on.tag0.available.on.local.network.tag0.then.add.t.571f67": {
+    "defaultMessage": "Включите <tag0>Доступ по локальной сети</tag0>, затем добавьте порт для файлов в настройках ChromeOS → Разработчикам → Linux → Перенаправление портов. Используйте IPv4-адрес вашего Chromebook в сети Wi-Fi. Никогда не настраивайте перенаправление порта управления 20080.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.uninstall.preserves.settings.and.never.deletes.a.served.d54c53": {
+    "defaultMessage": "При удалении компонента настройки сохраняются, а папка с предоставляемыми файлами никогда не удаляется. Используйте <tag0>uninstall --purge</tag0>, только если хотите также удалить данные сопряжения и настройки компонента управления.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.failed.f1d764": {
+    "defaultMessage": "Не удалось обновить.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.rollback.and.uninstall.2121a4": {
+    "defaultMessage": "Обновление, откат и удаление",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.to.v.value0.d7bb82": {
+    "defaultMessage": "Обновить до v{value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.updated.to.linux.component.v.value0.the.web.server.rema.b21a35": {
+    "defaultMessage": "Компонент Linux обновлён до v{value0}. HTTP-сервер остаётся остановленным.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.updating.stops.the.web.server.and.does.not.restart.it.a.8f22e4": {
+    "defaultMessage": "При обновлении HTTP-сервер остановится и не запустится снова автоматически. Продолжить?",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.url.copied.0017bd": {
+    "defaultMessage": "URL скопирован",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.use.chromeos.linux.1c2722": {
+    "defaultMessage": "Использовать Linux в ChromeOS",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.v.value0.is.available.46d0d0": {
+    "defaultMessage": "Доступна версия v{value0}.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.wait.for.the.current.action.to.finish.a99bab": {
+    "defaultMessage": "Дождитесь завершения текущего действия.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.wait.for.the.server.to.finish.value0.da806d": {
+    "defaultMessage": "{value0, select, starting {Дождитесь завершения запуска HTTP-сервера.} stopping {Дождитесь завершения остановки HTTP-сервера.} other {Дождитесь завершения текущего действия HTTP-сервера.}}",
+    "description": "Complete status sentence. value0 is a stable starting/stopping protocol enum; do not translate selector keys."
+  },
+  "extension.waiting.for.a.shared.folder.676047": {
+    "defaultMessage": "Ожидание папки с открытым доступом…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.web.server.1643cf": {
+    "defaultMessage": "HTTP-сервер",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.web.server.for.chromeos.linux.9d8ef3": {
+    "defaultMessage": "HTTP-сервер для Linux в ChromeOS",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.when.controls.close.8a761e": {
+    "defaultMessage": "При закрытии панели управления",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "language.label": {
+    "defaultMessage": "Язык",
+    "description": "App-local display language; does not change server settings."
+  },
+  "language.system": {
+    "defaultMessage": "Язык системы",
+    "description": "Follow OS or browser language preferences."
+  }
+}

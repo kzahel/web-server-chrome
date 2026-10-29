@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.12]
+
+### Added
+
+- Add German controls, settings, dialogs, and native menus, with a persistent
+  app language choice and an English fallback.
+
+### Changed
+
+- Improve layout and wrapping for translated text while preserving server
+  state and selected folders when changing language.
+
 ## Unreleased
 
 ## [0.1.11]

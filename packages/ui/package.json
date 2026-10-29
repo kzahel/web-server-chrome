@@ -8,11 +8,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "react": "^19.2.4",
+    "react": "^19.3.1",
     "@ok200/i18n": "workspace:*"
   },
   "devDependencies": {
-    "@types/react": "^19.2.14",
+    "@types/react": "^19.3.0",
     "typescript": "^5.9.3"
   }
 }

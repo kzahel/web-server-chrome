@@ -6,3 +6,4 @@ it
 pt-rBR
 nl
 sv
+da

@@ -25,3 +25,5 @@ GenericName[nl]=HTTP-server
 Comment[nl]=Open 200 OK Web Server voor ChromeOS Linux
 GenericName[sv]=HTTP-server
 Comment[sv]=Öppna 200 OK Web Server för ChromeOS Linux
+GenericName[da]=Webserver
+Comment[da]=Åbn 200 OK Web Server til ChromeOS Linux

@@ -5,6 +5,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tillad browseranmodninger på tværs af oprindelser."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -59,6 +65,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tillad andre enheder på dette Wi-Fi-netværk at oprette forbindelse."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -113,6 +125,12 @@
       "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ugyldig anmodning"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -167,6 +185,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skift"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -221,6 +245,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vælg"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -275,6 +305,12 @@
       "comment": "200 OK product copy: Storage/SecurityScopedRoot.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vælg en mappe, før du starter HTTP-serveren."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -329,6 +365,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vælg en mappe til fildeling for at kunne starte HTTP-serveren."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -383,6 +425,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopiér"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -437,6 +485,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filliste"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -491,6 +545,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -545,6 +605,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indtast 0 eller en port fra 1 til 65535."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -599,6 +665,12 @@
       "comment": "Controller failure with a localized or unknown diagnostic. Preserve %@.",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fejl: %@"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -653,6 +725,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feedback og support"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -707,6 +785,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adgang via lokalt netværk"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -761,6 +845,12 @@
       "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forkert formateret HTTP-anmodning.\\n"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -815,6 +905,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der er ingen tilgængelig Wi-Fi-adresse i øjeblikket. HTTP-serveren er kun tilgængelig på denne iPhone, indtil Wi-Fi er klar."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -869,6 +965,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingen mappe valgt"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -923,6 +1025,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Port"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -977,6 +1085,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forhåndsvisning"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1031,6 +1145,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privatliv"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1085,6 +1205,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skrivebeskyttet adgang via Arkiver"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1139,6 +1265,12 @@
       "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timeout for anmodning"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1193,6 +1325,12 @@
       "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidsgrænsen for anmodningen blev overskredet.\\n"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1247,6 +1385,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kører"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1301,6 +1445,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktive URL-adresser"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1355,6 +1505,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Levér index.html fra rodmappen, når en rute uden filendelse ikke findes."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1409,6 +1565,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-server"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1463,6 +1625,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serverfunktioner"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1517,6 +1685,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mappe til fildeling"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1571,6 +1745,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-serveren kører, mens 200 OK er åben. iOS stopper serveren, når appen går i baggrunden."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1625,6 +1805,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Del"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1679,6 +1865,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vis en filliste, når en mappe ikke indeholder index.html."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1733,6 +1925,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fallback for SPA"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1787,6 +1985,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kildekode · MIT"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1841,6 +2045,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starter…"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1895,6 +2105,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starter HTTP-serveren"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -1949,6 +2165,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop HTTP-serveren for at ændre denne indstilling."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2003,6 +2225,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stoppet"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2057,6 +2285,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stopper…"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2111,6 +2345,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stopper HTTP-serveren"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2165,6 +2405,12 @@
       "comment": "200 OK product copy: Storage/SecurityScopedRoot.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den gemte adgangstilladelse til mappen er udløbet. Vælg mappen igen."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2219,6 +2465,12 @@
       "comment": "200 OK product copy: Storage/SecurityScopedRoot.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den valgte mappe er ikke tilgængelig. Vælg den igen i Arkiver."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2273,6 +2525,12 @@
       "comment": "200 OK product copy: Storage/SecurityScopedRoot.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Det valgte emne er ikke en mappe."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2327,6 +2585,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-serveren kunne ikke starte. Kontrollér mappen og porten, og prøv igen."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2381,6 +2645,12 @@
       "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-serveren kører allerede."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2435,6 +2705,12 @@
       "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-serveren er optaget."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2489,6 +2765,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-serveren stoppede, da 200 OK gik i baggrunden. Start den igen, når du er klar."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2543,6 +2825,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denne iPhone"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2597,6 +2885,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brug 0 til at vælge en ledig port"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",
@@ -2651,6 +2945,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-server"
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",

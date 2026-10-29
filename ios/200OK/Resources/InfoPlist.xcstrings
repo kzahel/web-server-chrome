@@ -5,6 +5,12 @@
       "comment": "System local-network permission explanation. iOS only serves while foregrounded.",
       "extractionState": "manual",
       "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK giver enheder på dit lokale netværk adgang til den mappe, du vælger, mens appen er åben."
+          }
+        },
         "de": {
           "stringUnit": {
             "state": "translated",

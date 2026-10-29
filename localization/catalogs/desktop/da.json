@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "200 OK kunne ikke åbnes.",
+  "about_200_ok_ba8aa9": "Om 200 OK",
+  "check_for_updates_9ed79e": "Søg efter opdateringer",
+  "choose_folder_to_serve_d488f4": "Vælg mappe til serveren",
+  "close_7d9eb7": "Luk",
+  "hide_200_ok_981b92": "Skjul 200 OK",
+  "hide_others_1753e2": "Skjul andre",
+  "launching_b1601d": "Åbner...",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "Åbn 200 OK Web Server til ChromeOS Linux",
+  "quit_200_ok_686f8f": "Afslut 200 OK",
+  "quit_b3eb37": "Afslut",
+  "run_in_background_0db775": "Kør i baggrunden",
+  "settings_74a883": "Indstillinger",
+  "show_all_e1c326": "Vis alle",
+  "show_app_ec462a": "Vis appen",
+  "show_icon_in_menu_bar_0ad9f3": "Vis ikon i menulinjen",
+  "show_icon_in_system_tray_25b481": "Vis ikon i systembakken",
+  "start_at_login_5952eb": "Start ved login",
+  "try_again_df0fe9": "Prøv igen",
+  "unknown_launch_error_3585c0": "Ukendt fejl ved åbning",
+  "web_server_fc0480": "Webserver"
+}

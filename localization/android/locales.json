@@ -23,6 +23,10 @@
     "pt-BR": {
       "catalog": "android/app/src/main/res/values-pt-rBR/strings.xml",
       "quantities": ["one", "many", "other"]
+    },
+    "sv": {
+      "catalog": "android/app/src/main/res/values-sv/strings.xml",
+      "quantities": ["one", "other"]
     }
   },
   "schemaVersion": 1

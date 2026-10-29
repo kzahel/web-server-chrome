@@ -2,5 +2,5 @@
 package app.ok200.android.ui
 
 object SupportedLanguages {
-    val tags = listOf("en", "de", "fr", "es", "it", "pt-BR", "nl")
+    val tags = listOf("en", "de", "fr", "es", "it", "pt-BR", "nl", "sv")
 }

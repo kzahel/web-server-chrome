@@ -46,6 +46,12 @@
             "state": "translated",
             "value": "Permitir solicitações de outras origens feitas pelo navegador."
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tillåt webbläsarförfrågningar från andra ursprung."
+          }
         }
       }
     },
@@ -93,6 +99,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Permitir que outros dispositivos nesta rede Wi-Fi se conectem."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tillåt andra enheter i detta Wi-Fi-nätverk att ansluta."
           }
         }
       }
@@ -142,6 +154,12 @@
             "state": "translated",
             "value": "Solicitação inválida"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Felaktig förfrågan"
+          }
         }
       }
     },
@@ -189,6 +207,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Alterar"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ändra"
           }
         }
       }
@@ -238,6 +262,12 @@
             "state": "translated",
             "value": "Escolher"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Välj"
+          }
         }
       }
     },
@@ -285,6 +315,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Escolha uma pasta antes de iniciar o servidor HTTP."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Välj en mapp innan du startar HTTP-servern."
           }
         }
       }
@@ -334,6 +370,12 @@
             "state": "translated",
             "value": "Para habilitar o servidor HTTP, escolha a pasta que você quer disponibilizar."
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Välj en rotmapp för att kunna starta HTTP-servern."
+          }
         }
       }
     },
@@ -381,6 +423,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copiar"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopiera"
           }
         }
       }
@@ -430,6 +478,12 @@
             "state": "translated",
             "value": "Lista de arquivos da pasta"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fillista"
+          }
         }
       }
     },
@@ -477,6 +531,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Concluído"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klar"
           }
         }
       }
@@ -526,6 +586,12 @@
             "state": "translated",
             "value": "Digite 0 ou uma porta de 1 a 65535."
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ange 0 eller en port från 1 till 65535."
+          }
         }
       }
     },
@@ -573,6 +639,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Erro: %@"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fel: %@"
           }
         }
       }
@@ -622,6 +694,12 @@
             "state": "translated",
             "value": "Comentários e suporte"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synpunkter och support"
+          }
         }
       }
     },
@@ -669,6 +747,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Acesso à rede local"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Åtkomst via lokalt nätverk"
           }
         }
       }
@@ -718,6 +802,12 @@
             "state": "translated",
             "value": "Solicitação HTTP malformada.\\n"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Felaktigt formaterad HTTP-förfrågan.\\n"
+          }
         }
       }
     },
@@ -765,6 +855,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nenhum endereço Wi-Fi está disponível no momento. O servidor HTTP permanece acessível apenas neste iPhone até que o Wi-Fi esteja pronto."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingen aktuell Wi-Fi-adress är tillgänglig. HTTP-servern är bara åtkomlig på denna iPhone tills Wi-Fi är redo."
           }
         }
       }
@@ -814,6 +910,12 @@
             "state": "translated",
             "value": "Nenhuma pasta selecionada"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingen mapp vald"
+          }
         }
       }
     },
@@ -861,6 +963,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Porta"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Port"
           }
         }
       }
@@ -910,6 +1018,12 @@
             "state": "translated",
             "value": "Pré-visualizar"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förhandsvisa"
+          }
         }
       }
     },
@@ -957,6 +1071,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Privacidade"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Integritet"
           }
         }
       }
@@ -1006,6 +1126,12 @@
             "state": "translated",
             "value": "Acesso somente leitura pelo app Arquivos"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skrivskyddad åtkomst via Filer"
+          }
         }
       }
     },
@@ -1053,6 +1179,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tempo limite da solicitação esgotado"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidsgräns för förfrågan överskriden"
           }
         }
       }
@@ -1102,6 +1234,12 @@
             "state": "translated",
             "value": "O tempo limite da solicitação se esgotou.\\n"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tidsgränsen för förfrågan överskreds.\\n"
+          }
         }
       }
     },
@@ -1149,6 +1287,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Em execução"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Körs"
           }
         }
       }
@@ -1198,6 +1342,12 @@
             "state": "translated",
             "value": "URLs ativas"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktiva URL:er"
+          }
         }
       }
     },
@@ -1245,6 +1395,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Disponibilizar o index.html da pasta raiz para rotas inexistentes sem extensão."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tillhandahåll rotmappens index.html när en sökväg utan filändelse saknas."
           }
         }
       }
@@ -1294,6 +1450,12 @@
             "state": "translated",
             "value": "Servidor HTTP"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-server"
+          }
         }
       }
     },
@@ -1341,6 +1503,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Comportamento do servidor HTTP"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serverbeteende"
           }
         }
       }
@@ -1390,6 +1558,12 @@
             "state": "translated",
             "value": "Pasta disponibilizada"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rotmapp"
+          }
         }
       }
     },
@@ -1437,6 +1611,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Os arquivos ficam disponíveis enquanto o 200 OK está aberto em primeiro plano. O iOS para o servidor HTTP quando o app passa para segundo plano."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filer kan tillhandahållas medan 200 OK är öppen. iOS stoppar HTTP-servern när appen går till bakgrunden."
           }
         }
       }
@@ -1486,6 +1666,12 @@
             "state": "translated",
             "value": "Compartilhar"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dela"
+          }
         }
       }
     },
@@ -1533,6 +1719,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostrar uma lista de arquivos quando a pasta não tiver um index.html."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visa en fillista när en mapp saknar index.html."
           }
         }
       }
@@ -1582,6 +1774,12 @@
             "state": "translated",
             "value": "Fallback para apps de página única"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reservlösning för ensidesappar"
+          }
         }
       }
     },
@@ -1629,6 +1827,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Código-fonte · MIT"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Källkod · MIT"
           }
         }
       }
@@ -1678,6 +1882,12 @@
             "state": "translated",
             "value": "Iniciando…"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startar…"
+          }
         }
       }
     },
@@ -1725,6 +1935,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Inicia o servidor HTTP"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startar webbservern"
           }
         }
       }
@@ -1774,6 +1990,12 @@
             "state": "translated",
             "value": "Pare o servidor HTTP para alterar esta configuração."
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stoppa HTTP-servern för att ändra denna inställning."
+          }
         }
       }
     },
@@ -1821,6 +2043,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Parado"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stoppad"
           }
         }
       }
@@ -1870,6 +2098,12 @@
             "state": "translated",
             "value": "Parando…"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stoppar…"
+          }
         }
       }
     },
@@ -1917,6 +2151,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Para o servidor HTTP"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stoppar webbservern"
           }
         }
       }
@@ -1966,6 +2206,12 @@
             "state": "translated",
             "value": "A permissão salva de acesso à pasta expirou. Escolha a pasta novamente."
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den sparade behörigheten till mappen har gått ut. Välj mappen igen."
+          }
         }
       }
     },
@@ -2013,6 +2259,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "A pasta selecionada está indisponível. Escolha a pasta novamente no app Arquivos."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den valda mappen är inte tillgänglig. Välj den igen i Filer."
           }
         }
       }
@@ -2062,6 +2314,12 @@
             "state": "translated",
             "value": "O item selecionado não é uma pasta."
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Det valda objektet är inte en mapp."
+          }
         }
       }
     },
@@ -2109,6 +2367,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Não foi possível iniciar o servidor HTTP. Verifique a pasta e a porta e tente novamente."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-servern kunde inte starta. Kontrollera mappen och porten och försök igen."
           }
         }
       }
@@ -2158,6 +2422,12 @@
             "state": "translated",
             "value": "O servidor HTTP já está em execução."
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-servern körs redan."
+          }
         }
       }
     },
@@ -2205,6 +2475,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "O servidor HTTP está ocupado."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-servern är upptagen."
           }
         }
       }
@@ -2254,6 +2530,12 @@
             "state": "translated",
             "value": "O servidor HTTP parou quando o 200 OK passou para segundo plano. Inicie o servidor novamente quando quiser."
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-servern stoppades när 200 OK gick till bakgrunden. Starta den igen när du är redo."
+          }
         }
       }
     },
@@ -2301,6 +2583,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Este iPhone"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denna iPhone"
           }
         }
       }
@@ -2350,6 +2638,12 @@
             "state": "translated",
             "value": "Use 0 para escolher uma porta disponível"
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ange 0 för att välja en ledig port"
+          }
         }
       }
     },
@@ -2397,6 +2691,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Servidor HTTP"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Webbserver"
           }
         }
       }

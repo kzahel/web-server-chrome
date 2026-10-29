@@ -46,6 +46,12 @@
             "state": "translated",
             "value": "O 200 OK disponibiliza a pasta que você escolher para dispositivos na sua rede local enquanto este app estiver aberto em primeiro plano."
           }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK gör mappen du väljer tillgänglig för enheter i ditt lokala nätverk medan appen är öppen."
+          }
         }
       }
     }

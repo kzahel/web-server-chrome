@@ -5,3 +5,4 @@ es
 it
 pt-rBR
 nl
+sv

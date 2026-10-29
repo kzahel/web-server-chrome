@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "Det gick inte att öppna 200 OK.",
+  "about_200_ok_ba8aa9": "Om 200 OK",
+  "check_for_updates_9ed79e": "Sök efter uppdateringar",
+  "choose_folder_to_serve_d488f4": "Välj mapp för HTTP-servern",
+  "close_7d9eb7": "Stäng",
+  "hide_200_ok_981b92": "Göm 200 OK",
+  "hide_others_1753e2": "Göm övriga",
+  "launching_b1601d": "Öppnar...",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "Öppna 200 OK Web Server för ChromeOS Linux",
+  "quit_200_ok_686f8f": "Avsluta 200 OK",
+  "quit_b3eb37": "Avsluta",
+  "run_in_background_0db775": "Kör i bakgrunden",
+  "settings_74a883": "Inställningar",
+  "show_all_e1c326": "Visa alla",
+  "show_app_ec462a": "Visa appen",
+  "show_icon_in_menu_bar_0ad9f3": "Visa ikon i menyraden",
+  "show_icon_in_system_tray_25b481": "Visa ikon i systemfältet",
+  "start_at_login_5952eb": "Starta vid inloggning",
+  "try_again_df0fe9": "Försök igen",
+  "unknown_launch_error_3585c0": "Okänt fel vid öppning",
+  "web_server_fc0480": "HTTP-server"
+}

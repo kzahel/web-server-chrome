@@ -427,8 +427,10 @@ def rollout(google, action, version_code, fraction=None):
         elif action == 'resume':
             if release['status'] == 'inProgress':
                 return {'status': 'unchanged', 'versionCode': version_code, 'before': before, 'after': before}
-            release.update(status='inProgress', userFraction=check_fraction(
-                fraction if fraction is not None else before['userFraction']))
+            resumed = check_fraction(fraction if fraction is not None else before['userFraction'])
+            if resumed < before['userFraction'] - EPSILON:
+                raise ValueError('Rollout fractions only increase when resuming')
+            release.update(status='inProgress', userFraction=resumed)
         else:
             release['status'] = 'completed'
             release.pop('userFraction', None)
@@ -647,6 +649,8 @@ def advance(google, ledger, reporting, policy, now, act):
     staged = [release for release in current if release.get('status') in ('inProgress', 'halted')]
     if not staged:
         return {'outcome': 'idle', 'releases': summarize(current)}
+    if len(staged) != 1 or len(codes(staged[0])) != 1:
+        return {'outcome': 'mismatch', 'reason': 'Expected exactly one staged single-version rollout'}
     release = staged[0]
     version_code = codes(release)[0]
     if release['status'] == 'halted':

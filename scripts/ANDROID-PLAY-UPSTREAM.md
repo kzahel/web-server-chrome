@@ -13,7 +13,9 @@ JSTorrent compatibility-ledger exception is accepted here. Upstream defaults
 for vitals and rollout dwell times are retained. Local safety additions:
 empty report-count evidence holds instead of passing; a tag-free access check
 verifies Publisher and Reporting permissions without a release; mutating
-failures leave a sanitized receipt requiring reconciliation before retry.
+failures leave a sanitized receipt requiring reconciliation before retry;
+resuming cannot reduce a fraction, and ambiguous multi-release rollout state
+pauses advancement.
 
 MIT License
 

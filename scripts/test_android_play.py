@@ -407,6 +407,22 @@ class AccessTest(unittest.TestCase):
         self.assertEqual(sum(url.startswith(play.REPORTING) for url in google.methods('GET')), 3)
 
 
+class AmbiguousRolloutTest(unittest.TestCase):
+    def test_resume_cannot_lower_the_fraction(self):
+        google = FakeGoogle(tracks={'production': [{'status': 'halted', 'versionCodes': ['33'], 'userFraction': 0.2}]})
+        with self.assertRaisesRegex(ValueError, 'only increase'):
+            play.rollout(google, 'resume', 33, 0.1)
+        self.assertFalse(google.puts())
+
+    def test_multiple_staged_releases_pause_before_any_action(self):
+        google = FakeGoogle(tracks={'production': [
+            {'status': 'inProgress', 'versionCodes': ['33'], 'userFraction': 0.01},
+            {'status': 'halted', 'versionCodes': ['34'], 'userFraction': 0.1}]})
+        result = play.advance(google, ledger(), FakeReporting({}), play.load_policy(), NOW, True)
+        self.assertEqual(result['outcome'], 'mismatch')
+        self.assertFalse(google.puts())
+
+
 class FailureReceiptTest(unittest.TestCase):
     def test_ambiguous_action_leaves_a_reconciliation_receipt(self):
         with tempfile.TemporaryDirectory() as temp:

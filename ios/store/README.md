@@ -33,13 +33,13 @@ can change independently of this repository.
 The public name, subtitle, category pair, and first version remain an attended
 product checkpoint before the app record is created.
 
-## Blocking public-contact gap
+## Public support contact
 
-Apple says the support URL must lead to actual contact information as required
-by local law. The current `/support` route redirects to public GitHub Issues and
-does not yet provide a reviewed public contact email/address/telephone surface.
-Do not enter this support URL in App Store Connect until the maintainer chooses
-the public contact details and the deployed route is verified.
+The publication campaign reuses `graehlarts@gmail.com`, the support email already
+public on this same app's [Google Play listing](https://play.google.com/store/apps/details?id=app.ok200.android).
+The `/support` page now includes that contact and the existing public GitHub
+issue route. Verify the deployed page before entering it in App Store Connect.
+Account-level legal/trader disclosures remain the Account Holder's selections.
 
 ## Screenshot plan
 

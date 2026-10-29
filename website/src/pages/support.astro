@@ -1,11 +1,50 @@
 ---
-import RedirectPage from "../components/RedirectPage.astro";
-
-const destination = "https://github.com/kzahel/web-server-chrome/issues";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<RedirectPage
-  destination={destination}
-  heading="Support"
+<BaseLayout
   title="Support — 200 OK Web Server"
-/>
+  description="Get help with 200 OK Web Server, report a problem, or contact Graehl Arts."
+>
+  <Header activePage="support" />
+  <main class="support-page">
+    <div class="container">
+      <h1>Get help with 200 OK</h1>
+      <p class="lede">
+        Tell us which platform and app version you use, what happened, and what
+        you expected to happen.
+      </p>
+      <section aria-labelledby="report-heading">
+        <h2 id="report-heading">Report a problem or suggest an improvement</h2>
+        <p>
+          <a href="https://github.com/kzahel/web-server-chrome/issues">
+            Open a GitHub issue
+          </a>{" "}
+          to report a bug, request a feature, or follow an existing discussion.
+          Issues are public.
+        </p>
+      </section>
+      <section aria-labelledby="contact-heading">
+        <h2 id="contact-heading">Contact Graehl Arts</h2>
+        <p>
+          For support by email, write to{" "}
+          <a href="mailto:graehlarts@gmail.com">graehlarts@gmail.com</a>.
+        </p>
+      </section>
+      <p><a href="/privacy">Read the privacy policy</a>.</p>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .support-page { padding: 72px 0; }
+  .support-page .container { max-width: 820px; }
+  h1 { font-size: clamp(2rem, 6vw, 3rem); margin-bottom: 24px; }
+  h2 { font-size: 1.4rem; margin-bottom: 16px; }
+  .lede { color: var(--text-secondary); font-size: 1.2rem; }
+  p { line-height: 1.7; margin-bottom: 24px; }
+  section { margin: 40px 0; }
+</style>

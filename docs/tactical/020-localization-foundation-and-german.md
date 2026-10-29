@@ -87,7 +87,7 @@ physical-device, Windows/Linux runtime or store-delivery evidence explicitly.
   bounded cancellation and exact resumption. Working state stays ignored.
   The tested local CLI is 0.160.0; translation used explicit Sol 6.1/high,
   normal speed and workspace-write/no-prompts permissions.
-- German has 610 reviewed resources: 255 React, 21 native desktop/launcher,
+- German has 510 reviewed resources: 255 React, 21 native desktop/launcher,
   three extension metadata, 180 Android and 51 Apple entries. Every pending
   category is zero. Four completed React batches resumed with exact validated
   imports and no new model sessions. No copied translation/review evidence.

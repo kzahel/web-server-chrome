@@ -93,4 +93,6 @@ and the bounded installed-artifact rerun follow below.
 Quit/relaunch retained German and the selected folder, and restarted stopped.
 A second confirmed start served the same marker. Native menu copy and the
 settings panel fit the default portrait window. Explicit stop refused HTTP;
-the app was quit and the initially powered-off VM was shut down after use.
+the app was quit and the VM was suspended after use and its claim released. The common shutdown
+command returned a testbed adapter error; this was recorded in the private
+Machine Control usage journal.

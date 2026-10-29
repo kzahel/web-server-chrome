@@ -4,8 +4,10 @@ Topic: chrome-web-store-publishing
 
 Status: tag-driven submission and main-only upload staging configured. On
 2026-10-29, the exact browser-accepted 0.1.9 ZIP was successfully staged with
-keyless CI authentication; Google review was not requested. The public version
-remains 0.1.8. Tactical 021 owns the current receipts and qualification.
+keyless CI authentication. Later maintainer-authorized release run 40870810213
+submitted the exact staged source for review: **0.1.9 PENDING_REVIEW**, public
+**0.1.8**, independently queried after submission. Tactical 022 owns the
+current release evidence; Tactical 021 records initial staging qualification.
 
 The existing production extension is `lpkjdhnmgkhaabhimpdinmdgejoaejic`.
 `extension/fullpubkey.txt` is its public identity; the publisher verifies the

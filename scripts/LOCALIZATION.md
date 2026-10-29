@@ -81,7 +81,7 @@ must never flatten or discard a native variation silently.
 
    Use repeated `--surface` arguments for a bounded platform run. Qualification
    runs deterministic checks, production frontend browser tests, applicable native
-   source gates, an owned Android emulator, native iOS UI/Release checks, and
+   source gates, owned Android API 28/35 emulators, native iOS UI/Release checks, and
    the packaged extension browser check. On macOS it also drives the production
    native menu builder in a separate temporary app identity. Install the matching
    Android system image and Playwright browser first. A missing tool/testbed is a
@@ -179,3 +179,13 @@ identity, no server/plugins/native-host registration, and removes its preference
 directory. Evidence from macOS, a Linux cross-compile, simulators or emulators
 must not be described as Windows/Linux installed-product, physical-device or
 store-delivered acceptance.
+
+## Supervised overnight queue
+
+Use [the overnight runbook](../docs/runbooks/localization-overnight.md) and
+`python3 scripts/localization-campaign.py plan --check-env` for the frozen
+French-first remaining-language queue. Planner/status/verify/handoff launch no
+workers; a supervising agent executes checked argv and records qualified
+locales. Full receipts bind exact source/catalog/ledger/runtime-harness inputs
+and require both owned Android API 28/35 runs plus macOS/iOS gates. No store
+publication is part of the campaign.

@@ -4,9 +4,13 @@ Topic: store-publishing
 
 Status: implemented/configured and qualified end to end (2026-10-29).
 Android 0.2.4/code 9 is available on the active internal track; a repeat publish
-is a verified no-op. Public production remains 0.2.1/code 6. Live receipts,
-exact artifacts and remaining installed-device/public-release limits are in
-[Tactical 021](../tactical/021-store-publishing-parity.md). Private account
+is a verified no-op. Its actual Play-delivered physical Pixel smoke passed;
+production promotion of the identical AAB at 1% was API-accepted in run
+40870766578. Google review/public availability is separately observed; the
+previous production baseline is 0.2.1/code 6 and advancement stays report-only.
+[Tactical 022](../tactical/022-german-release-and-device-smoke.md) owns this
+release evidence; [Tactical 021](../tactical/021-store-publishing-parity.md)
+records infrastructure qualification. Private account
 identities and setup commands belong in the maintainer's operational inventory.
 
 ## Release contract

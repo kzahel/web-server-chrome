@@ -15,6 +15,14 @@ const locale = process.argv[process.argv.indexOf("--locale") + 1] || "de";
 const registry = JSON.parse(
   fs.readFileSync(path.join(root, "localization/locales.json"), "utf8"),
 );
+const campaign = JSON.parse(
+  fs.readFileSync(
+    path.join(root, "localization/campaigns/remaining-app-languages.json"),
+    "utf8",
+  ),
+);
+const systemProbes = campaign.locales.find((row) => row.tag === locale)
+  ?.systemLocaleProbes || [locale === "de" ? "de-AT" : locale];
 assert(
   (registry.supportedLocales.web.includes(locale) ||
     (process.env.VITE_OK200_PSEUDO_LOCALES === "1" &&
@@ -141,17 +149,20 @@ async function layout(page, name) {
   );
 }
 try {
-  for (const kind of ["popup", "crostini", "desktop"]) {
+  const cases = ["popup", "crostini", "desktop"].flatMap((kind) =>
+    systemProbes.map((systemProbe) => ({ kind, systemProbe })),
+  );
+  for (const { kind, systemProbe } of cases) {
     const context = await browser.newContext({
-      locale: "de-AT",
+      locale: systemProbe,
       viewport: { width: kind === "popup" ? 340 : 390, height: 800 },
     });
     await context.addInitScript(
-      ({ kind, locale }) => {
+      ({ kind, systemProbe }) => {
         // All state is local to this owned browser context. No installed app is contacted.
         localStorage.setItem(
           "ok200.language",
-          localStorage.getItem("ok200.language") || locale,
+          localStorage.getItem("ok200.language") || "system",
         );
         const settings = {
           automaticUpdates: false,
@@ -218,8 +229,8 @@ try {
             callbacks.get(id)?.({ event, payload, id });
         };
         const language = () => ({
-          preference: localStorage.getItem("fixture.language") || locale,
-          systemLanguages: ["de-AT"],
+          preference: localStorage.getItem("fixture.language") || "system",
+          systemLanguages: [systemProbe],
         });
         window.__TAURI_INTERNALS__ = {
           transformCallback: (callback) => {
@@ -298,7 +309,9 @@ try {
               status.server = { state: "stopped", url: null };
               body = status;
             } else if (pathname === "/api/folders/roots")
-              body = { roots: [{ available: true, id: "home", name: "Home" }] };
+              body = {
+                roots: [{ available: true, id: "home", name: "Home" }],
+              };
             else if (pathname === "/api/folders/list")
               body = {
                 canSelect: true,
@@ -315,7 +328,7 @@ try {
             });
           };
       },
-      { kind, locale },
+      { kind, systemProbe },
     );
     const page = await context.newPage();
     page.setDefaultTimeout(10000);
@@ -339,6 +352,11 @@ try {
       (target) => document.documentElement.lang === target,
       locale,
     );
+    assert.equal(await page.locator("select").inputValue(), "system");
+    const picker = await page
+      .locator("select option")
+      .evaluateAll((options) => options.map((option) => option.value));
+    assert.deepEqual(picker, ["system", ...registry.supportedLocales.web]);
     if (kind === "crostini") {
       try {
         await page.locator(".server-switch").click();
@@ -377,7 +395,7 @@ try {
         "/home/test/200 OK",
       );
     }
-    await layout(page, kind);
+    await layout(page, `${kind}-${systemProbe}`);
     if (kind !== "desktop") {
       await page.reload();
       await page.waitForFunction(
@@ -389,7 +407,7 @@ try {
     }
     assert.deepEqual(errors, [], `${kind}: browser errors`);
     report.checks.push(
-      `${kind}: switch en/${locale}, persisted choice and no server mutation`,
+      `${kind}: System ${systemProbe} -> ${locale}, switch en/${locale}, persisted choice and no server mutation`,
     );
     await context.close();
   }

@@ -2,12 +2,14 @@
 
 Topic: localization
 
-Status: **English/German app catalogs and pipeline implemented and qualified
-within the local matrix recorded in Tactical 020. Android 0.2.4/code 9 is
-available on the active internal Play track; extension 0.1.9 is staged in the
-Web Store. Public Android/extension versions remain 0.2.1/0.1.8. See Tactical
-021 for distribution receipts; desktop and iOS localized publication remain
-separate.**
+Status: **English/German catalogs and local qualification are complete. The
+actual Play-delivered Android 0.2.4/code 9 passed physical Pixel smoke;
+production promotion at 1% was accepted by the API. Extension 0.1.9 is pending
+Google review (public 0.1.8). Desktop 0.1.12 signed release is building.
+[Tactical 022](../tactical/022-german-release-and-device-smoke.md) owns current
+distribution/device evidence. The remaining seventeen-language supervisor is
+prepared in [Tactical 023](../tactical/023-remaining-language-supervisor.md);
+its translation workers have not started.**
 
 The registry at `localization/locales.json` owns availability for React,
 native desktop/Crostini, extension metadata, Android and iOS. English is the
@@ -60,5 +62,10 @@ alone never proves runtime or store delivery.
 Apple currently has no plural/device-varying product copy; unsupported variants
 fail closed until an adapter and round-trip tests are added. Developer/installer
 diagnostics and served HTTP directory listings remain outside app translation.
-Future work is French, then the remaining sixteen target languages, followed
-by website/store localization and exact distributed-artifact validation.
+The [overnight runbook](../runbooks/localization-overnight.md) and frozen
+campaign manifest sequence French then sixteen target languages. A supervising
+agent executes bounded, resumable independent translation/review, serialized
+five-surface native qualification and exact completion records. Plan/status/
+verify/handoff commands launch no workers. Publication remains a separate
+maintainer-authorized action. Website/store localization, iOS distribution and
+broader exact-artifact acceptance remain follow-ups.

@@ -6,9 +6,11 @@ Status: **Android source uses one native Kotlin HTTP server, one
 application-scoped controller, and a Compose control surface. Production Play
 0.2.1/code 6 was independently confirmed on 2026-10-29. The verified signed
 0.2.4/code 9 candidate, including German localization, is available on the
-active internal Play track through the new automated publishing lane.
-Store-delivered device acceptance remains separate from artifact and Console
-availability evidence.**
+active internal Play track through the new automated publishing lane. That
+actual Play-installed build passed German physical Pixel smoke (SAF, external
+HTTP, language changes, notification/background, persistence and start/stop).
+Production promotion at 1% was accepted; Google review/public availability is
+separate. See Tactical 022 for the bounded evidence and cleanup.**
 
 Last reconciled: **2026-10-29**.
 
@@ -350,7 +352,8 @@ English/German app release inputs and a source-aware translation pipeline.
 The [localization topic](localization.md) and
 [workflow](../../scripts/LOCALIZATION.md) own locale availability, independent
 review, native catalogs and qualification evidence. Website/store translations
-remain separate. This source change does not establish a published or
-store-delivered German build. Presentation preferences do not change server
+remain separate. [Tactical 022](../tactical/022-german-release-and-device-smoke.md) records the
+later actual Play-delivered internal build's physical German smoke and the
+1% production submission; it does not infer public approval or endurance. Presentation preferences do not change server
 settings, folder grants, HTTP behavior or extension/controller protocol values;
 unknown peer diagnostics retain their original text.

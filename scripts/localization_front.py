@@ -1,12 +1,15 @@
 """Small campaign front door; native catalogs and offline commands remain reusable."""
 import argparse
+from datetime import datetime, timezone
 import json
 import os
+import platform
 from pathlib import Path
 import subprocess
 import sys
 from localization_common import Invalid, atomic_write, digest, json_text, read_json
 from localization import workspace
+from localization_qualification import qualification_inputs, qualification_harness
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -47,6 +50,11 @@ def main(argv):
     directory = (args.work_dir or ROOT / '.local/localization' / args.locale).resolve()
     if not directory.is_relative_to(ROOT / '.local'): raise Invalid('Campaign state must stay under ignored .local/')
     if args.command == 'qualify':
+        for surface in surfaces:
+            if args.locale not in registry['supportedLocales'][surface]:
+                raise Invalid(f'Qualification requires ordinary release inputs: {surface}/{args.locale}')
+        inputs = qualification_inputs(ROOT, args.locale, surfaces)
+        harness = qualification_harness(ROOT)
         subprocess.run(['node','scripts/check-localization.mjs'],cwd=ROOT,check=True)
         subprocess.run(['pnpm','typecheck'],cwd=ROOT,check=True)
         subprocess.run(['pnpm','test'],cwd=ROOT,check=True)
@@ -57,13 +65,24 @@ def main(argv):
             'android':['android/scripts/check.sh'],
             'ios':['ios/scripts/check.sh'],
         }
-        evidence = {'locale':args.locale,'catalogHashes':{},'checks':[],'limitations':['No store delivery, signed production install, physical-device or three-OS runtime qualification is inferred.']}
+        evidence = {'schemaVersion':2,'locale':args.locale,'platform':sys.platform,
+                    'inputs':inputs,'harness':harness,'catalogHashes':{},
+                    'checks':[['node','scripts/check-localization.mjs'],['pnpm','typecheck'],['pnpm','test']],
+                    'androidApis':[],
+                    'limitations':['No store delivery, signed production install, physical-device or three-OS runtime qualification is inferred.']}
         for surface in surfaces:
             work = workspace(ROOT,surface,args.locale)
             if any(work.report().values()): raise Invalid(f'Unqualified catalog: {surface}/{args.locale}')
             subprocess.run(commands[surface],cwd=ROOT,check=True,env={**os.environ,'OK200_TEST_LOCALE':args.locale})
             extra = []
-            if surface == 'android': extra = [['android/scripts/localization-smoke.sh']]
+            if surface == 'android':
+                arch = 'arm64-v8a' if platform.machine() in ('arm64','aarch64') else 'x86_64'
+                for api in [28,35]:
+                    command = ['android/scripts/localization-smoke.sh']
+                    subprocess.run(command,cwd=ROOT,check=True,env={**os.environ,'OK200_TEST_LOCALE':args.locale,
+                        'OK200_LOCALIZATION_SYSTEM_IMAGE':f'system-images;android-{api};google_apis;{arch}'})
+                    evidence['checks'].append(command)
+                    evidence['androidApis'].append(api)
             if surface == 'desktop':
                 extra = [['desktop/crostini/scripts/check.sh']]
                 if sys.platform == 'darwin': extra += [['cargo','run','--manifest-path','desktop/Cargo.toml','-p','ok200-desktop','--example','localization_smoke','--',str(directory/'native-menu.json'),args.locale]]
@@ -74,6 +93,9 @@ def main(argv):
                 evidence['checks'].append(command)
             evidence['checks'].append(commands[surface])
             evidence['catalogHashes'][surface]=digest(work.translated)
+        if qualification_inputs(ROOT,args.locale,surfaces) != inputs or qualification_harness(ROOT) != harness:
+            raise Invalid('Qualification inputs changed during the run; rerun against one coherent candidate')
+        evidence['completedAt'] = datetime.now(timezone.utc).isoformat()
         atomic_write(directory / 'qualification.json',json_text(evidence));return 0
     if args.command == 'export':
         for surface in surfaces:

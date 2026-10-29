@@ -16,6 +16,7 @@ decisions, evidence, or recommended next work changes.
 
 | Tactical | Status | Purpose |
 |---|---|---|
+| [`023-remaining-language-supervisor.md`](023-remaining-language-supervisor.md) | setup implemented; execution queued | Freeze and supervise the remaining seventeen app languages with runtime qualification and exact resume |
 | [`022-german-release-and-device-smoke.md`](022-german-release-and-device-smoke.md) | active; physical Play smoke passed, German store submissions started | Validate localized phone/desktop and publish bounded German releases |
 | [`021-store-publishing-parity.md`](021-store-publishing-parity.md) | complete; internal Play and Web Store staging verified | Match JSTorrent Play publication and staged rollout controls, and qualify Web Store staging |
 | [`020-localization-foundation-and-german.md`](020-localization-foundation-and-german.md) | complete; local qualification passed, publication separate | Build reusable translation tooling and qualify German across the app surfaces |

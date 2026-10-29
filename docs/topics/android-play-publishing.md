@@ -3,15 +3,16 @@
 Topic: store-publishing
 
 Status: implemented/configured and qualified end to end (2026-10-29).
-Android 0.2.4/code 9 is available on the active internal track; a repeat publish
-is a verified no-op. Its actual Play-delivered physical Pixel smoke passed;
-production promotion of the identical AAB at 1% was API-accepted in run
-40870766578. Google review/public availability is separately observed; the
-previous production baseline is 0.2.1/code 6 and advancement stays report-only.
-[Tactical 022](../tactical/022-german-release-and-device-smoke.md) owns this
-release evidence; [Tactical 021](../tactical/021-store-publishing-parity.md)
-records infrastructure qualification. Private account
-identities and setup commands belong in the maintainer's operational inventory.
+Android 0.2.5/code 10 is available on the internal track through successful
+[publication 40953902148](https://github.com/kzahel/web-server-chrome/actions/runs/40953902148).
+The physical Pixel updated through Google Play, retaining preferences and its
+folder grant. French/Japanese external HTTP serving passed with identical bytes.
+Production check 40952129707 still reports 0.2.4/code 9 at 1%, with the previous
+completed baseline 0.2.1/code 6. The unfinished-rollout guard remains enabled;
+the maintainer's choice to finish that rollout or retain the new internal build
+is pending. Advancement stays report-only. [Tactical 024](../tactical/024-nineteen-language-publication.md)
+owns current evidence; Tactical 022 retains the German release and Tactical 021
+infrastructure qualification. Private account identities stay in operational inventory.
 
 ## Release contract
 

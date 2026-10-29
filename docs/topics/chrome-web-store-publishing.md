@@ -3,11 +3,12 @@
 Topic: chrome-web-store-publishing
 
 Status: tag-driven submission and main-only upload staging configured. On
-2026-10-29, the exact browser-accepted 0.1.9 ZIP was successfully staged with
-keyless CI authentication. Later maintainer-authorized release run 40870810213
-submitted the exact staged source for review: **0.1.9 PENDING_REVIEW**, public
-**0.1.8**, independently queried after submission. Tactical 022 owns the
-current release evidence; Tactical 021 records initial staging qualification.
+2026-10-29, [release run 40952771672](https://github.com/kzahel/web-server-chrome/actions/runs/40952771672)
+submitted the exact browser-accepted nineteen-language 0.1.10 ZIP with keyless
+CI authentication. Independent status run 40953185911 confirmed **0.1.10
+PENDING_REVIEW / public 0.1.8**. This strictly newer candidate replaced pending
+0.1.9 through the maintained cancellation contract. [Tactical 024](../tactical/024-nineteen-language-publication.md)
+owns current publication evidence; Tactical 021 records initial staging.
 
 The existing production extension is `lpkjdhnmgkhaabhimpdinmdgejoaejic`.
 `extension/fullpubkey.txt` is its public identity; the publisher verifies the

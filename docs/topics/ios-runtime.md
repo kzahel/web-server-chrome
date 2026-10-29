@@ -287,9 +287,14 @@ no path to testers, App Review submission, availability, or publication.
 The English App Store source draft now contains mechanically bounded name,
 subtitle, description, keywords, URLs, review notes, privacy response, age-
 rating analysis, and current highest-resolution iPhone/iPad screenshot rules.
-It does not resolve the maintainer's public support-contact choice or whether
-the bounded `SFSafariViewController` preview should conservatively declare
-Unrestricted Web Access; those remain attended metadata decisions.
+The support contact is now the app's existing public Play support email,
+deployed at `https://ok200.app/support`. The bounded `SFSafariViewController`
+preview retains the conservative Unrestricted Web Access draft. Actual Apple
+account/legal declarations remain subject to account-holder input. First
+publication is authorized in Tactical 024, but Apple membership endpoints
+currently reject bundle/certificate setup with `PLA_NOT_ACCEPTED`. No signed
+archive or upload is claimed. A fresh unsigned Release archive contains all
+nineteen language resources.
 
 Current 6.9-inch iPhone and 13-inch iPad DEBUG-fixture renders show the complete
 stopped surface and policy links without clipping at Apple's accepted portrait

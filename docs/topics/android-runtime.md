@@ -338,9 +338,8 @@ publishing-only changes.
 - Treat preservation of existing preferences and SAF grants as best effort.
   There is no migration-release or recovery requirement; invalid access asks
   the user to select a folder again.
-- English remains the only authored locale. Adding a translation now means
-  adding reviewed `values-<locale>` resources; the locale manifest is generated
-  automatically, but there is not yet a translation vendor/community pipeline.
+- Nineteen offline app locales are qualified through the maintained translation,
+  independent review and native-validation pipeline in the localization topic.
 - Keep Android and desktop feature work synchronized through their contract and
   black-box tests, not shared runtime source.
 

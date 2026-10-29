@@ -1071,3 +1071,13 @@ remain separate. This source change does not establish a published or
 store-delivered German build. Presentation preferences do not change server
 settings, folder grants, HTTP behavior or extension/controller protocol values;
 unknown peer diagnostics retain their original text.
+
+## Nineteen-language maintenance release
+
+Crostini `0.1.6` is public through successful [run 40953001879](https://github.com/kzahel/web-server-chrome/actions/runs/40953001879).
+Both static architectures pass independent public checksums and the production
+Rust signature/hash verifier. Live signed feeds offer 0.1.6 to 0.1.5 and return
+204 to current/future clients on both architectures. The bootstrap fallback now
+uses the verified release. This additive catalog release retains protocols and
+all existing physical acceptance gaps. [Tactical 024](../tactical/024-nineteen-language-publication.md)
+owns publication evidence; Google review of extension 0.1.10 remains separate.

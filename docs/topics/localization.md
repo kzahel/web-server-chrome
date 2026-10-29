@@ -7,7 +7,8 @@ native desktop/Crostini, extension metadata, Android and iOS. The seventeen
 new locales completed independent AI translation/review and full native/browser
 qualification on 2026-10-29. Final aggregate checks and all seven hosted
 workflows pass; exact evidence is recorded in [Tactical 023](../tactical/023-remaining-language-supervisor.md).
-No new store publication or version/tag change was performed by this campaign.
+The completed source campaign did not publish. The separately authorized
+publication campaign is recorded in [Tactical 024](../tactical/024-nineteen-language-publication.md).
 [Tactical 022](../tactical/022-german-release-and-device-smoke.md) retains the
 separate German release/device evidence.**
 

@@ -9,7 +9,7 @@ set -euo pipefail
 # the selected static binary's signed size and SHA-256 before executing it.
 
 UPDATE_ENDPOINT="https://updates.ok200.app/crostini/manifest"
-FALLBACK_TAG="crostini-v0.1.5"
+FALLBACK_TAG="crostini-v0.1.6"
 REPOSITORY="kzahel/web-server-chrome"
 MANIFEST_NAME="ok200-crostini-release.manifest"
 SIGNATURE_NAME="ok200-crostini-release.manifest.minisig"

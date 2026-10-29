@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "Nie udało się otworzyć 200 OK.",
+  "about_200_ok_ba8aa9": "200 OK — informacje",
+  "check_for_updates_9ed79e": "Sprawdź aktualizacje",
+  "choose_folder_to_serve_d488f4": "Wybierz folder do udostępniania",
+  "close_7d9eb7": "Zamknij",
+  "hide_200_ok_981b92": "Ukryj 200 OK",
+  "hide_others_1753e2": "Ukryj pozostałe",
+  "launching_b1601d": "Uruchamianie…",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "Otwórz 200 OK Web Server dla środowiska Linux w ChromeOS",
+  "quit_200_ok_686f8f": "Zakończ 200 OK",
+  "quit_b3eb37": "Zakończ",
+  "run_in_background_0db775": "Działaj w tle",
+  "settings_74a883": "Ustawienia",
+  "show_all_e1c326": "Pokaż wszystkie",
+  "show_app_ec462a": "Pokaż aplikację",
+  "show_icon_in_menu_bar_0ad9f3": "Pokaż ikonę na pasku menu",
+  "show_icon_in_system_tray_25b481": "Pokaż ikonę w zasobniku systemowym",
+  "start_at_login_5952eb": "Uruchamiaj przy logowaniu",
+  "try_again_df0fe9": "Spróbuj ponownie",
+  "unknown_launch_error_3585c0": "Nieznany błąd uruchamiania",
+  "web_server_fc0480": "Serwer HTTP"
+}

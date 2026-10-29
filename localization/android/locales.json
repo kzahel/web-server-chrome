@@ -28,6 +28,10 @@
       "catalog": "android/app/src/main/res/values-nl/strings.xml",
       "quantities": ["one", "other"]
     },
+    "pl": {
+      "catalog": "android/app/src/main/res/values-pl/strings.xml",
+      "quantities": ["one", "few", "many", "other"]
+    },
     "pt-BR": {
       "catalog": "android/app/src/main/res/values-pt-rBR/strings.xml",
       "quantities": ["one", "many", "other"]

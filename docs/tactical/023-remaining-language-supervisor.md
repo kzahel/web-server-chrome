@@ -60,7 +60,7 @@ this supervisor setup.
 | sv | qualified | [bound evidence](../../localization/qualification/sv.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 | da | qualified | [bound evidence](../../localization/qualification/da.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 | cs | qualified | [bound evidence](../../localization/qualification/cs.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
-| pl | queued | Preserve frozen jobs and manifest order |
+| pl | qualified | [bound evidence](../../localization/qualification/pl.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 | ro | queued | Preserve frozen jobs and manifest order |
 | ru | queued | Preserve frozen jobs and manifest order |
 | uk | queued | Preserve frozen jobs and manifest order |
@@ -124,3 +124,8 @@ Swedish and Danish) passed fresh full qualification on 2026-10-29 against the
 corrected harness. Their current tracked receipts retain the same reviewed
 translation/session inputs and new actual native/browser run hashes. The
 remaining queue resumes from Czech, with its initial review outputs preserved.
+
+The corrected source commit `61741bd80e20c4cc57d00eb7e49093c1c635431e` passed
+[hosted iOS CI](https://github.com/kzahel/web-server-chrome/actions/runs/40910200301),
+main CI and CodeQL. This closes the synchronization correction; no retry of the
+known-racing source is used as acceptance.

@@ -75,8 +75,32 @@
   },
   "sourceLocale": "en",
   "supportedLocales": {
-    "android": ["en", "de", "fr", "es", "it", "pt-BR", "nl", "sv", "da", "cs"],
-    "desktop": ["en", "de", "fr", "es", "it", "pt-BR", "nl", "sv", "da", "cs"],
+    "android": [
+      "en",
+      "de",
+      "fr",
+      "es",
+      "it",
+      "pt-BR",
+      "nl",
+      "sv",
+      "da",
+      "cs",
+      "pl"
+    ],
+    "desktop": [
+      "en",
+      "de",
+      "fr",
+      "es",
+      "it",
+      "pt-BR",
+      "nl",
+      "sv",
+      "da",
+      "cs",
+      "pl"
+    ],
     "extension": [
       "en",
       "de",
@@ -87,10 +111,23 @@
       "nl",
       "sv",
       "da",
-      "cs"
+      "cs",
+      "pl"
     ],
-    "ios": ["en", "de", "fr", "es", "it", "pt-BR", "nl", "sv", "da", "cs"],
-    "web": ["en", "de", "fr", "es", "it", "pt-BR", "nl", "sv", "da", "cs"]
+    "ios": [
+      "en",
+      "de",
+      "fr",
+      "es",
+      "it",
+      "pt-BR",
+      "nl",
+      "sv",
+      "da",
+      "cs",
+      "pl"
+    ],
+    "web": ["en", "de", "fr", "es", "it", "pt-BR", "nl", "sv", "da", "cs", "pl"]
   },
   "testLocales": [
     {

@@ -53,6 +53,12 @@
             "value": "200 OK maakt de map die je kiest toegankelijk voor apparaten op je lokale netwerk zolang deze app op de voorgrond staat."
           }
         },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK udostępnia wybrany folder urządzeniom w sieci lokalnej tylko wtedy, gdy aplikacja jest otwarta na pierwszym planie."
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",

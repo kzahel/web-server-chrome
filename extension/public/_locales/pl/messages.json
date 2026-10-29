@@ -1,0 +1,11 @@
+{
+  "action_title": {
+    "message": "Otwórz 200 OK Web Server"
+  },
+  "app_description": {
+    "message": "Uruchamiaj 200 OK na komputerze lub w ChromeOS. Konfiguruj i obsługuj serwer Linux w ChromeOS. Następca Web Server for Chrome."
+  },
+  "app_name": {
+    "message": "200 OK Web Server"
+  }
+}

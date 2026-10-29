@@ -254,7 +254,13 @@ class QualificationOrchestrationTest(unittest.TestCase):
         with patch.object(front.subprocess, 'run', side_effect=fail), self.assertRaises(RuntimeError):
             front.main(self.argv)
         self.assertFalse((self.directory / 'qualification.json').exists())
+
         with patch.object(front.subprocess, 'run'), patch.object(front, 'qualification_inputs', side_effect=[{'old':1},{'new':2}]), self.assertRaises(Invalid):
+            front.main(self.argv)
+        self.assertFalse((self.directory / 'qualification.json').exists())
+
+    def test_ordinary_qualification_rejects_ambient_pseudo_build_flag(self):
+        with patch.dict(front.os.environ, {'VITE_OK200_PSEUDO_LOCALES':'1'}), self.assertRaises(Invalid):
             front.main(self.argv)
         self.assertFalse((self.directory / 'qualification.json').exists())
 

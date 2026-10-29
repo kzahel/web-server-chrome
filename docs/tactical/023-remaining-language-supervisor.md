@@ -30,7 +30,7 @@ Continuing instructions live in the [overnight runbook](../runbooks/localization
 
 ## Validation and execution ledger
 
-Setup validation passes: fourteen campaign/orchestration regressions, all 58
+Setup validation passes: fifteen campaign/orchestration regressions, all 59
 localization Python tests plus deterministic catalog/generation checks, lint,
 TypeScript checks, workspace unit tests and the real German built-browser
 regression (System matching, popup/Crostini/desktop switching, persistence,
@@ -42,7 +42,8 @@ its state was preserved separately before creating the current plan.
 The full per-locale API 28/35/iOS/native sequence is a requirement for upcoming
 execution; setup tests exercise its orchestration and failure/no-receipt paths.
 No new locale's native runtime acceptance is inferred from setup or the German
-browser regression. No model workers, scheduler or publication were started by
+browser regression. Explicit pseudo-browser qualification remains available,
+while ordinary qualification rejects an ambient pseudo-build flag. No model workers, scheduler or publication were started by
 this supervisor setup.
 
 | Locale | State | Evidence/commit |

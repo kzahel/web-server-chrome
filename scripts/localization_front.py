@@ -50,6 +50,8 @@ def main(argv):
     directory = (args.work_dir or ROOT / '.local/localization' / args.locale).resolve()
     if not directory.is_relative_to(ROOT / '.local'): raise Invalid('Campaign state must stay under ignored .local/')
     if args.command == 'qualify':
+        if os.environ.get('VITE_OK200_PSEUDO_LOCALES') == '1':
+            raise Invalid('Ordinary qualification requires pseudo-locales disabled')
         for surface in surfaces:
             if args.locale not in registry['supportedLocales'][surface]:
                 raise Invalid(f'Qualification requires ordinary release inputs: {surface}/{args.locale}')

@@ -356,7 +356,13 @@ try {
     const picker = await page
       .locator("select option")
       .evaluateAll((options) => options.map((option) => option.value));
-    assert.deepEqual(picker, ["system", ...registry.supportedLocales.web]);
+    assert.deepEqual(picker, [
+      "system",
+      ...registry.supportedLocales.web,
+      ...(process.env.VITE_OK200_PSEUDO_LOCALES === "1"
+        ? registry.testLocales.map((entry) => entry.tag)
+        : []),
+    ]);
     if (kind === "crostini") {
       try {
         await page.locator(".server-switch").click();

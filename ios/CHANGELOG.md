@@ -8,6 +8,9 @@ Xcode project after changing them and add the matching entry here.
 
 ## 0.1.0 (1) — Unreleased
 
+- Add nineteen offline app languages, including localized permission copy, with
+  independently reviewed catalogs and native System/app language selection.
+
 - Initial native iPhone and iPad application.
 - Select a Files directory and serve it read-only over localhost or the local
   network while the app remains in the foreground.

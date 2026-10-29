@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add reviewed native launcher and controller copy for all nineteen app
+  languages, preserving existing controller protocols and English fallback.
+
 - Prepare the versionless website bootstrap for the protocol-2 component and
   pin its outage fallback to the completed signed `0.1.5` release. At the
   maintainer's direction, deploy it before the matching extension store rollout

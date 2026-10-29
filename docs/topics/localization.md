@@ -2,23 +2,21 @@
 
 Topic: localization
 
-Status: **English/German catalogs and local qualification are complete. The
-actual Play-delivered Android 0.2.4/code 9 passed physical Pixel smoke;
-production promotion at 1% was accepted by the API. Extension 0.1.9 is pending
-Google review (public 0.1.8). Desktop 0.1.12 is publicly signed/notarized and passed a basic installed macOS
-German smoke, checksum, website and updater-route checks.
-[Tactical 022](../tactical/022-german-release-and-device-smoke.md) owns current
-distribution/device evidence. The remaining seventeen-language supervisor is
-running under [Tactical 023](../tactical/023-remaining-language-supervisor.md)
-with maintainer authorization to complete all remaining locales and verify CI.
-Only qualified cohorts will become ordinary release inputs.**
+Status: **All nineteen app locales are ordinary release inputs across React,
+native desktop/Crostini, extension metadata, Android and iOS. The seventeen
+new locales completed independent AI translation/review and full native/browser
+qualification on 2026-10-29. Final aggregate checks pass; hosted CI closeout is
+tracked in [Tactical 023](../tactical/023-remaining-language-supervisor.md).
+No new store publication or version/tag change was performed by this campaign.
+[Tactical 022](../tactical/022-german-release-and-device-smoke.md) retains the
+separate German release/device evidence.**
 
 The registry at `localization/locales.json` owns availability for React,
 native desktop/Crostini, extension metadata, Android and iOS. English is the
 source and fallback. The target set matches JSTorrent: `de fr es it pt-BR nl sv
-da cs pl ro ru uk tr ja ko zh-CN zh-TW`; only English/German are initial app
+da cs pl ro ru uk tr ja ko zh-CN zh-TW`, plus English. All are qualified app
 release inputs. Website routes, store metadata/screenshots and the retiring
-legacy Chrome App are outside this first slice.
+legacy Chrome App remain separate.
 
 [Tactical 020](../tactical/020-localization-foundation-and-german.md) owns the
 implementation/evidence record; [scripts/LOCALIZATION.md](../../scripts/LOCALIZATION.md)
@@ -65,9 +63,17 @@ Apple currently has no plural/device-varying product copy; unsupported variants
 fail closed until an adapter and round-trip tests are added. Developer/installer
 diagnostics and served HTTP directory listings remain outside app translation.
 The [overnight runbook](../runbooks/localization-overnight.md) and frozen
-campaign manifest sequence French then sixteen target languages. A supervising
-agent executes bounded, resumable independent translation/review, serialized
-five-surface native qualification and exact completion records. Plan/status/
-verify/handoff commands launch no workers. Publication remains a separate
+campaign manifest preserve the completed French-first execution. The seventeen
+new languages add 8,670 reviewed resources, with current content/harness-bound
+receipts in `localization/qualification/`. Every locale passed owned Android
+API 28/35 tests, macOS native menus, iOS simulator/unsigned Release checks,
+packaged extension and production frontend checks. The final nineteen-locale
+build also passed German/French browser regressions and compatibility schemas.
+
+Plan/status/verify/handoff commands launch no workers. Future English or relevant
+terminology changes require fresh incremental jobs/review and affected runtime
+qualification; do not copy completed receipts into a changed campaign. No new
+store delivery, signed production install, physical-device or full three-OS
+acceptance is inferred from these local gates. Publication remains a separate
 maintainer-authorized action. Website/store localization, iOS distribution and
 broader exact-artifact acceptance remain follow-ups.

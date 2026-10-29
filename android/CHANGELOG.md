@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Add independently reviewed offline translations for seventeen more languages
+  (nineteen total), with native app/notification language selection.
+
 ## [0.2.4]
 
 ### Added

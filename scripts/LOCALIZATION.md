@@ -1,9 +1,11 @@
 # Localization workflow
 
 English is the source and fallback. `localization/locales.json` owns the target
-languages and per-surface availability. English and German are the initial app
-release inputs; the remaining seventeen targets are definitions, not shipping
-translations. No catalog is fetched from a service at application runtime.
+languages and per-surface availability. All nineteen locales are qualified app
+release inputs: `en de fr es it pt-BR nl sv da cs pl ro ru uk tr ja ko zh-CN zh-TW`.
+The [completed campaign record](../docs/tactical/023-remaining-language-supervisor.md)
+links the seventeen new content/harness-bound qualification receipts. Store
+publication remains separate. No catalog is fetched from a service at runtime.
 
 ## Everyday commands
 
@@ -184,7 +186,9 @@ store-delivered acceptance.
 
 Use [the overnight runbook](../docs/runbooks/localization-overnight.md) and
 `python3 scripts/localization-campaign.py plan --check-env` for the frozen
-French-first remaining-language queue. Planner/status/verify/handoff launch no
+French-first campaign queue (completed on 2026-10-29). Preserve its frozen
+evidence when checking/resuming; use fresh incremental jobs when English or
+relevant terminology changes. Planner/status/verify/handoff launch no
 workers; a supervising agent executes checked argv and records qualified
 locales. Full receipts bind exact source/catalog/ledger/runtime-harness inputs
 and require both owned Android API 28/35 runs plus macOS/iOS gates. No store

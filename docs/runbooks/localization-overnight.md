@@ -6,6 +6,12 @@ English inventory is 510 resources per locale (255 + 21 + 3 + 180 + 51), or
 8,670 translations before corrections. English/German remain available.
 Website, store listings/screenshots and legacy Chrome App copy are separate.
 
+The 2026-10-29 execution completed all seventeen targets, yielding nineteen
+ordinary app locales including English/German. [Tactical 023](../tactical/023-remaining-language-supervisor.md)
+retains its per-locale evidence and final checks. This runbook remains the
+bounded execution/resume procedure; completed receipts are never reused after
+source, relevant terminology or harness drift without fresh qualification.
+
 [`localization-campaign.py`](../../scripts/localization-campaign.py) prepares,
 verifies and inspects the queue; **it never launches workers**. A supervising
 agent executes the runbook, judges language/product failures, and records

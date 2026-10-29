@@ -14,6 +14,9 @@
 
 ## Unreleased
 
+- Add independently reviewed offline controls, settings, dialogs and menus for
+  seventeen more languages (nineteen total), preserving app state on switching.
+
 ## [0.1.11]
 
 ### Changed

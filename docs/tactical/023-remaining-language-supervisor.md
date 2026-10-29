@@ -2,15 +2,15 @@
 
 Topic: localization
 
-Status: execution active, 2026-10-29. Maintainer explicitly authorized the full
-remaining-language run, commits/pushes and final green-CI verification. Started
-13:14 UTC with the frozen plan, existing local ChatGPT login, and no prior live
-worker owners. The bounded runbook applies; remote CI verification is explicitly
-included by the latest maintainer instruction.
+Status: localization queue and aggregate qualification complete, 2026-10-29;
+final hosted-CI closeout in progress. All seventeen remaining locales are
+reviewed, qualified, committed and pushed, with nineteen ordinary app locales
+including English/German. Started 13:14 UTC; the final locale completed about
+19:35 UTC within the ten-hour bound. No model workers remain.
 
 The maintainer requested an overnight supervisor/runbook like JSTorrent after
-German device validation and release. This slice prepares the campaign without
-silently launching all seventeen languages or granting it publication authority.
+German device validation and release. The initial slice prepared the campaign; the maintainer then explicitly
+authorized its full execution. Publication authority remains separate.
 Continuing instructions live in the [overnight runbook](../runbooks/localization-overnight.md).
 
 ## Implementation
@@ -181,3 +181,33 @@ The thirteen-language cohort through Turkish
 including [iOS CI](https://github.com/kzahel/web-server-chrome/actions/runs/40931799909).
 Japanese then passed full local qualification and committed with its bound
 receipt; Korean and the two Chinese variants form the final remaining queue.
+
+
+## Final aggregate result
+
+All seventeen targets completed, adding 8,670 resources (510 per locale) across
+five surfaces. Each has twelve actual independent message author/reviewer
+sessions with Sol/high/normal plus independently reviewed shared terminology.
+Every current receipt binds the final corrected harness and unchanged reviewed
+catalog/source/session inputs; no old receipt was stamped current.
+
+The final aggregate audit verified all nineteen ordinary registrations on every
+surface, no previews/pseudo locales, no missing/stale/conflicting/invalid/
+unreviewed/terminology issues, all seventeen current native receipts and
+sanitized public evidence hashes. Catalog/generation checks, all sixty Python
+localization tests, TypeScript checks, workspace tests, lint, ordinary workspace
+builds, HTTP/compatibility schema checks and final German/French production
+browser regressions passed. Each new locale separately passed Android API
+28/35, native macOS menus, iOS UI/unsigned Release, packaged extension and its
+own production browser/System-probe gates.
+
+The final locale cohort is `04d3a0b522d30d23f744997e5e9a88dd00bfd3b8`. Component
+unreleased changelogs and maintained availability documents describe these
+release inputs; no component version, tag, store upload, website/updater
+promotion or physical-device/three-OS acceptance claim changed. Raw model,
+emulator, browser and iOS evidence remains ignored for audit/resume.
+
+Local macOS browser checks also observed a separate working-tree
+`--use-mock-keychain` test-browser flag. That edit is preserved outside this
+campaign's commits; it changes browser credential storage, not product code or
+assertions. Hosted extension checks exercise the committed browser runner.

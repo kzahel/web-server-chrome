@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "Não foi possível abrir o 200 OK.",
+  "about_200_ok_ba8aa9": "Sobre o 200 OK",
+  "check_for_updates_9ed79e": "Buscar atualizações",
+  "choose_folder_to_serve_d488f4": "Escolher pasta para disponibilizar arquivos",
+  "close_7d9eb7": "Fechar",
+  "hide_200_ok_981b92": "Ocultar 200 OK",
+  "hide_others_1753e2": "Ocultar outros",
+  "launching_b1601d": "Abrindo...",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "Abrir o 200 OK Web Server para Linux no ChromeOS",
+  "quit_200_ok_686f8f": "Encerrar 200 OK",
+  "quit_b3eb37": "Encerrar",
+  "run_in_background_0db775": "Executar em segundo plano",
+  "settings_74a883": "Configurações",
+  "show_all_e1c326": "Mostrar todos",
+  "show_app_ec462a": "Mostrar aplicativo",
+  "show_icon_in_menu_bar_0ad9f3": "Mostrar ícone na barra de menus",
+  "show_icon_in_system_tray_25b481": "Mostrar ícone na bandeja do sistema",
+  "start_at_login_5952eb": "Iniciar ao fazer login",
+  "try_again_df0fe9": "Tentar novamente",
+  "unknown_launch_error_3585c0": "Erro desconhecido ao abrir",
+  "web_server_fc0480": "Servidor HTTP"
+}

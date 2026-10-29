@@ -75,11 +75,11 @@
   },
   "sourceLocale": "en",
   "supportedLocales": {
-    "android": ["en", "de", "fr", "es", "it"],
-    "desktop": ["en", "de", "fr", "es", "it"],
-    "extension": ["en", "de", "fr", "es", "it"],
-    "ios": ["en", "de", "fr", "es", "it"],
-    "web": ["en", "de", "fr", "es", "it"]
+    "android": ["en", "de", "fr", "es", "it", "pt-BR"],
+    "desktop": ["en", "de", "fr", "es", "it", "pt-BR"],
+    "extension": ["en", "de", "fr", "es", "it", "pt-BR"],
+    "ios": ["en", "de", "fr", "es", "it", "pt-BR"],
+    "web": ["en", "de", "fr", "es", "it", "pt-BR"]
   },
   "testLocales": [
     {

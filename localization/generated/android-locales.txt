@@ -3,3 +3,4 @@ de
 fr
 es
 it
+pt-rBR

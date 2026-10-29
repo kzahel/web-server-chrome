@@ -6,4 +6,5 @@ const CATALOGS: &[(&str, &str)] = &[
     ("fr", include_str!("../../../localization/catalogs/desktop/fr.json")),
     ("es", include_str!("../../../localization/catalogs/desktop/es.json")),
     ("it", include_str!("../../../localization/catalogs/desktop/it.json")),
+    ("pt-BR", include_str!("../../../localization/catalogs/desktop/pt-BR.json")),
 ];

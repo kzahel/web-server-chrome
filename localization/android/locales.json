@@ -15,6 +15,10 @@
     "it": {
       "catalog": "android/app/src/main/res/values-it/strings.xml",
       "quantities": ["one", "many", "other"]
+    },
+    "pt-BR": {
+      "catalog": "android/app/src/main/res/values-pt-rBR/strings.xml",
+      "quantities": ["one", "many", "other"]
     }
   },
   "schemaVersion": 1

@@ -34,6 +34,12 @@
             "state": "translated",
             "value": "200 OK rende disponibile la cartella selezionata ai dispositivi sulla rete locale mentre l’app è in primo piano."
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O 200 OK disponibiliza a pasta que você escolher para dispositivos na sua rede local enquanto este app estiver aberto em primeiro plano."
+          }
         }
       }
     }

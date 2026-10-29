@@ -1,9 +1,13 @@
 {
-  "schemaVersion": 1,
   "locales": {
     "de": {
       "catalog": "android/app/src/main/res/values-de/strings.xml",
       "quantities": ["one", "other"]
+    },
+    "fr": {
+      "catalog": "android/app/src/main/res/values-fr/strings.xml",
+      "quantities": ["one", "many", "other"]
     }
-  }
+  },
+  "schemaVersion": 1
 }

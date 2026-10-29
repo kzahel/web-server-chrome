@@ -62,6 +62,19 @@ class SharedLocalizationTest(unittest.TestCase):
                 workspace.write()
                 self.assertEqual(first, workspace.path.read_bytes())
 
+    def test_extension_manifest_limits_include_localized_and_astral_text(self):
+        self.write('localization/catalogs/extension/en.json', {
+            'app_name': 'Name', 'app_description': 'Description', 'action_title': 'Open',
+        })
+        work = self.workspace('extension')
+        for key, limit in [('app_name',75),('app_description',132)]:
+            work.validate_values({key: 'é' * limit})
+            with self.subTest(key=key), self.assertRaises(tool.Invalid):
+                work.validate_values({key: 'é' * (limit+1)})
+        work.validate_values({'app_description': '𐐀' * 66})
+        with self.assertRaises(tool.Invalid):
+            work.validate_values({'app_description': '𐐀' * 67})
+
     def test_exact_response_keys_kind_and_platform(self):
         workspace = self.workspace()
         job = workspace.export()

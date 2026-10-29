@@ -115,11 +115,17 @@ if (manifest.default_locale) {
       JSON.stringify(Object.keys(messages).sort()) === JSON.stringify(keys),
       `incomplete locale: ${file}`,
     );
-    for (const [key, entry] of Object.entries(messages))
+    for (const [key, entry] of Object.entries(messages)) {
       assert(
         typeof entry.message === "string" && entry.message.trim(),
         `invalid localized message: ${file}/${key}`,
       );
+      const limit = { app_name: 75, app_description: 132 }[key];
+      assert(
+        limit === undefined || entry.message.length <= limit,
+        `localized manifest text exceeds ${limit} characters: ${file}/${key}`,
+      );
+    }
   }
 }
 assert(manifest.manifest_version === 3, "manifest_version must be 3");

@@ -139,7 +139,7 @@ mod tests {
     #[test]
     fn preferences_keep_unknown_values_and_fallback_without_server_changes() {
         assert_eq!(resolve("system", &["xx".into(), "de-AT".into()]), "de");
-        assert_eq!(resolve("fr-FR", &["de".into()]), "en");
+        assert_eq!(resolve("zz-ZZ", &["de".into()]), "en");
         assert_eq!(translate("de", "Quit"), "Beenden");
         assert_eq!(
             translate("de", "future unknown diagnostic"),

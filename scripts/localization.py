@@ -86,6 +86,10 @@ class Workspace:
             validate_literals(self.source[name]["value"], text)
             if not isinstance(text, str) or not text.strip() or len(text) > 65536 or any(0xD800 <= ord(c) <= 0xDFFF or ord(c) == 0 for c in text):
                 raise Invalid(f"invalid translated text: {name}")
+            if self.platform == 'extension':
+                limit = {'app_name': 75, 'app_description': 132}.get(name)
+                if limit is not None and len(text.encode('utf-16-le')) // 2 > limit:
+                    raise Invalid(f'{name}: Chrome manifest text exceeds {limit} characters')
         contracts = icu_contracts(values, self.locale, self.root, {name: self.source[name]["value"] for name in values}) if self.platform == "web" else {name: native_contract(value) for name, value in values.items()}
         for name, contract in contracts.items():
             if contract != self.source[name]["arguments"]:

@@ -109,6 +109,9 @@ Preserve privacy and network-exposure consequences, foreground-only iOS serving,
 and the difference between the launcher/controller and the actual HTTP server.
 Keep 200 OK, 200 OK Web Server, Web Server for Chrome, paths, URLs, shell commands, protocol identifiers and port examples unchanged. Use shared terminology naturally with grammatical
 inflection. Never copy strings from another project.
+Extension manifest app_description must fit 132 characters and app_name 75
+characters (UTF-16 units). Preserve the meaning and required proper names while
+using concise natural wording; validate these bounds before finishing.
 
 Write raw JSON text, not XML/Android-escaped strings. Each response is exactly:
 {{"schemaVersion":1,"platform":"{platform}","locale":"{locale}","resources":{{ID:

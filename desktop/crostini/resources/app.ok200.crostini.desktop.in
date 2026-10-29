@@ -13,3 +13,5 @@ StartupNotify=true
 StartupWMClass=app.ok200.crostini
 GenericName[de]=Webserver
 Comment[de]=200 OK Web Server für ChromeOS Linux öffnen
+GenericName[fr]=Serveur HTTP
+Comment[fr]=Ouvrir 200 OK Web Server pour Linux sur ChromeOS

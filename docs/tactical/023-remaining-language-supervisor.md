@@ -2,7 +2,11 @@
 
 Topic: localization
 
-Status: setup implemented, 2026-10-29; the translation campaign has not started.
+Status: execution active, 2026-10-29. Maintainer explicitly authorized the full
+remaining-language run, commits/pushes and final green-CI verification. Started
+13:14 UTC with the frozen plan, existing local ChatGPT login, and no prior live
+worker owners. The bounded runbook applies; remote CI verification is explicitly
+included by the latest maintainer instruction.
 
 The maintainer requested an overnight supervisor/runbook like JSTorrent after
 German device validation and release. This slice prepares the campaign without
@@ -48,9 +52,48 @@ this supervisor setup.
 
 | Locale | State | Evidence/commit |
 |---|---|---|
-| fr | queued | French canary is the first supervised execution step |
-| es, it, pt-BR, nl, sv, da, cs, pl, ro, ru, uk, tr, ja, ko, zh-CN, zh-TW | queued | Follow manifest order after French qualifies |
+| fr | qualified | [bound evidence](../../localization/qualification/fr.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
+| es | queued | Preserve frozen jobs and manifest order |
+| it | queued | Preserve frozen jobs and manifest order |
+| pt-BR | queued | Preserve frozen jobs and manifest order |
+| nl | queued | Preserve frozen jobs and manifest order |
+| sv | queued | Preserve frozen jobs and manifest order |
+| da | queued | Preserve frozen jobs and manifest order |
+| cs | queued | Preserve frozen jobs and manifest order |
+| pl | queued | Preserve frozen jobs and manifest order |
+| ro | queued | Preserve frozen jobs and manifest order |
+| ru | queued | Preserve frozen jobs and manifest order |
+| uk | queued | Preserve frozen jobs and manifest order |
+| tr | queued | Preserve frozen jobs and manifest order |
+| ja | queued | Preserve frozen jobs and manifest order |
+| ko | queued | Preserve frozen jobs and manifest order |
+| zh-CN | queued | Preserve frozen jobs and manifest order |
+| zh-TW | queued | Preserve frozen jobs and manifest order |
 
 Compatibility is additive and presentation-only. English/German and completed
 locales remain available, independently released apps/extensions keep their
 existing protocols and settings, and no lockstep store deployment is required.
+
+## Early campaign correction: extension manifest bounds
+
+Chrome's [manifest description contract](https://developer.chrome.com/docs/extensions/reference/manifest/description)
+caps localized descriptions at 132 characters. The existing German catalog was
+136; French's independently reviewed version is exactly 132. Translation import
+and packaged locale validation now enforce description/name bounds, and worker
+guidance states them. German is repaired through a fresh independent translation/
+review job. Existing source strings, protocol/settings and published artifacts
+are unchanged. The old frozen plan is preserved and explicitly reconciled for
+these validator/prompt/harness changes; no completed runtime receipt is reused.
+
+The first French qualification passed Android API 28/35, then exposed a Rust test that treated `fr-FR` as an unknown locale. The fixture
+now uses reserved unknown `zz-ZZ`; French registration correctly resolves to
+French. The frozen plan was explicitly reconciled for that test-only edit,
+and the complete qualification is rerun before recording a receipt.
+
+Shared terminology for all seventeen languages (187 concepts) was authored by
+Sol/high/normal session `01a187cc-c910-7a42-859c-19a0b96c7e68` and independently
+reviewed in `01a187ce-2a7c-7551-a021-95e87fa89535`. Per-locale terminology
+review records retain exact candidate/final hashes and actual identities.
+Sanitized qualification records bind all five source/catalog/review inputs,
+actual message-session identities, harness/plan hashes and native/browser gates.
+Raw jobs, worker logs and platform evidence remain ignored/private.

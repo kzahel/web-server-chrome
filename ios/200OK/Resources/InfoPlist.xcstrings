@@ -16,6 +16,12 @@
             "state": "translated",
             "value": "200 OK serves the folder you choose to devices on your local network while this app is open."
           }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK met le dossier de votre choix à la disposition des appareils de votre réseau local tant que l’application reste au premier plan."
+          }
         }
       }
     }

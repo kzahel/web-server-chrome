@@ -1,10 +1,10 @@
 {
   "catalogs": {
     "android": "android/app/src/main/res/values/strings.xml",
-    "web": "localization/catalogs/web/en.json",
     "desktop": "localization/catalogs/desktop/en.json",
     "extension": "localization/catalogs/extension/en.json",
-    "ios": "ios/200OK/Resources/Localizable.xcstrings"
+    "ios": "ios/200OK/Resources/Localizable.xcstrings",
+    "web": "localization/catalogs/web/en.json"
   },
   "fallbackLocale": "en",
   "localeDefinitions": {
@@ -68,18 +68,18 @@
   },
   "previewLocales": {
     "android": [],
-    "web": [],
     "desktop": [],
     "extension": [],
-    "ios": []
+    "ios": [],
+    "web": []
   },
   "sourceLocale": "en",
   "supportedLocales": {
-    "android": ["en", "de"],
-    "web": ["en", "de"],
-    "desktop": ["en", "de"],
-    "extension": ["en", "de"],
-    "ios": ["en", "de"]
+    "android": ["en", "de", "fr"],
+    "desktop": ["en", "de", "fr"],
+    "extension": ["en", "de", "fr"],
+    "ios": ["en", "de", "fr"],
+    "web": ["en", "de", "fr"]
   },
   "testLocales": [
     {

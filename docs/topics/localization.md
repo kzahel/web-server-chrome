@@ -9,8 +9,9 @@ Google review (public 0.1.8). Desktop 0.1.12 is publicly signed/notarized and pa
 German smoke, checksum, website and updater-route checks.
 [Tactical 022](../tactical/022-german-release-and-device-smoke.md) owns current
 distribution/device evidence. The remaining seventeen-language supervisor is
-prepared in [Tactical 023](../tactical/023-remaining-language-supervisor.md);
-its translation workers have not started.**
+running under [Tactical 023](../tactical/023-remaining-language-supervisor.md)
+with maintainer authorization to complete all remaining locales and verify CI.
+Only qualified cohorts will become ordinary release inputs.**
 
 The registry at `localization/locales.json` owns availability for React,
 native desktop/Crostini, extension metadata, Android and iOS. English is the

@@ -14,11 +14,11 @@
     "app_description": {
       "origin": "independently authored translation",
       "reviewState": "agent-reviewed",
-      "reviewer": "gpt-6.1-sol/01a186bc-7261-75b3-a76e-acf37671b544",
+      "reviewer": "gpt-6.1-sol/01a187de-35fc-7e22-a0ce-2a8a75a065bb",
       "sourceHash": "e117b0e19380e474a1642ed93b1ce9a574fb6763e9a8b2e329ea19fb945c66d9",
       "terminologyHash": "9c27d415fe9d11884b3e3470834ec0acb64bef8d3a3fa2401656845749c28551",
-      "translationHash": "8c846145319dac058d49ccebc9619fa679da8aa73dcd820321e16be9afcea36c",
-      "translator": "gpt-6.1-sol/01a186bb-fc8d-7e70-9b5f-a11e44f1c81f"
+      "translationHash": "f242db023fcfda5851e5d86d7aa777516ff2b67d3ab0723bd0fecc881993ac48",
+      "translator": "gpt-6.1-sol/01a187dc-8f1f-7bf2-9280-8f0ed2d14d60"
     },
     "app_name": {
       "origin": "independently authored translation",

@@ -5,6 +5,7 @@ import hashlib
 
 SURFACES = ["web", "desktop", "extension", "android", "ios"]
 HARNESS = ['scripts/localization_front.py', 'scripts/localization_qualification.py',
+           'scripts/validate-extension-package.mjs',
            'scripts/qualify-localization.mjs', 'scripts/check-localization.mjs',
            'scripts/check-native-localization.py', 'scripts/generate-localization.mjs',
            'android/scripts/check.sh', 'android/scripts/localization-smoke.sh',

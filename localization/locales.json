@@ -90,7 +90,8 @@
       "ro",
       "ru",
       "uk",
-      "tr"
+      "tr",
+      "ja"
     ],
     "desktop": [
       "en",
@@ -107,7 +108,8 @@
       "ro",
       "ru",
       "uk",
-      "tr"
+      "tr",
+      "ja"
     ],
     "extension": [
       "en",
@@ -124,7 +126,8 @@
       "ro",
       "ru",
       "uk",
-      "tr"
+      "tr",
+      "ja"
     ],
     "ios": [
       "en",
@@ -141,7 +144,8 @@
       "ro",
       "ru",
       "uk",
-      "tr"
+      "tr",
+      "ja"
     ],
     "web": [
       "en",
@@ -158,7 +162,8 @@
       "ro",
       "ru",
       "uk",
-      "tr"
+      "tr",
+      "ja"
     ]
   },
   "testLocales": [

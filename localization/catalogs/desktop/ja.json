@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "200 OKを開けませんでした。",
+  "about_200_ok_ba8aa9": "200 OKについて",
+  "check_for_updates_9ed79e": "アップデートを確認",
+  "choose_folder_to_serve_d488f4": "配信するフォルダーを選択",
+  "close_7d9eb7": "閉じる",
+  "hide_200_ok_981b92": "200 OKを非表示",
+  "hide_others_1753e2": "ほかを非表示",
+  "launching_b1601d": "起動中…",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "ChromeOS Linux用の200 OK Web Serverを開く",
+  "quit_200_ok_686f8f": "200 OKを終了",
+  "quit_b3eb37": "終了",
+  "run_in_background_0db775": "バックグラウンドで実行",
+  "settings_74a883": "設定",
+  "show_all_e1c326": "すべてを表示",
+  "show_app_ec462a": "アプリを表示",
+  "show_icon_in_menu_bar_0ad9f3": "メニューバーにアイコンを表示",
+  "show_icon_in_system_tray_25b481": "システムトレイにアイコンを表示",
+  "start_at_login_5952eb": "ログイン時に起動",
+  "try_again_df0fe9": "再試行",
+  "unknown_launch_error_3585c0": "起動時に不明なエラーが発生しました。",
+  "web_server_fc0480": "HTTP サーバー"
+}

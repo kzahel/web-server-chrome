@@ -47,6 +47,12 @@
             "value": "200 OK rende disponibile la cartella selezionata ai dispositivi sulla rete locale mentre l’app è in primo piano."
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK は、このアプリを画面に表示している間、選択したフォルダー内のファイルをローカルネットワーク上のデバイスに配信します。"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",

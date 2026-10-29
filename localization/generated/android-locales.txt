@@ -13,3 +13,4 @@ ro
 ru
 uk
 tr
+ja

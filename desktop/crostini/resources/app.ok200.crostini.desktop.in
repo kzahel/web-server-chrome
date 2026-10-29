@@ -39,3 +39,5 @@ GenericName[uk]=HTTP-сервер
 Comment[uk]=Відкрити 200 OK Web Server для ChromeOS Linux
 GenericName[tr]=Web sunucusu
 Comment[tr]=ChromeOS Linux için 200 OK Web Server uygulamasını açın
+GenericName[ja]=HTTP サーバー
+Comment[ja]=ChromeOS Linux用の200 OK Web Serverを開く

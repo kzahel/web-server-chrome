@@ -306,6 +306,7 @@
 				es,
 				fr,
 				it,
+				ja,
 				nl,
 				pl,
 				"pt-BR",

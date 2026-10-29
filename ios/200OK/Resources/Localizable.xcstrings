@@ -47,6 +47,12 @@
             "value": "Consentire le richieste del browser da origini diverse."
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブラウザからのクロスオリジンリクエストを許可します。"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -141,6 +147,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Consentire agli altri dispositivi su questa rete Wi-Fi di connettersi."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同じ Wi-Fi ネットワーク上の他のデバイスからの接続を許可します。"
           }
         },
         "nl": {
@@ -239,6 +251,12 @@
             "value": "Richiesta non valida"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不正なリクエスト"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -333,6 +351,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modificare"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "変更"
           }
         },
         "nl": {
@@ -431,6 +455,12 @@
             "value": "Scegliere"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選択"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -525,6 +555,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scegliere una cartella prima di avviare il server."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP サーバーを開始する前に、フォルダーを選択してください。"
           }
         },
         "nl": {
@@ -623,6 +659,12 @@
             "value": "Scegliere una cartella da rendere disponibile per abilitare il server."
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配信するフォルダーを選択すると、HTTP サーバーを開始できます。"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -717,6 +759,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copiare"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コピー"
           }
         },
         "nl": {
@@ -815,6 +863,12 @@
             "value": "Elenco dei file della cartella"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フォルダー内のファイル一覧"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -909,6 +963,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Terminare"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完了"
           }
         },
         "nl": {
@@ -1007,6 +1067,12 @@
             "value": "Inserire 0 o una porta da 1 a 65535."
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0、または 1 から 65535 までのポート番号を入力してください。"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -1101,6 +1167,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Errore: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エラー: %@"
           }
         },
         "nl": {
@@ -1199,6 +1271,12 @@
             "value": "Feedback e assistenza"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フィードバックとサポート"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -1293,6 +1371,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Accesso alla rete locale"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ローカルネットワークへのアクセス"
           }
         },
         "nl": {
@@ -1391,6 +1475,12 @@
             "value": "Richiesta HTTP malformata.\\n"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP リクエストの形式が正しくありません。\\n"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -1485,6 +1575,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Al momento non è disponibile alcun indirizzo Wi-Fi. Il server resta accessibile solo da questo iPhone finché il Wi-Fi non è pronto."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在、利用できる Wi-Fi アドレスがありません。Wi-Fi が利用可能になるまでは、この iPhone からのみ HTTP サーバーに接続できます。"
           }
         },
         "nl": {
@@ -1583,6 +1679,12 @@
             "value": "Nessuna cartella selezionata"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フォルダー未選択"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -1677,6 +1779,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Porta"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ポート"
           }
         },
         "nl": {
@@ -1775,6 +1883,12 @@
             "value": "Visualizzare l’anteprima"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プレビュー"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -1869,6 +1983,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Privacy"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プライバシー"
           }
         },
         "nl": {
@@ -1967,6 +2087,12 @@
             "value": "Accesso in sola lettura tramite File"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「ファイル」経由の読み取り専用アクセス"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -2061,6 +2187,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tempo di attesa della richiesta scaduto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リクエストのタイムアウト"
           }
         },
         "nl": {
@@ -2159,6 +2291,12 @@
             "value": "Il tempo di attesa della richiesta è scaduto.\\n"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リクエストがタイムアウトしました。\\n"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -2253,6 +2391,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "In esecuzione"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "稼働中"
           }
         },
         "nl": {
@@ -2351,6 +2495,12 @@
             "value": "URL attivi"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配信中の URL"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -2445,6 +2595,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fornire il file index.html della cartella radice per i percorsi non trovati senza estensione."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拡張子のないルートが見つからない場合は、ルートフォルダーの index.html を配信します。"
           }
         },
         "nl": {
@@ -2543,6 +2699,12 @@
             "value": "Server"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP サーバー"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -2637,6 +2799,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Comportamento del server"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配信設定"
           }
         },
         "nl": {
@@ -2735,6 +2903,12 @@
             "value": "Cartella da rendere disponibile"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配信フォルダー"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -2829,6 +3003,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Il server funziona mentre 200 OK è in primo piano. iOS arresta il server quando l’app passa in background."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK を画面に表示している間のみ、ファイルを配信できます。アプリがバックグラウンドに移ると、iOS が HTTP サーバーを停止します。"
           }
         },
         "nl": {
@@ -2927,6 +3107,12 @@
             "value": "Condividere"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "共有"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -3021,6 +3207,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostrare l’elenco dei file quando una cartella non contiene index.html."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フォルダーに index.html がない場合は、フォルダー内のファイル一覧を表示します。"
           }
         },
         "nl": {
@@ -3119,6 +3311,12 @@
             "value": "Fallback per app a pagina singola"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "シングルページアプリのフォールバック"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -3213,6 +3411,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Codice sorgente · MIT"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ソースコード · MIT"
           }
         },
         "nl": {
@@ -3311,6 +3515,12 @@
             "value": "Avvio in corso…"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開始処理中…"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -3405,6 +3615,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Avviare il server web"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP サーバーを開始します"
           }
         },
         "nl": {
@@ -3503,6 +3719,12 @@
             "value": "Arrestare il server per modificare questa impostazione."
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この設定を変更するには、HTTP サーバーを停止してください。"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -3597,6 +3819,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Arrestato"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止中"
           }
         },
         "nl": {
@@ -3695,6 +3923,12 @@
             "value": "Arresto in corso…"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止処理中…"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -3789,6 +4023,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Arrestare il server web"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP サーバーを停止します"
           }
         },
         "nl": {
@@ -3887,6 +4127,12 @@
             "value": "L’autorizzazione salvata per la cartella è scaduta. Scegliere di nuovo la cartella."
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存済みのアクセス権が失効しました。フォルダーをもう一度選択してください。"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -3981,6 +4227,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "La cartella selezionata non è disponibile. Selezionarla di nuovo in File."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選択したフォルダーを利用できません。「ファイル」でもう一度選択してください。"
           }
         },
         "nl": {
@@ -4079,6 +4331,12 @@
             "value": "L’elemento selezionato non è una cartella."
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選択した項目はフォルダーではありません。"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -4173,6 +4431,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Impossibile avviare il server. Controllare la cartella e la porta, quindi riprovare."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP サーバーを開始できませんでした。フォルダーとポートを確認してから、もう一度お試しください。"
           }
         },
         "nl": {
@@ -4271,6 +4535,12 @@
             "value": "Il server è già in esecuzione."
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP サーバーはすでに稼働しています。"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -4365,6 +4635,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Il server è occupato."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP サーバーが混み合っています。"
           }
         },
         "nl": {
@@ -4463,6 +4739,12 @@
             "value": "Il server si è arrestato quando 200 OK è passato in background. Riavviarlo quando si desidera."
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK がバックグラウンドに移ったため、HTTP サーバーを停止しました。準備ができたら、もう一度開始してください。"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -4557,6 +4839,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Questo iPhone"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この iPhone"
           }
         },
         "nl": {
@@ -4655,6 +4943,12 @@
             "value": "Usare 0 per scegliere una porta disponibile"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0 を指定すると、空いているポートを自動で選択します。"
+          }
+        },
         "nl": {
           "stringUnit": {
             "state": "translated",
@@ -4749,6 +5043,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Server web"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP サーバー"
           }
         },
         "nl": {

@@ -1,0 +1,11 @@
+{
+  "action_title": {
+    "message": "200 OK Web Server を開く"
+  },
+  "app_description": {
+    "message": "デスクトップや ChromeOS で 200 OK を起動し、ChromeOS Linux の HTTP サーバーを設定・操作できます。Web Server for Chrome の後継です。"
+  },
+  "app_name": {
+    "message": "200 OK Web Server"
+  }
+}

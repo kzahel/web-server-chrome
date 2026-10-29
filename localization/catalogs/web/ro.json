@@ -1,0 +1,1022 @@
+{
+  "desktop..path.to.directory.ae256f": {
+    "defaultMessage": "/path/to/directory",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.0.automatic.4c2328": {
+    "defaultMessage": "0 = automat",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.200.ok.value0.is.available.31c835": {
+    "defaultMessage": "200 OK {value0} este disponibil",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.200.ok.value0.is.the.newest.version.98822f": {
+    "defaultMessage": "200 OK{value0} este cea mai recentă versiune.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.200.ok.web.server.bf6c0d": {
+    "defaultMessage": "200 OK Web Server",
+    "description": "packages/ui/src/components/Layout.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "desktop.app.settings.d43fb8": {
+    "defaultMessage": "Setările aplicației",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.cancel.19766e": {
+    "defaultMessage": "Anulare",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.change.a6b470": {
+    "defaultMessage": "Schimbare…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.check.again.fb7099": {
+    "defaultMessage": "Verificare din nou",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.check.for.updates.9ed79e": {
+    "defaultMessage": "Căutare actualizări",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.checking.for.updates.497a19": {
+    "defaultMessage": "Se caută actualizări…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.choose.7ca416": {
+    "defaultMessage": "Selectare…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.choose.a.folder.to.start.the.server.337adc": {
+    "defaultMessage": "Pentru pornirea serverului, se selectează un folder",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.choosing.fe2076": {
+    "defaultMessage": "Se selectează…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.close.app.settings.4168da": {
+    "defaultMessage": "Închidere setări aplicație",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.contacting.the.200.ok.update.server.663342": {
+    "defaultMessage": "Se contactează serverul de actualizări 200 OK.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.copied.8d525e": {
+    "defaultMessage": "Copiat",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.copy.url.b26d10": {
+    "defaultMessage": "Copiere URL",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.could.not.open.value0.value1.fe47fa": {
+    "defaultMessage": "Nu s-a putut deschide {value0}: {value1}",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.desktop.9bd88f": {
+    "defaultMessage": "Desktop",
+    "description": "packages/ui/src/components/Layout.tsx"
+  },
+  "desktop.directory.listing.bc706d": {
+    "defaultMessage": "Lista fișierelor din folder",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.dismiss.48845b": {
+    "defaultMessage": "Închidere",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.dismiss.update.notice.6a124b": {
+    "defaultMessage": "Închidere notificare de actualizare",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.downloading.200.ok.value0.19b49e": {
+    "defaultMessage": "Se descarcă 200 OK {value0}…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.error.54a0e8": {
+    "defaultMessage": "Eroare",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.failed.to.open.external.link.29fcf0": {
+    "defaultMessage": "Nu s-a putut deschide linkul extern:",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.feedback.suggestions.and.support.d1acad": {
+    "defaultMessage": "Feedback, sugestii și asistență",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.feedback.support.2d5632": {
+    "defaultMessage": "Feedback și asistență",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.folder.74ccd4": {
+    "defaultMessage": "Folder",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.install.restart.223cb1": {
+    "defaultMessage": "Instalare și repornire",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.install.updates.manually.60762c": {
+    "defaultMessage": "Instalare manuală a actualizărilor",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.installing.update.29e74e": {
+    "defaultMessage": "Se instalează actualizarea…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.keep.a.shortcut.to.200.ok.in.the.system.area.6f0b61": {
+    "defaultMessage": "Se păstrează o comandă rapidă către 200 OK în zona de sistem.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.keep.running.when.the.main.window.is.closed.c46cc8": {
+    "defaultMessage": "Aplicația continuă să funcționeze după închiderea ferestrei principale.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.lan.access.708f4a": {
+    "defaultMessage": "Acces din rețeaua locală",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.later.73b6e4": {
+    "defaultMessage": "Mai târziu",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.launch.200.ok.when.you.sign.in.b9ed74": {
+    "defaultMessage": "Aplicația 200 OK se lansează la conectarea la cont.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.loading.47d2a5": {
+    "defaultMessage": "Se încarcă…",
+    "description": "packages/ui/src/components/ServerPage.tsx"
+  },
+  "desktop.loading.settings.e71a13": {
+    "defaultMessage": "Se încarcă setările…",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.locked.a424e3": {
+    "defaultMessage": "Blocat",
+    "description": "packages/ui/src/components/SettingsZone.tsx"
+  },
+  "desktop.native.0ad9f346a7": {
+    "defaultMessage": "Afișarea pictogramei în bara de meniu",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.0fdab34df1": {
+    "defaultMessage": "Acest folder include folderul personal și poate expune fișiere personale.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.147cb2aad4": {
+    "defaultMessage": "Program de instalare pentru Windows",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.25b4818674": {
+    "defaultMessage": "Afișarea pictogramei în zona de notificare",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3318275f29": {
+    "defaultMessage": "MSI pentru Windows",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3a63e9846a": {
+    "defaultMessage": "Pachet RPM",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3e7a639282": {
+    "defaultMessage": "Prin această acțiune se partajează întregul folder personal, inclusiv fișierele personale și cele ascunse. Accesul prin LAN face folderul accesibil și altor dispozitive din această rețea.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.45e6d69dbe": {
+    "defaultMessage": "Aplicație macOS",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.5021888e79": {
+    "defaultMessage": "Înainte de pornirea serverului, se selectează un folder",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.589cb3c9a9": {
+    "defaultMessage": "această instalare",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.65e51a8997": {
+    "defaultMessage": "Înainte de modificarea configurației, se oprește serverul",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.7ee24bab5c": {
+    "defaultMessage": "Aplicația nu a putut compara acest folder cu folderul personal. Trebuie confirmat că partajarea este sigură.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.879a60672f": {
+    "defaultMessage": "Se partajează întregul folder personal, inclusiv fișierele personale și cele ascunse.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.93a5653143": {
+    "defaultMessage": "Aplicația nu a putut compara acest folder cu folderul personal. Confirmați că acest folder poate fi partajat în siguranță. Accesul prin LAN face folderul accesibil și altor dispozitive din această rețea.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.9e62e3b15f": {
+    "defaultMessage": "Acest folder se află în afara folderului personal. Confirmați că acest folder poate fi partajat în siguranță. Accesul prin LAN face folderul accesibil și altor dispozitive din această rețea.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.ac5419d69a": {
+    "defaultMessage": "Fișierele din folderul selectat nu pot fi furnizate prin server",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.bf8670ceff": {
+    "defaultMessage": "Acest folder se află în afara folderului personal. Trebuie confirmat că partajarea este sigură.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.e119a30af0": {
+    "defaultMessage": "Accesul din rețeaua locală permite altor dispozitive din această rețea să acceseze acest folder.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.e295fe0e69": {
+    "defaultMessage": "Pachet DEB",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.fec5ce9934": {
+    "defaultMessage": "Acest folder include folderul personal și poate expune fișiere personale. Accesul prin LAN face folderul accesibil și altor dispozitive din această rețea.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.no.folder.selected.d987e0": {
+    "defaultMessage": "Niciun folder selectat",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.open.downloads.3e4ad2": {
+    "defaultMessage": "Deschidere descărcări",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.open.in.default.browser.d1f5a8": {
+    "defaultMessage": "Deschidere în browserul implicit",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.port.72e9a5": {
+    "defaultMessage": "Port",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.port.must.be.between.0.and.65535.e3ecee": {
+    "defaultMessage": "Portul trebuie să fie între 0 și 65535",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.quit.200.ok.686f8f": {
+    "defaultMessage": "Ieșire din 200 OK",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.restart.after.update": {
+    "defaultMessage": "200 OK va reporni la finalizarea instalării.",
+    "description": "Updater installation status."
+  },
+  "desktop.run.in.background.0db775": {
+    "defaultMessage": "Rulare în fundal",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.running.f4ccae": {
+    "defaultMessage": "În funcțiune",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.server.not.found.d7783f": {
+    "defaultMessage": "Serverul nu a fost găsit",
+    "description": "packages/ui/src/components/ServerPage.tsx"
+  },
+  "desktop.serving.options.ac430f": {
+    "defaultMessage": "Opțiuni de furnizare a fișierelor",
+    "description": "packages/ui/src/components/SettingsZone.tsx"
+  },
+  "desktop.share.this.folder.cdaecd": {
+    "defaultMessage": "Se partajează acest folder?",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.source.mit.32896a": {
+    "defaultMessage": "Cod sursă · MIT",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.spa.mode.4695bd": {
+    "defaultMessage": "Mod SPA",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.start.anyway.a330c2": {
+    "defaultMessage": "Pornire oricum",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.start.at.login.5952eb": {
+    "defaultMessage": "Pornire la conectare",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.start.web.server.9b82f9": {
+    "defaultMessage": "Pornire server web",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.starting.aeed4d": {
+    "defaultMessage": "În curs de pornire",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stop.the.server.to.change.this.setting.27acb7": {
+    "defaultMessage": "Pentru modificarea acestei setări, se oprește serverul",
+    "description": "packages/ui/src/components/LockedControl.tsx"
+  },
+  "desktop.stop.web.server.a00a97": {
+    "defaultMessage": "Oprire server web",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stopped.1a4f63": {
+    "defaultMessage": "Oprit",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stopping.a71ee1": {
+    "defaultMessage": "În curs de oprire",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.the.update.is.signed.and.ready.to.install.4abbcb": {
+    "defaultMessage": "Actualizarea este semnată și pregătită pentru instalare.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.these.controls.are.always.available.here.49809b": {
+    "defaultMessage": "Aceste comenzi sunt întotdeauna disponibile aici.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.update.failed.e58282": {
+    "defaultMessage": "Actualizarea a eșuat",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.updates.for.the.value0.stay.with.that.package.type.down.686fbe": {
+    "defaultMessage": "Actualizările pentru {value0} păstrează același tip de pachet. Pachetul corespunzător se descarcă de pe ok200.app.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.url.copied.0017bd": {
+    "defaultMessage": "URL copiat",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.view.the.mit.licensed.source.code.017168": {
+    "defaultMessage": "Vizualizare cod sursă sub licența MIT",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.web.server.1643cf": {
+    "defaultMessage": "Server web",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.you.re.up.to.date.8d757d": {
+    "defaultMessage": "Aplicația este la zi",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "extension..tag0.advanced.tag0.tag1.directory.behavior.access.and.305a04": {
+    "defaultMessage": "<tag0>Opțiuni avansate</tag0> <tag1>Comportamentul folderelor, acces și actualizări</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension..tag0.compare.chromeos.options.tag0.081566": {
+    "defaultMessage": "<tag0>Compararea opțiunilor pentru ChromeOS</tag0>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.feedback.support.tag0.tag1.source.mit.tag1.83ed4c": {
+    "defaultMessage": "<tag0>Feedback și asistență</tag0> <tag1>Cod sursă · MIT</tag1>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.google.play.tag0.60819d": {
+    "defaultMessage": "<tag0>Google Play</tag0>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.port.tag0.tag1.used.in.the.server.address.tag1.1ad047": {
+    "defaultMessage": "<tag0>Port</tag0> <tag1>Folosit în adresa serverului</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension..tag1.linux.component.v.value0.tag1.tag2.tag2.tag3.cont.193b14": {
+    "defaultMessage": "<tag1>Componenta Linux v{value0}</tag1> <tag2>•</tag2> <tag3>Portul 20080 al panoului de control rămâne privat</tag3>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.1.step.3ce601": {
+    "defaultMessage": "1 pas",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.200.ok.web.server.bf6c0d": {
+    "defaultMessage": "200 OK Web Server",
+    "description": "extension/src/ui/app.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.action.failed.f71340": {
+    "defaultMessage": "Acțiunea a eșuat.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.200.ok.to.communicate.with.your.chromebook.s.linu.76c804": {
+    "defaultMessage": "Se permite aplicației 200 OK să comunice cu mediul Linux al Chromebookului la adresa <tag0>penguin.linux.test</tag0>. Această adresă privată rămâne accesibilă doar pe Chromebook.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.chromeos.to.forward.this.port.to.your.network.5e770a": {
+    "defaultMessage": "Se permite sistemului ChromeOS să redirecționeze acest port către rețeaua locală",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.linux.access.38fc0e": {
+    "defaultMessage": "Permiterea accesului la Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.pages.on.other.origins.to.request.these.files.7a07f1": {
+    "defaultMessage": "Se permite paginilor cu alte origini să solicite aceste fișiere",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.app.launched.931931": {
+    "defaultMessage": "Aplicația a fost lansată!",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.automatic.linux.updates.04a336": {
+    "defaultMessage": "Actualizări automate ale componentei Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.available.on.local.network.f4bd53": {
+    "defaultMessage": "Disponibil în rețeaua locală",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.cancel.19766e": {
+    "defaultMessage": "Anulare",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.change.c0bf75": {
+    "defaultMessage": "Schimbare",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.check.again.fb7099": {
+    "defaultMessage": "Verificare din nou",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.check.now.2937cf": {
+    "defaultMessage": "Verificare acum",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.ec963f": {
+    "defaultMessage": "Se verifică…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.for.a.signed.update.8e194a": {
+    "defaultMessage": "Se caută o actualizare semnată…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.linux.access.2a9213": {
+    "defaultMessage": "Se verifică accesul la Linux…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.different.folder.1792fc": {
+    "defaultMessage": "Selectare alt folder",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.folder.5c71b8": {
+    "defaultMessage": "Selectare folder",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.folder.then.turn.the.server.on.3707c6": {
+    "defaultMessage": "Se selectează un folder, apoi se pornește serverul",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.tag0.share.with.linux.tag0.then.return.here.d837a8": {
+    "defaultMessage": "Se alege <tag0>Partajare cu Linux</tag0>, apoi se revine aici.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.the.implementation.you.prefer.chromeos.linux.avo.737672": {
+    "defaultMessage": "Se alege implementarea preferată. Varianta ChromeOS Linux nu necesită Google Play și oferă acestei extensii control complet asupra serverului; varianta Android se configurează cel mai rapid când Google Play este disponibil.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.choose.this.folder.0f3b23": {
+    "defaultMessage": "Selectarea acestui folder",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.chromebook.ipv4.address.94e487": {
+    "defaultMessage": "Adresa IPv4 a Chromebookului",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.chromeos.shows.this.address.just.above.the.port.forward.3c5208": {
+    "defaultMessage": "ChromeOS afișează această adresă chiar deasupra comenzilor pentru redirecționarea porturilor.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.7d9eb7": {
+    "defaultMessage": "Închidere",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.folder.picker.2db6d3": {
+    "defaultMessage": "Închidere selector de foldere",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.the.200.ok.controls.and.any.tag0.opening.200.ok.t.79941c": {
+    "defaultMessage": "Înainte de dezinstalare, se închid panoul de control 200 OK și orice fereastră <tag0>Se deschide 200 OK…</tag0>. ChromeOS elimină intrarea din lansator în mod asincron; înainte de oprirea mediului Linux, se așteaptă dispariția acesteia. Dacă rămâne o pictogramă de încărcare nefixată, aceasta nu trebuie redeschisă. Se repornește ChromeOS pentru a elimina pictograma temporară din raft.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.connect.to.linux.67d25d": {
+    "defaultMessage": "Conectare la Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.connecting.5f04ae": {
+    "defaultMessage": "Se conectează…",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.connecting.to.your.linux.controller.095b18": {
+    "defaultMessage": "Se conectează la panoul de control Linux…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.47bd29": {
+    "defaultMessage": "Conținut",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.port.838a49": {
+    "defaultMessage": "Port pentru conținut",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.server.port.9f26d1": {
+    "defaultMessage": "Portul serverului de conținut",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.connection.failed.f25b70": {
+    "defaultMessage": "Conectarea la panoul de control a eșuat.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.different": {
+    "defaultMessage": "Serviciul care primește conexiuni aparține unui alt panou de control 200 OK. Lansați din nou 200 OK Web Server.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.http": {
+    "defaultMessage": "Panoul de control a returnat HTTP {status}",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.port.20080.stays.on.this.chromebook.and.shou.270d00": {
+    "defaultMessage": "Portul 20080 al panoului de control rămâne accesibil doar pe acest Chromebook și nu trebuie redirecționat niciodată.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.protocol": {
+    "defaultMessage": "Această extensie necesită versiunea {required} a protocolului panoului de control Linux, dar componenta instalată a raportat versiunea {actual} a protocolului. Verificați dacă sunt disponibile actualizări pentru extensie și componenta Linux.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.unexpected": {
+    "defaultMessage": "Serviciul care primește conexiuni nu este panoul de control 200 OK așteptat.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.copied.8d525e": {
+    "defaultMessage": "Copiat",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.copy.e21f93": {
+    "defaultMessage": "Copiere",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.copy.server.url.3f8f6c": {
+    "defaultMessage": "Copiere URL server",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.create.folder.13a151": {
+    "defaultMessage": "Nu s-a putut crea folderul.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.open.folder.bcd29f": {
+    "defaultMessage": "Nu s-a putut deschide folderul.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.read.folder.locations.871ce6": {
+    "defaultMessage": "Nu s-au putut citi locațiile folderelor.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.select.folder.4293fe": {
+    "defaultMessage": "Nu s-a putut selecta folderul.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.couldn.t.connect.to.linux.6e31bc": {
+    "defaultMessage": "Nu s-a putut realiza conectarea la Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.create.475949": {
+    "defaultMessage": "Creare",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.cross.origin.requests.86c1f5": {
+    "defaultMessage": "Cereri între origini diferite",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.automatic.check.pending.acd44c": {
+    "defaultMessage": "La zi · se așteaptă verificarea automată",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.checked.value0.c23fb5": {
+    "defaultMessage": "La zi · verificat {value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.folder.1a5db5": {
+    "defaultMessage": "Folderul curent",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.desktop.app.detected.value0.6e9c58": {
+    "defaultMessage": "Aplicația desktop a fost detectată{value0}.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.detect.again.bf6732": {
+    "defaultMessage": "Detectare din nou",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detect.chromebook.address.again.198bd4": {
+    "defaultMessage": "Detectare din nou a adresei Chromebookului",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detected.automatically.from.chromeos.04302a": {
+    "defaultMessage": "Detectată automat din ChromeOS.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detecting.805eb9": {
+    "defaultMessage": "Se detectează…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detecting.this.chromebook.s.address.c5a43d": {
+    "defaultMessage": "Se detectează adresa acestui Chromebook…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.directory.listings.a49eb4": {
+    "defaultMessage": "Listele fișierelor din foldere",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.error.54a0e8": {
+    "defaultMessage": "Eroare",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.failed.to.launch.app.fba450": {
+    "defaultMessage": "Lansarea aplicației a eșuat",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.failed.to.open.android.app.73ba16": {
+    "defaultMessage": "Deschiderea aplicației Android a eșuat",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.failed.to.open.the.linux.setup.guide.a903f0": {
+    "defaultMessage": "Deschiderea ghidului de configurare Linux a eșuat",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.finish.chromeos.forwarding.39f117": {
+    "defaultMessage": "Finalizarea redirecționării în ChromeOS",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.folder.and.address.d090b6": {
+    "defaultMessage": "Folder și adresă",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.folder.locations.23edda": {
+    "defaultMessage": "Locațiile folderelor",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.get.the.desktop.app.39b7d5": {
+    "defaultMessage": "Descărcare aplicație desktop",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.if.the.launcher.cannot.wake.linux.open.terminal.once.wa.27611b": {
+    "defaultMessage": "Dacă lansatorul nu poate activa mediul Linux, se deschide Terminal, se așteaptă apariția promptului, se închide Terminal și se încearcă din nou.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.in.chromeos.settings.open.tag0.developers.linux.port.fo.49e854": {
+    "defaultMessage": "În setările ChromeOS, se deschide <tag0>Dezvoltatori → Linux → Redirecționarea porturilor</tag0> și se adaugă portul TCP {value1}.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.in.files.right.click.the.folder.and.choose.tag0.share.w.f5a943": {
+    "defaultMessage": "În aplicația Fișiere, se face clic dreapta pe folder și se alege <tag0>Partajare cu Linux</tag0>. Selectorul de foldere 200 OK detectează noul folder partajat la revenire.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.install.signed.linux.component.updates.while.stopped.6155e8": {
+    "defaultMessage": "Se instalează actualizările semnate ale componentei Linux când serverul este oprit",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.install.the.verified.200.ok.linux.component.tag0.curl.f.93b255": {
+    "defaultMessage": "Se instalează componenta Linux 200 OK verificată: <tag0>curl -fsSL https://ok200.app/install-crostini.sh | bash</tag0> <tag1>Programul de instalare verifică versiunea semnată, instalează componenta doar pentru contul de utilizator Linux curent și lasă serverul web oprit.</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.installing.and.reconnecting.eea5c0": {
+    "defaultMessage": "Se instalează și se reconectează…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.installing.the.signed.update.the.controller.will.briefl.ab10e2": {
+    "defaultMessage": "Se instalează actualizarea semnată. Panoul de control se va reconecta în scurt timp…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.keep.serving.when.controls.close.3afb77": {
+    "defaultMessage": "Furnizarea fișierelor continuă după închiderea panoului de control",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.launching.b1601d": {
+    "defaultMessage": "Se lansează…",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.linux.component.v.value0.23fcc0": {
+    "defaultMessage": "Componenta Linux v{value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.linux.connected.a353b4": {
+    "defaultMessage": "Conectat la Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.linux.setup.and.recovery.803759": {
+    "defaultMessage": "Configurare și recuperare Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.local.network.4fda69": {
+    "defaultMessage": "Rețea locală",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.my.files.985698": {
+    "defaultMessage": "Fișierele mele",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.native.disconnected": {
+    "defaultMessage": "Gazda nativă s-a deconectat",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.new.folder.cf28f4": {
+    "defaultMessage": "Folder nou",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.new.folder.name.489b9f": {
+    "defaultMessage": "Numele folderului nou",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.not.detected.9f4a10": {
+    "defaultMessage": "Nedetectată",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.not.shared.yet.bd0b09": {
+    "defaultMessage": "Încă nu este partajat",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.ok200.crostini.check.update.value0.ok200.crostini.updat.a13096": {
+    "defaultMessage": "ok200-crostini check-update{value0} ok200-crostini update{value1} ok200-crostini rollback{value2} ok200-crostini uninstall",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.200.ok.06ebd0": {
+    "defaultMessage": "Deschidere 200 OK",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.open.chromeos.settings.about.chromeos.developers.linux.b6dec2": {
+    "defaultMessage": "Se accesează Setări ChromeOS → Despre ChromeOS → Dezvoltatori → Mediu de dezvoltare Linux și se alege <tag0>Configurare</tag0>.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.ed077f": {
+    "defaultMessage": "Deschidere",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.installed.android.app.82b23f": {
+    "defaultMessage": "Deschidere aplicație Android instalată",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.open.server.520174": {
+    "defaultMessage": "Deschidere server",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.server.url.646642": {
+    "defaultMessage": "Deschidere URL server",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.tag0.200.ok.web.server.tag0.from.the.chromeos.laun.75dcac": {
+    "defaultMessage": "Se deschide <tag0>200 OK Web Server</tag0> din lansatorul ChromeOS.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.open.terminal.once.after.linux.finishes.installing.a18d10": {
+    "defaultMessage": "După finalizarea instalării Linux, se deschide Terminal o dată.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.the.chromeos.files.app.ce4973": {
+    "defaultMessage": "Se deschide aplicația Fișiere din ChromeOS.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.opening.android.app.708ae6": {
+    "defaultMessage": "Se deschide aplicația Android…",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.opening.folder.c3ab98": {
+    "defaultMessage": "Se deschide folderul…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.other.devices.4e027d": {
+    "defaultMessage": "Alte dispozitive",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.check.failed.144b96": {
+    "defaultMessage": "Verificarea permisiunii a eșuat.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.request.failed.4c774d": {
+    "defaultMessage": "Solicitarea permisiunii a eșuat.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.was.not.granted.setup.instructions.remain.av.41abf6": {
+    "defaultMessage": "Permisiunea nu a fost acordată. Instrucțiunile de configurare rămân disponibile, dar extensia nu poate controla mediul Linux.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.reach.the.server.from.another.device.7f1eab": {
+    "defaultMessage": "Accesarea serverului de pe alt dispozitiv",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.right.click.the.folder.you.want.to.serve.ed4508": {
+    "defaultMessage": "Se face clic dreapta pe folderul ale cărui fișiere urmează să fie furnizate prin server.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.running.f4ccae": {
+    "defaultMessage": "În funcțiune",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.see.supported.platforms.bc2221": {
+    "defaultMessage": "Vizualizare platforme acceptate",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.serve.any.folder.over.http.install.the.desktop.app.to.g.cbebff": {
+    "defaultMessage": "Fișierele din orice folder pot fi furnizate prin HTTP. Pentru a începe, se instalează aplicația desktop.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.serve.index.html.for.routes.that.do.not.match.a.file.07862d": {
+    "defaultMessage": "Se furnizează index.html pentru rutele care nu corespund unui fișier",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.server.action.failed.c2bc8c": {
+    "defaultMessage": "Acțiunea asupra serverului a eșuat.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.server.lifetime.b391f8": {
+    "defaultMessage": "Durata de funcționare a serverului",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.serving.continues.when.this.window.closes.b6048a": {
+    "defaultMessage": "Furnizarea fișierelor continuă după închiderea acestei ferestre",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.serving.stops.when.this.window.closes.49b856": {
+    "defaultMessage": "Furnizarea fișierelor se oprește la închiderea acestei ferestre",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.set.up.the.linux.version.8554b6": {
+    "defaultMessage": "Configurarea versiunii Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.setup.sharing.and.recovery.e978bc": {
+    "defaultMessage": "Configurare, partajare și recuperare",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.share.a.chromebook.folder.with.linux.e50ee9": {
+    "defaultMessage": "Partajarea unui folder de pe Chromebook cu Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.sharing.chromebook.folders.8bf65f": {
+    "defaultMessage": "Partajarea folderelor de pe Chromebook",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.show.an.index.when.a.folder.has.no.index.file.dd0caa": {
+    "defaultMessage": "Se afișează lista fișierelor când folderul nu conține un fișier index",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.single.page.app.fallback.f6dac9": {
+    "defaultMessage": "Revenire la index.html pentru aplicații cu o singură pagină",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.start.web.server.9b82f9": {
+    "defaultMessage": "Pornire server web",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.starting.aeed4d": {
+    "defaultMessage": "În curs de pornire",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.the.server.to.change.settings.fd75f3": {
+    "defaultMessage": "Pentru modificarea setărilor, se oprește serverul.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.to.make.changes.a30d16": {
+    "defaultMessage": "Oprire pentru modificări",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.web.server.a00a97": {
+    "defaultMessage": "Oprire server web",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stopped.1a4f63": {
+    "defaultMessage": "Oprit",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stopping.a71ee1": {
+    "defaultMessage": "În curs de oprire",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.successor.to.tag0.web.server.for.chrome.tag0.7ca3a6": {
+    "defaultMessage": "Succesorul aplicației <tag0>Web Server for Chrome</tag0>",
+    "description": "extension/src/ui/app.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.the.last.update.check.failed.c03ab6": {
+    "defaultMessage": "Ultima verificare a actualizărilor a eșuat.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.component.is.already.current.b8579d": {
+    "defaultMessage": "Componenta Linux este deja la zi.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.component.update.failed.426563": {
+    "defaultMessage": "Actualizarea componentei Linux a eșuat.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.control.session.expired.fbba79": {
+    "defaultMessage": "Sesiunea de control Linux a expirat.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.one.time.controller.claim.is.missing.launch.200.ok.f9593f": {
+    "defaultMessage": "Lipsește codul de autorizare de unică folosință al panoului de control. Se lansează din nou 200 OK Web Server.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.the.server.keeps.running.until.you.stop.it.or.linux.shu.c725a6": {
+    "defaultMessage": "Serverul continuă să funcționeze până la oprirea sa sau a mediului Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.server.stops.after.the.final.200.ok.control.window.e84d80": {
+    "defaultMessage": "Serverul se oprește după închiderea ultimei ferestre de control 200 OK",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.update.is.taking.longer.than.expected.launch.200.ok.449ff3": {
+    "defaultMessage": "Actualizarea durează mai mult decât era de așteptat. Se lansează din nou 200 OK Web Server sau se execută „ok200-crostini update” în Terminal.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.this.chrome.platform.does.not.have.a.supported.200.ok.l.154016": {
+    "defaultMessage": "Această platformă Chrome nu dispune de o metodă acceptată de lansare a aplicației 200 OK.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.this.chromebook.31f18d": {
+    "defaultMessage": "Acest Chromebook",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.this.folder.has.no.subfolders.7b6d8d": {
+    "defaultMessage": "Acest folder nu conține subfoldere.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.this.linux.controller.is.already.paired.but.this.extens.ed282f": {
+    "defaultMessage": "Acest panou de control Linux este deja asociat, dar extensia nu mai are tokenul său. Se execută „ok200-crostini reset-controller” în Terminal, apoi se lansează din nou 200 OK Web Server.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.try.again.d8b839": {
+    "defaultMessage": "Reîncercare",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.try.again.df0fe9": {
+    "defaultMessage": "Reîncercare",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.turn.on.tag0.available.on.local.network.tag0.then.add.t.571f67": {
+    "defaultMessage": "Se activează <tag0>Disponibil în rețeaua locală</tag0>, apoi se adaugă portul pentru conținut în Setări ChromeOS → Dezvoltatori → Linux → Redirecționarea porturilor. Se folosește adresa IPv4 Wi-Fi a Chromebookului. Portul 20080 al panoului de control nu trebuie redirecționat niciodată.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.uninstall.preserves.settings.and.never.deletes.a.served.d54c53": {
+    "defaultMessage": "Dezinstalarea păstrează setările și nu șterge niciodată un folder ale cărui fișiere sunt furnizate prin server. Se folosește <tag0>uninstall --purge</tag0> doar dacă trebuie eliminate și asocierea și setările panoului de control.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.failed.f1d764": {
+    "defaultMessage": "Actualizarea a eșuat.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.rollback.and.uninstall.2121a4": {
+    "defaultMessage": "Actualizare, revenire la versiunea anterioară și dezinstalare",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.to.v.value0.d7bb82": {
+    "defaultMessage": "Actualizare la v{value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.updated.to.linux.component.v.value0.the.web.server.rema.b21a35": {
+    "defaultMessage": "Componenta Linux a fost actualizată la v{value0}. Serverul web rămâne oprit.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.updating.stops.the.web.server.and.does.not.restart.it.a.8f22e4": {
+    "defaultMessage": "Actualizarea oprește serverul web și nu îl repornește automat. Se continuă?",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.url.copied.0017bd": {
+    "defaultMessage": "URL copiat",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.use.chromeos.linux.1c2722": {
+    "defaultMessage": "Utilizare ChromeOS Linux",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.v.value0.is.available.46d0d0": {
+    "defaultMessage": "v{value0} este disponibilă.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.wait.for.the.current.action.to.finish.a99bab": {
+    "defaultMessage": "Se așteaptă finalizarea acțiunii curente.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.wait.for.the.server.to.finish.value0.da806d": {
+    "defaultMessage": "{value0, select, starting {Se așteaptă finalizarea pornirii serverului.} stopping {Se așteaptă finalizarea opririi serverului.} other {Se așteaptă finalizarea acțiunii curente a serverului.}}",
+    "description": "Complete status sentence. value0 is a stable starting/stopping protocol enum; do not translate selector keys."
+  },
+  "extension.waiting.for.a.shared.folder.676047": {
+    "defaultMessage": "Se așteaptă un folder partajat…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.web.server.1643cf": {
+    "defaultMessage": "Server web",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.web.server.for.chromeos.linux.9d8ef3": {
+    "defaultMessage": "Server web pentru ChromeOS Linux",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.when.controls.close.8a761e": {
+    "defaultMessage": "La închiderea panoului de control",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "language.label": {
+    "defaultMessage": "Limbă",
+    "description": "App-local display language; does not change server settings."
+  },
+  "language.system": {
+    "defaultMessage": "Limba sistemului",
+    "description": "Follow OS or browser language preferences."
+  }
+}

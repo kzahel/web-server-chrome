@@ -36,6 +36,10 @@
       "catalog": "android/app/src/main/res/values-pt-rBR/strings.xml",
       "quantities": ["one", "many", "other"]
     },
+    "ro": {
+      "catalog": "android/app/src/main/res/values-ro/strings.xml",
+      "quantities": ["one", "few", "other"]
+    },
     "sv": {
       "catalog": "android/app/src/main/res/values-sv/strings.xml",
       "quantities": ["one", "other"]

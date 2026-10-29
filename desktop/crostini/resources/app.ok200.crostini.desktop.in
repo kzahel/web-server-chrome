@@ -31,3 +31,5 @@ GenericName[cs]=HTTP server
 Comment[cs]=Otevřít 200 OK Web Server pro Linux v ChromeOS
 GenericName[pl]=Serwer HTTP
 Comment[pl]=Otwórz 200 OK Web Server dla środowiska Linux w ChromeOS
+GenericName[ro]=Server web
+Comment[ro]=Deschidere 200 OK Web Server pentru Linux pe ChromeOS

@@ -9,3 +9,4 @@ sv
 da
 cs
 pl
+ro

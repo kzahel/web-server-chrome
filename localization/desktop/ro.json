@@ -1,0 +1,196 @@
+{
+  "locale": "ro",
+  "platform": "desktop",
+  "resources": {
+    "200_ok_could_not_open_1c0215": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "0a8981dba65800a6ade9c30a7f2d2c1433b1a05219456a585330190071071c8a",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "b355acc3ba1006a0c23cda41afd9a4fc6bbcdb7ba41770da038b6dd1fd063e13",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "about_200_ok_ba8aa9": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "1517775c46967a0e9fc40d244bf42c3e2d804ce88065430313a0206920d908fc",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "cdac8bfedff933ddc8b2755b5b070ec3676f4bea18dcdc3e8176c0418f7badec",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "check_for_updates_9ed79e": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "32100f43984e6730e337aceb46e38fc2adae1da8c71e627274acfb1feccbb08d",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "def71814990ffd2c51b4646bb0eb2bfbf21d1753d992384365c51335724cb012",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "choose_folder_to_serve_d488f4": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "cc34e43218d1ccf4d1b73f6db57b073c7d031b0d5a2b166b7b2b2d04c7f8a8fb",
+      "terminologyHash": "10575d87d862c95c84dcc4866f44fc52c49661ae3ff9c6e1cca76e396111bff7",
+      "translationHash": "a40cf7880c76b22357d33d31d6b5485e5b98c5aabb0ff1d89511696e9ca1a20d",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "close_7d9eb7": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "be1b5d37cb87ab8c8207890d04b031904dfc128295895d4b772bef7611c03749",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "5831a912eb34b59dbc391c769e5a1b8db1c132fc8dae886f089e2711b60970e6",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "hide_200_ok_981b92": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "23e8524b29ee2a252d6b976c7230a62686e25ff470c4fd95858e910498cbefad",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "af8a371a8fa81bb2bebee27fbad433089b5512ae782a6c8221fa8bf348e15904",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "hide_others_1753e2": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "ce286d7564dc4dd503993f4767f4855b2d619693847e5928bcc2fdbb84dfce80",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "c5d6d216bb41c9a97c146058ffb4ee0b20f71bd0bbc258470d728ca4eaaa9b26",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "launching_b1601d": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "8588356d60aeea14411c013b382137ab784e93c9c736591b69b6b5c82c5bed02",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "fa1656ca3ad0704020d363fc468d0254f313f0b1bb6e0977dd455686c43ea733",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "open_200_ok_web_server_for_chromeos_linux_7cbf15": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "dda7d5c1ee1afde02a2151cb4566e608c7567f700f9ad307e7c7a6052189a827",
+      "terminologyHash": "f091c7705f67b0c716d31026debf9c85ab44fb5340f473374a6926fae1080d4e",
+      "translationHash": "47e9626d87541db5e5bf408d2b0b9a673bfd74600aef78bddc93575f2a768cbe",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "quit_200_ok_686f8f": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "38c82a81eb67fb24941cda569ca839f60b6674c65974c924cdb9612f3aa45bb8",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "e7a4f5ca0057eee6c6f3ee4191e920dd868ac02b915d7153b39374156da150da",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "quit_b3eb37": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "e7b6a5dfc41e0f0d810880d614f1bb916da12c1acd1fa12fa776ef494c0ff835",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "e84b603470664dd8b769d4ec30c55d59b1b7217e9b8d389d9c8408d9b4bd8e2e",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "run_in_background_0db775": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "0c6fae168d65957bdd9da19b418f5f52dd1bdd37d67efee06363f0641fff91b9",
+      "terminologyHash": "4acad67f1d68a85434bd8711003b06ff4b4c0da6d25c5b54d55a2388e8c44323",
+      "translationHash": "c8512610403647aa80f17daa5f634f5f9352aafd9eb37938db5c85d6013147e3",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "settings_74a883": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "88d3a7f503f57d139a24992f0d20388b3ed5f0c272d02a151a6f80fed66a6afb",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "b19e82cffa726a224433471602baee6e3a96928e854535d6deebf388bb1815b2",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "show_all_e1c326": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "476c0889040c7fe6e9c51b50db0aa70ed9a704c92d5474182b10a77fad3c9ede",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "14049f880a838695e11faba4db6cbb810ee0c3e07ea5d352d3f95a946affaf31",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "show_app_ec462a": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "47e8854e27089bbee4e9314abc373fb790d1e9f783172204bc023a6cdc88e1fa",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "ea9319ccb04d6d9a78e63f44ecc62063af6613be8874630c81edcd269063c459",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "show_icon_in_menu_bar_0ad9f3": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "88b1ff2ba5351e8b8c87ddb23b45830e660cfa76fde94bf5c3f20eed2a4c330f",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "141f920112b2847a91991b0dcf06894b423e44bc892e18d42e2cf46c48a16e7b",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "show_icon_in_system_tray_25b481": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "a632e4b29f1b599058d9baf08b42f153bdb7d600e5d2553d64b0e968b0d629fa",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "3f4e1dae088dd759d4218728e470dc2e5d5c770be4739dbddf0a33dbb554f1fa",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "start_at_login_5952eb": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "14ec50172d51cb1a30eb303404e811c001e3534443bef290dcb422e7c9f4f4f7",
+      "terminologyHash": "0a0fdb65c12faf1f6df6a54fd643501e57b443a73c18df0b8027238dd1757d33",
+      "translationHash": "7aefe1d694a527eb5ffb569714cc812a3fda8ed4e3e6309042d57ed23c0c44aa",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "try_again_df0fe9": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "8bbabddc803bed15c0af710c91d645efa63ea3d5071665276c827855bcb5721d",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "fd2feba7faadb6acf630a5ae7d7e33475c638240bb44c314d9e6ee9c86642c2a",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "unknown_launch_error_3585c0": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "2c49ee9c6c497a3f8b472915e040f03554e9afbc9148c3d332589b7a1bf2ef55",
+      "terminologyHash": "ea1a6f741a91b1ddb3cecc8129a0b42645d53b38166eb35bf2e851a9138baaaf",
+      "translationHash": "50b78c0da5d7de064fe1c05e0fe2e337666428a17ab852aebb4d2da21e49ee9b",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    },
+    "web_server_fc0480": {
+      "origin": "independently authored translation",
+      "reviewState": "agent-reviewed",
+      "reviewer": "gpt-6.1-sol/01a1888d-e0ef-7cc3-b5ec-98b6e34deabf",
+      "sourceHash": "6c6aaa61e9c9b0d8269870f96cacd58b90a50c681fddb76c0a272a25ecd6d0c2",
+      "terminologyHash": "f091c7705f67b0c716d31026debf9c85ab44fb5340f473374a6926fae1080d4e",
+      "translationHash": "86521d5e11fbba70fa81d41d2abf136b06e733f420974b3dbd07ad947af02bc4",
+      "translator": "gpt-6.1-sol/01a1888d-43cc-7130-ac51-334bbf8f4125"
+    }
+  },
+  "schemaVersion": 1
+}

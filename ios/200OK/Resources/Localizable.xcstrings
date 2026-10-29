@@ -65,6 +65,12 @@
             "value": "Permitir solicitações de outras origens feitas pelo navegador."
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permite cereri din browser de la alte origini."
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -135,6 +141,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Permitir que outros dispositivos nesta rede Wi-Fi se conectem."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permite conectarea altor dispozitive din această rețea Wi-Fi."
           }
         },
         "sv": {
@@ -209,6 +221,12 @@
             "value": "Solicitação inválida"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerere incorectă"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -279,6 +297,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Alterar"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schimbare"
           }
         },
         "sv": {
@@ -353,6 +377,12 @@
             "value": "Escolher"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selectare"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -423,6 +453,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Escolha uma pasta antes de iniciar o servidor HTTP."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este necesară selectarea unui folder înainte de pornirea serverului."
           }
         },
         "sv": {
@@ -497,6 +533,12 @@
             "value": "Para habilitar o servidor HTTP, escolha a pasta que você quer disponibilizar."
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pentru activarea serverului, trebuie selectat un folder din care să fie furnizate fișierele."
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -567,6 +609,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copiar"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiere"
           }
         },
         "sv": {
@@ -641,6 +689,12 @@
             "value": "Lista de arquivos da pasta"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista fișierelor din folder"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -711,6 +765,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Concluído"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gata"
           }
         },
         "sv": {
@@ -785,6 +845,12 @@
             "value": "Digite 0 ou uma porta de 1 a 65535."
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valoarea trebuie să fie 0 sau un port între 1 și 65535."
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -855,6 +921,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Erro: %@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eroare: %@"
           }
         },
         "sv": {
@@ -929,6 +1001,12 @@
             "value": "Comentários e suporte"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feedback și asistență"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -999,6 +1077,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Acesso à rede local"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acces din rețeaua locală"
           }
         },
         "sv": {
@@ -1073,6 +1157,12 @@
             "value": "Solicitação HTTP malformada.\\n"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerere HTTP cu format incorect.\\n"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -1143,6 +1233,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nenhum endereço Wi-Fi está disponível no momento. O servidor HTTP permanece acessível apenas neste iPhone até que o Wi-Fi esteja pronto."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Momentan nu este disponibilă nicio adresă Wi-Fi. Serverul rămâne accesibil doar pe acest iPhone până când conexiunea Wi-Fi este disponibilă."
           }
         },
         "sv": {
@@ -1217,6 +1313,12 @@
             "value": "Nenhuma pasta selecionada"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niciun folder selectat"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -1287,6 +1389,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Porta"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Port"
           }
         },
         "sv": {
@@ -1361,6 +1469,12 @@
             "value": "Pré-visualizar"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previzualizare"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -1431,6 +1545,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Privacidade"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confidențialitate"
           }
         },
         "sv": {
@@ -1505,6 +1625,12 @@
             "value": "Acesso somente leitura pelo app Arquivos"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acces doar pentru citire prin Fișiere"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -1575,6 +1701,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tempo limite da solicitação esgotado"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timp de așteptare expirat"
           }
         },
         "sv": {
@@ -1649,6 +1781,12 @@
             "value": "O tempo limite da solicitação se esgotou.\\n"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timpul de așteptare al cererii a expirat.\\n"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -1719,6 +1857,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Em execução"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "În funcțiune"
           }
         },
         "sv": {
@@ -1793,6 +1937,12 @@
             "value": "URLs ativas"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adrese URL active"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -1863,6 +2013,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Disponibilizar o index.html da pasta raiz para rotas inexistentes sem extensão."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Furnizează fișierul index.html din folderul rădăcină pentru rutele inexistente fără extensii."
           }
         },
         "sv": {
@@ -1937,6 +2093,12 @@
             "value": "Servidor HTTP"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -2007,6 +2169,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Comportamento do servidor HTTP"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mod de furnizare a fișierelor"
           }
         },
         "sv": {
@@ -2081,6 +2249,12 @@
             "value": "Pasta disponibilizada"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folder pentru furnizarea fișierelor"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -2151,6 +2325,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Os arquivos ficam disponíveis enquanto o 200 OK está aberto em primeiro plano. O iOS para o servidor HTTP quando o app passa para segundo plano."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fișierele sunt furnizate cât timp aplicația 200 OK este deschisă în prim-plan. iOS oprește serverul când aplicația trece în fundal."
           }
         },
         "sv": {
@@ -2225,6 +2405,12 @@
             "value": "Compartilhar"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partajare"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -2295,6 +2481,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostrar uma lista de arquivos quando a pasta não tiver um index.html."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afișează lista fișierelor din folder când acesta nu conține index.html."
           }
         },
         "sv": {
@@ -2369,6 +2561,12 @@
             "value": "Fallback para apps de página única"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagină de rezervă pentru aplicații cu o singură pagină"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -2439,6 +2637,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Código-fonte · MIT"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cod sursă · MIT"
           }
         },
         "sv": {
@@ -2513,6 +2717,12 @@
             "value": "Iniciando…"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "În curs de pornire…"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -2583,6 +2793,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Inicia o servidor HTTP"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pornește serverul web"
           }
         },
         "sv": {
@@ -2657,6 +2873,12 @@
             "value": "Pare o servidor HTTP para alterar esta configuração."
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pentru modificarea acestei setări, serverul trebuie oprit."
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -2727,6 +2949,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Parado"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oprit"
           }
         },
         "sv": {
@@ -2801,6 +3029,12 @@
             "value": "Parando…"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "În curs de oprire…"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -2871,6 +3105,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Para o servidor HTTP"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oprește serverul web"
           }
         },
         "sv": {
@@ -2945,6 +3185,12 @@
             "value": "A permissão salva de acesso à pasta expirou. Escolha a pasta novamente."
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permisiunea salvată pentru accesul la folder a expirat. Este necesară selectarea din nou a folderului."
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -3015,6 +3261,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "A pasta selecionada está indisponível. Escolha a pasta novamente no app Arquivos."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folderul selectat nu este disponibil. Este necesară selectarea lui din nou în Fișiere."
           }
         },
         "sv": {
@@ -3089,6 +3341,12 @@
             "value": "O item selecionado não é uma pasta."
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elementul selectat nu este un folder."
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -3159,6 +3417,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Não foi possível iniciar o servidor HTTP. Verifique a pasta e a porta e tente novamente."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serverul nu a putut porni. Este necesară verificarea folderului și a portului înainte de o nouă încercare."
           }
         },
         "sv": {
@@ -3233,6 +3497,12 @@
             "value": "O servidor HTTP já está em execução."
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serverul este deja în funcțiune."
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -3303,6 +3573,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "O servidor HTTP está ocupado."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serverul este ocupat."
           }
         },
         "sv": {
@@ -3377,6 +3653,12 @@
             "value": "O servidor HTTP parou quando o 200 OK passou para segundo plano. Inicie o servidor novamente quando quiser."
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serverul s-a oprit când 200 OK a trecut în fundal. Îl puteți reporni când doriți."
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -3447,6 +3729,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Este iPhone"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acest iPhone"
           }
         },
         "sv": {
@@ -3521,6 +3809,12 @@
             "value": "Use 0 para escolher uma porta disponível"
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valoarea 0 selectează un port disponibil"
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",
@@ -3591,6 +3885,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Servidor HTTP"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server web"
           }
         },
         "sv": {

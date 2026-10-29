@@ -86,7 +86,8 @@
       "sv",
       "da",
       "cs",
-      "pl"
+      "pl",
+      "ro"
     ],
     "desktop": [
       "en",
@@ -99,7 +100,8 @@
       "sv",
       "da",
       "cs",
-      "pl"
+      "pl",
+      "ro"
     ],
     "extension": [
       "en",
@@ -112,7 +114,8 @@
       "sv",
       "da",
       "cs",
-      "pl"
+      "pl",
+      "ro"
     ],
     "ios": [
       "en",
@@ -125,9 +128,23 @@
       "sv",
       "da",
       "cs",
-      "pl"
+      "pl",
+      "ro"
     ],
-    "web": ["en", "de", "fr", "es", "it", "pt-BR", "nl", "sv", "da", "cs", "pl"]
+    "web": [
+      "en",
+      "de",
+      "fr",
+      "es",
+      "it",
+      "pt-BR",
+      "nl",
+      "sv",
+      "da",
+      "cs",
+      "pl",
+      "ro"
+    ]
   },
   "testLocales": [
     {

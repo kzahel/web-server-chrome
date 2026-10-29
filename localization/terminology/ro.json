@@ -1,0 +1,62 @@
+{
+  "locale": "ro",
+  "register": "Use natural Romanian with diacritics, concise conventional action labels and impersonal instructions; use consistent polite wording when direct address is necessary. Preserve 200 OK, URLs, paths, index.html, HTTP, CORS, SPA, IPv4/IPv6 and code/port examples. Inflect terminology naturally. Never imply HTTPS, uploads, public-internet access or indefinite iOS background serving. Distinguish launcher/controller and the HTTP server.",
+  "schemaVersion": 1,
+  "terms": {
+    "background": {
+      "meaning": "Android/desktop policy differs; iOS stops on background.",
+      "preferred": "fundal",
+      "sourceTerms": ["background"]
+    },
+    "choose": {
+      "meaning": "Select and authorize a folder.",
+      "preferred": "alegere / selectare",
+      "sourceTerms": ["choose", "select"]
+    },
+    "folder": {
+      "meaning": "A user-selected serving folder, not an arbitrary system directory.",
+      "preferred": "folder / folder rădăcină",
+      "sourceTerms": ["folder", "directory", "root"]
+    },
+    "lan": {
+      "meaning": "Access on the local network does not imply public internet access.",
+      "preferred": "rețea locală / LAN / Wi-Fi",
+      "sourceTerms": ["local network", "LAN", "Wi-Fi"]
+    },
+    "launcher": {
+      "meaning": "Browser surface controls a separately installed native server.",
+      "preferred": "lansator / panou de control",
+      "sourceTerms": ["launcher", "controller"]
+    },
+    "listing": {
+      "meaning": "List files when no index.html exists, not upload permission.",
+      "preferred": "lista fișierelor din folder",
+      "sourceTerms": ["directory listing", "file list"]
+    },
+    "port": {
+      "meaning": "Numeric port; 0 selects an available port.",
+      "preferred": "port",
+      "sourceTerms": ["port"]
+    },
+    "readonly": {
+      "meaning": "Serving does not grant file modification.",
+      "preferred": "doar pentru citire",
+      "sourceTerms": ["read-only"]
+    },
+    "server": {
+      "meaning": "The native app serves files; the extension launches or controls it.",
+      "preferred": "server HTTP / furnizare de fișiere",
+      "sourceTerms": ["server", "serving"]
+    },
+    "start": {
+      "meaning": "Explicitly start the listener; opening a launcher is distinct.",
+      "preferred": "pornire / în curs de pornire",
+      "sourceTerms": ["start", "starting"]
+    },
+    "stop": {
+      "meaning": "Stops serving, retaining the selected folder and settings.",
+      "preferred": "oprire / oprit / în curs de oprire",
+      "sourceTerms": ["stop", "stopped", "stopping"]
+    }
+  }
+}

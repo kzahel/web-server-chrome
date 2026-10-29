@@ -65,6 +65,12 @@
             "value": "O 200 OK disponibiliza a pasta que você escolher para dispositivos na sua rede local enquanto este app estiver aberto em primeiro plano."
           }
         },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK oferă dispozitivelor din rețeaua locală acces la fișierele din folderul selectat cât timp aplicația este deschisă în prim-plan."
+          }
+        },
         "sv": {
           "stringUnit": {
             "state": "translated",

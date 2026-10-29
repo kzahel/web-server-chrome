@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "__MSG_app_name__",
   "short_name": "200 OK",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "__MSG_app_description__",
   "permissions": ["nativeMessaging"],
   "optional_host_permissions": ["http://penguin.linux.test/*"],

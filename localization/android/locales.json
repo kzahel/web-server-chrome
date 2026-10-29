@@ -1,5 +1,9 @@
 {
   "locales": {
+    "cs": {
+      "catalog": "android/app/src/main/res/values-cs/strings.xml",
+      "quantities": ["one", "few", "many", "other"]
+    },
     "da": {
       "catalog": "android/app/src/main/res/values-da/strings.xml",
       "quantities": ["one", "other"]

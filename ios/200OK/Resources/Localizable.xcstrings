@@ -5,6 +5,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Povolit požadavky prohlížeče z jiných zdrojů (CORS)."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -65,6 +71,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Povolit připojení dalším zařízením v této síti Wi-Fi."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -125,6 +137,12 @@
       "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chybný požadavek"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -185,6 +203,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Změnit"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -245,6 +269,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -305,6 +335,12 @@
       "comment": "200 OK product copy: Storage/SecurityScopedRoot.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Před spuštěním serveru vyberte složku."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -365,6 +401,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chcete-li server spustit, vyberte složku, jejíž obsah bude poskytovat."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -425,6 +467,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopírovat"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -485,6 +533,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seznam souborů ve složce"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -545,6 +599,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hotovo"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -605,6 +665,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadejte 0 nebo port v rozsahu 1 až 65535."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -665,6 +731,12 @@
       "comment": "Controller failure with a localized or unknown diagnostic. Preserve %@.",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chyba: %@"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -725,6 +797,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zpětná vazba a podpora"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -785,6 +863,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přístup z místní sítě"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -845,6 +929,12 @@
       "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chybný formát požadavku HTTP.\\n"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -905,6 +995,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Momentálně není k dispozici adresa Wi-Fi. Dokud nebude Wi-Fi připravena, bude server dostupný pouze na tomto iPhonu."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -965,6 +1061,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Není vybrána žádná složka"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1025,6 +1127,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Port"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1085,6 +1193,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Náhled"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1145,6 +1259,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soukromí"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1205,6 +1325,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přístup pouze pro čtení přes aplikaci Soubory"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1265,6 +1391,12 @@
       "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vypršení časového limitu požadavku"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1325,6 +1457,12 @@
       "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vypršel časový limit požadavku.\\n"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1385,6 +1523,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spuštěno"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1445,6 +1589,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adresy URL spuštěného serveru"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1505,6 +1655,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro neexistující cesty bez přípony poskytovat index.html z kořenové složky."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1565,6 +1721,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP server"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1625,6 +1787,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nastavení poskytování souborů"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1685,6 +1853,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poskytovaná složka"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1745,6 +1919,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poskytování souborů funguje, jen když je 200 OK v popředí. iOS zastaví server při přechodu aplikace na pozadí."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1805,6 +1985,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdílet"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1865,6 +2051,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazovat seznam souborů, pokud složka neobsahuje index.html."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1925,6 +2117,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Náhradní stránka pro jednostránkové aplikace"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -1985,6 +2183,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zdrojový kód · MIT"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2045,6 +2249,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spouštění…"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2105,6 +2315,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spustí webový server"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2165,6 +2381,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chcete-li změnit toto nastavení, zastavte server."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2225,6 +2447,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zastaveno"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2285,6 +2513,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zastavování…"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2345,6 +2579,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zastaví webový server"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2405,6 +2645,12 @@
       "comment": "200 OK product copy: Storage/SecurityScopedRoot.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Platnost uloženého oprávnění ke složce vypršela. Vyberte složku znovu."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2465,6 +2711,12 @@
       "comment": "200 OK product copy: Storage/SecurityScopedRoot.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybraná složka není dostupná. Vyberte ji znovu v aplikaci Soubory."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2525,6 +2777,12 @@
       "comment": "200 OK product copy: Storage/SecurityScopedRoot.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybraná položka není složka."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2585,6 +2843,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server se nepodařilo spustit. Zkontrolujte složku a port a zkuste to znovu."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2645,6 +2909,12 @@
       "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server už je spuštěný."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2705,6 +2975,12 @@
       "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server je zaneprázdněný."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2765,6 +3041,12 @@
       "comment": "200 OK product copy: IOSServerController.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server se zastavil při přechodu aplikace 200 OK na pozadí. Až budete chtít pokračovat, znovu ho spusťte."
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2825,6 +3107,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento iPhone"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2885,6 +3173,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro automatický výběr volného portu zadejte 0"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",
@@ -2945,6 +3239,12 @@
       "comment": "200 OK product copy: ServerScreen.swift",
       "extractionState": "manual",
       "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Webový server"
+          }
+        },
         "da": {
           "stringUnit": {
             "state": "translated",

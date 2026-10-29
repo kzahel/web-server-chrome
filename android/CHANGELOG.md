@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.2.5]
+
 - Add independently reviewed offline translations for seventeen more languages
   (nineteen total), with native app/notification language selection.
 

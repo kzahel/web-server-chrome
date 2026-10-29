@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.1.10]
+
 - Add independently reviewed translations for seventeen more languages
   (nineteen total) in the popup, ChromeOS Linux controls and package metadata.
 

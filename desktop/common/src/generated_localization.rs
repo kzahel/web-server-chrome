@@ -15,4 +15,5 @@ const CATALOGS: &[(&str, &str)] = &[
     ("ro", include_str!("../../../localization/catalogs/desktop/ro.json")),
     ("ru", include_str!("../../../localization/catalogs/desktop/ru.json")),
     ("uk", include_str!("../../../localization/catalogs/desktop/uk.json")),
+    ("tr", include_str!("../../../localization/catalogs/desktop/tr.json")),
 ];

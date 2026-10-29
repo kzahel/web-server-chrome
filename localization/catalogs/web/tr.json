@@ -1,0 +1,1022 @@
+{
+  "desktop..path.to.directory.ae256f": {
+    "defaultMessage": "/path/to/directory",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.0.automatic.4c2328": {
+    "defaultMessage": "0 = otomatik",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.200.ok.value0.is.available.31c835": {
+    "defaultMessage": "200 OK {value0} kullanılabilir",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.200.ok.value0.is.the.newest.version.98822f": {
+    "defaultMessage": "200 OK{value0} en yeni sürümdür.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.200.ok.web.server.bf6c0d": {
+    "defaultMessage": "200 OK Web Server",
+    "description": "packages/ui/src/components/Layout.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "desktop.app.settings.d43fb8": {
+    "defaultMessage": "Uygulama ayarları",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.cancel.19766e": {
+    "defaultMessage": "İptal edin",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.change.a6b470": {
+    "defaultMessage": "Değiştirin…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.check.again.fb7099": {
+    "defaultMessage": "Yeniden kontrol edin",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.check.for.updates.9ed79e": {
+    "defaultMessage": "Güncellemeleri kontrol edin",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.checking.for.updates.497a19": {
+    "defaultMessage": "Güncellemeler kontrol ediliyor…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.choose.7ca416": {
+    "defaultMessage": "Seçin…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.choose.a.folder.to.start.the.server.337adc": {
+    "defaultMessage": "Sunucuyu başlatmak için bir klasör seçin",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.choosing.fe2076": {
+    "defaultMessage": "Seçiliyor…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.close.app.settings.4168da": {
+    "defaultMessage": "Uygulama ayarlarını kapatın",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.contacting.the.200.ok.update.server.663342": {
+    "defaultMessage": "200 OK güncelleme sunucusuna bağlanılıyor.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.copied.8d525e": {
+    "defaultMessage": "Kopyalandı",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.copy.url.b26d10": {
+    "defaultMessage": "URL’yi kopyalayın",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.could.not.open.value0.value1.fe47fa": {
+    "defaultMessage": "{value0} açılamadı: {value1}",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.desktop.9bd88f": {
+    "defaultMessage": "Masaüstü",
+    "description": "packages/ui/src/components/Layout.tsx"
+  },
+  "desktop.directory.listing.bc706d": {
+    "defaultMessage": "Klasördeki dosyaların listesi",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.dismiss.48845b": {
+    "defaultMessage": "Kapatın",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.dismiss.update.notice.6a124b": {
+    "defaultMessage": "Güncelleme bildirimini kapatın",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.downloading.200.ok.value0.19b49e": {
+    "defaultMessage": "200 OK {value0} indiriliyor…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.error.54a0e8": {
+    "defaultMessage": "Hata",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.failed.to.open.external.link.29fcf0": {
+    "defaultMessage": "Harici bağlantı açılamadı:",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.feedback.suggestions.and.support.d1acad": {
+    "defaultMessage": "Geri bildirim, öneriler ve destek",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.feedback.support.2d5632": {
+    "defaultMessage": "Geri bildirim ve destek",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.folder.74ccd4": {
+    "defaultMessage": "Klasör",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.install.restart.223cb1": {
+    "defaultMessage": "Yükleyin ve yeniden başlatın",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.install.updates.manually.60762c": {
+    "defaultMessage": "Güncellemeleri elle yükleyin",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.installing.update.29e74e": {
+    "defaultMessage": "Güncelleme yükleniyor…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.keep.a.shortcut.to.200.ok.in.the.system.area.6f0b61": {
+    "defaultMessage": "Sistem alanında 200 OK kısayolu bulundurun.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.keep.running.when.the.main.window.is.closed.c46cc8": {
+    "defaultMessage": "Ana pencere kapatıldığında uygulama çalışmaya devam etsin.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.lan.access.708f4a": {
+    "defaultMessage": "Yerel ağ erişimi",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.later.73b6e4": {
+    "defaultMessage": "Daha sonra",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.launch.200.ok.when.you.sign.in.b9ed74": {
+    "defaultMessage": "Oturum açtığınızda 200 OK uygulamasını başlatın.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.loading.47d2a5": {
+    "defaultMessage": "Yükleniyor...",
+    "description": "packages/ui/src/components/ServerPage.tsx"
+  },
+  "desktop.loading.settings.e71a13": {
+    "defaultMessage": "Ayarlar yükleniyor…",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.locked.a424e3": {
+    "defaultMessage": "Kilitli",
+    "description": "packages/ui/src/components/SettingsZone.tsx"
+  },
+  "desktop.native.0ad9f346a7": {
+    "defaultMessage": "Menü çubuğunda simge gösterin",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.0fdab34df1": {
+    "defaultMessage": "Bu klasör, ev klasörünüzü içerir ve kişisel dosyalarınızı erişime açabilir.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.147cb2aad4": {
+    "defaultMessage": "Windows yükleyicisi",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.25b4818674": {
+    "defaultMessage": "Sistem tepsisinde simge gösterin",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3318275f29": {
+    "defaultMessage": "Windows MSI",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3a63e9846a": {
+    "defaultMessage": "RPM paketi",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3e7a639282": {
+    "defaultMessage": "Bu işlem, kişisel ve gizli dosyalar dahil ev klasörünüzün tamamını paylaşır. Yerel ağ erişimi, bu klasörü ağdaki diğer cihazların erişimine de açar.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.45e6d69dbe": {
+    "defaultMessage": "macOS uygulaması",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.5021888e79": {
+    "defaultMessage": "Sunucuyu başlatmadan önce bir klasör seçin",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.589cb3c9a9": {
+    "defaultMessage": "bu kurulum",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.65e51a8997": {
+    "defaultMessage": "Yapılandırmasını değiştirmeden önce sunucuyu durdurun",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.7ee24bab5c": {
+    "defaultMessage": "Uygulama bu klasörü ev klasörünüzle karşılaştıramadı. Paylaşılmasının güvenli olduğunu onaylayın.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.879a60672f": {
+    "defaultMessage": "Bu işlem, kişisel ve gizli dosyalar dâhil ev klasörünüzün tamamını paylaşır.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.93a5653143": {
+    "defaultMessage": "Uygulama, bu klasörü ev klasörünüzle karşılaştıramadı. Paylaşılmasının güvenli olduğunu doğrulayın. Yerel ağ erişimi, bu klasörü ağdaki diğer cihazların erişimine de açar.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.9e62e3b15f": {
+    "defaultMessage": "Bu klasör, ev klasörünüzün dışında. Paylaşılmasının güvenli olduğunu doğrulayın. Yerel ağ erişimi, bu klasörü ağdaki diğer cihazların erişimine de açar.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.ac5419d69a": {
+    "defaultMessage": "Seçilen klasör sunulamıyor",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.bf8670ceff": {
+    "defaultMessage": "Bu klasör, ev klasörünüzün dışında. Paylaşılmasının güvenli olduğunu onaylayın.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.e119a30af0": {
+    "defaultMessage": "Yerel ağ erişimi, bu klasörü bu ağdaki diğer cihazların erişimine açar.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.e295fe0e69": {
+    "defaultMessage": "DEB paketi",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.fec5ce9934": {
+    "defaultMessage": "Bu klasör, ev klasörünüzü içerir ve kişisel dosyalarınızı erişime açabilir. Yerel ağ erişimi, bu klasörü ağdaki diğer cihazların erişimine de açar.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.no.folder.selected.d987e0": {
+    "defaultMessage": "Klasör seçilmedi",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.open.downloads.3e4ad2": {
+    "defaultMessage": "İndirme sayfasını açın",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.open.in.default.browser.d1f5a8": {
+    "defaultMessage": "Varsayılan tarayıcıda açın",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.port.72e9a5": {
+    "defaultMessage": "Bağlantı noktası",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.port.must.be.between.0.and.65535.e3ecee": {
+    "defaultMessage": "Bağlantı noktası 0 ile 65535 arasında olmalıdır",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.quit.200.ok.686f8f": {
+    "defaultMessage": "200 OK uygulamasından çıkın",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.restart.after.update": {
+    "defaultMessage": "Kurulum tamamlandığında 200 OK yeniden başlatılacak.",
+    "description": "Updater installation status."
+  },
+  "desktop.run.in.background.0db775": {
+    "defaultMessage": "Arka planda çalıştırın",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.running.f4ccae": {
+    "defaultMessage": "Çalışıyor",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.server.not.found.d7783f": {
+    "defaultMessage": "Sunucu bulunamadı",
+    "description": "packages/ui/src/components/ServerPage.tsx"
+  },
+  "desktop.serving.options.ac430f": {
+    "defaultMessage": "Dosya sunma seçenekleri",
+    "description": "packages/ui/src/components/SettingsZone.tsx"
+  },
+  "desktop.share.this.folder.cdaecd": {
+    "defaultMessage": "Bu klasör paylaşılsın mı?",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.source.mit.32896a": {
+    "defaultMessage": "Kaynak kodu · MIT",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.spa.mode.4695bd": {
+    "defaultMessage": "SPA modu",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.start.anyway.a330c2": {
+    "defaultMessage": "Yine de başlatın",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.start.at.login.5952eb": {
+    "defaultMessage": "Oturum açıldığında başlatın",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.start.web.server.9b82f9": {
+    "defaultMessage": "HTTP sunucusunu başlatın",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.starting.aeed4d": {
+    "defaultMessage": "Başlatılıyor",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stop.the.server.to.change.this.setting.27acb7": {
+    "defaultMessage": "Bu ayarı değiştirmek için sunucuyu durdurun",
+    "description": "packages/ui/src/components/LockedControl.tsx"
+  },
+  "desktop.stop.web.server.a00a97": {
+    "defaultMessage": "HTTP sunucusunu durdurun",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stopped.1a4f63": {
+    "defaultMessage": "Durduruldu",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stopping.a71ee1": {
+    "defaultMessage": "Durduruluyor",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.the.update.is.signed.and.ready.to.install.4abbcb": {
+    "defaultMessage": "Güncelleme imzalandı ve yüklenmeye hazır.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.these.controls.are.always.available.here.49809b": {
+    "defaultMessage": "Bu denetimler burada her zaman kullanılabilir.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.update.failed.e58282": {
+    "defaultMessage": "Güncelleme başarısız oldu",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.updates.for.the.value0.stay.with.that.package.type.down.686fbe": {
+    "defaultMessage": "{value0} güncellemelerinde aynı paket türü kullanılır. Uygun paketi ok200.app adresinden indirin.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.url.copied.0017bd": {
+    "defaultMessage": "URL kopyalandı",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.view.the.mit.licensed.source.code.017168": {
+    "defaultMessage": "MIT lisanslı kaynak kodunu görüntüleyin",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.web.server.1643cf": {
+    "defaultMessage": "HTTP sunucusu",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.you.re.up.to.date.8d757d": {
+    "defaultMessage": "Güncel sürümü kullanıyorsunuz",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "extension..tag0.advanced.tag0.tag1.directory.behavior.access.and.305a04": {
+    "defaultMessage": "<tag0>Gelişmiş</tag0> <tag1>Klasör davranışı, erişim ve güncellemeler</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension..tag0.compare.chromeos.options.tag0.081566": {
+    "defaultMessage": "<tag0>ChromeOS seçeneklerini karşılaştırın</tag0>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.feedback.support.tag0.tag1.source.mit.tag1.83ed4c": {
+    "defaultMessage": "<tag0>Geri bildirim ve destek</tag0> <tag1>Kaynak kodu · MIT</tag1>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.google.play.tag0.60819d": {
+    "defaultMessage": "<tag0>Google Play</tag0>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.port.tag0.tag1.used.in.the.server.address.tag1.1ad047": {
+    "defaultMessage": "<tag0>Bağlantı noktası</tag0> <tag1>Sunucu adresinde kullanılır</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension..tag1.linux.component.v.value0.tag1.tag2.tag2.tag3.cont.193b14": {
+    "defaultMessage": "<tag1>Linux bileşeni v{value0}</tag1> <tag2>•</tag2> <tag3>Denetim arayüzünün 20080 bağlantı noktası dış erişime kapalı kalır</tag3>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.1.step.3ce601": {
+    "defaultMessage": "1 adım",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.200.ok.web.server.bf6c0d": {
+    "defaultMessage": "200 OK Web Server",
+    "description": "extension/src/ui/app.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.action.failed.f71340": {
+    "defaultMessage": "İşlem başarısız oldu.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.200.ok.to.communicate.with.your.chromebook.s.linu.76c804": {
+    "defaultMessage": "200 OK uygulamasının <tag0>penguin.linux.test</tag0> adresindeki Chromebook Linux ortamınızla iletişim kurmasına izin verin. Bu özel adres yalnızca Chromebook cihazınızda kullanılır.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.chromeos.to.forward.this.port.to.your.network.5e770a": {
+    "defaultMessage": "ChromeOS sisteminin bu bağlantı noktasını ağınıza yönlendirmesine izin verin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.linux.access.38fc0e": {
+    "defaultMessage": "Linux erişimine izin verin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.pages.on.other.origins.to.request.these.files.7a07f1": {
+    "defaultMessage": "Farklı kaynaklardaki sayfaların bu dosyaları istemesine izin verin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.app.launched.931931": {
+    "defaultMessage": "Uygulama başlatıldı!",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.automatic.linux.updates.04a336": {
+    "defaultMessage": "Otomatik Linux güncellemeleri",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.available.on.local.network.f4bd53": {
+    "defaultMessage": "Yerel ağda erişilebilir",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.cancel.19766e": {
+    "defaultMessage": "İptal edin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.change.c0bf75": {
+    "defaultMessage": "Değiştirin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.check.again.fb7099": {
+    "defaultMessage": "Yeniden kontrol edin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.check.now.2937cf": {
+    "defaultMessage": "Şimdi kontrol edin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.ec963f": {
+    "defaultMessage": "Kontrol ediliyor…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.for.a.signed.update.8e194a": {
+    "defaultMessage": "İmzalı güncelleme olup olmadığı kontrol ediliyor…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.linux.access.2a9213": {
+    "defaultMessage": "Linux erişimi kontrol ediliyor…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.different.folder.1792fc": {
+    "defaultMessage": "Farklı bir klasör seçin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.folder.5c71b8": {
+    "defaultMessage": "Bir klasör seçin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.folder.then.turn.the.server.on.3707c6": {
+    "defaultMessage": "Bir klasör seçin, ardından sunucuyu başlatın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.tag0.share.with.linux.tag0.then.return.here.d837a8": {
+    "defaultMessage": "<tag0>Linux ile paylaş</tag0> seçeneğini seçin, ardından buraya dönün.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.the.implementation.you.prefer.chromeos.linux.avo.737672": {
+    "defaultMessage": "Tercih ettiğiniz uygulamayı seçin. ChromeOS Linux, Google Play gerektirmez ve bu uzantıya sunucuyu tamamen denetleme olanağı sağlar; Play kullanılabiliyorsa Android en hızlı kurulum seçeneğidir.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.choose.this.folder.0f3b23": {
+    "defaultMessage": "Bu klasörü seçin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.chromebook.ipv4.address.94e487": {
+    "defaultMessage": "Chromebook IPv4 adresi",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.chromeos.shows.this.address.just.above.the.port.forward.3c5208": {
+    "defaultMessage": "ChromeOS, bu adresi Bağlantı noktası yönlendirme denetimlerinin hemen üzerinde gösterir.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.7d9eb7": {
+    "defaultMessage": "Kapatın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.folder.picker.2db6d3": {
+    "defaultMessage": "Klasör seçiciyi kapatın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.the.200.ok.controls.and.any.tag0.opening.200.ok.t.79941c": {
+    "defaultMessage": "Kaldırmadan önce 200 OK denetim pencerelerini ve açık olan tüm <tag0>200 OK açılıyor…</tag0> pencerelerini kapatın. ChromeOS, Başlatıcı girdisini eşzamansız olarak kaldırır; Linux ortamını durdurmadan önce girdinin kaybolmasını bekleyin. Sabitlenmemiş bir yükleme simgesi kalırsa yeniden açmayın; raftaki bu yer tutucuyu temizlemek için ChromeOS sistemini yeniden başlatın.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.connect.to.linux.67d25d": {
+    "defaultMessage": "Linux ortamına bağlanın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.connecting.5f04ae": {
+    "defaultMessage": "Bağlanılıyor...",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.connecting.to.your.linux.controller.095b18": {
+    "defaultMessage": "Linux denetim arayüzünüze bağlanılıyor…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.47bd29": {
+    "defaultMessage": "İçerik",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.port.838a49": {
+    "defaultMessage": "İçerik bağlantı noktası",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.server.port.9f26d1": {
+    "defaultMessage": "İçerik sunucusunun bağlantı noktası",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.connection.failed.f25b70": {
+    "defaultMessage": "Denetim arayüzüne bağlantı kurulamadı.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.different": {
+    "defaultMessage": "Dinleyici, farklı bir 200 OK denetim arayüzüne ait. 200 OK Web Server uygulamasını yeniden açın.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.http": {
+    "defaultMessage": "Denetim arayüzü HTTP {status} döndürdü",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.port.20080.stays.on.this.chromebook.and.shou.270d00": {
+    "defaultMessage": "Denetim arayüzünün 20080 bağlantı noktası yalnızca bu Chromebook üzerinde kullanılır ve asla yönlendirilmemelidir.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.protocol": {
+    "defaultMessage": "Bu uzantının gerektirdiği Linux denetim arayüzü protokol sürümü {required}, ancak yüklü bileşenin bildirdiği sürüm {actual}. Uzantı ve Linux bileşeni için güncellemeleri kontrol edin.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.unexpected": {
+    "defaultMessage": "Dinleyici, beklenen 200 OK denetim arayüzü değil.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.copied.8d525e": {
+    "defaultMessage": "Kopyalandı",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.copy.e21f93": {
+    "defaultMessage": "Kopyalayın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.copy.server.url.3f8f6c": {
+    "defaultMessage": "Sunucu URL’sini kopyalayın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.create.folder.13a151": {
+    "defaultMessage": "Klasör oluşturulamadı.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.open.folder.bcd29f": {
+    "defaultMessage": "Klasör açılamadı.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.read.folder.locations.871ce6": {
+    "defaultMessage": "Klasör konumları okunamadı.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.select.folder.4293fe": {
+    "defaultMessage": "Klasör seçilemedi.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.couldn.t.connect.to.linux.6e31bc": {
+    "defaultMessage": "Linux ortamına bağlanılamadı",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.create.475949": {
+    "defaultMessage": "Oluşturun",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.cross.origin.requests.86c1f5": {
+    "defaultMessage": "Kaynaklar arası istekler",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.automatic.check.pending.acd44c": {
+    "defaultMessage": "Güncel · otomatik kontrol bekleniyor",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.checked.value0.c23fb5": {
+    "defaultMessage": "Güncel · kontrol zamanı: {value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.folder.1a5db5": {
+    "defaultMessage": "Geçerli klasör",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.desktop.app.detected.value0.6e9c58": {
+    "defaultMessage": "Masaüstü uygulaması algılandı{value0}.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.detect.again.bf6732": {
+    "defaultMessage": "Yeniden algılayın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detect.chromebook.address.again.198bd4": {
+    "defaultMessage": "Chromebook adresini yeniden algılayın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detected.automatically.from.chromeos.04302a": {
+    "defaultMessage": "ChromeOS üzerinden otomatik olarak algılandı.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detecting.805eb9": {
+    "defaultMessage": "Algılanıyor…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detecting.this.chromebook.s.address.c5a43d": {
+    "defaultMessage": "Bu Chromebook cihazının adresi algılanıyor…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.directory.listings.a49eb4": {
+    "defaultMessage": "Klasörlerdeki dosyaların listesi",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.error.54a0e8": {
+    "defaultMessage": "Hata",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.failed.to.launch.app.fba450": {
+    "defaultMessage": "Uygulama başlatılamadı",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.failed.to.open.android.app.73ba16": {
+    "defaultMessage": "Android uygulaması açılamadı",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.failed.to.open.the.linux.setup.guide.a903f0": {
+    "defaultMessage": "Linux kurulum kılavuzu açılamadı",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.finish.chromeos.forwarding.39f117": {
+    "defaultMessage": "ChromeOS yönlendirmesini tamamlayın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.folder.and.address.d090b6": {
+    "defaultMessage": "Klasör ve adres",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.folder.locations.23edda": {
+    "defaultMessage": "Klasör konumları",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.get.the.desktop.app.39b7d5": {
+    "defaultMessage": "Masaüstü uygulamasını edinin",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.if.the.launcher.cannot.wake.linux.open.terminal.once.wa.27611b": {
+    "defaultMessage": "Başlatıcı Linux ortamını uyandıramazsa Terminal uygulamasını bir kez açın, komut isteminin görünmesini bekleyin, kapatın ve yeniden deneyin.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.in.chromeos.settings.open.tag0.developers.linux.port.fo.49e854": {
+    "defaultMessage": "ChromeOS Ayarları içinde <tag0>Geliştiriciler → Linux → Bağlantı noktası yönlendirme</tag0> bölümünü açın ve {value1} TCP bağlantı noktasını ekleyin.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.in.files.right.click.the.folder.and.choose.tag0.share.w.f5a943": {
+    "defaultMessage": "Dosyalar uygulamasında klasöre sağ tıklayın ve <tag0>Linux ile paylaş</tag0> seçeneğini seçin. Geri döndüğünüzde 200 OK klasör seçicisi yeni paylaşımı algılar.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.install.signed.linux.component.updates.while.stopped.6155e8": {
+    "defaultMessage": "Sunucu durdurulmuşken imzalı Linux bileşeni güncellemelerini yükleyin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.install.the.verified.200.ok.linux.component.tag0.curl.f.93b255": {
+    "defaultMessage": "Doğrulanmış 200 OK Linux bileşenini yükleyin: <tag0>curl -fsSL https://ok200.app/install-crostini.sh | bash</tag0> <tag1>Yükleyici imzalı sürümü doğrular, yalnızca Linux kullanıcı hesabınız için kurulum yapar ve HTTP sunucusunu durdurulmuş durumda bırakır.</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.installing.and.reconnecting.eea5c0": {
+    "defaultMessage": "Yükleniyor ve yeniden bağlanılıyor…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.installing.the.signed.update.the.controller.will.briefl.ab10e2": {
+    "defaultMessage": "İmzalı güncelleme yükleniyor. Denetim arayüzüne kısa süre içinde yeniden bağlanılacak…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.keep.serving.when.controls.close.3afb77": {
+    "defaultMessage": "Denetim pencereleri kapatıldığında sunucu dosya sunmaya devam etsin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.launching.b1601d": {
+    "defaultMessage": "Başlatılıyor...",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.linux.component.v.value0.23fcc0": {
+    "defaultMessage": "Linux bileşeni v{value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.linux.connected.a353b4": {
+    "defaultMessage": "Linux bağlantısı kuruldu",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.linux.setup.and.recovery.803759": {
+    "defaultMessage": "Linux kurulumu ve kurtarma",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.local.network.4fda69": {
+    "defaultMessage": "Yerel ağ",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.my.files.985698": {
+    "defaultMessage": "Dosyalarım",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.native.disconnected": {
+    "defaultMessage": "Yerel ana makinenin bağlantısı kesildi",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.new.folder.cf28f4": {
+    "defaultMessage": "Yeni klasör",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.new.folder.name.489b9f": {
+    "defaultMessage": "Yeni klasör adı",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.not.detected.9f4a10": {
+    "defaultMessage": "Algılanmadı",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.not.shared.yet.bd0b09": {
+    "defaultMessage": "Henüz paylaşılmadı",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.ok200.crostini.check.update.value0.ok200.crostini.updat.a13096": {
+    "defaultMessage": "ok200-crostini check-update{value0} ok200-crostini update{value1} ok200-crostini rollback{value2} ok200-crostini uninstall",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.200.ok.06ebd0": {
+    "defaultMessage": "200 OK uygulamasını açın",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.open.chromeos.settings.about.chromeos.developers.linux.b6dec2": {
+    "defaultMessage": "ChromeOS Ayarları → ChromeOS hakkında → Geliştiriciler → Linux geliştirme ortamı bölümünü açın ve <tag0>Kur</tag0> seçeneğini seçin.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.ed077f": {
+    "defaultMessage": "Açın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.installed.android.app.82b23f": {
+    "defaultMessage": "Yüklü Android uygulamasını açın",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.open.server.520174": {
+    "defaultMessage": "Sunucuyu açın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.server.url.646642": {
+    "defaultMessage": "Sunucu URL’sini açın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.tag0.200.ok.web.server.tag0.from.the.chromeos.laun.75dcac": {
+    "defaultMessage": "ChromeOS Başlatıcısından <tag0>200 OK Web Server</tag0> uygulamasını açın.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.open.terminal.once.after.linux.finishes.installing.a18d10": {
+    "defaultMessage": "Linux kurulumu tamamlandıktan sonra Terminal uygulamasını bir kez açın.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.the.chromeos.files.app.ce4973": {
+    "defaultMessage": "ChromeOS Dosyalar uygulamasını açın.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.opening.android.app.708ae6": {
+    "defaultMessage": "Android uygulaması açılıyor...",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.opening.folder.c3ab98": {
+    "defaultMessage": "Klasör açılıyor…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.other.devices.4e027d": {
+    "defaultMessage": "Diğer cihazlar",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.check.failed.144b96": {
+    "defaultMessage": "İzin kontrolü başarısız oldu.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.request.failed.4c774d": {
+    "defaultMessage": "İzin isteği başarısız oldu.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.was.not.granted.setup.instructions.remain.av.41abf6": {
+    "defaultMessage": "İzin verilmedi. Kurulum talimatları hâlâ kullanılabilir, ancak uzantı Linux ortamını denetleyemez.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.reach.the.server.from.another.device.7f1eab": {
+    "defaultMessage": "Sunucuya başka bir cihazdan erişin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.right.click.the.folder.you.want.to.serve.ed4508": {
+    "defaultMessage": "Sunmak istediğiniz klasöre sağ tıklayın.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.running.f4ccae": {
+    "defaultMessage": "Çalışıyor",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.see.supported.platforms.bc2221": {
+    "defaultMessage": "Desteklenen platformları görüntüleyin",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.serve.any.folder.over.http.install.the.desktop.app.to.g.cbebff": {
+    "defaultMessage": "İstediğiniz klasörü HTTP üzerinden sunun. Başlamak için masaüstü uygulamasını yükleyin.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.serve.index.html.for.routes.that.do.not.match.a.file.07862d": {
+    "defaultMessage": "Bir dosyayla eşleşmeyen yollar için index.html dosyasını sunun",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.server.action.failed.c2bc8c": {
+    "defaultMessage": "Sunucu işlemi başarısız oldu.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.server.lifetime.b391f8": {
+    "defaultMessage": "Sunucunun çalışma süresi",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.serving.continues.when.this.window.closes.b6048a": {
+    "defaultMessage": "Bu pencere kapatıldığında dosya sunma devam eder",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.serving.stops.when.this.window.closes.49b856": {
+    "defaultMessage": "Bu pencere kapatıldığında dosya sunma durur",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.set.up.the.linux.version.8554b6": {
+    "defaultMessage": "Linux sürümünü kurun",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.setup.sharing.and.recovery.e978bc": {
+    "defaultMessage": "Kurulum, paylaşım ve kurtarma",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.share.a.chromebook.folder.with.linux.e50ee9": {
+    "defaultMessage": "Bir Chromebook klasörünü Linux ile paylaşın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.sharing.chromebook.folders.8bf65f": {
+    "defaultMessage": "Chromebook klasörlerini paylaşma",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.show.an.index.when.a.folder.has.no.index.file.dd0caa": {
+    "defaultMessage": "Klasörde bir dizin dosyası yoksa dosyaların listesini gösterin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.single.page.app.fallback.f6dac9": {
+    "defaultMessage": "Tek sayfalı uygulama için yedek davranış",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.start.web.server.9b82f9": {
+    "defaultMessage": "HTTP sunucusunu başlatın",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.starting.aeed4d": {
+    "defaultMessage": "Başlatılıyor",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.the.server.to.change.settings.fd75f3": {
+    "defaultMessage": "Ayarları değiştirmek için sunucuyu durdurun.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.to.make.changes.a30d16": {
+    "defaultMessage": "Değişiklik yapmak için durdurun",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.web.server.a00a97": {
+    "defaultMessage": "HTTP sunucusunu durdurun",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stopped.1a4f63": {
+    "defaultMessage": "Durduruldu",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stopping.a71ee1": {
+    "defaultMessage": "Durduruluyor",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.successor.to.tag0.web.server.for.chrome.tag0.7ca3a6": {
+    "defaultMessage": "<tag0>Web Server for Chrome</tag0> uygulamasının devamı",
+    "description": "extension/src/ui/app.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.the.last.update.check.failed.c03ab6": {
+    "defaultMessage": "Son güncelleme kontrolü başarısız oldu.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.component.is.already.current.b8579d": {
+    "defaultMessage": "Linux bileşeni zaten güncel.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.component.update.failed.426563": {
+    "defaultMessage": "Linux bileşeni güncellenemedi.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.control.session.expired.fbba79": {
+    "defaultMessage": "Linux denetim oturumunun süresi doldu.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.one.time.controller.claim.is.missing.launch.200.ok.f9593f": {
+    "defaultMessage": "Tek kullanımlık denetim arayüzü eşleştirme bilgisi eksik. 200 OK Web Server uygulamasını yeniden başlatın.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.the.server.keeps.running.until.you.stop.it.or.linux.shu.c725a6": {
+    "defaultMessage": "Sunucu, siz durdurana veya Linux kapanana kadar çalışmaya devam eder",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.server.stops.after.the.final.200.ok.control.window.e84d80": {
+    "defaultMessage": "Son 200 OK denetim penceresi kapatıldıktan sonra sunucu durur",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.update.is.taking.longer.than.expected.launch.200.ok.449ff3": {
+    "defaultMessage": "Güncelleme beklenenden uzun sürüyor. 200 OK Web Server uygulamasını yeniden başlatın veya Terminal uygulamasında ‘ok200-crostini update’ komutunu çalıştırın.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.this.chrome.platform.does.not.have.a.supported.200.ok.l.154016": {
+    "defaultMessage": "Bu Chrome platformunda 200 OK için desteklenen bir başlatma yöntemi yok.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.this.chromebook.31f18d": {
+    "defaultMessage": "Bu Chromebook",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.this.folder.has.no.subfolders.7b6d8d": {
+    "defaultMessage": "Bu klasörde alt klasör yok.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.this.linux.controller.is.already.paired.but.this.extens.ed282f": {
+    "defaultMessage": "Bu Linux denetim arayüzü zaten eşleştirilmiş, ancak bu uzantının elinde artık eşleştirme belirteci yok. Terminal uygulamasında ‘ok200-crostini reset-controller’ komutunu çalıştırın, ardından 200 OK Web Server uygulamasını yeniden başlatın.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.try.again.d8b839": {
+    "defaultMessage": "Yeniden deneyin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.try.again.df0fe9": {
+    "defaultMessage": "Yeniden deneyin",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.turn.on.tag0.available.on.local.network.tag0.then.add.t.571f67": {
+    "defaultMessage": "<tag0>Yerel ağda erişilebilir</tag0> seçeneğini açın, ardından ChromeOS Ayarları → Geliştiriciler → Linux → Bağlantı noktası yönlendirme bölümüne içerik bağlantı noktasını ekleyin. Chromebook cihazının Wi-Fi IPv4 adresini kullanın. Denetim arayüzünün 20080 bağlantı noktasını asla yönlendirmeyin.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.uninstall.preserves.settings.and.never.deletes.a.served.d54c53": {
+    "defaultMessage": "Kaldırma işlemi ayarları korur ve sunulan klasörleri asla silmez. Yalnızca eşleştirme ve denetim arayüzü ayarlarını da kaldırmak istiyorsanız <tag0>uninstall --purge</tag0> komutunu kullanın.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.failed.f1d764": {
+    "defaultMessage": "Güncelleme başarısız oldu.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.rollback.and.uninstall.2121a4": {
+    "defaultMessage": "Güncelleme, önceki sürüme dönme ve kaldırma",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.to.v.value0.d7bb82": {
+    "defaultMessage": "v{value0} sürümüne güncelleyin",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.updated.to.linux.component.v.value0.the.web.server.rema.b21a35": {
+    "defaultMessage": "Linux bileşeni v{value0} sürümüne güncellendi. HTTP sunucusu durdurulmuş durumda.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.updating.stops.the.web.server.and.does.not.restart.it.a.8f22e4": {
+    "defaultMessage": "Güncelleme, HTTP sunucusunu durdurur ve otomatik olarak yeniden başlatmaz. Devam edilsin mi?",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.url.copied.0017bd": {
+    "defaultMessage": "URL kopyalandı",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.use.chromeos.linux.1c2722": {
+    "defaultMessage": "ChromeOS Linux kullanın",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.v.value0.is.available.46d0d0": {
+    "defaultMessage": "v{value0} sürümü kullanılabilir.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.wait.for.the.current.action.to.finish.a99bab": {
+    "defaultMessage": "Geçerli işlemin tamamlanmasını bekleyin.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.wait.for.the.server.to.finish.value0.da806d": {
+    "defaultMessage": "{value0, select, starting {Sunucunun başlatılmasının tamamlanmasını bekleyin.} stopping {Sunucunun durdurulmasının tamamlanmasını bekleyin.} other {Sunucunun geçerli işleminin tamamlanmasını bekleyin.}}",
+    "description": "Complete status sentence. value0 is a stable starting/stopping protocol enum; do not translate selector keys."
+  },
+  "extension.waiting.for.a.shared.folder.676047": {
+    "defaultMessage": "Paylaşılan bir klasör bekleniyor…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.web.server.1643cf": {
+    "defaultMessage": "HTTP sunucusu",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.web.server.for.chromeos.linux.9d8ef3": {
+    "defaultMessage": "ChromeOS Linux için HTTP sunucusu",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.when.controls.close.8a761e": {
+    "defaultMessage": "Denetim pencereleri kapatıldığında",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "language.label": {
+    "defaultMessage": "Dil",
+    "description": "App-local display language; does not change server settings."
+  },
+  "language.system": {
+    "defaultMessage": "Sistem dili",
+    "description": "Follow OS or browser language preferences."
+  }
+}

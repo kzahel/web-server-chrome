@@ -48,6 +48,10 @@
       "catalog": "android/app/src/main/res/values-sv/strings.xml",
       "quantities": ["one", "other"]
     },
+    "tr": {
+      "catalog": "android/app/src/main/res/values-tr/strings.xml",
+      "quantities": ["one", "other"]
+    },
     "uk": {
       "catalog": "android/app/src/main/res/values-uk/strings.xml",
       "quantities": ["one", "few", "many", "other"]

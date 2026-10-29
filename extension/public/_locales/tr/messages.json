@@ -1,0 +1,11 @@
+{
+  "action_title": {
+    "message": "200 OK Web Server'ı açın"
+  },
+  "app_description": {
+    "message": "200 OK'i masaüstünde veya ChromeOS'te açın; ChromeOS Linux sunucusunu kurup yönetin. Web Server for Chrome'un yerini alır."
+  },
+  "app_name": {
+    "message": "200 OK Web Server"
+  }
+}

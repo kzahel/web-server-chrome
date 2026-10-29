@@ -83,6 +83,12 @@
             "value": "200 OK gör mappen du väljer tillgänglig för enheter i ditt lokala nätverk medan appen är öppen."
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK, yalnızca bu uygulama ön planda açıkken seçtiğiniz klasörü yerel ağınızdaki cihazlara sunar."
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",

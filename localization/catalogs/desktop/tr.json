@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "200 OK açılamadı.",
+  "about_200_ok_ba8aa9": "200 OK hakkında",
+  "check_for_updates_9ed79e": "Güncellemeleri denetleyin",
+  "choose_folder_to_serve_d488f4": "Sunulacak klasörü seçin",
+  "close_7d9eb7": "Kapatın",
+  "hide_200_ok_981b92": "200 OK uygulamasını gizleyin",
+  "hide_others_1753e2": "Diğerlerini gizleyin",
+  "launching_b1601d": "Açılıyor...",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "ChromeOS Linux için 200 OK Web Server uygulamasını açın",
+  "quit_200_ok_686f8f": "200 OK uygulamasından çıkın",
+  "quit_b3eb37": "Çıkın",
+  "run_in_background_0db775": "Arka planda çalıştırın",
+  "settings_74a883": "Ayarlar",
+  "show_all_e1c326": "Tümünü gösterin",
+  "show_app_ec462a": "Uygulamayı gösterin",
+  "show_icon_in_menu_bar_0ad9f3": "Simgeyi menü çubuğunda gösterin",
+  "show_icon_in_system_tray_25b481": "Simgeyi sistem tepsisinde gösterin",
+  "start_at_login_5952eb": "Oturum açıldığında başlatın",
+  "try_again_df0fe9": "Tekrar deneyin",
+  "unknown_launch_error_3585c0": "Bilinmeyen başlatma hatası",
+  "web_server_fc0480": "Web sunucusu"
+}

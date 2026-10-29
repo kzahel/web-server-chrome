@@ -83,6 +83,12 @@
             "value": "Tillåt webbläsarförfrågningar från andra ursprung."
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çapraz kaynaklı tarayıcı isteklerine izin verin."
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -171,6 +177,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tillåt andra enheter i detta Wi-Fi-nätverk att ansluta."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu Wi-Fi ağındaki diğer cihazların bağlanmasına izin verin."
           }
         },
         "uk": {
@@ -263,6 +275,12 @@
             "value": "Felaktig förfrågan"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçersiz istek"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -351,6 +369,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ändra"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Değiştirin"
           }
         },
         "uk": {
@@ -443,6 +467,12 @@
             "value": "Välj"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seçin"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -531,6 +561,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Välj en mapp innan du startar HTTP-servern."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP sunucusunu başlatmadan önce bir klasör seçin."
           }
         },
         "uk": {
@@ -623,6 +659,12 @@
             "value": "Välj en rotmapp för att kunna starta HTTP-servern."
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP sunucusunu etkinleştirmek için sunulacak bir klasör seçin."
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -711,6 +753,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kopiera"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopyalayın"
           }
         },
         "uk": {
@@ -803,6 +851,12 @@
             "value": "Fillista"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klasördeki dosyaların listesi"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -891,6 +945,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Klar"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bitti"
           }
         },
         "uk": {
@@ -983,6 +1043,12 @@
             "value": "Ange 0 eller en port från 1 till 65535."
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "0 veya 1 ile 65535 arasında bir bağlantı noktası girin."
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -1071,6 +1137,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fel: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hata: %@"
           }
         },
         "uk": {
@@ -1163,6 +1235,12 @@
             "value": "Synpunkter och support"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geri bildirim ve destek"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -1251,6 +1329,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Åtkomst via lokalt nätverk"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yerel ağ erişimi"
           }
         },
         "uk": {
@@ -1343,6 +1427,12 @@
             "value": "Felaktigt formaterad HTTP-förfrågan.\\n"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hatalı biçimlendirilmiş HTTP isteği.\\n"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -1431,6 +1521,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ingen aktuell Wi-Fi-adress är tillgänglig. HTTP-servern är bara åtkomlig på denna iPhone tills Wi-Fi är redo."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şu anda kullanılabilir bir Wi-Fi adresi yok. Wi-Fi hazır olana kadar HTTP sunucusuna yalnızca bu iPhone üzerinden erişilebilir."
           }
         },
         "uk": {
@@ -1523,6 +1619,12 @@
             "value": "Ingen mapp vald"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klasör seçilmedi"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -1611,6 +1713,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Port"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bağlantı noktası"
           }
         },
         "uk": {
@@ -1703,6 +1811,12 @@
             "value": "Förhandsvisa"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Önizleme"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -1791,6 +1905,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Integritet"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gizlilik"
           }
         },
         "uk": {
@@ -1883,6 +2003,12 @@
             "value": "Skrivskyddad åtkomst via Filer"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dosyalar uygulaması üzerinden salt okunur erişim"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -1971,6 +2097,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tidsgräns för förfrågan överskriden"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İstek zaman aşımı"
           }
         },
         "uk": {
@@ -2063,6 +2195,12 @@
             "value": "Tidsgränsen för förfrågan överskreds.\\n"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İstek zaman aşımına uğradı.\\n"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -2151,6 +2289,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Körs"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çalışıyor"
           }
         },
         "uk": {
@@ -2243,6 +2387,12 @@
             "value": "Aktiva URL:er"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etkin URL adresleri"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -2331,6 +2481,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tillhandahåll rotmappens index.html när en sökväg utan filändelse saknas."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bulunamayan uzantısız yollar için kök klasördeki index.html dosyasını sunun."
           }
         },
         "uk": {
@@ -2423,6 +2579,12 @@
             "value": "HTTP-server"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP sunucusu"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -2511,6 +2673,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Serverbeteende"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dosya sunma davranışı"
           }
         },
         "uk": {
@@ -2603,6 +2771,12 @@
             "value": "Rotmapp"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sunulan klasör"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -2691,6 +2865,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filer kan tillhandahållas medan 200 OK är öppen. iOS stoppar HTTP-servern när appen går till bakgrunden."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dosyalar yalnızca 200 OK ön planda açıkken sunulur. Uygulama arka plana geçtiğinde iOS, HTTP sunucusunu durdurur."
           }
         },
         "uk": {
@@ -2783,6 +2963,12 @@
             "value": "Dela"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paylaşın"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -2871,6 +3057,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Visa en fillista när en mapp saknar index.html."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klasörde index.html yoksa dosyaların listesini gösterin."
           }
         },
         "uk": {
@@ -2963,6 +3155,12 @@
             "value": "Reservlösning för ensidesappar"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tek sayfalı uygulama için varsayılan sayfa"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -3051,6 +3249,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Källkod · MIT"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaynak kodu · MIT"
           }
         },
         "uk": {
@@ -3143,6 +3347,12 @@
             "value": "Startar…"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başlatılıyor…"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -3231,6 +3441,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Startar webbservern"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Web sunucusunu başlatır"
           }
         },
         "uk": {
@@ -3323,6 +3539,12 @@
             "value": "Stoppa HTTP-servern för att ändra denna inställning."
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu ayarı değiştirmek için HTTP sunucusunu durdurun."
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -3411,6 +3633,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stoppad"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durduruldu"
           }
         },
         "uk": {
@@ -3503,6 +3731,12 @@
             "value": "Stoppar…"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durduruluyor…"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -3591,6 +3825,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stoppar webbservern"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Web sunucusunu durdurur"
           }
         },
         "uk": {
@@ -3683,6 +3923,12 @@
             "value": "Den sparade behörigheten till mappen har gått ut. Välj mappen igen."
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaydedilen klasör izninin süresi doldu. Klasörü yeniden seçin."
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -3771,6 +4017,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Den valda mappen är inte tillgänglig. Välj den igen i Filer."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seçilen klasöre erişilemiyor. Dosyalar uygulamasında klasörü yeniden seçin."
           }
         },
         "uk": {
@@ -3863,6 +4115,12 @@
             "value": "Det valda objektet är inte en mapp."
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seçilen öğe bir klasör değil."
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -3951,6 +4209,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP-servern kunde inte starta. Kontrollera mappen och porten och försök igen."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP sunucusu başlatılamadı. Klasörü ve bağlantı noktasını kontrol edip yeniden deneyin."
           }
         },
         "uk": {
@@ -4043,6 +4307,12 @@
             "value": "HTTP-servern körs redan."
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP sunucusu zaten çalışıyor."
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -4131,6 +4401,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP-servern är upptagen."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP sunucusu meşgul."
           }
         },
         "uk": {
@@ -4223,6 +4499,12 @@
             "value": "HTTP-servern stoppades när 200 OK gick till bakgrunden. Starta den igen när du är redo."
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK arka plana geçtiğinde HTTP sunucusu durduruldu. Hazır olduğunuzda yeniden başlatın."
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -4311,6 +4593,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Denna iPhone"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu iPhone"
           }
         },
         "uk": {
@@ -4403,6 +4691,12 @@
             "value": "Ange 0 för att välja en ledig port"
           }
         },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kullanılabilir bir bağlantı noktası seçmek için 0 girin"
+          }
+        },
         "uk": {
           "stringUnit": {
             "state": "translated",
@@ -4491,6 +4785,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Webbserver"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Web sunucusu"
           }
         },
         "uk": {

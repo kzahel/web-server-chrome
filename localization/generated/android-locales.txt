@@ -12,3 +12,4 @@ pl
 ro
 ru
 uk
+tr

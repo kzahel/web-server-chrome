@@ -32,7 +32,11 @@ gh workflow run android-play-publish.yml --ref main \
 ```
 
 Check the publication JSON artifact and Play Console independently. Internal
-availability and an actual tester installation are distinct evidence. Optional
+availability and an actual tester installation are distinct evidence. Check
+that the internal track is active and its intended tester lists are selected:
+a completed API release does not resume a paused track. Track/tester setup
+stays Console-owned; the publishing service account deliberately cannot
+manage tester lists. Optional
 localized notes live in `android/play/release-notes/android-vVERSION.json`, a
 language-to-text object. Each language is limited to 500 characters. English
 must match the verified tag changelog or explicit dispatch notes. For a long

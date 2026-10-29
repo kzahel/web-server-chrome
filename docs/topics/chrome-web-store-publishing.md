@@ -2,8 +2,10 @@
 
 Topic: chrome-web-store-publishing
 
-Status: tag-driven submission configured; live read-only authentication passed
-on 2026-10-16. No release was created to test setup.
+Status: tag-driven submission and main-only upload staging configured. On
+2026-10-29, the exact browser-accepted 0.1.9 ZIP was successfully staged with
+keyless CI authentication; Google review was not requested. The public version
+remains 0.1.8. Tactical 021 owns the current receipts and qualification.
 
 The existing production extension is `lpkjdhnmgkhaabhimpdinmdgejoaejic`.
 `extension/fullpubkey.txt` is its public identity; the publisher verifies the

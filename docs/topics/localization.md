@@ -3,8 +3,11 @@
 Topic: localization
 
 Status: **English/German app catalogs and pipeline implemented and qualified
-within the local matrix recorded in Tactical 020. No localized releases
-have been published.**
+within the local matrix recorded in Tactical 020. Android 0.2.4/code 9 is
+available on the active internal Play track; extension 0.1.9 is staged in the
+Web Store. Public Android/extension versions remain 0.2.1/0.1.8. See Tactical
+021 for distribution receipts; desktop and iOS localized publication remain
+separate.**
 
 The registry at `localization/locales.json` owns availability for React,
 native desktop/Crostini, extension metadata, Android and iOS. English is the

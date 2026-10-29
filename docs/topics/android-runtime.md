@@ -3,13 +3,14 @@
 Topic: android-native-kotlin
 
 Status: **Android source uses one native Kotlin HTTP server, one
-application-scoped controller, and a Compose control surface. GitHub release
-`android-v0.2.1` publishes the signed APK and AAB containing the physically
-accepted ChromeOS LAN-address correction. The maintainer reports that exact
-candidate submitted to Play; delivery and store-served validation remain
-open.**
+application-scoped controller, and a Compose control surface. Production Play
+0.2.1/code 6 was independently confirmed on 2026-10-29. The verified signed
+0.2.4/code 9 candidate, including German localization, is available on the
+active internal Play track through the new automated publishing lane.
+Store-delivered device acceptance remains separate from artifact and Console
+availability evidence.**
 
-Last reconciled: **2026-08-05**.
+Last reconciled: **2026-10-29**.
 
 The accepted plan, implementation sequence, and detailed emulator evidence are
 recorded in
@@ -300,6 +301,17 @@ They require explicit product decisions rather than accidental parity work.
   Android IPv6. LAN-off allowed loopback and refused both external families.
   All five Compose/metadata/lifecycle instrumentation tests also passed on the
   Chromebook. Tactical 011 owns delivery of this accepted source fix.
+
+## Release artifact validation
+
+The Android release gate resolves build-tools 36.0.0 explicitly and verifies
+all numbered/SDK-range APK signing certificate entries against the unchanged
+pinned upload certificate. Public-key digests are never certificate proof.
+AAB signing, package/version, manifest, permissions and native-payload checks
+remain required. Failed tag builds retain validator diagnostics. See
+[Tactical 021](../tactical/021-store-publishing-parity.md) for hosted repairs
+and internal distribution evidence; no released runtime is stranded by these
+publishing-only changes.
 
 ## Known gaps and next direction
 

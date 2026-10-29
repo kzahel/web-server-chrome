@@ -2,9 +2,12 @@
 
 Topic: store-publishing
 
-Status: implementation and hosted qualification in progress (2026-10-29).
-Live evidence belongs in Tactical 021. Private account identities and setup
-commands belong in the maintainer's operational inventory.
+Status: implemented/configured and qualified end to end (2026-10-29).
+Android 0.2.4/code 9 is available on the active internal track; a repeat publish
+is a verified no-op. Public production remains 0.2.1/code 6. Live receipts,
+exact artifacts and remaining installed-device/public-release limits are in
+[Tactical 021](../tactical/021-store-publishing-parity.md). Private account
+identities and setup commands belong in the maintainer's operational inventory.
 
 ## Release contract
 
@@ -13,6 +16,7 @@ checks. They do not change Play. The existing signer, package, supported OS
 range and asset names remain unchanged. Additive build.json binds the AAB
 SHA-256 to its exact source, tag, version and successful build run; SHA256SUMS
 covers the receipt too. Published candidate assets must never be replaced.
+Android releases use latest=false so the existing desktop GitHub Latest/updater path is preserved.
 
 Play publication is explicitly dispatched from main. Before Google auth, the
 publisher requires a successful exact-source main CI run, a successful tag-push

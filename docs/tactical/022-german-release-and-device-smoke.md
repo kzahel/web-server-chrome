@@ -43,6 +43,54 @@ this bounded release.
 
 ## Evidence
 
-Pending. Keep device identifiers, account data, endpoint addresses, credentials,
-raw UI dumps and screenshots under ignored local evidence/private inventory.
-Sanitized product results and public artifact hashes belong here.
+### Android physical Play delivery
+
+The attached physical Pixel 7a installed **0.2.4/code 9 from
+`com.android.vending`**, after enrollment in internal testing. The preexisting
+old developer-signed app could not be updated by Play; its APK and app-owned
+data were backed up privately before replacement. No unrelated applications or
+served data were modified. A stale Play cache initially offered production
+0.2.1; that was rejected as evidence. Clearing only Play cache exposed the
+internal update; installer and code 9 were verified again.
+
+German selection, a dedicated SAF folder grant, external same-Wi-Fi HTTP GET
+with an exact marker, reliable background service/notification permission,
+German ongoing notification, English/German switching while the listener kept
+serving, forced process restart with language/folder retention, a second real
+serve and explicit stop all passed. Stopped HTTP refused connections. The test
+file was removed; the store app remains installed, German and stopped, with an
+empty dedicated fixture folder. Boot/Doze/long-duration battery acceptance is
+not inferred from this bounded smoke. Raw device/account/network evidence and
+the developer-build backup remain ignored/private.
+
+Production promotion [40870766578](https://github.com/kzahel/web-server-chrome/actions/runs/40870766578)
+passed, using the identical internal AAB (no upload), SHA-256
+`1b4d799e329a6a4537bda320a7e92b0e17b2f7c536306ce0fd7bed8ef0726bfe`.
+The receipt records `inProgress`, **1%**, previous production code 6, deployment
+7411766925. API acceptance is not evidence of Google approval/public delivery.
+The scheduled advancer remains report-only; further increases are separate.
+
+### Extension submission
+
+Tag `extension-v0.1.9` points to the exact staged source
+`ad3692b6bb8239e0a2d217e5b1817dc1046084c0`.
+[40870810213](https://github.com/kzahel/web-server-chrome/actions/runs/40870810213)
+passed build, real-browser smoke and Web Store submission. An independent
+read-only store query reports **0.1.9 PENDING_REVIEW**, public **0.1.8**, no
+warning/takedown. Store review and installability remain independent gates.
+
+### Desktop pre-release
+
+Version 0.1.12 was prepared at `c649d92`; `scripts/release-check.sh desktop`
+passed. The ordinary optimized app bundle (unsigned, updater artifacts disabled
+only for this local preflight) was driven through Machine Control on an
+isolated macOS ARM64 VM. German controls/native menus, the native folder picker,
+localized out-of-home sharing confirmation, real HTTP GET, and English/German
+switching with continued serving passed. This is pre-release evidence, not a
+claim about signatures or the exact distributed artifact. Signed publication
+and the bounded installed-artifact rerun follow below.
+
+Quit/relaunch retained German and the selected folder, and restarted stopped.
+A second confirmed start served the same marker. Native menu copy and the
+settings panel fit the default portrait window. Explicit stop refused HTTP;
+the app was quit and the initially powered-off VM was shut down after use.

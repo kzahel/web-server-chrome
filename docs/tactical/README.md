@@ -16,6 +16,7 @@ decisions, evidence, or recommended next work changes.
 
 | Tactical | Status | Purpose |
 |---|---|---|
+| [`022-german-release-and-device-smoke.md`](022-german-release-and-device-smoke.md) | active; physical Play smoke passed, German store submissions started | Validate localized phone/desktop and publish bounded German releases |
 | [`021-store-publishing-parity.md`](021-store-publishing-parity.md) | complete; internal Play and Web Store staging verified | Match JSTorrent Play publication and staged rollout controls, and qualify Web Store staging |
 | [`020-localization-foundation-and-german.md`](020-localization-foundation-and-german.md) | complete; local qualification passed, publication separate | Build reusable translation tooling and qualify German across the app surfaces |
 | [`019-chrome-web-store-ci-publishing.md`](019-chrome-web-store-ci-publishing.md) | complete; live read-only authentication passes | Submit the exact browser-accepted ZIP through keyless Google authentication |

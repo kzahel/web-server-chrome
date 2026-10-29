@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "Не вдалося відкрити 200 OK.",
+  "about_200_ok_ba8aa9": "Про 200 OK",
+  "check_for_updates_9ed79e": "Перевірити наявність оновлень",
+  "choose_folder_to_serve_d488f4": "Виберіть папку для надання доступу до файлів",
+  "close_7d9eb7": "Закрити",
+  "hide_200_ok_981b92": "Приховати 200 OK",
+  "hide_others_1753e2": "Приховати інші",
+  "launching_b1601d": "Запуск…",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "Відкрити 200 OK Web Server для ChromeOS Linux",
+  "quit_200_ok_686f8f": "Завершити роботу 200 OK",
+  "quit_b3eb37": "Вийти",
+  "run_in_background_0db775": "Працювати у фоновому режимі",
+  "settings_74a883": "Налаштування",
+  "show_all_e1c326": "Показати всі",
+  "show_app_ec462a": "Показати застосунок",
+  "show_icon_in_menu_bar_0ad9f3": "Показувати піктограму в рядку меню",
+  "show_icon_in_system_tray_25b481": "Показувати піктограму в системному лотку",
+  "start_at_login_5952eb": "Запускати під час входу в систему",
+  "try_again_df0fe9": "Спробувати ще раз",
+  "unknown_launch_error_3585c0": "Невідома помилка запуску",
+  "web_server_fc0480": "HTTP-сервер"
+}

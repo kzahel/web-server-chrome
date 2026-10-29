@@ -63,7 +63,7 @@ this supervisor setup.
 | pl | qualified | [bound evidence](../../localization/qualification/pl.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 | ro | qualified | [bound evidence](../../localization/qualification/ro.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 | ru | qualified | [bound evidence](../../localization/qualification/ru.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
-| uk | queued | Preserve frozen jobs and manifest order |
+| uk | qualified | [bound evidence](../../localization/qualification/uk.json); 510 resources; 12 actual translation/review sessions; API 28/35, native macOS, iOS and browser gates |
 | tr | queued | Preserve frozen jobs and manifest order |
 | ja | queued | Preserve frozen jobs and manifest order |
 | ko | queued | Preserve frozen jobs and manifest order |

@@ -1,0 +1,196 @@
+{
+  "androidApis": [28, 35],
+  "checks": [
+    ["node", "scripts/check-localization.mjs"],
+    ["pnpm", "typecheck"],
+    ["pnpm", "test"],
+    ["android/scripts/localization-smoke.sh"],
+    ["android/scripts/localization-smoke.sh"],
+    ["android/scripts/check.sh"],
+    ["desktop/crostini/scripts/check.sh"],
+    [
+      "cargo",
+      "run",
+      "--manifest-path",
+      "desktop/Cargo.toml",
+      "-p",
+      "ok200-desktop",
+      "--example",
+      "localization_smoke",
+      "--",
+      ".local/localization-overnight/uk/native-menu.json",
+      "uk"
+    ],
+    ["desktop/scripts/check.sh"],
+    ["extension/scripts/browser-check.sh"],
+    ["extension/scripts/check.sh"],
+    ["ios/scripts/check.sh"],
+    ["node", "scripts/qualify-localization.mjs", "--locale", "uk"]
+  ],
+  "completedAt": "2026-10-29T18:16:40.978579+00:00",
+  "harnessHash": "84e1ca23417d65d8740d9290081c90cf37c8250dec2623689d76c1cd0fb55220",
+  "inputs": {
+    "android": {
+      "catalog": "4c5a615e40e42c8f9e875db1970e144fc72235042088a606a8514f395a5ea74c",
+      "ledger": "31a0740d35ec277879be731b9c07b47860cfe3d64f18d00c9bbebb6a4044a849",
+      "source": "dd8a059aff567dfbe5c8ec087cc69a582dd39e0741f0cd2f423f328db8904955"
+    },
+    "desktop": {
+      "catalog": "ac57507e5ce2be3cb9d8d00e3b96260e677880cc105c720611c3192d704e59ae",
+      "ledger": "ea9b5ed90f575c171d16ab6098adb2e47c9450f83a969ac03d4c01c4ee82d005",
+      "source": "51931049c8786a1bc7853ff79cc725fdd706e08cc06fd65ec77e8682efd2766b"
+    },
+    "extension": {
+      "catalog": "242369b7e27df547c761826b9fa1412eb5bbc5f8696987358fa9b5ec670865c9",
+      "ledger": "7cbb175c31a8c333be8f0c6c26a7b65a9ddd2538d200320172ab2a8706b3177c",
+      "source": "68bdff4234946537037ebfc0e8a9c68c3fca850ec9b511d48da34f386246259d"
+    },
+    "ios": {
+      "catalog": "748c4b56665b84a4bf0d03d4419922fb293ee81fdd46bac0d00b500c14fcc53c",
+      "ledger": "a43d647e42b04c8865663ecbc4a657469b42c3aea5cbc709bcd99ca9a99b740a",
+      "source": "637a102f690a5215635c68d5e9a5f2dd9161ea6107bc0f65beb13c8da8e8f039"
+    },
+    "web": {
+      "catalog": "303cd1173770e23c4edd771378b495c65e30bbbd36db26512542aa8229d9188d",
+      "ledger": "9e6cbbdebd092c537f23f3e6521958d98a7a79fe1471b570c8783bda1fd884a8",
+      "source": "36ea700537492f5b00cefa44ad16ac21e40d8798161ce1334551f858e5c1e734"
+    }
+  },
+  "limitations": [
+    "No store delivery, signed production install, physical-device or three-OS runtime qualification is inferred."
+  ],
+  "locale": "uk",
+  "planHash": "085a6b9eae98b50db8221f5b1a09f838c2dd7d9e283a13cfe3bf76a913a0eec0",
+  "platform": "darwin",
+  "qualificationHash": "bb6bc7d16f1888ac26d18b6b7f178f8d820f45dcb9593a1f8dee4afd89a1e39a",
+  "schemaVersion": 1,
+  "sessions": [
+    {
+      "actualModel": "gpt-6.1-sol",
+      "effort": "high",
+      "group": 1,
+      "permissionMode": "acceptEdits",
+      "phase": "translate",
+      "serviceTier": "normal",
+      "sessionId": "01a188d1-e64a-73d1-ba21-64a61edec377",
+      "surface": "web"
+    },
+    {
+      "actualModel": "gpt-6.1-sol",
+      "effort": "high",
+      "group": 2,
+      "permissionMode": "acceptEdits",
+      "phase": "translate",
+      "serviceTier": "normal",
+      "sessionId": "01a188d1-e64a-7fe3-9773-83492e94b215",
+      "surface": "web"
+    },
+    {
+      "actualModel": "gpt-6.1-sol",
+      "effort": "high",
+      "group": 2,
+      "permissionMode": "acceptEdits",
+      "phase": "review",
+      "serviceTier": "normal",
+      "sessionId": "01a188d2-a329-74c3-b908-d5c25fde7821",
+      "surface": "web"
+    },
+    {
+      "actualModel": "gpt-6.1-sol",
+      "effort": "high",
+      "group": 1,
+      "permissionMode": "acceptEdits",
+      "phase": "review",
+      "serviceTier": "normal",
+      "sessionId": "01a188d4-2637-7ea2-97a7-095c6a5aa72a",
+      "surface": "web"
+    },
+    {
+      "actualModel": "gpt-6.1-sol",
+      "effort": "high",
+      "group": 1,
+      "permissionMode": "acceptEdits",
+      "phase": "translate",
+      "serviceTier": "normal",
+      "sessionId": "01a188d5-afa7-70d2-8f25-a4a39c55d42d",
+      "surface": "desktop"
+    },
+    {
+      "actualModel": "gpt-6.1-sol",
+      "effort": "high",
+      "group": 1,
+      "permissionMode": "acceptEdits",
+      "phase": "review",
+      "serviceTier": "normal",
+      "sessionId": "01a188d6-5c61-7342-9731-f2a105b1d06c",
+      "surface": "desktop"
+    },
+    {
+      "actualModel": "gpt-6.1-sol",
+      "effort": "high",
+      "group": 1,
+      "permissionMode": "acceptEdits",
+      "phase": "translate",
+      "serviceTier": "normal",
+      "sessionId": "01a188d6-f8d1-7863-8849-ca55f75570cc",
+      "surface": "extension"
+    },
+    {
+      "actualModel": "gpt-6.1-sol",
+      "effort": "high",
+      "group": 1,
+      "permissionMode": "acceptEdits",
+      "phase": "review",
+      "serviceTier": "normal",
+      "sessionId": "01a188d7-95d0-7f11-bb3a-2e02dd949c7b",
+      "surface": "extension"
+    },
+    {
+      "actualModel": "gpt-6.1-sol",
+      "effort": "high",
+      "group": 1,
+      "permissionMode": "acceptEdits",
+      "phase": "translate",
+      "serviceTier": "normal",
+      "sessionId": "01a188d8-3ade-7910-a67d-6b4c6e5d9895",
+      "surface": "android"
+    },
+    {
+      "actualModel": "gpt-6.1-sol",
+      "effort": "high",
+      "group": 1,
+      "permissionMode": "acceptEdits",
+      "phase": "review",
+      "serviceTier": "normal",
+      "sessionId": "01a188d9-db6d-7f03-917b-7723e73cb78c",
+      "surface": "android"
+    },
+    {
+      "actualModel": "gpt-6.1-sol",
+      "effort": "high",
+      "group": 1,
+      "permissionMode": "acceptEdits",
+      "phase": "translate",
+      "serviceTier": "normal",
+      "sessionId": "01a188db-7160-7411-bb8d-749ce1252cd4",
+      "surface": "ios"
+    },
+    {
+      "actualModel": "gpt-6.1-sol",
+      "effort": "high",
+      "group": 1,
+      "permissionMode": "acceptEdits",
+      "phase": "review",
+      "serviceTier": "normal",
+      "sessionId": "01a188dc-8420-78c0-bf9b-704d197ac29b",
+      "surface": "ios"
+    }
+  ],
+  "sourceCounts": {
+    "android": 180,
+    "desktop": 21,
+    "extension": 3,
+    "ios": 51,
+    "web": 255
+  }
+}

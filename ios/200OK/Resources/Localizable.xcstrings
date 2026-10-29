@@ -82,6 +82,12 @@
             "state": "translated",
             "value": "Tillåt webbläsarförfrågningar från andra ursprung."
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дозволяти браузерні запити з інших джерел."
+          }
         }
       }
     },
@@ -165,6 +171,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tillåt andra enheter i detta Wi-Fi-nätverk att ansluta."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дозволяти підключення інших пристроїв у цій мережі Wi-Fi."
           }
         }
       }
@@ -250,6 +262,12 @@
             "state": "translated",
             "value": "Felaktig förfrågan"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Некоректний запит"
+          }
         }
       }
     },
@@ -333,6 +351,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ändra"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Змінити"
           }
         }
       }
@@ -418,6 +442,12 @@
             "state": "translated",
             "value": "Välj"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вибрати"
+          }
         }
       }
     },
@@ -501,6 +531,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Välj en mapp innan du startar HTTP-servern."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Виберіть папку перед запуском HTTP-сервера."
           }
         }
       }
@@ -586,6 +622,12 @@
             "state": "translated",
             "value": "Välj en rotmapp för att kunna starta HTTP-servern."
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Виберіть кореневу папку, щоб можна було запустити HTTP-сервер."
+          }
         }
       }
     },
@@ -669,6 +711,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kopiera"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скопіювати"
           }
         }
       }
@@ -754,6 +802,12 @@
             "state": "translated",
             "value": "Fillista"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Список файлів у папці"
+          }
         }
       }
     },
@@ -837,6 +891,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Klar"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Готово"
           }
         }
       }
@@ -922,6 +982,12 @@
             "state": "translated",
             "value": "Ange 0 eller en port från 1 till 65535."
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введіть 0 або номер порту від 1 до 65535."
+          }
         }
       }
     },
@@ -1005,6 +1071,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fel: %@"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Помилка: %@"
           }
         }
       }
@@ -1090,6 +1162,12 @@
             "state": "translated",
             "value": "Synpunkter och support"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Відгуки й підтримка"
+          }
         }
       }
     },
@@ -1173,6 +1251,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Åtkomst via lokalt nätverk"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доступ із локальної мережі"
           }
         }
       }
@@ -1258,6 +1342,12 @@
             "state": "translated",
             "value": "Felaktigt formaterad HTTP-förfrågan.\\n"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неправильно сформований HTTP-запит.\\n"
+          }
         }
       }
     },
@@ -1341,6 +1431,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ingen aktuell Wi-Fi-adress är tillgänglig. HTTP-servern är bara åtkomlig på denna iPhone tills Wi-Fi är redo."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наразі адреса Wi-Fi недоступна. HTTP-сервер залишатиметься доступним лише на цьому iPhone, доки з’єднання Wi-Fi не буде готове до роботи."
           }
         }
       }
@@ -1426,6 +1522,12 @@
             "state": "translated",
             "value": "Ingen mapp vald"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Папку не вибрано"
+          }
         }
       }
     },
@@ -1509,6 +1611,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Port"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Порт"
           }
         }
       }
@@ -1594,6 +1702,12 @@
             "state": "translated",
             "value": "Förhandsvisa"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Попередній перегляд"
+          }
         }
       }
     },
@@ -1677,6 +1791,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Integritet"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Конфіденційність"
           }
         }
       }
@@ -1762,6 +1882,12 @@
             "state": "translated",
             "value": "Skrivskyddad åtkomst via Filer"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доступ лише для читання через «Файли»"
+          }
         }
       }
     },
@@ -1845,6 +1971,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tidsgräns för förfrågan överskriden"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Час очікування запиту вичерпано"
           }
         }
       }
@@ -1930,6 +2062,12 @@
             "state": "translated",
             "value": "Tidsgränsen för förfrågan överskreds.\\n"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Час очікування запиту вичерпано.\\n"
+          }
         }
       }
     },
@@ -2013,6 +2151,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Körs"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Працює"
           }
         }
       }
@@ -2098,6 +2242,12 @@
             "state": "translated",
             "value": "Aktiva URL:er"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Активні URL-адреси"
+          }
         }
       }
     },
@@ -2181,6 +2331,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tillhandahåll rotmappens index.html när en sökväg utan filändelse saknas."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Надавати index.html із кореневої папки для відсутніх маршрутів без розширень."
           }
         }
       }
@@ -2266,6 +2422,12 @@
             "state": "translated",
             "value": "HTTP-server"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-сервер"
+          }
         }
       }
     },
@@ -2349,6 +2511,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Serverbeteende"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Налаштування доступу до файлів"
           }
         }
       }
@@ -2434,6 +2602,12 @@
             "state": "translated",
             "value": "Rotmapp"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Коренева папка"
+          }
         }
       }
     },
@@ -2517,6 +2691,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filer kan tillhandahållas medan 200 OK är öppen. iOS stoppar HTTP-servern när appen går till bakgrunden."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доступ до файлів надається, поки 200 OK відкрито на екрані. iOS зупиняє HTTP-сервер, коли застосунок переходить у фоновий режим."
           }
         }
       }
@@ -2602,6 +2782,12 @@
             "state": "translated",
             "value": "Dela"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поширити"
+          }
         }
       }
     },
@@ -2685,6 +2871,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Visa en fillista när en mapp saknar index.html."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показувати список файлів у папці, якщо в ній немає index.html."
           }
         }
       }
@@ -2770,6 +2962,12 @@
             "state": "translated",
             "value": "Reservlösning för ensidesappar"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Резервна обробка маршрутів SPA"
+          }
         }
       }
     },
@@ -2853,6 +3051,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Källkod · MIT"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вихідний код · MIT"
           }
         }
       }
@@ -2938,6 +3142,12 @@
             "state": "translated",
             "value": "Startar…"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запуск…"
+          }
         }
       }
     },
@@ -3021,6 +3231,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Startar webbservern"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запускає HTTP-сервер"
           }
         }
       }
@@ -3106,6 +3322,12 @@
             "state": "translated",
             "value": "Stoppa HTTP-servern för att ändra denna inställning."
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зупиніть HTTP-сервер, щоб змінити це налаштування."
+          }
         }
       }
     },
@@ -3189,6 +3411,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stoppad"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зупинено"
           }
         }
       }
@@ -3274,6 +3502,12 @@
             "state": "translated",
             "value": "Stoppar…"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зупинення…"
+          }
         }
       }
     },
@@ -3357,6 +3591,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stoppar webbservern"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Зупиняє HTTP-сервер"
           }
         }
       }
@@ -3442,6 +3682,12 @@
             "state": "translated",
             "value": "Den sparade behörigheten till mappen har gått ut. Välj mappen igen."
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Термін дії збереженого дозволу на доступ до папки минув. Виберіть папку ще раз."
+          }
         }
       }
     },
@@ -3525,6 +3771,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Den valda mappen är inte tillgänglig. Välj den igen i Filer."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вибрана папка недоступна. Виберіть її ще раз у застосунку «Файли»."
           }
         }
       }
@@ -3610,6 +3862,12 @@
             "state": "translated",
             "value": "Det valda objektet är inte en mapp."
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вибраний елемент не є папкою."
+          }
         }
       }
     },
@@ -3693,6 +3951,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP-servern kunde inte starta. Kontrollera mappen och porten och försök igen."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не вдалося запустити HTTP-сервер. Перевірте папку й порт, а потім спробуйте ще раз."
           }
         }
       }
@@ -3778,6 +4042,12 @@
             "state": "translated",
             "value": "HTTP-servern körs redan."
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-сервер уже працює."
+          }
         }
       }
     },
@@ -3861,6 +4131,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "HTTP-servern är upptagen."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-сервер зайнятий."
           }
         }
       }
@@ -3946,6 +4222,12 @@
             "state": "translated",
             "value": "HTTP-servern stoppades när 200 OK gick till bakgrunden. Starta den igen när du är redo."
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP-сервер зупинився, коли 200 OK перейшов у фоновий режим. Запустіть його знову, коли будете готові."
+          }
         }
       }
     },
@@ -4029,6 +4311,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Denna iPhone"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цей iPhone"
           }
         }
       }
@@ -4114,6 +4402,12 @@
             "state": "translated",
             "value": "Ange 0 för att välja en ledig port"
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введіть 0 для автоматичного вибору вільного порту"
+          }
         }
       }
     },
@@ -4197,6 +4491,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Webbserver"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вебсервер"
           }
         }
       }

@@ -82,6 +82,12 @@
             "state": "translated",
             "value": "200 OK gör mappen du väljer tillgänglig för enheter i ditt lokala nätverk medan appen är öppen."
           }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK надає пристроям у вашій локальній мережі доступ до вибраної вами папки, поки цей застосунок відкритий на екрані."
+          }
         }
       }
     }

@@ -12,7 +12,8 @@ Android CI workflow, native repository paths, and exact-source main CI. No
 JSTorrent compatibility-ledger exception is accepted here. Upstream defaults
 for vitals and rollout dwell times are retained. Local safety additions:
 empty report-count evidence holds instead of passing; a tag-free access check
-verifies Publisher and Reporting permissions without a release.
+verifies Publisher and Reporting permissions without a release; mutating
+failures leave a sanitized receipt requiring reconciliation before retry.
 
 MIT License
 

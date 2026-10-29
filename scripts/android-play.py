@@ -875,7 +875,20 @@ def main(argv=None):
     step.set_defaults(run=command_advance)
 
     args = parser.parse_args(argv)
-    return args.run(args) or 0
+    try:
+        return args.run(args) or 0
+    except Exception as error:
+        # Preserve a receipt even when the network or post-commit ledger fails.
+        # Exception messages may reflect server input; keep them out of artifacts.
+        if getattr(args, 'receipt', None):
+            mutation = (args.command == 'rollout'
+                        or (args.command == 'publish' and args.status != 'check')
+                        or (args.command == 'advance' and args.mode == 'act'))
+            emit({'status': 'failed_or_outcome_unknown' if mutation else 'failed',
+                  'operation': args.command, 'errorType': type(error).__name__,
+                  'tag': getattr(args, 'tag', None),
+                  'reconcileBeforeRetry': mutation}, args.receipt)
+        raise
 
 
 if __name__ == '__main__':

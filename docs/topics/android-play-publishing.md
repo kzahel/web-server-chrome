@@ -60,6 +60,9 @@ concerns. Existing extension/controllers and store apps keep updating
 independently under the compatibility corpus; no coordinated app update is
 required by publishing infrastructure.
 
+Every attempted CLI operation with a receipt path leaves a sanitized failure
+receipt too. Mutating failures explicitly require reconciliation before retry;
+an exception does not establish whether the store committed the change.
 For an uncertain commit, inspect Play and the receipt before another dispatch.
 If Play changed but ledger recording failed, record/acknowledge the exact
 current rollout through the rollout workflow before scheduled advancement.

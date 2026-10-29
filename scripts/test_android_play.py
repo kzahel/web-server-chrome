@@ -1,5 +1,7 @@
 """Play publication, rollout and ledger regressions; no credentials or network."""
+from contextlib import redirect_stdout
 from datetime import datetime, timedelta, timezone
+from io import StringIO
 import hashlib
 import importlib.util
 import json
@@ -7,6 +9,8 @@ from pathlib import Path
 import re
 import tempfile
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location('android_play', Path(__file__).with_name('android-play.py'))
 play = importlib.util.module_from_spec(spec)
@@ -384,6 +388,36 @@ class AdvanceTest(unittest.TestCase):
         stats = play.version_stats([reporting_row(33, 'r', 0.01, 100), reporting_row(33, 'r', 0.0, 300),
                                     reporting_row(7, 'r', 0.5, 10)], 'r')
         self.assertEqual(stats[33], {'userDays': 400.0, 'rate': 0.0025})
+
+
+class AccessTest(unittest.TestCase):
+    def test_tag_free_access_reads_both_apis_and_never_commits(self):
+        google = FakeGoogle(tracks={'internal': [{'status': 'completed', 'versionCodes': ['2']}]})
+        with tempfile.TemporaryDirectory() as temp, patch.object(play, 'Http', return_value=google):
+            receipt = Path(temp) / 'access.json'
+            with patch.dict(play.os.environ, {'PLAY_ACCESS_TOKEN': 'test-token'}), redirect_stdout(StringIO()):
+                play.command_access(SimpleNamespace(track='internal', receipt=receipt))
+            result = json.loads(receipt.read_text())
+        self.assertEqual(result['status'], 'access_verified')
+        self.assertFalse(result['committed'])
+        self.assertEqual(len(result['reporting']), 3)
+        self.assertFalse(google.puts())
+        self.assertNotIn(COMMIT, google.methods('POST'))
+        self.assertEqual(google.methods('DELETE'), [EDIT])
+        self.assertEqual(sum(url.startswith(play.REPORTING) for url in google.methods('GET')), 3)
+
+
+class FailureReceiptTest(unittest.TestCase):
+    def test_ambiguous_action_leaves_a_reconciliation_receipt(self):
+        with tempfile.TemporaryDirectory() as temp:
+            receipt = Path(temp) / 'failure.json'
+            with patch.object(play, 'command_advance', side_effect=TimeoutError('private server detail')):
+                with self.assertRaises(TimeoutError), redirect_stdout(StringIO()):
+                    play.main(['advance', '--mode', 'act', '--receipt', str(receipt)])
+            result = json.loads(receipt.read_text())
+            self.assertEqual(result['status'], 'failed_or_outcome_unknown')
+            self.assertTrue(result['reconcileBeforeRetry'])
+            self.assertNotIn('private server detail', receipt.read_text())
 
 
 class NoEvidenceTest(unittest.TestCase):

@@ -1,5 +1,7 @@
 package app.ok200.android
 
+import app.ok200.android.localization.localizedContext
+import kotlinx.coroutines.flow.MutableStateFlow
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -40,15 +42,22 @@ class Ok200Application : Application() {
         )
     }
 
+    val localizationChanges = MutableStateFlow(0)
+
+    fun refreshLocalization() {
+        createNotificationChannels()
+        localizationChanges.value += 1
+    }
+
     private fun createNotificationChannels() {
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(
             NotificationChannel(
                 SERVICE_NOTIFICATION_CHANNEL_ID,
-                getString(R.string.notification_channel_server_name),
+                localizedContext().getString(R.string.notification_channel_server_name),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = getString(R.string.notification_channel_server_description)
+                description = localizedContext().getString(R.string.notification_channel_server_description)
                 setShowBadge(false)
             }
         )

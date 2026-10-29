@@ -12,6 +12,7 @@ use tauri_plugin_autostart::ManagerExt as AutostartManagerExt;
 
 mod headless_updater;
 mod native_host;
+mod native_locale;
 mod server_control;
 mod update_policy;
 
@@ -398,12 +399,199 @@ fn configure_appimage_gio_modules() {
     std::env::set_var("GIO_MODULE_DIR", module_dir);
 }
 
+fn install_native_menus(
+    app: &tauri::App,
+    settings: &Settings,
+) -> Result<(), Box<dyn std::error::Error>> {
+    // Build settings submenu items. Each menu needs its own item
+    // instances (macOS NSMenuItem can only have one parent).
+    let build_settings_menu =
+        |app: &tauri::App,
+         settings: &Settings|
+         -> Result<tauri::menu::Submenu<tauri::Wry>, Box<dyn std::error::Error>> {
+            let autostart_i = CheckMenuItem::with_id(
+                app,
+                "autostart",
+                &native_locale::text(app.handle(), "start_at_login_5952eb"),
+                true,
+                settings.autostart,
+                None::<&str>,
+            )?;
+            let background_i = CheckMenuItem::with_id(
+                app,
+                "run-in-background",
+                &native_locale::text(app.handle(), "run_in_background_0db775"),
+                true,
+                settings.run_in_background,
+                None::<&str>,
+            )?;
+            let builder = SubmenuBuilder::with_id(
+                app,
+                "settings",
+                native_locale::translate(app.handle(), "Settings"),
+            )
+            .item(&autostart_i)
+            .item(&background_i);
+            let show_tray_icon_i = CheckMenuItem::with_id(
+                app,
+                "show-tray-icon",
+                &native_locale::translate(app.handle(), tray_icon_label()),
+                true,
+                settings.show_tray_icon,
+                None::<&str>,
+            )?;
+            let builder = builder.item(&show_tray_icon_i);
+            Ok(builder.build()?)
+        };
+
+    // macOS native app menu bar
+    #[cfg(target_os = "macos")]
+    {
+        let app_settings_menu = build_settings_menu(app, &settings)?;
+        let app_submenu = SubmenuBuilder::new(app, "200 OK")
+            .about_with_text(
+                native_locale::translate(app.handle(), "About 200 OK"),
+                Some(tauri::menu::AboutMetadata {
+                    name: Some("200 OK".to_string()),
+                    version: Some(app.config().version.clone().unwrap_or_default()),
+                    website: Some("https://ok200.app".to_string()),
+                    ..Default::default()
+                }),
+            )
+            .separator()
+            .items(&[&MenuItem::with_id(
+                app,
+                "check-updates",
+                &native_locale::text(app.handle(), "check_for_updates_9ed79e"),
+                true,
+                None::<&str>,
+            )?])
+            .separator()
+            .item(&app_settings_menu)
+            .separator()
+            .hide_with_text(native_locale::translate(app.handle(), "Hide 200 OK"))
+            .hide_others_with_text(native_locale::translate(app.handle(), "Hide Others"))
+            .show_all_with_text(native_locale::translate(app.handle(), "Show All"))
+            .separator()
+            .quit_with_text(native_locale::translate(app.handle(), "Quit 200 OK"))
+            .build()?;
+
+        let app_menu = Menu::with_items(app, &[&app_submenu])?;
+        app.set_menu(app_menu)?;
+    }
+
+    // System tray (separate item instances)
+    let tray_settings_menu = build_settings_menu(app, &settings)?;
+    let tray_menu = {
+        let show_i = MenuItem::with_id(
+            app,
+            "show",
+            &native_locale::text(app.handle(), "show_app_ec462a"),
+            true,
+            None::<&str>,
+        )?;
+        let update_i = MenuItem::with_id(
+            app,
+            "check-updates",
+            &native_locale::text(app.handle(), "check_for_updates_9ed79e"),
+            true,
+            None::<&str>,
+        )?;
+        let quit_i = MenuItem::with_id(
+            app,
+            "quit",
+            &native_locale::text(app.handle(), "quit_b3eb37"),
+            true,
+            None::<&str>,
+        )?;
+        let sep1 = PredefinedMenuItem::separator(app)?;
+        let sep2 = PredefinedMenuItem::separator(app)?;
+
+        Menu::with_items(
+            app,
+            &[
+                &show_i,
+                &update_i,
+                &sep1,
+                &tray_settings_menu,
+                &sep2,
+                &quit_i,
+            ],
+        )?
+    };
+
+    app.manage(native_locale::NativeTrayMenu(tray_menu.clone()));
+
+    // Collect native and tray shortcut checkmarks for state sync.
+    {
+        let mut sync_map: HashMap<String, Vec<CheckMenuItem<tauri::Wry>>> = HashMap::new();
+        fn collect_checks(
+            items: Vec<MenuItemKind<tauri::Wry>>,
+            map: &mut HashMap<String, Vec<CheckMenuItem<tauri::Wry>>>,
+        ) {
+            for item in items {
+                match item {
+                    MenuItemKind::Check(c) => {
+                        map.entry(c.id().as_ref().to_string()).or_default().push(c);
+                    }
+                    MenuItemKind::Submenu(sub) => {
+                        collect_checks(sub.items().unwrap_or_default(), map);
+                    }
+                    _ => {}
+                }
+            }
+        }
+        if let Some(app_menu) = app.menu() {
+            collect_checks(app_menu.items().unwrap_or_default(), &mut sync_map);
+        }
+        collect_checks(tray_menu.items().unwrap_or_default(), &mut sync_map);
+        app.manage(CheckItemSync(sync_map));
+    }
+
+    // Global menu handler for both app-menu and tray-menu events
+    app.on_menu_event(move |app, event| {
+        handle_menu_event(app, event.id.as_ref());
+    });
+
+    TrayIconBuilder::with_id("tray")
+        .tooltip("200 OK")
+        .icon(app.default_window_icon().unwrap().clone())
+        .menu(&tray_menu)
+        .show_menu_on_left_click(cfg!(target_os = "macos"))
+        .on_tray_icon_event(|tray, event| {
+            if !cfg!(target_os = "macos") {
+                if let TrayIconEvent::Click {
+                    button: MouseButton::Left,
+                    button_state: MouseButtonState::Up,
+                    ..
+                } = event
+                {
+                    show_main_window(tray.app_handle());
+                }
+            }
+        })
+        .build(app)?;
+
+    // Respect the persisted visibility choice on every desktop.
+    if !settings.show_tray_icon {
+        if let Some(tray) = app.tray_by_id("tray") {
+            let _ = tray.set_visible(false);
+        }
+    }
+
+    Ok(())
+}
+
+fn application_context() -> tauri::Context<tauri::Wry> {
+    tauri::generate_context!()
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     #[cfg(target_os = "linux")]
     configure_appimage_gio_modules();
 
-    let context = tauri::generate_context!();
+    let context = application_context();
 
     // Check for headless updater mode before building the full app
     let args: Vec<String> = std::env::args().collect();
@@ -426,6 +614,8 @@ pub fn run() {
             desktop_settings_update,
             desktop_check_for_updates,
             desktop_quit,
+            native_locale::desktop_language_get,
+            native_locale::desktop_language_set,
         ])
         .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
             if args.iter().any(|arg| arg == "--quit-for-uninstall") {
@@ -480,6 +670,7 @@ pub fn run() {
             }
 
             // Settings
+            native_locale::initialize(app.handle());
             let settings = load_settings(app.handle());
             app.manage(Mutex::new(settings.clone()));
             let server_config_path = app
@@ -493,162 +684,7 @@ pub fn run() {
                 home_dir,
             ));
 
-            // Build settings submenu items. Each menu needs its own item
-            // instances (macOS NSMenuItem can only have one parent).
-            let build_settings_menu = |app: &tauri::App,
-                                       settings: &Settings|
-             -> Result<
-                tauri::menu::Submenu<tauri::Wry>,
-                Box<dyn std::error::Error>,
-            > {
-                let autostart_i = CheckMenuItem::with_id(
-                    app,
-                    "autostart",
-                    "Start at Login",
-                    true,
-                    settings.autostart,
-                    None::<&str>,
-                )?;
-                let background_i = CheckMenuItem::with_id(
-                    app,
-                    "run-in-background",
-                    "Run in Background",
-                    true,
-                    settings.run_in_background,
-                    None::<&str>,
-                )?;
-                let builder = SubmenuBuilder::new(app, "Settings")
-                    .item(&autostart_i)
-                    .item(&background_i);
-                let show_tray_icon_i = CheckMenuItem::with_id(
-                    app,
-                    "show-tray-icon",
-                    tray_icon_label(),
-                    true,
-                    settings.show_tray_icon,
-                    None::<&str>,
-                )?;
-                let builder = builder.item(&show_tray_icon_i);
-                Ok(builder.build()?)
-            };
-
-            // macOS native app menu bar
-            #[cfg(target_os = "macos")]
-            {
-                let app_settings_menu = build_settings_menu(app, &settings)?;
-                let app_submenu = SubmenuBuilder::new(app, "200 OK")
-                    .about(Some(tauri::menu::AboutMetadata {
-                        name: Some("200 OK".to_string()),
-                        version: Some(app.config().version.clone().unwrap_or_default()),
-                        website: Some("https://ok200.app".to_string()),
-                        ..Default::default()
-                    }))
-                    .separator()
-                    .items(&[&MenuItem::with_id(
-                        app,
-                        "check-updates",
-                        "Check for Updates",
-                        true,
-                        None::<&str>,
-                    )?])
-                    .separator()
-                    .item(&app_settings_menu)
-                    .separator()
-                    .hide()
-                    .hide_others()
-                    .show_all()
-                    .separator()
-                    .quit()
-                    .build()?;
-
-                let app_menu = Menu::with_items(app, &[&app_submenu])?;
-                app.set_menu(app_menu)?;
-            }
-
-            // System tray (separate item instances)
-            let tray_settings_menu = build_settings_menu(app, &settings)?;
-            let tray_menu = {
-                let show_i = MenuItem::with_id(app, "show", "Show App", true, None::<&str>)?;
-                let update_i = MenuItem::with_id(
-                    app,
-                    "check-updates",
-                    "Check for Updates",
-                    true,
-                    None::<&str>,
-                )?;
-                let quit_i = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
-                let sep1 = PredefinedMenuItem::separator(app)?;
-                let sep2 = PredefinedMenuItem::separator(app)?;
-
-                Menu::with_items(
-                    app,
-                    &[
-                        &show_i,
-                        &update_i,
-                        &sep1,
-                        &tray_settings_menu,
-                        &sep2,
-                        &quit_i,
-                    ],
-                )?
-            };
-
-            // Collect native and tray shortcut checkmarks for state sync.
-            {
-                let mut sync_map: HashMap<String, Vec<CheckMenuItem<tauri::Wry>>> = HashMap::new();
-                fn collect_checks(
-                    items: Vec<MenuItemKind<tauri::Wry>>,
-                    map: &mut HashMap<String, Vec<CheckMenuItem<tauri::Wry>>>,
-                ) {
-                    for item in items {
-                        match item {
-                            MenuItemKind::Check(c) => {
-                                map.entry(c.id().as_ref().to_string()).or_default().push(c);
-                            }
-                            MenuItemKind::Submenu(sub) => {
-                                collect_checks(sub.items().unwrap_or_default(), map);
-                            }
-                            _ => {}
-                        }
-                    }
-                }
-                if let Some(app_menu) = app.menu() {
-                    collect_checks(app_menu.items().unwrap_or_default(), &mut sync_map);
-                }
-                collect_checks(tray_menu.items().unwrap_or_default(), &mut sync_map);
-                app.manage(CheckItemSync(sync_map));
-            }
-
-            // Global menu handler for both app-menu and tray-menu events
-            app.on_menu_event(move |app, event| {
-                handle_menu_event(app, event.id.as_ref());
-            });
-
-            TrayIconBuilder::with_id("tray")
-                .tooltip("200 OK")
-                .icon(app.default_window_icon().unwrap().clone())
-                .menu(&tray_menu)
-                .show_menu_on_left_click(cfg!(target_os = "macos"))
-                .on_tray_icon_event(|tray, event| {
-                    if !cfg!(target_os = "macos") {
-                        if let TrayIconEvent::Click {
-                            button: MouseButton::Left,
-                            button_state: MouseButtonState::Up,
-                            ..
-                        } = event
-                        {
-                            show_main_window(tray.app_handle());
-                        }
-                    }
-                })
-                .build(app)?;
-
-            // Respect the persisted visibility choice on every desktop.
-            if !settings.show_tray_icon {
-                if let Some(tray) = app.tray_by_id("tray") {
-                    let _ = tray.set_visible(false);
-                }
-            }
+            install_native_menus(app, &settings)?;
 
             // Register native messaging host manifests
             match native_host::register_native_messaging_hosts(app.handle()) {
@@ -870,4 +906,50 @@ mod tests {
 
         assert!(enabled, "bundle.createUpdaterArtifacts must remain enabled");
     }
+}
+
+/// Exercise the production menu builder and live locale updates without normal
+/// app plugins, native-host registration, user settings, windows or a server.
+#[cfg(debug_assertions)]
+pub fn run_localization_smoke(report: PathBuf, locale: String) {
+    let mut context = application_context();
+    context.config_mut().identifier =
+        format!("app.ok200.localization-smoke-{}", std::process::id());
+    context.config_mut().app.windows.clear();
+    let app = tauri::Builder::default().setup(move |app| {
+        native_locale::initialize(app.handle());
+        app.manage(Mutex::new(Settings::default()));
+        install_native_menus(app, &Settings::default())?;
+        fn names(items: Vec<MenuItemKind<tauri::Wry>>) -> Vec<String> {
+            let mut result = Vec::new();
+            for item in items {
+                match item {
+                    MenuItemKind::MenuItem(item) => result.push(item.text().unwrap()),
+                    MenuItemKind::Check(item) => result.push(item.text().unwrap()),
+                    MenuItemKind::Predefined(item) => result.push(item.text().unwrap()),
+                    MenuItemKind::Submenu(item) => { result.push(item.text().unwrap()); result.extend(names(item.items().unwrap())); }
+                    _ => {}
+                }
+            }
+            result
+        }
+        native_locale::desktop_language_set(app.handle().clone(), locale.clone())?;
+        let german = names(app.state::<native_locale::NativeTrayMenu>().0.items()?);
+        assert!(german.iter().any(|text| text == &ok200_common::localization::translate(&locale, "Quit")));
+        let native_german = app.menu().map(|menu| names(menu.items().unwrap())).unwrap_or_default();
+        native_locale::desktop_language_set(app.handle().clone(), "en".to_owned())?;
+        let english = names(app.state::<native_locale::NativeTrayMenu>().0.items()?);
+        assert!(english.iter().any(|text| text == "Quit"));
+        let directory = app.path().app_data_dir()?;
+        let saved: String = serde_json::from_slice(&std::fs::read(directory.join("language.json"))?)?;
+        assert_eq!(saved, "en");
+        std::fs::write(&report, serde_json::to_vec_pretty(&serde_json::json!({"locale": locale, "localizedTray": german, "localizedApplicationMenu": native_german, "englishTray": english, "persistedPreference": saved, "serverCreated": false}))?)?;
+        std::fs::remove_dir_all(directory)?;
+        Ok(())
+    }).build(context).expect("native localization smoke setup");
+    app.run(|app, event| {
+        if matches!(event, tauri::RunEvent::Ready) {
+            app.exit(0);
+        }
+    });
 }

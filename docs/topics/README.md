@@ -14,6 +14,9 @@ status. Do not create a topic for every small standalone change.
 
 ## Current topics
 
+- [`localization.md`](localization.md) — locale registry, native catalogs,
+  independent translation/review pipeline and app qualification.
+
 - [`dependency-security.md`](dependency-security.md) — dependency audit gates,
   advisory triage, remaining upstream warnings, and independent release rollout.
 - [`chrome-web-store-publishing.md`](chrome-web-store-publishing.md) — keyless

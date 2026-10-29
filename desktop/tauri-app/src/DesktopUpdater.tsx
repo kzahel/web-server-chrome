@@ -1,3 +1,4 @@
+import { getLocale, localizeDiagnostic, t, useLocale } from "@ok200/i18n";
 import { getBundleType, getVersion } from "@tauri-apps/api/app";
 import { invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
@@ -48,15 +49,19 @@ function errorMessage(error: unknown): string {
 
 function formatProgress(downloadedBytes: number, totalBytes?: number): string {
   if (totalBytes && totalBytes > 0) {
-    return `${Math.min(100, Math.round((downloadedBytes / totalBytes) * 100))}%`;
+    return new Intl.NumberFormat(getLocale(), {
+      style: "percent",
+      maximumFractionDigits: 0,
+    }).format(Math.min(1, downloadedBytes / totalBytes));
   }
   if (downloadedBytes < 1024 * 1024) {
-    return `${Math.round(downloadedBytes / 1024)} KB`;
+    return `${new Intl.NumberFormat(getLocale(), { maximumFractionDigits: 0 }).format(downloadedBytes / 1024)} KB`;
   }
-  return `${(downloadedBytes / (1024 * 1024)).toFixed(1)} MB`;
+  return `${new Intl.NumberFormat(getLocale(), { maximumFractionDigits: 1 }).format(downloadedBytes / (1024 * 1024))} MB`;
 }
 
 export function DesktopUpdater() {
+  useLocale();
   const [notice, setNotice] = useState<Notice>({ status: "hidden" });
   const [currentVersion, setCurrentVersion] = useState("");
   const updateRef = useRef<Update | null>(null);
@@ -253,7 +258,10 @@ export function DesktopUpdater() {
     } catch (error) {
       setNotice({
         status: "error",
-        message: `Could not open ${DOWNLOAD_PAGE_URL}: ${errorMessage(error)}`,
+        message: t("desktop.could.not.open.value0.value1.fe47fa", {
+          value0: DOWNLOAD_PAGE_URL,
+          value1: errorMessage(error),
+        }),
         retry: "check",
       });
     }
@@ -306,31 +314,44 @@ export function DesktopUpdater() {
           <div className="flex items-start justify-between gap-2">
             <div>
               <h2 className="text-xs font-semibold">
-                {notice.status === "checking" && "Checking for updates…"}
-                {notice.status === "up-to-date" && "You’re up to date"}
+                {notice.status === "checking" &&
+                  t("desktop.checking.for.updates.497a19")}
+                {notice.status === "up-to-date" &&
+                  t("desktop.you.re.up.to.date.8d757d")}
                 {notice.status === "available" &&
-                  `200 OK ${notice.version} is available`}
+                  t("desktop.200.ok.value0.is.available.31c835", {
+                    value0: notice.version,
+                  })}
                 {notice.status === "manual-install" &&
-                  "Install updates manually"}
+                  t("desktop.install.updates.manually.60762c")}
                 {notice.status === "downloading" &&
-                  `Downloading 200 OK ${notice.version}…`}
-                {notice.status === "installing" && "Installing update…"}
-                {notice.status === "error" && "Update failed"}
+                  t("desktop.downloading.200.ok.value0.19b49e", {
+                    value0: notice.version,
+                  })}
+                {notice.status === "installing" &&
+                  t("desktop.installing.update.29e74e")}
+                {notice.status === "error" && t("desktop.update.failed.e58282")}
               </h2>
               <p className="mt-0.5 text-[11px] leading-4 text-gray-600 dark:text-gray-300">
                 {notice.status === "checking" &&
-                  "Contacting the 200 OK update server."}
+                  t("desktop.contacting.the.200.ok.update.server.663342")}
                 {notice.status === "up-to-date" &&
-                  `200 OK${currentVersion ? ` ${currentVersion}` : ""} is the newest version.`}
+                  t("desktop.200.ok.value0.is.the.newest.version.98822f", {
+                    value0: currentVersion ? ` ${currentVersion}` : "",
+                  })}
                 {notice.status === "available" &&
-                  "The update is signed and ready to install."}
+                  t("desktop.the.update.is.signed.and.ready.to.install.4abbcb")}
                 {notice.status === "manual-install" &&
-                  `Updates for the ${notice.packageLabel} stay with that package type. Download the matching package from ok200.app.`}
+                  t(
+                    "desktop.updates.for.the.value0.stay.with.that.package.type.down.686fbe",
+                    { value0: localizeDiagnostic(notice.packageLabel) },
+                  )}
                 {notice.status === "downloading" &&
                   formatProgress(notice.downloadedBytes, notice.totalBytes)}
                 {notice.status === "installing" &&
-                  "200 OK will restart when installation finishes."}
-                {notice.status === "error" && notice.message}
+                  t("desktop.restart.after.update")}
+                {notice.status === "error" &&
+                  localizeDiagnostic(notice.message)}
               </p>
             </div>
 
@@ -339,8 +360,8 @@ export function DesktopUpdater() {
                 type="button"
                 onClick={dismiss}
                 className="-mr-1 -mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-sm text-gray-500 hover:bg-black/5 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f8d203] dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white"
-                aria-label="Dismiss update notice"
-                title="Dismiss"
+                aria-label={t("desktop.dismiss.update.notice.6a124b")}
+                title={t("desktop.dismiss.48845b")}
               >
                 ×
               </button>
@@ -384,10 +405,10 @@ export function DesktopUpdater() {
                 data-testid="update-action"
               >
                 {notice.status === "manual-install"
-                  ? "Open downloads"
+                  ? t("desktop.open.downloads.3e4ad2")
                   : notice.status === "available" || notice.retry === "install"
-                    ? "Install & Restart"
-                    : "Check again"}
+                    ? t("desktop.install.restart.223cb1")
+                    : t("desktop.check.again.fb7099")}
               </button>
               {notice.status === "available" && (
                 <button
@@ -395,7 +416,7 @@ export function DesktopUpdater() {
                   onClick={dismiss}
                   className="rounded-lg border border-black/15 px-2.5 py-1.5 text-[11px] font-semibold text-gray-700 transition hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d2af00] dark:border-white/20 dark:text-gray-200 dark:hover:bg-white/10"
                 >
-                  Later
+                  {t("desktop.later.73b6e4")}
                 </button>
               )}
             </div>

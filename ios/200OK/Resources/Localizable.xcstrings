@@ -1,0 +1,906 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Allow cross-origin browser requests.": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erlaube Browseranfragen von anderen Ursprüngen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow cross-origin browser requests."
+          }
+        }
+      }
+    },
+    "Allow other devices on this Wi-Fi network to connect.": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erlaube anderen Geräten in diesem WLAN, sich zu verbinden."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow other devices on this Wi-Fi network to connect."
+          }
+        }
+      }
+    },
+    "Bad Request": {
+      "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ungültige Anfrage"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bad Request"
+          }
+        }
+      }
+    },
+    "Change": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ändern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change"
+          }
+        }
+      }
+    },
+    "Choose": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auswählen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose"
+          }
+        }
+      }
+    },
+    "Choose a folder before starting the server.": {
+      "comment": "200 OK product copy: Storage/SecurityScopedRoot.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle einen Ordner aus, bevor du den Server startest."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a folder before starting the server."
+          }
+        }
+      }
+    },
+    "Choose a serving folder to enable the server.": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle einen Stammordner aus, um den Server zu aktivieren."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a serving folder to enable the server."
+          }
+        }
+      }
+    },
+    "Copy": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy"
+          }
+        }
+      }
+    },
+    "Directory listing": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verzeichnisliste"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Directory listing"
+          }
+        }
+      }
+    },
+    "Done": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fertig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "Enter 0 or a port from 1 to 65535.": {
+      "comment": "200 OK product copy: IOSServerController.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gib 0 oder einen Port von 1 bis 65535 ein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter 0 or a port from 1 to 65535."
+          }
+        }
+      }
+    },
+    "Error: %@": {
+      "comment": "Controller failure with a localized or unknown diagnostic. Preserve %@.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fehler: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error: %@"
+          }
+        }
+      }
+    },
+    "Feedback & support": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feedback & Hilfe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feedback & support"
+          }
+        }
+      }
+    },
+    "Local network access": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zugriff im lokalen Netzwerk"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Local network access"
+          }
+        }
+      }
+    },
+    "Malformed HTTP request.\\n": {
+      "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fehlerhafte HTTP-Anfrage.\\n"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Malformed HTTP request.\\n"
+          }
+        }
+      }
+    },
+    "No current Wi-Fi address is available. The server remains local to this iPhone until Wi-Fi is ready.": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Derzeit ist keine WLAN-Adresse verfügbar. Der Server bleibt nur auf diesem iPhone erreichbar, bis das WLAN bereit ist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No current Wi-Fi address is available. The server remains local to this iPhone until Wi-Fi is ready."
+          }
+        }
+      }
+    },
+    "No folder selected": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein Ordner ausgewählt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No folder selected"
+          }
+        }
+      }
+    },
+    "Port": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Port"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Port"
+          }
+        }
+      }
+    },
+    "Preview": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vorschau"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preview"
+          }
+        }
+      }
+    },
+    "Privacy": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datenschutz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy"
+          }
+        }
+      }
+    },
+    "Read-only access through Files": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibgeschützter Zugriff über „Dateien“"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read-only access through Files"
+          }
+        }
+      }
+    },
+    "Request Timeout": {
+      "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeitüberschreitung der Anfrage"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Request Timeout"
+          }
+        }
+      }
+    },
+    "Request timed out.\\n": {
+      "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Zeit für die Anfrage ist abgelaufen.\\n"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Request timed out.\\n"
+          }
+        }
+      }
+    },
+    "Running": {
+      "comment": "200 OK product copy: IOSServerController.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läuft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Running"
+          }
+        }
+      }
+    },
+    "Running URLs": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktive URLs"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Running URLs"
+          }
+        }
+      }
+    },
+    "Serve the root index.html for missing routes without extensions.": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stelle bei fehlenden Routen ohne Dateiendung die index.html aus dem Stammordner bereit."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serve the root index.html for missing routes without extensions."
+          }
+        }
+      }
+    },
+    "Server": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server"
+          }
+        }
+      }
+    },
+    "Serving behavior": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serververhalten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serving behavior"
+          }
+        }
+      }
+    },
+    "Serving folder": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stammordner"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serving folder"
+          }
+        }
+      }
+    },
+    "Serving works while 200 OK is open. iOS stops the server when the app moves to the background.": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dateien werden bereitgestellt, solange 200 OK im Vordergrund geöffnet ist. iOS stoppt den Server, wenn die App in den Hintergrund wechselt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serving works while 200 OK is open. iOS stops the server when the app moves to the background."
+          }
+        }
+      }
+    },
+    "Share": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teilen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        }
+      }
+    },
+    "Show a file list when a folder has no index.html.": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeige eine Verzeichnisliste an, wenn ein Ordner keine index.html enthält."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show a file list when a folder has no index.html."
+          }
+        }
+      }
+    },
+    "Single-page app fallback": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fallback für Single-Page-Apps"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Single-page app fallback"
+          }
+        }
+      }
+    },
+    "Source code · MIT": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quellcode · MIT"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source code · MIT"
+          }
+        }
+      }
+    },
+    "Starting…": {
+      "comment": "200 OK product copy: IOSServerController.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wird gestartet…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starting…"
+          }
+        }
+      }
+    },
+    "Starts the web server": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startet den Webserver"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starts the web server"
+          }
+        }
+      }
+    },
+    "Stop the server to change this setting.": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stoppe den Server, um diese Einstellung zu ändern."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop the server to change this setting."
+          }
+        }
+      }
+    },
+    "Stopped": {
+      "comment": "200 OK product copy: IOSServerController.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestoppt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stopped"
+          }
+        }
+      }
+    },
+    "Stopping…": {
+      "comment": "200 OK product copy: IOSServerController.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wird gestoppt…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stopping…"
+          }
+        }
+      }
+    },
+    "Stops the web server": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stoppt den Webserver"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stops the web server"
+          }
+        }
+      }
+    },
+    "The saved folder permission has expired. Choose the folder again.": {
+      "comment": "200 OK product copy: Storage/SecurityScopedRoot.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die gespeicherte Zugriffsberechtigung für den Ordner ist abgelaufen. Wähle den Ordner erneut aus."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The saved folder permission has expired. Choose the folder again."
+          }
+        }
+      }
+    },
+    "The selected folder is unavailable. Choose it again in Files.": {
+      "comment": "200 OK product copy: Storage/SecurityScopedRoot.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der ausgewählte Ordner ist nicht verfügbar. Wähle ihn in „Dateien“ erneut aus."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The selected folder is unavailable. Choose it again in Files."
+          }
+        }
+      }
+    },
+    "The selected item is not a folder.": {
+      "comment": "200 OK product copy: Storage/SecurityScopedRoot.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das ausgewählte Objekt ist kein Ordner."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The selected item is not a folder."
+          }
+        }
+      }
+    },
+    "The server could not start. Check the folder and port, then try again.": {
+      "comment": "200 OK product copy: IOSServerController.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Server konnte nicht gestartet werden. Prüfe den Ordner und den Port und versuche es erneut."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server could not start. Check the folder and port, then try again."
+          }
+        }
+      }
+    },
+    "The server is already running.": {
+      "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Server läuft bereits."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server is already running."
+          }
+        }
+      }
+    },
+    "The server is busy.": {
+      "comment": "200 OK product copy: HTTP/SwiftHTTPServer.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Server ist ausgelastet."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server is busy."
+          }
+        }
+      }
+    },
+    "The server stopped when 200 OK moved to the background. Start it again when you’re ready.": {
+      "comment": "200 OK product copy: IOSServerController.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Server wurde gestoppt, als 200 OK in den Hintergrund wechselte. Starte ihn erneut, wenn du bereit bist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server stopped when 200 OK moved to the background. Start it again when you’re ready."
+          }
+        }
+      }
+    },
+    "This iPhone": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieses iPhone"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This iPhone"
+          }
+        }
+      }
+    },
+    "Use 0 to choose an available port": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gib 0 ein, um einen freien Port auszuwählen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use 0 to choose an available port"
+          }
+        }
+      }
+    },
+    "Web Server": {
+      "comment": "200 OK product copy: ServerScreen.swift",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Webserver"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Web Server"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

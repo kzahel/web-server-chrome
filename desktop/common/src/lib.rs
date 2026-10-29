@@ -1,3 +1,5 @@
+pub mod localization;
+
 use std::path::{Path, PathBuf};
 
 pub fn get_config_dir() -> Option<PathBuf> {

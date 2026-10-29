@@ -1,3 +1,4 @@
+import { t, useLocale } from "@ok200/i18n";
 import { useState } from "react";
 
 interface ServerUrlProps {
@@ -39,6 +40,7 @@ function CopyIcon() {
 }
 
 export function ServerUrl({ host, port, onOpen }: ServerUrlProps) {
+  useLocale();
   const [copied, setCopied] = useState(false);
   const displayHost = host === "0.0.0.0" ? "localhost" : host;
   const url = `http://${displayHost}:${port}`;
@@ -60,7 +62,7 @@ export function ServerUrl({ host, port, onOpen }: ServerUrlProps) {
         onClick={() => void onOpen(url)}
         data-testid="server-url"
         className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-2 text-left font-mono text-xs font-medium text-[#8a6800] transition hover:bg-[#f8d203]/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#f8d203] dark:text-[#f8d203]"
-        title="Open in default browser"
+        title={t("desktop.open.in.default.browser.d1f5a8")}
       >
         <span className="min-w-0 flex-1 truncate">{url}</span>
         <ExternalLinkIcon />
@@ -69,11 +71,15 @@ export function ServerUrl({ host, port, onOpen }: ServerUrlProps) {
         type="button"
         onClick={handleCopy}
         className="flex w-10 shrink-0 items-center justify-center border-l border-gray-300 text-gray-500 transition hover:bg-gray-100 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#f8d203] dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100"
-        title="Copy URL"
-        aria-label={copied ? "URL copied" : "Copy URL"}
+        title={t("desktop.copy.url.b26d10")}
+        aria-label={
+          copied ? t("desktop.url.copied.0017bd") : t("desktop.copy.url.b26d10")
+        }
       >
         {copied ? (
-          <span className="text-[10px] font-semibold">Copied</span>
+          <span className="text-[10px] font-semibold">
+            {t("desktop.copied.8d525e")}
+          </span>
         ) : (
           <CopyIcon />
         )}

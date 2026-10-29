@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "200 OK Web Server",
+  "name": "__MSG_app_name__",
   "short_name": "200 OK",
   "version": "0.1.8",
-  "description": "Launch 200 OK on desktop or ChromeOS; set up and control its ChromeOS Linux server. Successor to Web Server for Chrome.",
+  "description": "__MSG_app_description__",
   "permissions": ["nativeMessaging"],
   "optional_host_permissions": ["http://penguin.linux.test/*"],
   "background": {
@@ -12,7 +12,7 @@
   },
   "action": {
     "default_popup": "src/ui/app.html",
-    "default_title": "Open 200 OK Web Server"
+    "default_title": "__MSG_action_title__"
   },
   "icons": {
     "16": "icons/ok-16.png",
@@ -27,5 +27,6 @@
       "http://local.ok200.app/*",
       "http://penguin.linux.test/*"
     ]
-  }
+  },
+  "default_locale": "en"
 }

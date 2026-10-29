@@ -2,6 +2,30 @@ import XCTest
 
 final class ServerScreenUITests: XCTestCase {
     @MainActor
+    func testTranslatedServingAndPersistedFolder() {
+        let environment = ProcessInfo.processInfo.environment
+        let locale = environment["OK200_TEST_LOCALE"] ?? "de"
+        let stopped = environment["OK200_TEST_STOPPED"] ?? "Gestoppt"
+        let running = environment["OK200_TEST_RUNNING"] ?? "Läuft"
+        let app = XCUIApplication()
+        app.launchArguments = ["-reset-ok200-ui-test-state", "-use-ok200-ui-test-fixture", "-AppleLanguages", "(\(locale))", "-AppleLocale", locale.replacingOccurrences(of: "-", with: "_")]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["server-status"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["server-status"].label, stopped)
+        let folder = app.staticTexts["folder-name"].label
+        app.switches["server-toggle"].tap()
+        XCTAssertEqual(app.staticTexts["server-status"].label, running)
+        XCTAssertFalse(app.buttons["choose-folder"].isEnabled)
+        app.switches["server-toggle"].tap()
+        app.terminate()
+        app.launchArguments = ["-AppleLanguages", "(\(locale))", "-AppleLocale", locale.replacingOccurrences(of: "-", with: "_")]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["server-status"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["folder-name"].label, folder)
+        XCTAssertEqual(app.staticTexts["server-status"].label, stopped)
+    }
+
+    @MainActor
     func testFixtureStartsAndLocksSettings() {
         let app = XCUIApplication()
         app.launchArguments = [

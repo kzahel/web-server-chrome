@@ -1,5 +1,6 @@
 package app.ok200.android.viewmodel
 
+import app.ok200.android.localization.localizedContext
 import android.app.Application
 import android.net.Uri
 import android.os.Build
@@ -202,7 +203,7 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
         if (controller.onNotificationAvailabilityChanged(available)) {
             settings.reliableNotificationBlockedNotice = false
             _startOnBoot.value = settings.startOnBoot
-            _uiMessage.value = app.getString(R.string.message_reliable_notifications_stopped)
+            _uiMessage.value = app.localizedContext().getString(R.string.message_reliable_notifications_stopped)
         }
     }
 
@@ -212,7 +213,7 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
         pendingNotificationAction = null
         if (!_notificationPermissionGranted.value) {
             if (action != null) {
-                _uiMessage.value = app.getString(R.string.message_reliable_notifications_required)
+                _uiMessage.value = app.localizedContext().getString(R.string.message_reliable_notifications_required)
             }
             return
         }
@@ -244,7 +245,7 @@ class ServerViewModel(application: Application) : AndroidViewModel(application) 
     private fun consumeStoredLifecycleNotice(): String? {
         if (!settings.reliableNotificationBlockedNotice) return null
         settings.reliableNotificationBlockedNotice = false
-        return app.getString(R.string.message_reliable_notifications_stopped)
+        return app.localizedContext().getString(R.string.message_reliable_notifications_stopped)
     }
 
     private fun hasAllFilesAccess(): Boolean =

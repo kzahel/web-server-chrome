@@ -1,3 +1,4 @@
+import { t, useLocale } from "@ok200/i18n";
 import { useServer } from "../hooks/useServer";
 import { HeroZone } from "./HeroZone";
 import { SettingsZone } from "./SettingsZone";
@@ -7,6 +8,7 @@ interface ServerPageProps {
 }
 
 export function ServerPage({ serverId }: ServerPageProps) {
+  useLocale();
   const {
     server,
     loading,
@@ -21,7 +23,7 @@ export function ServerPage({ serverId }: ServerPageProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full text-gray-400">
-        Loading...
+        {t("desktop.loading.47d2a5")}
       </div>
     );
   }
@@ -29,7 +31,7 @@ export function ServerPage({ serverId }: ServerPageProps) {
   if (!server) {
     return (
       <div className="flex items-center justify-center h-full text-gray-400">
-        Server not found
+        {t("desktop.server.not.found.d7783f")}
       </div>
     );
   }

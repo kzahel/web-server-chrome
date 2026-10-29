@@ -1,0 +1,23 @@
+{
+  "start_at_login_5952eb": "Start at Login",
+  "run_in_background_0db775": "Run in Background",
+  "settings_74a883": "Settings",
+  "check_for_updates_9ed79e": "Check for Updates",
+  "show_app_ec462a": "Show App",
+  "quit_b3eb37": "Quit",
+  "show_icon_in_menu_bar_0ad9f3": "Show Icon in Menu Bar",
+  "show_icon_in_system_tray_25b481": "Show Icon in System Tray",
+  "choose_folder_to_serve_d488f4": "Choose Folder to Serve",
+  "launching_b1601d": "Launching...",
+  "200_ok_could_not_open_1c0215": "200 OK could not open.",
+  "try_again_df0fe9": "Try Again",
+  "close_7d9eb7": "Close",
+  "unknown_launch_error_3585c0": "Unknown launch error",
+  "about_200_ok_ba8aa9": "About 200 OK",
+  "hide_200_ok_981b92": "Hide 200 OK",
+  "hide_others_1753e2": "Hide Others",
+  "show_all_e1c326": "Show All",
+  "quit_200_ok_686f8f": "Quit 200 OK",
+  "web_server_fc0480": "Web Server",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "Open 200 OK Web Server for ChromeOS Linux"
+}

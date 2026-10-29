@@ -519,11 +519,14 @@ pub async fn server_pick_root(
     use tauri_plugin_dialog::DialogExt;
 
     let (sender, receiver) = tokio::sync::oneshot::channel();
-    let mut builder = app
-        .dialog()
-        .file()
-        .set_parent(&window)
-        .set_title("Choose Folder to Serve");
+    let mut builder =
+        app.dialog()
+            .file()
+            .set_parent(&window)
+            .set_title(crate::native_locale::text(
+                &app,
+                "choose_folder_to_serve_d488f4",
+            ));
     if let Some(directory) = start_dir.filter(|path| Path::new(path).is_dir()) {
         builder = builder.set_directory(directory);
     }

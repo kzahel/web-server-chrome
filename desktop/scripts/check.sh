@@ -5,6 +5,8 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 desktop_root="$(cd "$script_dir/.." && pwd)"
 repo_root="$(cd "$desktop_root/.." && pwd)"
 
+python3 "$script_dir/../../scripts/check-native-localization.py" desktop
+
 node --test "$repo_root/.github/scripts/validate-desktop-release.test.mjs"
 
 cd "$desktop_root"

@@ -1,0 +1,24 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSLocalNetworkUsageDescription": {
+      "comment": "System local-network permission explanation. iOS only serves while foregrounded.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK stellt den von dir ausgewählten Ordner für Geräte in deinem lokalen Netzwerk bereit, solange diese App im Vordergrund geöffnet ist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200 OK serves the folder you choose to devices on your local network while this app is open."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

@@ -4,7 +4,9 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
+serde_json = { workspace = true }
 dirs = { workspace = true }
+sys-locale = "0.3"
 uuid = { workspace = true }
 
 [dev-dependencies]

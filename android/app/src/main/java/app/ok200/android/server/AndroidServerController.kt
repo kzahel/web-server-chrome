@@ -1,5 +1,6 @@
 package app.ok200.android.server
 
+import app.ok200.android.localization.localizedContext
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -79,7 +80,7 @@ class AndroidServerController(
                     settings.desiredRunning = false
                     scope.launch {
                         commandMutex.withLock {
-                            failStart(appContext.getString(R.string.error_reliable_notifications_required))
+                            failStart(appContext.localizedContext().getString(R.string.error_reliable_notifications_required))
                         }
                     }
                     return
@@ -104,7 +105,7 @@ class AndroidServerController(
             onNotificationAvailabilityChanged(false)
             scope.launch {
                 commandMutex.withLock {
-                    failStart(appContext.getString(R.string.error_reliable_notifications_required))
+                    failStart(appContext.localizedContext().getString(R.string.error_reliable_notifications_required))
                 }
             }
             return
@@ -131,10 +132,10 @@ class AndroidServerController(
 
         val rootValue = settings.rootUri
         if (rootValue.isNullOrBlank()) {
-            return failStart(appContext.getString(R.string.error_no_folder_selected))
+            return failStart(appContext.localizedContext().getString(R.string.error_no_folder_selected))
         }
         val rootUri = runCatching { Uri.parse(rootValue) }.getOrNull()
-            ?: return failStart(appContext.getString(R.string.error_selected_folder_invalid))
+            ?: return failStart(appContext.localizedContext().getString(R.string.error_selected_folder_invalid))
 
         _state.value = ServerState(
             phase = ServerPhase.STARTING,
@@ -179,7 +180,7 @@ class AndroidServerController(
             return _state.value
         } catch (error: Exception) {
             Log.e(TAG, "Failed to start server", error)
-            return failStart(error.message ?: appContext.getString(R.string.error_unable_to_start_server))
+            return failStart(error.message ?: appContext.localizedContext().getString(R.string.error_unable_to_start_server))
         }
     }
 
@@ -304,16 +305,16 @@ class AndroidServerController(
     private fun createTree(uri: Uri): ReadOnlyFileTree = when (uri.scheme?.lowercase()) {
         "file" -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
-                error(appContext.getString(R.string.error_all_files_access_required))
+                error(appContext.localizedContext().getString(R.string.error_all_files_access_required))
             }
-            val path = uri.path ?: error(appContext.getString(R.string.error_filesystem_root_has_no_path))
+            val path = uri.path ?: error(appContext.localizedContext().getString(R.string.error_filesystem_root_has_no_path))
             val root = File(path).canonicalFile
             require(root.path != File.separator) {
-                appContext.getString(R.string.error_android_root_cannot_be_served)
+                appContext.localizedContext().getString(R.string.error_android_root_cannot_be_served)
             }
             FilesystemFileTree(
                 root,
-                appContext.getString(R.string.error_serving_root_not_readable)
+                appContext.localizedContext().getString(R.string.error_serving_root_not_readable)
             )
         }
         "content" -> {
@@ -321,11 +322,11 @@ class AndroidServerController(
                 it.uri == uri && it.isReadPermission
             }
             check(hasPersistedReadAccess) {
-                appContext.getString(R.string.error_folder_access_revoked)
+                appContext.localizedContext().getString(R.string.error_folder_access_revoked)
             }
             SafFileTree(appContext, uri)
         }
-        else -> error(appContext.getString(R.string.error_unsupported_folder))
+        else -> error(appContext.localizedContext().getString(R.string.error_unsupported_folder))
     }
 
     private fun bindHost(): String = if (settings.lanEnabled) "0.0.0.0" else "127.0.0.1"

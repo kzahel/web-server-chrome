@@ -1031,6 +1031,7 @@ private fun CompactToggle(
 private fun ProjectLinks(onOpen: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         HorizontalDivider()
+        LanguagePicker()
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(onClick = { onOpen(FEEDBACK_URL) }, modifier = Modifier.weight(1f)) {
                 Text(stringResource(R.string.action_feedback))

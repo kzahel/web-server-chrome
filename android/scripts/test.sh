@@ -119,7 +119,7 @@ fi
 if $RUN_INTEGRATION; then
     echo ""
     echo "=== Integration Tests (instrumented) ==="
-    if ./gradlew connectedDebugAndroidTest $GRADLE_QUIET; then
+    if ./gradlew connectedDebugAndroidTest "-Pandroid.testInstrumentationRunnerArguments.ok200Locale=${OK200_TEST_LOCALE:-de}" $GRADLE_QUIET; then
         echo "  PASSED"
     else
         echo "  FAILED"

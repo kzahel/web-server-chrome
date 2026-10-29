@@ -55,6 +55,8 @@ for (const entry of entries) {
     "development public key file is not store-safe",
   );
   if (REQUIRED_FILES.has(entry)) continue;
+  if (/^_locales\/[a-z]{2,3}(?:_[A-Za-z0-9]+)*\/messages\.json$/.test(entry))
+    continue;
   if (/^assets\/[A-Za-z0-9_-]+\.js$/.test(entry)) {
     scriptAssetCount += 1;
     continue;
@@ -68,11 +70,66 @@ assert(scriptAssetCount > 0, "missing compiled JavaScript assets");
 
 const manifestText = packageReader.readText("manifest.json");
 const manifest = JSON.parse(manifestText);
+function displayMessage(value) {
+  const match = /^__MSG_(\w+)__$/.exec(value || "");
+  if (!match) return value; // Previously released English-only packages remain valid.
+  assert(
+    manifest.default_locale === "en",
+    "localized manifest must default to English",
+  );
+  const messages = JSON.parse(
+    packageReader.readText("_locales/en/messages.json"),
+  );
+  assert(
+    typeof messages[match[1]]?.message === "string",
+    "missing manifest translation",
+  );
+  return messages[match[1]].message;
+}
+const localeFiles = entries.filter((entry) => entry.startsWith("_locales/"));
+assert(
+  localeFiles.length === 0 || manifest.default_locale === "en",
+  "locale directories require an English default_locale",
+);
+if (manifest.default_locale) {
+  const registry = JSON.parse(
+    fs.readFileSync(
+      new URL("../localization/locales.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  const expected = registry.supportedLocales.extension
+    .map((locale) => `_locales/${locale.replaceAll("-", "_")}/messages.json`)
+    .sort();
+  assert(
+    JSON.stringify(localeFiles.sort()) === JSON.stringify(expected),
+    "packaged locale set differs from release registration",
+  );
+  const english = JSON.parse(
+    packageReader.readText("_locales/en/messages.json"),
+  );
+  const keys = Object.keys(english).sort();
+  for (const file of entries.filter((entry) => entry.startsWith("_locales/"))) {
+    const messages = JSON.parse(packageReader.readText(file));
+    assert(
+      JSON.stringify(Object.keys(messages).sort()) === JSON.stringify(keys),
+      `incomplete locale: ${file}`,
+    );
+    for (const [key, entry] of Object.entries(messages))
+      assert(
+        typeof entry.message === "string" && entry.message.trim(),
+        `invalid localized message: ${file}/${key}`,
+      );
+  }
+}
 assert(manifest.manifest_version === 3, "manifest_version must be 3");
-assert(manifest.name === "200 OK Web Server", "unexpected extension name");
+assert(
+  displayMessage(manifest.name) === "200 OK Web Server",
+  "unexpected extension name",
+);
 assert(manifest.short_name === "200 OK", "unexpected extension short name");
 assert(
-  manifest.description === EXPECTED_DESCRIPTION,
+  displayMessage(manifest.description) === EXPECTED_DESCRIPTION,
   "unexpected extension description",
 );
 assert(
@@ -114,7 +171,7 @@ assert(
   "unexpected popup path",
 );
 assert(
-  manifest.action?.default_title === "Open 200 OK Web Server",
+  displayMessage(manifest.action?.default_title) === "Open 200 OK Web Server",
   "unexpected extension action title",
 );
 assert(

@@ -1,0 +1,24 @@
+{
+  "name": "@ok200/i18n",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.tsx"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "intl-messageformat": "11.2.9",
+    "react": "^19.2.4",
+    "@formatjs/icu-messageformat-parser": "3.5.17"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.12"
+  }
+}

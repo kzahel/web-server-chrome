@@ -14,7 +14,7 @@
   --border-strong: #c9cbd1;
   --text: #171719;
   --text-secondary: #64666d;
-  --text-tertiary: #85878e;
+  --text-tertiary: #656872;
   --success: #16834c;
   --success-bg: #eaf8ef;
   --error: #b4232c;
@@ -92,6 +92,7 @@ input[aria-disabled="true"] {
 
 .product-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   min-height: 46px;
@@ -153,6 +154,7 @@ input[aria-disabled="true"] {
 
 .controller-stack {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 9px;
 }
 
@@ -1169,6 +1171,7 @@ input[aria-disabled="true"] {
 
 .setup-steps {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
   padding-left: 20px;
 }
@@ -1191,7 +1194,8 @@ input[aria-disabled="true"] {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 11px;
   line-height: 1.6;
-  white-space: pre;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .nested-disclosure,
@@ -1325,4 +1329,29 @@ input[aria-disabled="true"] {
   .controller-footer {
     flex-wrap: wrap;
   }
+}
+
+.product-header .language-row {
+  order: 3;
+  width: 100%;
+  padding-inline-start: 54px;
+  box-sizing: border-box;
+}
+
+.controller-stack > *,
+.setup-steps > li {
+  min-width: 0;
+}
+.setup-copy {
+  overflow-wrap: anywhere;
+}
+
+/* Translated explanations must remain readable at narrow control widths. */
+.setting-copy span,
+.port-row label span,
+.product-title > span {
+  white-space: normal;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
 }

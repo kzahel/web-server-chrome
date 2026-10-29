@@ -5,6 +5,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
+import { chromium } from "@playwright/test";
 
 class CdpClient {
   constructor(socket) {
@@ -63,6 +64,16 @@ const artifactDirectory = path.resolve(artifactArgument);
 const manifestPath = path.join(extensionDirectory, "manifest.json");
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 const chromeBinary = resolveChromeBinary();
+const testLocale = process.env.OK200_TEST_LOCALE || "en";
+const expectedPrimary = JSON.parse(
+  fs.readFileSync(
+    new URL(
+      `../../localization/catalogs/web/${testLocale}.json`,
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+)["extension.get.the.desktop.app.39b7d5"].defaultMessage;
 const scratchDirectory = fs.mkdtempSync(
   path.join(os.tmpdir(), "ok200-extension-browser-"),
 );
@@ -117,6 +128,9 @@ try {
       deviceScaleFactor: 1,
       mobile: false,
     });
+    await client.send("Runtime.evaluate", {
+      expression: `localStorage.setItem("ok200.language", ${JSON.stringify(testLocale)})`,
+    });
     await client.send("Page.reload", { ignoreCache: true });
 
     const result = await waitForPopup(client);
@@ -166,14 +180,9 @@ try {
 }
 
 function resolveChromeBinary() {
-  const candidates = [
-    process.env.CHROME_BIN,
-    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    "/usr/bin/google-chrome",
-    "/usr/bin/google-chrome-stable",
-    "/usr/bin/chromium",
-    "/usr/bin/chromium-browser",
-  ].filter(Boolean);
+  const candidates = [process.env.CHROME_BIN, chromium.executablePath()].filter(
+    Boolean,
+  );
   const match = candidates.find((candidate) => fs.existsSync(candidate));
   if (!match) {
     throw new Error(
@@ -228,7 +237,7 @@ async function waitForPopup(client) {
     const evaluation = await client.send("Runtime.evaluate", {
       expression: `(() => {
         const primary = [...document.querySelectorAll("a, button")]
-          .find((element) => element.textContent?.trim() === "Get the Desktop App");
+          .find((element) => element.textContent?.trim() === ${JSON.stringify(expectedPrimary)});
         const rect = primary?.getBoundingClientRect();
         return {
           title: document.title,
@@ -256,7 +265,7 @@ async function waitForPopup(client) {
       );
     }
     const value = evaluation.result?.value;
-    if (value?.text?.includes("Get the Desktop App")) return value;
+    if (value?.text?.includes(expectedPrimary)) return value;
     await delay(100);
   }
   throw new Error("Popup did not reach the missing-native-host recovery state");
@@ -284,7 +293,7 @@ function verifyPopup(result, expectedManifest, extensionId) {
     "package must use Chrome's strict default extension-page CSP",
   );
   assert(
-    result.text.includes("Install the desktop app"),
+    result.text.includes(expectedPrimary),
     "missing native host does not produce the supported recovery",
   );
   assert(

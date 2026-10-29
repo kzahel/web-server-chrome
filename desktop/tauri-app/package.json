@@ -17,7 +17,8 @@
     "@tauri-apps/plugin-process": "^2.3.1",
     "@tauri-apps/plugin-updater": "^2.14.1",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "@ok200/i18n": "workspace:*"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.12.4",

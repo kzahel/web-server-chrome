@@ -1,3 +1,4 @@
+import { getLocale, LanguagePicker, rich, t, useLocale } from "@ok200/i18n";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { detectChromeOsLanIpv4Address } from "../lib/chromeos-lan-address";
 import {
@@ -26,6 +27,7 @@ type ControllerState =
 type ServerPending = "starting" | "stopping" | null;
 
 export function CrostiniController() {
+  useLocale();
   const launch = useMemo(readLaunchParameters, []);
   const client = useMemo(
     () => (launch ? new CrostiniControllerClient(launch.port) : null),
@@ -60,7 +62,9 @@ export function CrostiniController() {
       if (!health.claimed) {
         if (!launch.claimCode) {
           throw new Error(
-            "The one-time controller claim is missing. Launch 200 OK Web Server again.",
+            t(
+              "extension.the.one.time.controller.claim.is.missing.launch.200.ok.f9593f",
+            ),
           );
         }
         const claim = await client.claim(launch.instanceId, launch.claimCode);
@@ -71,7 +75,9 @@ export function CrostiniController() {
         );
       } else if (!controllerToken) {
         throw new Error(
-          "This Linux controller is already paired, but this extension no longer has its token. Run ‘ok200-crostini reset-controller’ in Terminal, then launch 200 OK Web Server again.",
+          t(
+            "extension.this.linux.controller.is.already.paired.but.this.extens.ed282f",
+          ),
         );
       }
 
@@ -94,7 +100,7 @@ export function CrostiniController() {
       setDetail(
         error instanceof Error
           ? error.message
-          : "Controller connection failed.",
+          : t("extension.controller.connection.failed.f25b70"),
       );
       setState("error");
     }
@@ -107,7 +113,8 @@ export function CrostiniController() {
       (granted) => {
         if (chrome.runtime.lastError) {
           setDetail(
-            chrome.runtime.lastError.message || "Permission check failed.",
+            chrome.runtime.lastError.message ||
+              t("extension.permission.check.failed.144b96"),
           );
           setState("error");
         } else if (granted) {
@@ -138,7 +145,7 @@ export function CrostiniController() {
         setDetail(
           error instanceof Error
             ? error.message
-            : "The Linux control session expired.",
+            : t("extension.the.linux.control.session.expired.fbba79"),
         );
         setState("error");
       } finally {
@@ -163,14 +170,17 @@ export function CrostiniController() {
       (granted) => {
         if (chrome.runtime.lastError) {
           setDetail(
-            chrome.runtime.lastError.message || "Permission request failed.",
+            chrome.runtime.lastError.message ||
+              t("extension.permission.request.failed.4c774d"),
           );
           setState("error");
         } else if (granted) {
           void connect();
         } else {
           setDetail(
-            "Permission was not granted. Setup instructions remain available, but the extension cannot control Linux.",
+            t(
+              "extension.permission.was.not.granted.setup.instructions.remain.av.41abf6",
+            ),
           );
           setState("permission-required");
         }
@@ -193,7 +203,11 @@ export function CrostiniController() {
       setStatus(nextStatus);
       return nextStatus;
     } catch (error) {
-      setDetail(error instanceof Error ? error.message : "Action failed.");
+      setDetail(
+        error instanceof Error
+          ? error.message
+          : t("extension.action.failed.f71340"),
+      );
       return null;
     } finally {
       setBusy(false);
@@ -222,7 +236,9 @@ export function CrostiniController() {
       setStatus(nextStatus);
     } catch (error) {
       setDetail(
-        error instanceof Error ? error.message : "Server action failed.",
+        error instanceof Error
+          ? error.message
+          : t("extension.server.action.failed.c2bc8c"),
       );
     } finally {
       setServerPending(null);
@@ -241,7 +257,9 @@ export function CrostiniController() {
     if (
       wasRunning &&
       !window.confirm(
-        "Updating stops the web server and does not restart it automatically. Continue?",
+        t(
+          "extension.updating.stops.the.web.server.and.does.not.restart.it.a.8f22e4",
+        ),
       )
     ) {
       return;
@@ -258,11 +276,15 @@ export function CrostiniController() {
       const scheduled = await client.installUpdate(token);
       setStatus(scheduled);
       if (scheduled.update.state !== "installing") {
-        setUpdateMessage("The Linux component is already current.");
+        setUpdateMessage(
+          t("extension.the.linux.component.is.already.current.b8579d"),
+        );
         return;
       }
       setUpdateMessage(
-        "Installing the signed update. The controller will briefly reconnect…",
+        t(
+          "extension.installing.the.signed.update.the.controller.will.briefl.ab10e2",
+        ),
       );
 
       for (let attempt = 0; attempt < 90; attempt += 1) {
@@ -275,14 +297,17 @@ export function CrostiniController() {
           setStatus(session.status);
           if (session.status.version !== previousVersion) {
             setUpdateMessage(
-              `Updated to Linux component v${session.status.version}. The web server remains stopped.`,
+              t(
+                "extension.updated.to.linux.component.v.value0.the.web.server.rema.b21a35",
+                { value0: session.status.version },
+              ),
             );
             return;
           }
           if (session.status.update.state === "error") {
             setDetail(
               session.status.update.error ||
-                "The Linux component update failed.",
+                t("extension.the.linux.component.update.failed.426563"),
             );
             setUpdateMessage("");
             return;
@@ -292,11 +317,17 @@ export function CrostiniController() {
         }
       }
       setDetail(
-        "The update is taking longer than expected. Launch 200 OK Web Server again, or run ‘ok200-crostini update’ in Terminal.",
+        t(
+          "extension.the.update.is.taking.longer.than.expected.launch.200.ok.449ff3",
+        ),
       );
       setUpdateMessage("");
     } catch (error) {
-      setDetail(error instanceof Error ? error.message : "Update failed.");
+      setDetail(
+        error instanceof Error
+          ? error.message
+          : t("extension.update.failed.f1d764"),
+      );
       setUpdateMessage("");
     } finally {
       setBusy(false);
@@ -314,10 +345,12 @@ export function CrostiniController() {
           </section>
         )}
         {state === "checking-permission" && (
-          <LoadingSurface label="Checking Linux access…" />
+          <LoadingSurface label={t("extension.checking.linux.access.2a9213")} />
         )}
         {state === "connecting" && (
-          <LoadingSurface label="Connecting to your Linux controller…" />
+          <LoadingSurface
+            label={t("extension.connecting.to.your.linux.controller.095b18")}
+          />
         )}
         {state === "permission-required" && (
           <section className="surface permission-surface">
@@ -325,11 +358,12 @@ export function CrostiniController() {
               <LinkIcon />
             </div>
             <div>
-              <h2>Connect to Linux</h2>
+              <h2>{t("extension.connect.to.linux.67d25d")}</h2>
               <p>
-                Allow 200 OK to communicate with your Chromebook&apos;s Linux
-                environment at <code>penguin.linux.test</code>. This private
-                address stays on your Chromebook.
+                {rich(
+                  "extension.allow.200.ok.to.communicate.with.your.chromebook.s.linu.76c804",
+                  { tag0: (chunks) => <code>{chunks}</code> },
+                )}
               </p>
             </div>
             <button
@@ -337,10 +371,12 @@ export function CrostiniController() {
               onClick={requestPermission}
               className="button button-primary"
             >
-              Allow Linux access
+              {t("extension.allow.linux.access.38fc0e")}
             </button>
             <details className="disclosure">
-              <summary>Linux setup and recovery</summary>
+              <summary>
+                {t("extension.linux.setup.and.recovery.803759")}
+              </summary>
               <OfflineSetup compact />
             </details>
           </section>
@@ -367,7 +403,7 @@ export function CrostiniController() {
               <WarningIcon />
             </div>
             <div>
-              <h2>Couldn&apos;t connect to Linux</h2>
+              <h2>{t("extension.couldn.t.connect.to.linux.6e31bc")}</h2>
               <p>{detail}</p>
             </div>
             <button
@@ -376,10 +412,12 @@ export function CrostiniController() {
               className="button button-primary"
             >
               <RefreshIcon />
-              Try again
+              {t("extension.try.again.d8b839")}
             </button>
             <details className="disclosure">
-              <summary>Linux setup and recovery</summary>
+              <summary>
+                {t("extension.linux.setup.and.recovery.803759")}
+              </summary>
               <OfflineSetup compact />
             </details>
           </section>
@@ -401,12 +439,15 @@ function ProductHeader({ connected }: { connected: boolean }) {
       <img src="../../icons/ok-48.png" width={44} height={44} alt="" />
       <div className="product-title">
         <h1>200 OK</h1>
-        <span>Web Server for ChromeOS Linux</span>
+        <span>{t("extension.web.server.for.chromeos.linux.9d8ef3")}</span>
+      </div>
+      <div className="language-row">
+        <LanguagePicker />
       </div>
       {connected && (
         <div className="connection-pill">
           <span aria-hidden="true" />
-          Linux connected
+          {t("extension.linux.connected.a353b4")}
         </div>
       )}
     </header>
@@ -455,29 +496,32 @@ function ControllerPanel({
   const running = status.server.state === "running";
   const active = running || serverPending === "starting";
   const settingsLockReason = running
-    ? "Stop the server to change settings."
+    ? t("extension.stop.the.server.to.change.settings.fd75f3")
     : serverPending
-      ? `Wait for the server to finish ${serverPending}.`
+      ? t("extension.wait.for.the.server.to.finish.value0.da806d", {
+          value0: serverPending,
+        })
       : busy
-        ? "Wait for the current action to finish."
+        ? t("extension.wait.for.the.current.action.to.finish.a99bab")
         : "";
   const settingsLocked = settingsLockReason.length > 0;
   const stateLabel = serverPending
     ? serverPending === "starting"
-      ? "Starting"
-      : "Stopping"
+      ? t("extension.starting.aeed4d")
+      : t("extension.stopping.a71ee1")
     : status.server.state === "error"
-      ? "Error"
+      ? t("extension.error.54a0e8")
       : running
-        ? "Running"
+        ? t("extension.running.f4ccae")
         : status.server.state === "stopping"
-          ? "Stopping"
-          : "Stopped";
+          ? t("extension.stopping.a71ee1")
+          : t("extension.stopped.1a4f63");
   const stateDetail = running
     ? status.settings.keepServingOnClose
-      ? "Serving continues when this window closes"
-      : "Serving stops when this window closes"
-    : status.server.error || "Choose a folder, then turn the server on";
+      ? t("extension.serving.continues.when.this.window.closes.b6048a")
+      : t("extension.serving.stops.when.this.window.closes.49b856")
+    : status.server.error ||
+      t("extension.choose.a.folder.then.turn.the.server.on.3707c6");
 
   useEffect(
     () => () => {
@@ -510,7 +554,9 @@ function ControllerPanel({
           <PowerIcon />
         </div>
         <div className="server-copy">
-          <div className="section-label">Web server</div>
+          <div className="section-label">
+            {t("extension.web.server.1643cf")}
+          </div>
           <div className="server-state">{stateLabel}</div>
           <p>{stateDetail}</p>
         </div>
@@ -518,8 +564,16 @@ function ControllerPanel({
           type="button"
           role="switch"
           aria-checked={active}
-          aria-label={running ? "Stop web server" : "Start web server"}
-          title={running ? "Stop web server" : "Start web server"}
+          aria-label={
+            running
+              ? t("extension.stop.web.server.a00a97")
+              : t("extension.start.web.server.9b82f9")
+          }
+          title={
+            running
+              ? t("extension.stop.web.server.a00a97")
+              : t("extension.start.web.server.9b82f9")
+          }
           className="server-switch"
           disabled={busy || serverPending !== null}
           onClick={onToggleServer}
@@ -530,17 +584,22 @@ function ControllerPanel({
       </section>
 
       {status.server.url && (
-        <UrlCard label="This Chromebook" url={status.server.url} />
+        <UrlCard
+          label={t("extension.this.chromebook.31f18d")}
+          url={status.server.url}
+        />
       )}
 
       <section className="surface settings-surface">
         <div className="section-heading">
           <div>
-            <div className="section-label">Content</div>
-            <h2>Folder and address</h2>
+            <div className="section-label">{t("extension.content.47bd29")}</div>
+            <h2>{t("extension.folder.and.address.d090b6")}</h2>
           </div>
           {settingsLocked && (
-            <span className="locked-note">Stop to make changes</span>
+            <span className="locked-note">
+              {t("extension.stop.to.make.changes.a30d16")}
+            </span>
           )}
         </div>
 
@@ -549,7 +608,9 @@ function ControllerPanel({
           className="folder-control"
           aria-disabled={settingsLocked}
           title={
-            settingsLocked ? settingsLockReason : "Choose a different folder"
+            settingsLocked
+              ? settingsLockReason
+              : t("extension.choose.a.different.folder.1792fc")
           }
           onClick={() => {
             if (settingsLocked) {
@@ -567,7 +628,7 @@ function ControllerPanel({
             <strong>{folderName(status.settings.root)}</strong>
             <span title={status.settings.root}>{status.settings.root}</span>
           </span>
-          <span className="folder-action">Change</span>
+          <span className="folder-action">{t("extension.change.c0bf75")}</span>
           <ChevronRightIcon />
         </button>
 
@@ -579,8 +640,13 @@ function ControllerPanel({
             <GlobeIcon />
           </span>
           <label htmlFor="content-port">
-            <strong>Port</strong>
-            <span>Used in the server address</span>
+            {rich(
+              "extension..tag0.port.tag0.tag1.used.in.the.server.address.tag1.1ad047",
+              {
+                tag0: (chunks) => <strong>{chunks}</strong>,
+                tag1: (chunks) => <span>{chunks}</span>,
+              },
+            )}
           </label>
           <PortInput
             lockedReason={settingsLockReason}
@@ -592,9 +658,11 @@ function ControllerPanel({
 
         <SettingSwitch
           checked={status.settings.lan}
-          description="Allow ChromeOS to forward this port to your network"
+          description={t(
+            "extension.allow.chromeos.to.forward.this.port.to.your.network.5e770a",
+          )}
           icon={<NetworkIcon />}
-          label="Available on local network"
+          label={t("extension.available.on.local.network.f4bd53")}
           lockedReason={settingsLockReason}
           onLocked={explainSettingsLock}
           onChange={(lan) => onChangeSettings({ lan })}
@@ -606,19 +674,25 @@ function ControllerPanel({
       <section className="surface behavior-surface">
         <div className="section-heading compact-heading">
           <div>
-            <div className="section-label">Server lifetime</div>
-            <h2>When controls close</h2>
+            <div className="section-label">
+              {t("extension.server.lifetime.b391f8")}
+            </div>
+            <h2>{t("extension.when.controls.close.8a761e")}</h2>
           </div>
         </div>
         <SettingSwitch
           checked={status.settings.keepServingOnClose}
           description={
             status.settings.keepServingOnClose
-              ? "The server keeps running until you stop it or Linux shuts down"
-              : "The server stops after the final 200 OK control window closes"
+              ? t(
+                  "extension.the.server.keeps.running.until.you.stop.it.or.linux.shu.c725a6",
+                )
+              : t(
+                  "extension.the.server.stops.after.the.final.200.ok.control.window.e84d80",
+                )
           }
           icon={<WindowIcon />}
-          label="Keep serving when controls close"
+          label={t("extension.keep.serving.when.controls.close.3afb77")}
           lockedReason={settingsLockReason}
           onLocked={explainSettingsLock}
           onChange={(keepServingOnClose) =>
@@ -640,16 +714,23 @@ function ControllerPanel({
             <SettingsIcon />
           </span>
           <span>
-            <strong>Advanced</strong>
-            <small>Directory behavior, access, and updates</small>
+            {rich(
+              "extension..tag0.advanced.tag0.tag1.directory.behavior.access.and.305a04",
+              {
+                tag0: (chunks) => <strong>{chunks}</strong>,
+                tag1: (chunks) => <small>{chunks}</small>,
+              },
+            )}
           </span>
           <ChevronDownIcon />
         </summary>
         <div className="advanced-content">
           <SettingSwitch
             checked={status.settings.directoryListing}
-            description="Show an index when a folder has no index file"
-            label="Directory listings"
+            description={t(
+              "extension.show.an.index.when.a.folder.has.no.index.file.dd0caa",
+            )}
+            label={t("extension.directory.listings.a49eb4")}
             lockedReason={settingsLockReason}
             onLocked={explainSettingsLock}
             onChange={(directoryListing) =>
@@ -658,24 +739,30 @@ function ControllerPanel({
           />
           <SettingSwitch
             checked={status.settings.spa}
-            description="Serve index.html for routes that do not match a file"
-            label="Single-page app fallback"
+            description={t(
+              "extension.serve.index.html.for.routes.that.do.not.match.a.file.07862d",
+            )}
+            label={t("extension.single.page.app.fallback.f6dac9")}
             lockedReason={settingsLockReason}
             onLocked={explainSettingsLock}
             onChange={(spa) => onChangeSettings({ spa })}
           />
           <SettingSwitch
             checked={status.settings.cors}
-            description="Allow pages on other origins to request these files"
-            label="Cross-origin requests"
+            description={t(
+              "extension.allow.pages.on.other.origins.to.request.these.files.7a07f1",
+            )}
+            label={t("extension.cross.origin.requests.86c1f5")}
             lockedReason={settingsLockReason}
             onLocked={explainSettingsLock}
             onChange={(cors) => onChangeSettings({ cors })}
           />
           <SettingSwitch
             checked={status.settings.automaticUpdates}
-            description="Install signed Linux component updates while stopped"
-            label="Automatic Linux updates"
+            description={t(
+              "extension.install.signed.linux.component.updates.while.stopped.6155e8",
+            )}
+            label={t("extension.automatic.linux.updates.04a336")}
             lockedReason={settingsLockReason}
             onLocked={explainSettingsLock}
             onChange={(automaticUpdates) =>
@@ -685,7 +772,11 @@ function ControllerPanel({
 
           <div className="update-panel">
             <div>
-              <strong>Linux component v{status.version}</strong>
+              <strong>
+                {t("extension.linux.component.v.value0.23fcc0", {
+                  value0: status.version,
+                })}
+              </strong>
               <p>{updateStatusLabel(status)}</p>
             </div>
             <button
@@ -695,7 +786,9 @@ function ControllerPanel({
               className="button button-secondary button-small"
             >
               <RefreshIcon />
-              {status.update.state === "checking" ? "Checking…" : "Check now"}
+              {status.update.state === "checking"
+                ? t("extension.checking.ec963f")
+                : t("extension.check.now.2937cf")}
             </button>
           </div>
           {status.update.state === "available" && (
@@ -705,7 +798,9 @@ function ControllerPanel({
               onClick={onInstallUpdate}
               className="button button-primary"
             >
-              Update to v{status.update.availableVersion}
+              {t("extension.update.to.v.value0.d7bb82", {
+                value0: status.update.availableVersion,
+              })}
             </button>
           )}
           {updateMessage && <p className="notice-copy">{updateMessage}</p>}
@@ -716,14 +811,20 @@ function ControllerPanel({
       </details>
 
       <details className="help-disclosure">
-        <summary>Setup, sharing, and recovery</summary>
+        <summary>{t("extension.setup.sharing.and.recovery.e978bc")}</summary>
         <OfflineSetup compact />
       </details>
 
       <footer className="controller-footer">
-        <span>Linux component v{status.version}</span>
-        <span aria-hidden="true">•</span>
-        <span>Controller port 20080 stays private</span>
+        {rich(
+          "extension..tag1.linux.component.v.value0.tag1.tag2.tag2.tag3.cont.193b14",
+          {
+            value0: status.version,
+            tag1: (chunks) => <span>{chunks}</span>,
+            tag2: (chunks) => <span aria-hidden="true">{chunks}</span>,
+            tag3: (chunks) => <span>{chunks}</span>,
+          },
+        )}
       </footer>
 
       {lockNotice && settingsLocked && (
@@ -794,11 +895,11 @@ function PortInput({
       min={1024}
       max={65_535}
       readOnly={lockedReason.length > 0}
-      title={lockedReason || "Content server port"}
+      title={lockedReason || t("extension.content.server.port.9f26d1")}
       type="number"
       value={draft}
       aria-invalid={error}
-      aria-label="Content port"
+      aria-label={t("extension.content.port.838a49")}
       onBlur={commit}
       onChange={(event) => setDraft(event.target.value)}
       onFocus={() => {
@@ -885,7 +986,12 @@ function UrlCard({ label, url }: { label: string; url: string }) {
       </div>
       <div className="url-copy">
         <div className="section-label">{label}</div>
-        <a href={url} target="_blank" rel="noreferrer" title="Open server">
+        <a
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+          title={t("extension.open.server.520174")}
+        >
           {url}
         </a>
       </div>
@@ -895,22 +1001,30 @@ function UrlCard({ label, url }: { label: string; url: string }) {
           href={url}
           target="_blank"
           rel="noreferrer"
-          aria-label="Open server URL"
-          title="Open"
+          aria-label={t("extension.open.server.url.646642")}
+          title={t("extension.open.ed077f")}
         >
           <ExternalLinkIcon />
         </a>
         <button
           type="button"
           className="icon-button"
-          aria-label={copied ? "URL copied" : "Copy server URL"}
-          title={copied ? "Copied" : "Copy"}
+          aria-label={
+            copied
+              ? t("extension.url.copied.0017bd")
+              : t("extension.copy.server.url.3f8f6c")
+          }
+          title={
+            copied ? t("extension.copied.8d525e") : t("extension.copy.e21f93")
+          }
           onClick={() => void copy()}
         >
           {copied ? <CheckIcon /> : <CopyIcon />}
         </button>
       </div>
-      {copied && <output className="copy-toast">Copied</output>}
+      {copied && (
+        <output className="copy-toast">{t("extension.copied.8d525e")}</output>
+      )}
     </section>
   );
 }
@@ -942,41 +1056,51 @@ function LanAccessCard({ status }: { status: ControllerStatus }) {
   }, [detectAddress, status.instanceId]);
 
   const addressHelp = detecting
-    ? "Detecting this Chromebook’s address…"
+    ? t("extension.detecting.this.chromebook.s.address.c5a43d")
     : detectedAddress
-      ? "Detected automatically from ChromeOS."
-      : "ChromeOS shows this address just above the Port forwarding controls.";
+      ? t("extension.detected.automatically.from.chromeos.04302a")
+      : t(
+          "extension.chromeos.shows.this.address.just.above.the.port.forward.3c5208",
+        );
 
   return (
     <section className="surface lan-surface">
       <div className="section-heading compact-heading">
         <div>
-          <div className="section-label">Local network</div>
-          <h2>Finish ChromeOS forwarding</h2>
+          <div className="section-label">
+            {t("extension.local.network.4fda69")}
+          </div>
+          <h2>{t("extension.finish.chromeos.forwarding.39f117")}</h2>
         </div>
-        <span className="step-pill">1 step</span>
+        <span className="step-pill">{t("extension.1.step.3ce601")}</span>
       </div>
       <ol className="lan-steps">
         <li>
           <span>1</span>
           <p>
-            In ChromeOS Settings, open{" "}
-            <strong>Developers → Linux → Port forwarding</strong> and add TCP
-            port {status.settings.port}.
+            {rich(
+              "extension.in.chromeos.settings.open.tag0.developers.linux.port.fo.49e854",
+              {
+                tag0: (chunks) => <strong>{chunks}</strong>,
+                value1: status.settings.port,
+              },
+            )}
           </p>
         </li>
       </ol>
       <div className="lan-address-summary">
-        <strong>Chromebook IPv4 address</strong>
+        <strong>{t("extension.chromebook.ipv4.address.94e487")}</strong>
         <div className="lan-address-row">
           <code className="lan-address-value" data-testid="chromebook-address">
-            {detecting ? "Detecting…" : detectedAddress || "Not detected"}
+            {detecting
+              ? t("extension.detecting.805eb9")
+              : detectedAddress || t("extension.not.detected.9f4a10")}
           </code>
           <button
             type="button"
             className="icon-button detect-address-button"
-            aria-label="Detect Chromebook address again"
-            title="Detect again"
+            aria-label={t("extension.detect.chromebook.address.again.198bd4")}
+            title={t("extension.detect.again.bf6732")}
             disabled={detecting}
             onClick={() => void detectAddress()}
           >
@@ -986,11 +1110,13 @@ function LanAccessCard({ status }: { status: ControllerStatus }) {
         <small aria-live="polite">{addressHelp}</small>
       </div>
       {url && status.server.state === "running" && (
-        <UrlCard label="Other devices" url={url} />
+        <UrlCard label={t("extension.other.devices.4e027d")} url={url} />
       )}
       <p className="security-note">
-        <LockIcon /> Controller port 20080 stays on this Chromebook and should
-        never be forwarded.
+        <LockIcon />{" "}
+        {t(
+          "extension.controller.port.20080.stays.on.this.chromebook.and.shou.270d00",
+        )}
       </p>
     </section>
   );
@@ -1031,7 +1157,9 @@ function FolderPicker({
       } catch (caught) {
         setListing(null);
         setError(
-          caught instanceof Error ? caught.message : "Could not open folder.",
+          caught instanceof Error
+            ? caught.message
+            : t("extension.could.not.open.folder.bcd29f"),
         );
       } finally {
         setLoading(false);
@@ -1062,7 +1190,7 @@ function FolderPicker({
         setError(
           caught instanceof Error
             ? caught.message
-            : "Could not read folder locations.",
+            : t("extension.could.not.read.folder.locations.871ce6"),
         );
         setLoading(false);
       }
@@ -1099,7 +1227,7 @@ function FolderPicker({
         setError(
           caught instanceof Error
             ? caught.message
-            : "Could not read folder locations.",
+            : t("extension.could.not.read.folder.locations.871ce6"),
         );
         setLoading(false);
       }
@@ -1116,7 +1244,7 @@ function FolderPicker({
 
   const folderLabel = (component: string, depth: number) =>
     rootId === "shared-chromeos" && depth === 0 && component === "MyFiles"
-      ? "My files"
+      ? t("extension.my.files.985698")
       : component;
 
   useEffect(() => {
@@ -1162,7 +1290,9 @@ function FolderPicker({
       setNewFolderOpen(false);
     } catch (caught) {
       setError(
-        caught instanceof Error ? caught.message : "Could not create folder.",
+        caught instanceof Error
+          ? caught.message
+          : t("extension.could.not.create.folder.13a151"),
       );
     } finally {
       setLoading(false);
@@ -1179,7 +1309,9 @@ function FolderPicker({
       );
     } catch (caught) {
       setError(
-        caught instanceof Error ? caught.message : "Could not select folder.",
+        caught instanceof Error
+          ? caught.message
+          : t("extension.could.not.select.folder.4293fe"),
       );
       setLoading(false);
     }
@@ -1195,21 +1327,27 @@ function FolderPicker({
       >
         <header className="dialog-header">
           <div>
-            <div className="section-label">Content</div>
-            <h2 id="folder-dialog-title">Choose a folder</h2>
+            <div className="section-label">{t("extension.content.47bd29")}</div>
+            <h2 id="folder-dialog-title">
+              {t("extension.choose.a.folder.5c71b8")}
+            </h2>
           </div>
           <button
             type="button"
             className="icon-button"
             onClick={onClose}
-            aria-label="Close folder picker"
-            title="Close"
+            aria-label={t("extension.close.folder.picker.2db6d3")}
+            title={t("extension.close.7d9eb7")}
           >
             <CloseIcon />
           </button>
         </header>
 
-        <div className="root-tabs" role="tablist" aria-label="Folder locations">
+        <div
+          className="root-tabs"
+          role="tablist"
+          aria-label={t("extension.folder.locations.23edda")}
+        >
           {roots.map((root) => (
             <button
               key={root.id}
@@ -1222,14 +1360,19 @@ function FolderPicker({
               {root.id === "linux-files" ? <LaptopIcon /> : <ChromeIcon />}
               <span className="root-tab-copy">
                 <span>{root.name}</span>
-                {!root.available && <small>Not shared yet</small>}
+                {!root.available && (
+                  <small>{t("extension.not.shared.yet.bd0b09")}</small>
+                )}
               </span>
             </button>
           ))}
         </div>
 
         {listing && (
-          <nav className="breadcrumbs" aria-label="Current folder">
+          <nav
+            className="breadcrumbs"
+            aria-label={t("extension.current.folder.1a5db5")}
+          >
             <button
               type="button"
               onClick={() => void loadListing(listing.rootId, [])}
@@ -1259,7 +1402,7 @@ function FolderPicker({
           {loading && (
             <div className="browser-message">
               <span className="spinner" aria-hidden="true" />
-              <p>Opening folder…</p>
+              <p>{t("extension.opening.folder.c3ab98")}</p>
             </div>
           )}
           {!loading && waitingForShare && (
@@ -1267,17 +1410,26 @@ function FolderPicker({
               <div className="surface-icon surface-icon-accent">
                 <FolderIcon />
               </div>
-              <h3>Share a Chromebook folder with Linux</h3>
+              <h3>
+                {t("extension.share.a.chromebook.folder.with.linux.e50ee9")}
+              </h3>
               <ol>
-                <li>Open the ChromeOS Files app.</li>
-                <li>Right-click the folder you want to serve.</li>
+                <li>{t("extension.open.the.chromeos.files.app.ce4973")}</li>
                 <li>
-                  Choose <strong>Share with Linux</strong>, then return here.
+                  {t(
+                    "extension.right.click.the.folder.you.want.to.serve.ed4508",
+                  )}
+                </li>
+                <li>
+                  {rich(
+                    "extension.choose.tag0.share.with.linux.tag0.then.return.here.d837a8",
+                    { tag0: (chunks) => <strong>{chunks}</strong> },
+                  )}
                 </li>
               </ol>
               <p className="waiting-copy">
                 <span className="pulse-dot" aria-hidden="true" />
-                Waiting for a shared folder…
+                {t("extension.waiting.for.a.shared.folder.676047")}
               </p>
               <button
                 type="button"
@@ -1285,7 +1437,7 @@ function FolderPicker({
                 onClick={() => void refreshRoots(false)}
               >
                 <RefreshIcon />
-                Check again
+                {t("extension.check.again.fb7099")}
               </button>
             </div>
           )}
@@ -1298,14 +1450,14 @@ function FolderPicker({
                 className="button button-secondary button-small"
                 onClick={() => void refreshRoots(false)}
               >
-                Try again
+                {t("extension.try.again.d8b839")}
               </button>
             </div>
           )}
           {!loading && listing && listing.entries.length === 0 && !error && (
             <div className="browser-message">
               <FolderIcon />
-              <p>This folder has no subfolders.</p>
+              <p>{t("extension.this.folder.has.no.subfolders.7b6d8d")}</p>
             </div>
           )}
           {!loading && listing && listing.entries.length > 0 && !error && (
@@ -1336,8 +1488,8 @@ function FolderPicker({
           <div className="new-folder-row">
             <FolderPlusIcon />
             <input
-              aria-label="New folder name"
-              placeholder="New folder name"
+              aria-label={t("extension.new.folder.name.489b9f")}
+              placeholder={t("extension.new.folder.name.489b9f")}
               value={newFolderName}
               onChange={(event) => setNewFolderName(event.target.value)}
               onKeyDown={(event) => {
@@ -1351,7 +1503,7 @@ function FolderPicker({
               disabled={!newFolderName.trim()}
               onClick={() => void createFolder()}
             >
-              Create
+              {t("extension.create.475949")}
             </button>
           </div>
         )}
@@ -1369,7 +1521,7 @@ function FolderPicker({
             onClick={() => setNewFolderOpen(true)}
           >
             <FolderPlusIcon />
-            New folder
+            {t("extension.new.folder.cf28f4")}
           </button>
           <span className="dialog-spacer" />
           <button
@@ -1377,7 +1529,7 @@ function FolderPicker({
             className="button button-quiet"
             onClick={onClose}
           >
-            Cancel
+            {t("extension.cancel.19766e")}
           </button>
           <button
             type="button"
@@ -1385,7 +1537,7 @@ function FolderPicker({
             disabled={!listing?.canSelect || loading}
             onClick={() => void selectCurrent()}
           >
-            Choose this folder
+            {t("extension.choose.this.folder.0f3b23")}
           </button>
         </footer>
       </section>
@@ -1396,19 +1548,23 @@ function FolderPicker({
 function updateStatusLabel(status: ControllerStatus): string {
   switch (status.update.state) {
     case "available":
-      return `v${status.update.availableVersion} is available.`;
+      return t("extension.v.value0.is.available.46d0d0", {
+        value0: status.update.availableVersion,
+      });
     case "checking":
-      return "Checking for a signed update…";
+      return t("extension.checking.for.a.signed.update.8e194a");
     case "installing":
-      return "Installing and reconnecting…";
+      return t("extension.installing.and.reconnecting.eea5c0");
     case "error":
-      return "The last update check failed.";
+      return t("extension.the.last.update.check.failed.c03ab6");
     default:
       return status.update.lastCheckedAt
-        ? `Current · checked ${new Date(
-            status.update.lastCheckedAt * 1_000,
-          ).toLocaleDateString()}`
-        : "Current · automatic check pending";
+        ? t("extension.current.checked.value0.c23fb5", {
+            value0: new Date(
+              status.update.lastCheckedAt * 1_000,
+            ).toLocaleDateString(getLocale()),
+          })
+        : t("extension.current.automatic.check.pending.acd44c");
   }
 }
 
@@ -1418,73 +1574,87 @@ function delay(milliseconds: number): Promise<void> {
 
 function folderName(path: string): string {
   const components = path.split("/").filter(Boolean);
-  return components[components.length - 1] || "Choose a folder";
+  return (
+    components[components.length - 1] || t("extension.choose.a.folder.5c71b8")
+  );
 }
 
 function OfflineSetup({ compact = false }: { compact?: boolean }) {
   return (
     <div className={compact ? "setup-copy is-compact" : "setup-copy"}>
-      {!compact && <h2>Set up the Linux version</h2>}
+      {!compact && <h2>{t("extension.set.up.the.linux.version.8554b6")}</h2>}
       <ol className="setup-steps">
         <li>
-          Open ChromeOS Settings → About ChromeOS → Developers → Linux
-          development environment and choose <strong>Set up</strong>.
-        </li>
-        <li>Open Terminal once after Linux finishes installing.</li>
-        <li>
-          Install the verified 200 OK Linux component:
-          <code className="command-block">
-            curl -fsSL https://ok200.app/install-crostini.sh | bash
-          </code>
-          <small>
-            The installer verifies the signed release, installs only for your
-            Linux user, and leaves the web server stopped.
-          </small>
+          {rich(
+            "extension.open.chromeos.settings.about.chromeos.developers.linux.b6dec2",
+            { tag0: (chunks) => <strong>{chunks}</strong> },
+          )}
         </li>
         <li>
-          Open <strong>200 OK Web Server</strong> from the ChromeOS Launcher.
+          {t(
+            "extension.open.terminal.once.after.linux.finishes.installing.a18d10",
+          )}
+        </li>
+        <li>
+          {rich(
+            "extension.install.the.verified.200.ok.linux.component.tag0.curl.f.93b255",
+            {
+              tag0: (chunks) => <code className="command-block">{chunks}</code>,
+              tag1: (chunks) => <small>{chunks}</small>,
+            },
+          )}
+        </li>
+        <li>
+          {rich(
+            "extension.open.tag0.200.ok.web.server.tag0.from.the.chromeos.laun.75dcac",
+            { tag0: (chunks) => <strong>{chunks}</strong> },
+          )}
         </li>
       </ol>
       <p>
-        If the Launcher cannot wake Linux, open Terminal once, wait for its
-        prompt, close it, and try again.
+        {t(
+          "extension.if.the.launcher.cannot.wake.linux.open.terminal.once.wa.27611b",
+        )}
       </p>
       <details className="nested-disclosure">
-        <summary>Sharing Chromebook folders</summary>
+        <summary>{t("extension.sharing.chromebook.folders.8bf65f")}</summary>
         <p>
-          In Files, right-click the folder and choose{" "}
-          <strong>Share with Linux</strong>. The 200 OK folder picker detects
-          the new share when you return.
+          {rich(
+            "extension.in.files.right.click.the.folder.and.choose.tag0.share.w.f5a943",
+            { tag0: (chunks) => <strong>{chunks}</strong> },
+          )}
         </p>
       </details>
       <details className="nested-disclosure">
-        <summary>Reach the server from another device</summary>
+        <summary>
+          {t("extension.reach.the.server.from.another.device.7f1eab")}
+        </summary>
         <p>
-          Turn on <strong>Available on local network</strong>, then add the
-          content port under ChromeOS Settings → Developers → Linux → Port
-          forwarding. Use the Chromebook&apos;s Wi-Fi IPv4 address. Never
-          forward controller port 20080.
+          {rich(
+            "extension.turn.on.tag0.available.on.local.network.tag0.then.add.t.571f67",
+            { tag0: (chunks) => <strong>{chunks}</strong> },
+          )}
         </p>
       </details>
       <details className="nested-disclosure">
-        <summary>Update, rollback, and uninstall</summary>
+        <summary>{t("extension.update.rollback.and.uninstall.2121a4")}</summary>
         <code className="command-block">
-          ok200-crostini check-update{"\n"}
-          ok200-crostini update{"\n"}
-          ok200-crostini rollback{"\n"}
-          ok200-crostini uninstall
+          {t(
+            "extension.ok200.crostini.check.update.value0.ok200.crostini.updat.a13096",
+            { value0: "\n", value1: "\n", value2: "\n" },
+          )}
         </code>
         <p>
-          Uninstall preserves settings and never deletes a served folder. Use
-          <code> uninstall --purge</code> only to remove pairing and controller
-          settings too.
+          {rich(
+            "extension.uninstall.preserves.settings.and.never.deletes.a.served.d54c53",
+            { tag0: (chunks) => <code>{chunks}</code> },
+          )}
         </p>
         <p>
-          Close the 200 OK controls and any <strong>Opening 200 OK…</strong>
-          window before uninstalling. ChromeOS removes the Launcher entry
-          asynchronously; wait for it to disappear before stopping Linux. If an
-          unpinned loading icon remains, do not reopen it—restart ChromeOS to
-          clear that shelf placeholder.
+          {rich(
+            "extension.close.the.200.ok.controls.and.any.tag0.opening.200.ok.t.79941c",
+            { tag0: (chunks) => <strong>{chunks}</strong> },
+          )}
         </p>
       </details>
     </div>

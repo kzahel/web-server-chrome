@@ -1,5 +1,8 @@
 name: OK200
 
+include:
+  - localization.generated.yml
+
 options:
   createIntermediateGroups: true
   deploymentTarget:

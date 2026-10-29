@@ -1,0 +1,96 @@
+{
+  "catalogs": {
+    "android": "android/app/src/main/res/values/strings.xml",
+    "web": "localization/catalogs/web/en.json",
+    "desktop": "localization/catalogs/desktop/en.json",
+    "extension": "localization/catalogs/extension/en.json",
+    "ios": "ios/200OK/Resources/Localizable.xcstrings"
+  },
+  "fallbackLocale": "en",
+  "localeDefinitions": {
+    "cs": {
+      "direction": "ltr"
+    },
+    "da": {
+      "direction": "ltr"
+    },
+    "de": {
+      "direction": "ltr"
+    },
+    "en": {
+      "direction": "ltr"
+    },
+    "es": {
+      "direction": "ltr"
+    },
+    "fr": {
+      "direction": "ltr"
+    },
+    "it": {
+      "direction": "ltr"
+    },
+    "ja": {
+      "direction": "ltr"
+    },
+    "ko": {
+      "direction": "ltr"
+    },
+    "nl": {
+      "direction": "ltr"
+    },
+    "pl": {
+      "direction": "ltr"
+    },
+    "pt-BR": {
+      "direction": "ltr"
+    },
+    "ro": {
+      "direction": "ltr"
+    },
+    "ru": {
+      "direction": "ltr"
+    },
+    "sv": {
+      "direction": "ltr"
+    },
+    "tr": {
+      "direction": "ltr"
+    },
+    "uk": {
+      "direction": "ltr"
+    },
+    "zh-CN": {
+      "direction": "ltr"
+    },
+    "zh-TW": {
+      "direction": "ltr"
+    }
+  },
+  "previewLocales": {
+    "android": [],
+    "web": [],
+    "desktop": [],
+    "extension": [],
+    "ios": []
+  },
+  "sourceLocale": "en",
+  "supportedLocales": {
+    "android": ["en", "de"],
+    "web": ["en", "de"],
+    "desktop": ["en", "de"],
+    "extension": ["en", "de"],
+    "ios": ["en", "de"]
+  },
+  "testLocales": [
+    {
+      "direction": "ltr",
+      "purpose": "expanded accented pseudo-localization",
+      "tag": "en-XA"
+    },
+    {
+      "direction": "rtl",
+      "purpose": "mirrored bidirectional pseudo-localization",
+      "tag": "ar-XB"
+    }
+  ]
+}

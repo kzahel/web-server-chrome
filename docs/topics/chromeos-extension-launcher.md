@@ -357,3 +357,16 @@ Engineering owns source changes, automated tests, exact candidate ZIPs,
 digests, and safe physical-device checks. The maintainer owns version approval,
 tag authorization, Chrome Web Store and Play uploads, listing edits, review,
 rollout, and store-delivered verification.
+
+
+## Localization foundation and German
+
+[Tactical 020](../tactical/020-localization-foundation-and-german.md) adds
+English/German app release inputs and a source-aware translation pipeline.
+The [localization topic](localization.md) and
+[workflow](../../scripts/LOCALIZATION.md) own locale availability, independent
+review, native catalogs and qualification evidence. Website/store translations
+remain separate. This source change does not establish a published or
+store-delivered German build. Presentation preferences do not change server
+settings, folder grants, HTTP behavior or extension/controller protocol values;
+unknown peer diagnostics retain their original text.

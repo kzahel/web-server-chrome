@@ -1,3 +1,4 @@
+import { t, useLocale } from "@ok200/i18n";
 import type { ReactNode } from "react";
 import logoUrl from "../../../../images/200ok-256.png";
 import { ProductLinks } from "./ProductLinks";
@@ -9,6 +10,7 @@ interface LayoutProps {
 }
 
 export function Layout({ notification, headerAction }: LayoutProps) {
+  useLocale();
   return (
     <div className="flex h-screen flex-col overflow-y-auto bg-[#f5f5f3] text-gray-900 dark:bg-[#0d0d0d] dark:text-gray-100">
       <header className="border-b border-gray-300/80 bg-white/95 px-3 py-2.5 backdrop-blur dark:border-[#333] dark:bg-[#1a1a1a]/95">
@@ -21,10 +23,10 @@ export function Layout({ notification, headerAction }: LayoutProps) {
           />
           <div>
             <h1 className="text-[15px] font-semibold leading-tight">
-              200 OK Web Server
+              {t("desktop.200.ok.web.server.bf6c0d")}
             </h1>
             <p className="mt-0.5 text-[11px] leading-none text-gray-500 dark:text-gray-400">
-              Desktop
+              {t("desktop.desktop.9bd88f")}
             </p>
           </div>
           {headerAction && <div className="ml-auto">{headerAction}</div>}

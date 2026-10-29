@@ -24,3 +24,5 @@ extension/*.zip
 extension/*.zip.sha256
 extension/browser-artifacts/
 /store-candidate/
+.local/
+__pycache__/

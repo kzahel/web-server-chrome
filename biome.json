@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!legacy"]
+    "includes": ["**", "!legacy", "!packages/i18n/src/generated.ts"]
   },
   "formatter": {
     "enabled": true,

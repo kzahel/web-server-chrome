@@ -7,6 +7,9 @@ slug in both places.
 Keep each string exact across its commit series so
 `git log --grep "Topic: ..."` finds the chain.
 
+- `localization` — native app catalogs, source-aware translation and independent
+  review, locale matching and qualified offline language availability.
+
 - `desktop-native-core` — replace the desktop webview-hosted TypeScript HTTP
   engine with a Rust core shared by the Windows, macOS, and Linux Tauri builds.
 - `desktop-release-readiness` — make desktop CI, signing, notarization,

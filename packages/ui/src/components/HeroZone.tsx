@@ -1,3 +1,4 @@
+import { localizeDiagnostic, t, useLocale } from "@ok200/i18n";
 import { useEffect, useState } from "react";
 import type {
   ManagedServerInfo,
@@ -17,14 +18,6 @@ interface HeroZoneProps {
   hasNativeFolderChooser: boolean;
 }
 
-const statusLabels: Record<ManagedServerInfo["status"], string> = {
-  stopped: "Stopped",
-  starting: "Starting",
-  running: "Running",
-  stopping: "Stopping",
-  error: "Error",
-};
-
 export function HeroZone({
   server,
   onStart,
@@ -34,6 +27,14 @@ export function HeroZone({
   onOpenUrl,
   hasNativeFolderChooser,
 }: HeroZoneProps) {
+  useLocale();
+  const statusLabels: Record<ManagedServerInfo["status"], string> = {
+    stopped: t("desktop.stopped.1a4f63"),
+    starting: t("desktop.starting.aeed4d"),
+    running: t("desktop.running.f4ccae"),
+    stopping: t("desktop.stopping.a71ee1"),
+    error: t("desktop.error.54a0e8"),
+  };
   const isRunning = server.status === "running";
   const isBusy = server.status === "starting" || server.status === "stopping";
   const canEdit = !isRunning && !isBusy;
@@ -88,7 +89,7 @@ export function HeroZone({
   const commitPort = async () => {
     const parsed = Number(portDraft);
     if (!Number.isInteger(parsed) || parsed < 0 || parsed > 65535) {
-      setError("Port must be between 0 and 65535");
+      setError(t("desktop.port.must.be.between.0.and.65535.e3ecee"));
       setPortDraft(String(server.config.port));
       return;
     }
@@ -116,23 +117,25 @@ export function HeroZone({
   const switchDisabled =
     pending || choosingRoot || (!isRunning && !startAllowed);
   const switchTitle = !hasRoot
-    ? "Choose a folder to start the server"
+    ? t("desktop.choose.a.folder.to.start.the.server.337adc")
     : displayedStatus === "running"
-      ? "Stop web server"
+      ? t("desktop.stop.web.server.a00a97")
       : displayedStatus === "stopped" || displayedStatus === "error"
-        ? "Start web server"
+        ? t("desktop.start.web.server.9b82f9")
         : statusLabels[displayedStatus];
   const assessmentTone = assessment?.allowed
     ? "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/70 dark:bg-amber-950/40 dark:text-amber-200"
     : hasRoot
       ? "border-red-200 bg-red-50 text-red-700 dark:border-red-900/70 dark:bg-red-950/40 dark:text-red-200"
-      : "border-gray-200 bg-gray-50 text-gray-600 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400";
+      : "border-gray-200 bg-gray-50 text-gray-600 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-500 dark:text-gray-400";
 
   return (
     <>
       <section className="overflow-hidden rounded-xl border border-gray-300/80 bg-white shadow-sm dark:border-[#333] dark:bg-[#1a1a1a]">
         <div className="flex items-center justify-between border-b border-gray-200 px-3.5 py-3 dark:border-[#333]">
-          <h2 className="text-sm font-semibold">Web server</h2>
+          <h2 className="text-sm font-semibold">
+            {t("desktop.web.server.1643cf")}
+          </h2>
           <div className="flex items-center gap-2.5">
             <div
               className="flex min-w-[76px] items-center justify-end gap-1.5 text-xs font-medium"
@@ -180,7 +183,9 @@ export function HeroZone({
 
         <div className="space-y-3 p-3.5">
           <div>
-            <span className="mb-1 block text-xs font-medium">Folder</span>
+            <span className="mb-1 block text-xs font-medium">
+              {t("desktop.folder.74ccd4")}
+            </span>
             <LockedControl locked={!canEdit}>
               {hasNativeFolderChooser ? (
                 <button
@@ -199,14 +204,16 @@ export function HeroZone({
                     data-testid="selected-folder"
                     title={hasRoot ? server.config.root : undefined}
                   >
-                    {hasRoot ? server.config.root : "No folder selected"}
+                    {hasRoot
+                      ? server.config.root
+                      : t("desktop.no.folder.selected.d987e0")}
                   </span>
                   <span className="shrink-0 text-xs font-semibold text-[#8a6800] dark:text-[#f8d203]">
                     {choosingRoot
-                      ? "Choosing…"
+                      ? t("desktop.choosing.fe2076")
                       : hasRoot
-                        ? "Change…"
-                        : "Choose…"}
+                        ? t("desktop.change.a6b470")
+                        : t("desktop.choose.7ca416")}
                   </span>
                 </button>
               ) : (
@@ -219,7 +226,7 @@ export function HeroZone({
                   disabled={!canEdit}
                   data-testid="dir-input"
                   className="w-full rounded-lg border border-gray-300 bg-white px-2.5 py-2 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f8d203] disabled:pointer-events-none disabled:opacity-50 dark:border-gray-700 dark:bg-[#111]"
-                  placeholder="/path/to/directory"
+                  placeholder={t("desktop..path.to.directory.ae256f")}
                 />
               )}
             </LockedControl>
@@ -228,7 +235,7 @@ export function HeroZone({
                 className={`mt-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] leading-4 ${assessmentTone}`}
                 data-testid="root-assessment"
               >
-                {assessment.message}
+                {localizeDiagnostic(assessment.message)}
               </div>
             )}
           </div>
@@ -236,9 +243,11 @@ export function HeroZone({
           <div>
             <div className="mb-1 flex items-center justify-between">
               <label htmlFor="port" className="text-xs font-medium">
-                Port
+                {t("desktop.port.72e9a5")}
               </label>
-              <span className="text-[10px] text-gray-400">0 = automatic</span>
+              <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                {t("desktop.0.automatic.4c2328")}
+              </span>
             </div>
             <LockedControl locked={!canEdit}>
               <input
@@ -272,7 +281,7 @@ export function HeroZone({
               className="rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs text-red-700 dark:border-red-900/70 dark:bg-red-950/40 dark:text-red-200"
               data-testid="error-msg"
             >
-              {error || server.error}
+              {localizeDiagnostic(error || server.error || "")}
             </div>
           )}
         </div>
@@ -287,10 +296,10 @@ export function HeroZone({
             className="w-full max-w-sm rounded-xl bg-white p-4 shadow-2xl dark:bg-[#1a1a1a]"
           >
             <h2 id="confirm-start-title" className="text-base font-semibold">
-              Share this folder?
+              {t("desktop.share.this.folder.cdaecd")}
             </h2>
             <p className="mt-2 text-xs leading-relaxed text-gray-600 dark:text-gray-300">
-              {assessment.message}
+              {localizeDiagnostic(assessment.message)}
             </p>
             <p className="mt-2 break-all rounded-lg bg-gray-100 px-2.5 py-2 font-mono text-[11px] dark:bg-gray-800">
               {assessment.canonicalRoot || server.config.root}
@@ -301,7 +310,7 @@ export function HeroZone({
                 onClick={() => setConfirmStart(false)}
                 className="rounded-lg px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
               >
-                Cancel
+                {t("desktop.cancel.19766e")}
               </button>
               <button
                 type="button"
@@ -309,7 +318,7 @@ export function HeroZone({
                 data-testid="confirm-start-btn"
                 className="rounded-lg bg-[#f8d203] px-3 py-1.5 text-xs font-semibold text-gray-950 hover:bg-[#fde047]"
               >
-                Start anyway
+                {t("desktop.start.anyway.a330c2")}
               </button>
             </div>
           </div>

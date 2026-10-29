@@ -1,3 +1,4 @@
+import { LanguagePicker, localizeDiagnostic, t, useLocale } from "@ok200/i18n";
 import { invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { useEffect, useState } from "react";
@@ -63,6 +64,7 @@ function SettingToggle({
 }
 
 export function AppSettings() {
+  useLocale();
   const [open, setOpen] = useState(false);
   const [settings, setSettings] = useState<DesktopSettingsState | null>(null);
   const [saving, setSaving] = useState(false);
@@ -136,8 +138,8 @@ export function AppSettings() {
         type="button"
         onClick={() => setOpen(true)}
         className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-black/5 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d2af00] dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white"
-        aria-label="App settings"
-        title="App settings"
+        aria-label={t("desktop.app.settings.d43fb8")}
+        title={t("desktop.app.settings.d43fb8")}
         data-testid="app-settings-button"
       >
         <svg
@@ -163,7 +165,7 @@ export function AppSettings() {
               type="button"
               className="fixed inset-0 cursor-default"
               onClick={() => setOpen(false)}
-              aria-label="Close app settings"
+              aria-label={t("desktop.close.app.settings.4168da")}
             />
             <section
               role="dialog"
@@ -175,36 +177,43 @@ export function AppSettings() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <h2 id="app-settings-title" className="text-sm font-semibold">
-                    App settings
+                    {t("desktop.app.settings.d43fb8")}
                   </h2>
                   <p className="mt-0.5 text-[11px] text-gray-500 dark:text-gray-400">
-                    These controls are always available here.
+                    {t(
+                      "desktop.these.controls.are.always.available.here.49809b",
+                    )}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
                   className="flex h-7 w-7 items-center justify-center rounded-lg text-lg text-gray-500 hover:bg-black/5 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d2af00] dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white"
-                  aria-label="Close app settings"
+                  aria-label={t("desktop.close.app.settings.4168da")}
                 >
                   ×
                 </button>
               </div>
 
+              <LanguagePicker />
               {settings ? (
                 <div className="mt-3 divide-y divide-gray-200 dark:divide-[#333]">
                   <SettingToggle
                     checked={settings.autostart}
                     disabled={saving}
-                    label="Start at Login"
-                    description="Launch 200 OK when you sign in."
+                    label={t("desktop.start.at.login.5952eb")}
+                    description={t(
+                      "desktop.launch.200.ok.when.you.sign.in.b9ed74",
+                    )}
                     onChange={(autostart) => void updateSettings({ autostart })}
                   />
                   <SettingToggle
                     checked={settings.runInBackground}
                     disabled={saving}
-                    label="Run in Background"
-                    description="Keep running when the main window is closed."
+                    label={t("desktop.run.in.background.0db775")}
+                    description={t(
+                      "desktop.keep.running.when.the.main.window.is.closed.c46cc8",
+                    )}
                     onChange={(runInBackground) =>
                       void updateSettings({ runInBackground })
                     }
@@ -212,15 +221,19 @@ export function AppSettings() {
                   <SettingToggle
                     checked={settings.showTrayIcon}
                     disabled={saving}
-                    label={settings.trayIconLabel}
-                    description="Keep a shortcut to 200 OK in the system area."
+                    label={localizeDiagnostic(settings.trayIconLabel)}
+                    description={t(
+                      "desktop.keep.a.shortcut.to.200.ok.in.the.system.area.6f0b61",
+                    )}
                     onChange={(showTrayIcon) =>
                       void updateSettings({ showTrayIcon })
                     }
                   />
                 </div>
               ) : (
-                <p className="mt-4 text-xs text-gray-500">Loading settings…</p>
+                <p className="mt-4 text-xs text-gray-500">
+                  {t("desktop.loading.settings.e71a13")}
+                </p>
               )}
 
               {error && (
@@ -238,14 +251,14 @@ export function AppSettings() {
                   onClick={() => void checkForUpdates()}
                   className="rounded-lg border border-gray-300 px-2.5 py-1.5 text-[11px] font-semibold transition hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d2af00] dark:border-[#444] dark:hover:bg-white/10"
                 >
-                  Check for Updates
+                  {t("desktop.check.for.updates.9ed79e")}
                 </button>
                 <button
                   type="button"
                   onClick={() => void invoke("desktop_quit")}
                   className="rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-red-700 transition hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:text-red-300 dark:hover:bg-red-950/40"
                 >
-                  Quit 200 OK
+                  {t("desktop.quit.200.ok.686f8f")}
                 </button>
               </div>
             </section>

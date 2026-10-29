@@ -20,7 +20,10 @@
     "desktop:dev": "pnpm --filter @ok200/desktop tauri dev",
     "desktop:build": "pnpm --filter @ok200/desktop tauri build",
     "ext:dev": "pnpm --filter @ok200/extension dev",
-    "ext:build": "pnpm --filter @ok200/extension build"
+    "ext:build": "pnpm --filter @ok200/extension build",
+    "i18n:status": "python3 scripts/localization.py status",
+    "i18n:check": "node scripts/check-localization.mjs && python3 -m unittest discover -s scripts -p \"test_*localization*.py\"",
+    "i18n:generate": "node scripts/generate-localization.mjs"
   },
   "packageManager": "pnpm@9.1.0",
   "engines": {
@@ -32,6 +35,11 @@
     }
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.4"
+    "@axe-core/playwright": "4.12.1",
+    "@biomejs/biome": "2.4.4",
+    "@formatjs/icu-messageformat-parser": "3.5.17",
+    "@playwright/test": "1.62.1",
+    "intl-messageformat": "11.2.9",
+    "typescript": "5.9.3"
   }
 }

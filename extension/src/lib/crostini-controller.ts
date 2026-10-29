@@ -1,3 +1,4 @@
+import { t } from "@ok200/i18n";
 import { controllerOrigin } from "./crostini-launch";
 
 export const CONTROLLER_PRODUCT = "ok200-crostini-controller";
@@ -239,7 +240,7 @@ export class CrostiniControllerClient {
       targetAddressSpace: "local",
     } as RequestInit & { targetAddressSpace: "local" });
     if (!response.ok) {
-      let detail = `Controller returned HTTP ${response.status}`;
+      let detail = t("extension.controller.http", { status: response.status });
       try {
         const error = (await response.json()) as ErrorResponse;
         if (error.error) detail = error.error;
@@ -257,17 +258,18 @@ export function validateControllerHealth(
   expectedInstanceId: string,
 ): void {
   if (health.product !== CONTROLLER_PRODUCT) {
-    throw new Error("The listener is not the expected 200 OK controller.");
+    throw new Error(t("extension.controller.unexpected"));
   }
   if (health.protocolVersion !== CONTROLLER_PROTOCOL_VERSION) {
     throw new Error(
-      `This extension requires Linux controller protocol ${CONTROLLER_PROTOCOL_VERSION}, but the installed component reported protocol ${health.protocolVersion}. Update the extension and Linux component together.`,
+      t("extension.controller.protocol", {
+        required: CONTROLLER_PROTOCOL_VERSION,
+        actual: health.protocolVersion,
+      }),
     );
   }
   if (health.instanceId !== expectedInstanceId) {
-    throw new Error(
-      "The listener belongs to a different 200 OK controller. Launch 200 OK Web Server again.",
-    );
+    throw new Error(t("extension.controller.different"));
   }
 }
 

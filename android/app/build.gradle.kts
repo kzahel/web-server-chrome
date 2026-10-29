@@ -84,6 +84,12 @@ android {
     }
     androidResources {
         generateLocaleConfig = true
+        localeFilters += rootProject.file("../localization/generated/android-locales.txt").readLines().filter { it.isNotBlank() }
+    }
+    bundle {
+        language {
+            enableSplit = false
+        }
     }
     packaging {
         resources {

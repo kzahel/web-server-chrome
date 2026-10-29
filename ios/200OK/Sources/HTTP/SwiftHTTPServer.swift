@@ -23,9 +23,9 @@ final class SwiftHTTPServer: HTTPServing, @unchecked Sendable {
         var errorDescription: String? {
             switch self {
             case .alreadyRunning:
-                "The server is already running."
+                String(localized: "The server is already running.")
             case .tooManyClients:
-                "The server is busy."
+                String(localized: "The server is busy.")
             }
         }
     }
@@ -160,7 +160,7 @@ private final class HTTPConnection: @unchecked Sendable {
     func start() {
         queue.async { [self] in
             scheduleTimeout(after: SwiftHTTPServer.requestTimeout) {
-                self.sendAndClose(.text(408, "Request Timeout", "Request timed out.\n"))
+                self.sendAndClose(.text(408, String(localized: "Request Timeout"), String(localized: "Request timed out.\n")))
             }
             connection.stateUpdateHandler = { [weak self] state in
                 guard let self else { return }
@@ -216,7 +216,7 @@ private final class HTTPConnection: @unchecked Sendable {
         } catch let error as HTTPRequestParser.ParseError {
             sendAndClose(error.response)
         } catch {
-            sendAndClose(.text(400, "Bad Request", "Malformed HTTP request.\n"))
+            sendAndClose(.text(400, String(localized: "Bad Request"), String(localized: "Malformed HTTP request.\n")))
         }
     }
 

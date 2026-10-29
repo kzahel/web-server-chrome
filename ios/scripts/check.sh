@@ -11,6 +11,8 @@ device_release_data="$ios_root/build/DeviceReleaseDerivedData"
 privacy_manifest="$ios_root/200OK/Resources/PrivacyInfo.xcprivacy"
 app_icon="$ios_root/200OK/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png"
 
+python3 "$script_dir/../../scripts/check-native-localization.py" ios
+
 bash -n \
   "$script_dir/cleanup-ci-signing.sh" \
   "$script_dir/inspect-release.sh" \
@@ -43,6 +45,12 @@ if sips -g hasAlpha "$app_icon" | rg -q 'hasAlpha: yes'; then
 fi
 
 "$script_dir/generate-project.sh"
+
+# XCTest owns a separate app process; pass target-language expectations from the
+# checked native catalog instead of silently testing German for every cohort.
+export TEST_RUNNER_OK200_TEST_LOCALE="${OK200_TEST_LOCALE:-de}"
+export TEST_RUNNER_OK200_TEST_STOPPED="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["strings"]["Stopped"]["localizations"][sys.argv[2]]["stringUnit"]["value"])' "$ios_root/200OK/Resources/Localizable.xcstrings" "$TEST_RUNNER_OK200_TEST_LOCALE")"
+export TEST_RUNNER_OK200_TEST_RUNNING="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["strings"]["Running"]["localizations"][sys.argv[2]]["stringUnit"]["value"])' "$ios_root/200OK/Resources/Localizable.xcstrings" "$TEST_RUNNER_OK200_TEST_LOCALE")"
 
 xcodebuild \
   -project "$ios_root/OK200.xcodeproj" \

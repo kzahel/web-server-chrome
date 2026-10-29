@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "register": "Use informal du consistently, concise natural German UI copy. Preserve 200 OK, URLs, paths, index.html, HTTP, CORS, SPA, IPv4/IPv6 and code/port examples. Inflect terminology naturally. Never imply HTTPS, uploads, public-internet access or indefinite iOS background serving. Distinguish launcher/controller and the HTTP server.",
+  "terms": {
+    "folder": {
+      "sourceTerms": ["folder", "directory", "root"],
+      "preferred": "Ordner / Stammordner",
+      "meaning": "A user-selected serving folder, not an arbitrary system directory."
+    },
+    "server": {
+      "sourceTerms": ["server", "serving"],
+      "preferred": "Server / bereitstellen",
+      "meaning": "The native app serves files; the extension launches or controls it."
+    },
+    "lan": {
+      "sourceTerms": ["local network", "LAN", "Wi-Fi"],
+      "preferred": "lokales Netzwerk / WLAN",
+      "meaning": "Access on the local network does not imply public internet access."
+    },
+    "listing": {
+      "sourceTerms": ["directory listing", "file list"],
+      "preferred": "Verzeichnisliste",
+      "meaning": "List files when no index.html exists, not upload permission."
+    },
+    "background": {
+      "sourceTerms": ["background"],
+      "preferred": "Hintergrund",
+      "meaning": "Android/desktop policy differs; iOS stops on background."
+    },
+    "start": {
+      "sourceTerms": ["start", "starting"],
+      "preferred": "Starten / Wird gestartet",
+      "meaning": "Explicitly start the listener; opening a launcher is distinct."
+    },
+    "stop": {
+      "sourceTerms": ["stop", "stopped", "stopping"],
+      "preferred": "Stoppen / Gestoppt / Wird gestoppt",
+      "meaning": "Stops serving, retaining the selected folder and settings."
+    },
+    "port": {
+      "sourceTerms": ["port"],
+      "preferred": "Port",
+      "meaning": "Numeric port; 0 selects an available port."
+    },
+    "readonly": {
+      "sourceTerms": ["read-only"],
+      "preferred": "schreibgeschützt",
+      "meaning": "Serving does not grant file modification."
+    },
+    "choose": {
+      "sourceTerms": ["choose", "select"],
+      "preferred": "Auswählen",
+      "meaning": "Select and authorize a folder."
+    },
+    "launcher": {
+      "sourceTerms": ["launcher", "controller"],
+      "preferred": "Starter / Steuerung",
+      "meaning": "Browser surface controls a separately installed native server."
+    }
+  }
+}

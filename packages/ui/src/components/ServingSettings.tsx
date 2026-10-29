@@ -1,3 +1,4 @@
+import { t, useLocale } from "@ok200/i18n";
 import type { ServerConfig, ServerInfo } from "../lib/server-manager";
 import { LockedControl } from "./LockedControl";
 
@@ -20,11 +21,7 @@ function Toggle({
 }) {
   return (
     <LockedControl locked={disabled}>
-      <div
-        className={`flex items-center justify-between py-1.5 ${
-          disabled ? "opacity-50" : ""
-        }`}
-      >
+      <div className="flex items-center justify-between py-1.5">
         <span className="text-[13px]">{label}</span>
         <button
           type="button"
@@ -33,7 +30,7 @@ function Toggle({
           aria-checked={checked}
           disabled={disabled}
           onClick={() => onChange(!checked)}
-          className={`relative inline-flex h-5 w-9 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f8d203] focus-visible:ring-offset-2 disabled:pointer-events-none dark:focus-visible:ring-offset-gray-900 ${
+          className={`relative inline-flex h-5 w-9 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f8d203] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-offset-gray-900 ${
             checked ? "bg-[#f8d203]" : "bg-gray-300 dark:bg-gray-600"
           }`}
         >
@@ -53,12 +50,13 @@ export function ServingSettings({
   onConfigChange,
   disabled = false,
 }: ServingSettingsProps) {
+  useLocale();
   const { config } = server;
 
   return (
     <div className="divide-y divide-gray-100 dark:divide-gray-800">
       <Toggle
-        label="LAN access"
+        label={t("desktop.lan.access.708f4a")}
         checked={config.host === "0.0.0.0"}
         onChange={(on) =>
           onConfigChange({ host: on ? "0.0.0.0" : "127.0.0.1" })
@@ -66,7 +64,7 @@ export function ServingSettings({
         disabled={disabled}
       />
       <Toggle
-        label="Directory listing"
+        label={t("desktop.directory.listing.bc706d")}
         checked={config.directoryListing}
         onChange={(on) => onConfigChange({ directoryListing: on })}
         disabled={disabled}
@@ -78,7 +76,7 @@ export function ServingSettings({
         disabled={disabled}
       />
       <Toggle
-        label="SPA mode"
+        label={t("desktop.spa.mode.4695bd")}
         checked={config.spa}
         onChange={(on) => onConfigChange({ spa: on })}
         disabled={disabled}

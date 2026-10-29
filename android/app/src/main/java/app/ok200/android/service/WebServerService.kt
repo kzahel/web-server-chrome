@@ -1,5 +1,7 @@
 package app.ok200.android.service
 
+import app.ok200.android.localization.localizedContext
+import kotlinx.coroutines.flow.combine
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -42,7 +44,7 @@ class WebServerService : Service() {
         foregroundAccepted = true
         startForeground(NOTIFICATION_ID, buildNotification())
         serviceScope.launch {
-            app.serverController.state.collectLatest {
+            app.serverController.state.combine(app.localizationChanges) { state, _ -> state }.collectLatest {
                 getSystemService(NotificationManager::class.java)
                     .notify(NOTIFICATION_ID, buildNotification())
             }
@@ -97,14 +99,14 @@ class WebServerService : Service() {
         val state = app.serverController.state.value
         val port = if (state.port > 0) state.port else app.settingsStore.port
         val lock = when (app.settingsStore.wakeLockMode) {
-            WakeLockMode.FULL -> getString(R.string.notification_wake_lock_cpu_wifi)
-            WakeLockMode.WIFI_ONLY -> getString(R.string.notification_wake_lock_wifi)
+            WakeLockMode.FULL -> localizedContext().getString(R.string.notification_wake_lock_cpu_wifi)
+            WakeLockMode.WIFI_ONLY -> localizedContext().getString(R.string.notification_wake_lock_wifi)
             WakeLockMode.NONE -> ""
         }
         val content = when {
-            state.running -> getString(R.string.notification_serving_on_port, port, lock)
+            state.running -> localizedContext().getString(R.string.notification_serving_on_port, port, lock)
             state.error != null -> state.error
-            else -> getString(R.string.notification_starting)
+            else -> localizedContext().getString(R.string.notification_starting)
         }
         val openIntent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -122,11 +124,11 @@ class WebServerService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         return NotificationCompat.Builder(this, SERVICE_NOTIFICATION_CHANNEL_ID)
-            .setContentTitle(getString(R.string.brand_name))
+            .setContentTitle(localizedContext().getString(R.string.brand_name))
             .setContentText(content)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(openPending)
-            .addAction(0, getString(R.string.action_stop), stopPending)
+            .addAction(0, localizedContext().getString(R.string.action_stop), stopPending)
             .setOngoing(true)
             .setSilent(true)
             .build()

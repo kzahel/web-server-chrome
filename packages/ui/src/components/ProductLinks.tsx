@@ -1,3 +1,4 @@
+import { t, useLocale } from "@ok200/i18n";
 import { useCallback } from "react";
 import { useServerManager } from "../lib/server-manager-context";
 
@@ -24,6 +25,7 @@ function ExternalArrow() {
 }
 
 export function ProductLinks() {
+  useLocale();
   const manager = useServerManager();
   const openExternal = useCallback(
     async (url: string) => {
@@ -38,7 +40,7 @@ export function ProductLinks() {
 
   const open = (url: string) => {
     void openExternal(url).catch((error) => {
-      console.error("Failed to open external link:", error);
+      console.error(t("desktop.failed.to.open.external.link.29fcf0"), error);
     });
   };
 
@@ -48,19 +50,19 @@ export function ProductLinks() {
         <button
           type="button"
           onClick={() => open(FEEDBACK_URL)}
-          title="Feedback, suggestions, and support"
+          title={t("desktop.feedback.suggestions.and.support.d1acad")}
           className="flex min-h-9 items-center justify-center gap-1.5 rounded-lg border border-gray-300 bg-white px-2 text-[12px] font-medium text-gray-700 transition hover:border-[#d4b500] hover:text-gray-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f8d203] dark:border-[#3b3b3b] dark:bg-[#191919] dark:text-gray-300 dark:hover:border-[#f8d203] dark:hover:text-white"
         >
-          Feedback &amp; support
+          {t("desktop.feedback.support.2d5632")}
           <ExternalArrow />
         </button>
         <button
           type="button"
           onClick={() => open(SOURCE_URL)}
-          title="View the MIT-licensed source code"
+          title={t("desktop.view.the.mit.licensed.source.code.017168")}
           className="flex min-h-9 items-center justify-center gap-1.5 rounded-lg border border-gray-300 bg-white px-2 text-[12px] font-medium text-gray-700 transition hover:border-[#d4b500] hover:text-gray-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f8d203] dark:border-[#3b3b3b] dark:bg-[#191919] dark:text-gray-300 dark:hover:border-[#f8d203] dark:hover:text-white"
         >
-          Source · MIT
+          {t("desktop.source.mit.32896a")}
           <ExternalArrow />
         </button>
       </div>

@@ -5,7 +5,7 @@ use std::sync::mpsc::{self, Receiver, Sender};
 use std::thread;
 use std::time::{Duration, Instant};
 
-use font8x8::{UnicodeFonts, BASIC_FONTS};
+use font8x8::{UnicodeFonts, BASIC_FONTS, LATIN_FONTS};
 use fontdue::{Font, FontSettings};
 use x11rb::connection::Connection;
 use x11rb::protocol::xproto::ConnectionExt as _;
@@ -381,7 +381,8 @@ fn set_window_properties<C: Connection>(
     window: Window,
     atoms: &Atoms,
 ) -> Result<(), String> {
-    let title = b"Launching...";
+    let title_text = ok200_common::localization::system_text("launching_b1601d");
+    let title = title_text.as_bytes();
     connection
         .change_property8(
             PropMode::REPLACE,
@@ -565,14 +566,26 @@ fn draw<C: Connection>(
                 graphics.error,
                 92,
                 67,
-                "200 OK could not open.",
+                ok200_common::localization::system_text("200_ok_could_not_open_1c0215"),
             )?;
             for (index, line) in wrap_error(error, 37).into_iter().take(4).enumerate() {
                 let y = 98 + i16::try_from(index).unwrap_or(0) * 18;
                 draw_text(connection, window, graphics, graphics.muted, 24, y, &line)?;
             }
-            draw_button(connection, window, graphics, RETRY_BUTTON, "Try Again")?;
-            draw_button(connection, window, graphics, CLOSE_BUTTON, "Close")?;
+            draw_button(
+                connection,
+                window,
+                graphics,
+                RETRY_BUTTON,
+                ok200_common::localization::system_text("try_again_df0fe9"),
+            )?;
+            draw_button(
+                connection,
+                window,
+                graphics,
+                CLOSE_BUTTON,
+                ok200_common::localization::system_text("close_7d9eb7"),
+            )?;
         }
     }
 
@@ -612,7 +625,14 @@ fn draw_working<C: Connection>(
             ],
         )
         .map_err(|error| draw_error(&error))?;
-    draw_ui_text(connection, window, graphics, 92, 61, "Launching...")?;
+    draw_ui_text(
+        connection,
+        window,
+        graphics,
+        92,
+        61,
+        ok200_common::localization::system_text("launching_b1601d"),
+    )?;
     Ok(())
 }
 
@@ -763,6 +783,7 @@ fn draw_text_at_pixels<C: Connection>(
     for character in text.chars().take(80) {
         let glyph = BASIC_FONTS
             .get(character)
+            .or_else(|| LATIN_FONTS.get(character))
             .or_else(|| BASIC_FONTS.get('?'))
             .unwrap_or([0; 8]);
         let bounds = glyph_column_bounds(glyph);
@@ -797,6 +818,7 @@ fn text_pixel_width(layout: Layout, text: &str) -> u16 {
     text.chars().take(80).fold(0_u16, |width, character| {
         let glyph = BASIC_FONTS
             .get(character)
+            .or_else(|| LATIN_FONTS.get(character))
             .or_else(|| BASIC_FONTS.get('?'))
             .unwrap_or([0; 8]);
         width.saturating_add(glyph_advance(layout, glyph_column_bounds(glyph)))
@@ -851,7 +873,9 @@ fn wrap_error(message: &str, width: usize) -> Vec<String> {
         lines.push(current);
     }
     if lines.is_empty() {
-        lines.push("Unknown launch error".to_owned());
+        lines.push(
+            ok200_common::localization::system_text("unknown_launch_error_3585c0").to_owned(),
+        );
     }
     lines
 }

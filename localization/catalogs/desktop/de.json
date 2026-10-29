@@ -1,0 +1,23 @@
+{
+  "200_ok_could_not_open_1c0215": "200 OK konnte nicht geöffnet werden.",
+  "about_200_ok_ba8aa9": "Über 200 OK",
+  "check_for_updates_9ed79e": "Nach Updates suchen",
+  "choose_folder_to_serve_d488f4": "Ordner zum Bereitstellen auswählen",
+  "close_7d9eb7": "Schließen",
+  "hide_200_ok_981b92": "200 OK ausblenden",
+  "hide_others_1753e2": "Andere ausblenden",
+  "launching_b1601d": "Wird geöffnet …",
+  "open_200_ok_web_server_for_chromeos_linux_7cbf15": "200 OK Web Server für ChromeOS Linux öffnen",
+  "quit_200_ok_686f8f": "200 OK beenden",
+  "quit_b3eb37": "Beenden",
+  "run_in_background_0db775": "Im Hintergrund ausführen",
+  "settings_74a883": "Einstellungen",
+  "show_all_e1c326": "Alle einblenden",
+  "show_app_ec462a": "App anzeigen",
+  "show_icon_in_menu_bar_0ad9f3": "Symbol in der Menüleiste anzeigen",
+  "show_icon_in_system_tray_25b481": "Symbol im Infobereich anzeigen",
+  "start_at_login_5952eb": "Beim Anmelden starten",
+  "try_again_df0fe9": "Erneut versuchen",
+  "unknown_launch_error_3585c0": "Unbekannter Fehler beim Öffnen",
+  "web_server_fc0480": "Webserver"
+}

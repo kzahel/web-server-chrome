@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Canonical product name: retain 200 OK Web Server unchanged. -->
     <string name="app_name">200 OK Web Server</string>
     <string name="brand_name" translatable="false">200 OK</string>
     <string name="web_server">Web Server</string>
@@ -218,4 +219,7 @@
     <string name="root_dir_debug_ramdisk_description">Debug-mode ramdisk</string>
     <string name="root_dir_postinstall_description">OTA post-install staging</string>
     <string name="root_dir_tmp_description">Temporary files (tmpfs)</string>
+    <!-- App-local display language; preserves the running server and folder selection. -->
+    <string name="language_system">System language</string>
+    <string name="language_selection">Language: %1$s</string>
 </resources>

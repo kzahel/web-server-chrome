@@ -75,15 +75,15 @@ final class IOSServerController {
     var statusText: String {
         switch phase {
         case .stopped:
-            "Stopped"
+            String(localized: "Stopped")
         case .starting:
-            "Starting…"
+            String(localized: "Starting…")
         case .running:
-            "Running"
+            String(localized: "Running")
         case .stopping:
-            "Stopping…"
+            String(localized: "Stopping…")
         case let .error(message):
-            "Error: \(message)"
+            String(format: String(localized: "Error: %@"), message)
         }
     }
 
@@ -112,7 +112,7 @@ final class IOSServerController {
 
     var portError: String? {
         guard let value = UInt32(portText), value <= UInt16.max else {
-            return "Enter 0 or a port from 1 to 65535."
+            return String(localized: "Enter 0 or a port from 1 to 65535.")
         }
         return nil
     }
@@ -185,7 +185,7 @@ final class IOSServerController {
             let lease = try rootStore.resolveForServing()
             guard let parsedPort = UInt16(portText) else {
                 lease.release()
-                phase = .error("Enter 0 or a port from 1 to 65535.")
+                phase = .error(String(localized: "Enter 0 or a port from 1 to 65535."))
                 return
             }
             configuration.port = parsedPort
@@ -234,7 +234,7 @@ final class IOSServerController {
         actualPort = nil
         phase = .stopped
         if becauseAppBackgrounded {
-            backgroundStopMessage = "The server stopped when 200 OK moved to the background. Start it again when you’re ready."
+            backgroundStopMessage = String(localized: "The server stopped when 200 OK moved to the background. Start it again when you’re ready.")
         }
     }
 
@@ -274,7 +274,7 @@ final class IOSServerController {
            let description = localized.errorDescription {
             return description
         }
-        return "The server could not start. Check the folder and port, then try again."
+        return String(localized: "The server could not start. Check the folder and port, then try again.")
     }
 
 }

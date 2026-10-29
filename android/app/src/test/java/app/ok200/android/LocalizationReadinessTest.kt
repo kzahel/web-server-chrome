@@ -17,6 +17,7 @@ class LocalizationReadinessTest {
             "app/ok200/android/ui/AndroidRootDirs.kt",
             "app/ok200/android/ui/FolderPickerDialog.kt",
             "app/ok200/android/ui/ServerScreen.kt",
+            "app/ok200/android/ui/LanguagePicker.kt",
             "app/ok200/android/viewmodel/ServerViewModel.kt",
         )
         val forbidden = listOf(

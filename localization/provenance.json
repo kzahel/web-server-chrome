@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "sourceLocale": "en",
+  "catalogs": [
+    {
+      "surface": "web",
+      "locale": "de",
+      "license": "MIT",
+      "origin": "Independently authored translation of 200 OK English product copy",
+      "reviewState": "agent-reviewed",
+      "reviewLedger": "localization/web/de.json"
+    },
+    {
+      "surface": "desktop",
+      "locale": "de",
+      "license": "MIT",
+      "origin": "Independently authored translation of 200 OK English product copy",
+      "reviewState": "agent-reviewed",
+      "reviewLedger": "localization/desktop/de.json"
+    },
+    {
+      "surface": "extension",
+      "locale": "de",
+      "license": "MIT",
+      "origin": "Independently authored translation of 200 OK English product copy",
+      "reviewState": "agent-reviewed",
+      "reviewLedger": "localization/extension/de.json"
+    },
+    {
+      "surface": "android",
+      "locale": "de",
+      "license": "MIT",
+      "origin": "Independently authored translation of 200 OK English product copy",
+      "reviewState": "agent-reviewed",
+      "reviewLedger": "localization/android/de.json"
+    },
+    {
+      "surface": "ios",
+      "locale": "de",
+      "license": "MIT",
+      "origin": "Independently authored translation of 200 OK English product copy",
+      "reviewState": "agent-reviewed",
+      "reviewLedger": "localization/ios/de.json"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { t, useLocale } from "@ok200/i18n";
 import type { ReactNode } from "react";
 
 interface LockedControlProps {
@@ -11,8 +12,9 @@ export function LockedControl({
   locked,
   children,
   className = "",
-  message = "Stop the server to change this setting",
+  message = t("desktop.stop.the.server.to.change.this.setting.27acb7"),
 }: LockedControlProps) {
+  useLocale();
   return (
     <fieldset
       className={`group relative m-0 min-w-0 border-0 p-0 ${locked ? "cursor-not-allowed" : ""} ${className}`}

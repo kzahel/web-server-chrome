@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        (application as Ok200Application).refreshLocalization()
         viewModel.refreshSystemState()
     }
 

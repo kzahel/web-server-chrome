@@ -1,3 +1,4 @@
+import { LanguagePicker, rich, t, useLocale } from "@ok200/i18n";
 import type React from "react";
 import { useEffect, useState } from "react";
 import {
@@ -32,6 +33,7 @@ async function getPlatformOS(): Promise<string> {
 }
 
 export function App() {
+  useLocale();
   const [state, setState] = useState<AppState>("loading");
   const [route, setRoute] = useState<PlatformRoute | null>(null);
   const [error, setError] = useState("");
@@ -112,7 +114,9 @@ export function App() {
           setState("launched");
           setTimeout(() => window.close(), 1200);
         } else {
-          setError(response?.error || "Failed to launch app");
+          setError(
+            response?.error || t("extension.failed.to.launch.app.fba450"),
+          );
           setState("error");
         }
       },
@@ -125,7 +129,8 @@ export function App() {
     chrome.tabs.create({ url: CHROMEOS_INTENT_URL }, () => {
       if (chrome.runtime.lastError) {
         setError(
-          chrome.runtime.lastError.message || "Failed to open Android app",
+          chrome.runtime.lastError.message ||
+            t("extension.failed.to.open.android.app.73ba16"),
         );
         setState("error");
         return;
@@ -143,7 +148,7 @@ export function App() {
         if (chrome.runtime.lastError) {
           setError(
             chrome.runtime.lastError.message ||
-              "Failed to open the Linux setup guide",
+              t("extension.failed.to.open.the.linux.setup.guide.a903f0"),
           );
           setState("error");
           return;
@@ -164,6 +169,8 @@ export function App() {
       style={{
         padding: 20,
         minWidth: 300,
+        boxSizing: "border-box",
+        maxWidth: "100%",
         fontFamily: "system-ui, -apple-system, sans-serif",
       }}
     >
@@ -176,38 +183,51 @@ export function App() {
         }}
       >
         <img src="../../icons/ok-32.png" width={32} height={32} alt="" />
-        <span style={{ fontSize: 18, fontWeight: 600 }}>200 OK Web Server</span>
+        <span style={{ fontSize: 18, fontWeight: 600 }}>
+          {t("extension.200.ok.web.server.bf6c0d")}
+        </span>
       </div>
 
+      <LanguagePicker />
       {state === "loading" && (
-        <p style={{ color: "#666", margin: 0 }}>Connecting...</p>
+        <p style={{ color: "#666", margin: 0 }}>
+          {t("extension.connecting.5f04ae")}
+        </p>
       )}
 
       {state === "ready" && (
         <>
           <p style={{ color: "#666", margin: "0 0 12px", fontSize: 13 }}>
-            Desktop app detected{hostVersion ? ` (v${hostVersion})` : ""}.
+            {t("extension.desktop.app.detected.value0.6e9c58", {
+              value0: hostVersion ? ` (v${hostVersion})` : "",
+            })}
           </p>
           <button type="button" onClick={handleLaunch} style={primaryButton}>
-            Open 200 OK
+            {t("extension.open.200.ok.06ebd0")}
           </button>
         </>
       )}
 
       {state === "launching" && (
-        <p style={{ color: "#666", margin: 0 }}>Launching...</p>
+        <p style={{ color: "#666", margin: 0 }}>
+          {t("extension.launching.b1601d")}
+        </p>
       )}
 
       {state === "launched" && (
         <p style={{ color: "#22c55e", margin: 0, fontWeight: 500 }}>
-          {route === "chromeos" ? "Opening Android app..." : "App launched!"}
+          {route === "chromeos"
+            ? t("extension.opening.android.app.708ae6")
+            : t("extension.app.launched.931931")}
         </p>
       )}
 
       {state === "not-installed" && (
         <>
           <p style={{ color: "#666", margin: "0 0 12px", fontSize: 13 }}>
-            Serve any folder over HTTP. Install the desktop app to get started.
+            {t(
+              "extension.serve.any.folder.over.http.install.the.desktop.app.to.g.cbebff",
+            )}
           </p>
           <a
             href={DESKTOP_DOWNLOAD_URL}
@@ -215,7 +235,7 @@ export function App() {
             rel="noopener noreferrer"
             style={primaryLink}
           >
-            Get the Desktop App
+            {t("extension.get.the.desktop.app.39b7d5")}
           </a>
         </>
       )}
@@ -223,16 +243,16 @@ export function App() {
       {state === "chromeos" && (
         <>
           <p style={{ color: "#666", margin: "0 0 12px", fontSize: 13 }}>
-            Choose the implementation you prefer. ChromeOS Linux avoids Google
-            Play and gives this extension full server controls; Android is the
-            quickest setup when Play is available.
+            {t(
+              "extension.choose.the.implementation.you.prefer.chromeos.linux.avo.737672",
+            )}
           </p>
           <button
             type="button"
             onClick={handleLinuxSetup}
             style={primaryButton}
           >
-            Use ChromeOS Linux
+            {t("extension.use.chromeos.linux.1c2722")}
           </button>
           <div style={{ marginTop: 8 }}>
             <button
@@ -240,28 +260,36 @@ export function App() {
               onClick={handleChromeOsLaunch}
               style={secondaryButton}
             >
-              Open installed Android app
+              {t("extension.open.installed.android.app.82b23f")}
             </button>
           </div>
           <div style={{ marginTop: 8 }}>
-            <a
-              href={CHROMEOS_HELP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={secondaryActionLink}
-            >
-              Compare ChromeOS options
-            </a>
+            {rich("extension..tag0.compare.chromeos.options.tag0.081566", {
+              tag0: (chunks) => (
+                <a
+                  href={CHROMEOS_HELP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={secondaryActionLink}
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
           </div>
           <div style={{ marginTop: 8 }}>
-            <a
-              href={PLAY_STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={secondaryLink}
-            >
-              Google Play
-            </a>
+            {rich("extension..tag0.google.play.tag0.60819d", {
+              tag0: (chunks) => (
+                <a
+                  href={PLAY_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={secondaryLink}
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
           </div>
         </>
       )}
@@ -269,7 +297,9 @@ export function App() {
       {state === "unsupported" && (
         <>
           <p style={{ color: "#666", margin: "0 0 12px", fontSize: 13 }}>
-            This Chrome platform does not have a supported 200 OK launcher path.
+            {t(
+              "extension.this.chrome.platform.does.not.have.a.supported.200.ok.l.154016",
+            )}
           </p>
           <a
             href={PRODUCT_URL}
@@ -277,18 +307,18 @@ export function App() {
             rel="noopener noreferrer"
             style={primaryLink}
           >
-            See supported platforms
+            {t("extension.see.supported.platforms.bc2221")}
           </a>
         </>
       )}
 
       {state === "error" && (
         <>
-          <p style={{ color: "#ef4444", margin: "0 0 12px", fontSize: 13 }}>
+          <p style={{ color: "#b91c1c", margin: "0 0 12px", fontSize: 13 }}>
             {error}
           </p>
           <button type="button" onClick={handleRetry} style={secondaryButton}>
-            Try Again
+            {t("extension.try.again.df0fe9")}
           </button>
         </>
       )}
@@ -310,33 +340,48 @@ export function App() {
             fontWeight: 500,
           }}
         >
-          <a
-            href={FEEDBACK_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#665700" }}
-          >
-            Feedback &amp; support
-          </a>
-          <a
-            href={SOURCE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#665700" }}
-          >
-            Source · MIT
-          </a>
+          {rich(
+            "extension..tag0.feedback.support.tag0.tag1.source.mit.tag1.83ed4c",
+            {
+              tag0: (chunks) => (
+                <a
+                  href={FEEDBACK_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#665700" }}
+                >
+                  {chunks}
+                </a>
+              ),
+              tag1: (chunks) => (
+                <a
+                  href={SOURCE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#665700" }}
+                >
+                  {chunks}
+                </a>
+              ),
+            },
+          )}
         </div>
-        <div style={{ color: "#999" }}>
-          Successor to{" "}
-          <a
-            href="https://chromewebstore.google.com/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#999" }}
-          >
-            Web Server for Chrome
-          </a>
+        <div style={{ color: "#666" }}>
+          {rich(
+            "extension.successor.to.tag0.web.server.for.chrome.tag0.7ca3a6",
+            {
+              tag0: (chunks) => (
+                <a
+                  href="https://chromewebstore.google.com/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#666" }}
+                >
+                  {chunks}
+                </a>
+              ),
+            },
+          )}
         </div>
       </div>
     </div>

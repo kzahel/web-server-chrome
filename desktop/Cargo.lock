@@ -1786,7 +1786,7 @@ dependencies = [
  "js-sys",
  "log",
  "wasm-bindgen",
- "windows-core 0.61.2",
+ "windows-core 0.62.2",
 ]
 
 [[package]]
@@ -2659,7 +2659,9 @@ name = "ok200-common"
 version = "0.1.11"
 dependencies = [
  "dirs 5.0.1",
+ "serde_json",
  "serial_test",
+ "sys-locale",
  "tempfile",
  "uuid",
 ]
@@ -2690,6 +2692,7 @@ dependencies = [
  "fontdue",
  "fs2",
  "minisign-verify 0.2.5",
+ "ok200-common",
  "ok200-core",
  "semver",
  "serde",
@@ -3986,6 +3989,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.117",
+]
+
+[[package]]
+name = "sys-locale"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8eab9a99a024a169fe8a903cf9d4a3b3601109bcc13bd9e3c6fff259138626c4"
+dependencies = [
+ "libc",
 ]
 
 [[package]]

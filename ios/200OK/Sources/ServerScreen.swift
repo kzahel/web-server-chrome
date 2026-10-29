@@ -37,7 +37,7 @@ struct ServerScreen: View {
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button("Done") { portIsFocused = false }
+                    Button(String(localized: "Done")) { portIsFocused = false }
                 }
             }
         }
@@ -69,7 +69,7 @@ struct ServerScreen: View {
             VStack(alignment: .leading, spacing: 0) {
                 Text("200 OK")
                     .font(.system(.largeTitle, design: .rounded, weight: .black))
-                Text("Web Server")
+                Text(String(localized: "Web Server"))
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(.secondary)
             }
@@ -94,7 +94,7 @@ struct ServerScreen: View {
                     .accessibilityHidden(true)
 
                     VStack(alignment: .leading, spacing: 3) {
-                        Text("Server")
+                        Text(String(localized: "Server"))
                             .font(.headline)
                         Text(controller.statusText)
                             .font(.subheadline)
@@ -104,18 +104,18 @@ struct ServerScreen: View {
                     }
                     Spacer()
 
-                    Toggle("Server", isOn: serverToggleBinding)
+                    Toggle(String(localized: "Server"), isOn: serverToggleBinding)
                         .labelsHidden()
                         .toggleStyle(.switch)
                         .tint(brandYellow)
                         .disabled(!serverToggleIsOn && !controller.isBusy && !controller.canStart)
-                        .accessibilityLabel("Server")
-                        .accessibilityHint(serverToggleIsOn ? "Stops the web server" : "Starts the web server")
+                        .accessibilityLabel(String(localized: "Server"))
+                        .accessibilityHint(serverToggleIsOn ? String(localized: "Stops the web server") : String(localized: "Starts the web server"))
                         .accessibilityIdentifier("server-toggle")
                 }
 
                 if controller.selectedRoot == nil {
-                    Text("Choose a serving folder to enable the server.")
+                    Text(String(localized: "Choose a serving folder to enable the server."))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -142,19 +142,19 @@ struct ServerScreen: View {
     }
 
     private var folderCard: some View {
-        card(title: "Serving folder", symbol: "folder") {
+        card(title: String(localized: "Serving folder"), symbol: "folder") {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(controller.selectedRoot?.displayName ?? "No folder selected")
+                    Text(controller.selectedRoot?.displayName ?? String(localized: "No folder selected"))
                         .font(.body.weight(.medium))
                         .lineLimit(2)
                         .accessibilityIdentifier("folder-name")
-                    Text("Read-only access through Files")
+                    Text(String(localized: "Read-only access through Files"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Button(controller.selectedRoot == nil ? "Choose" : "Change") {
+                Button(controller.selectedRoot == nil ? String(localized: "Choose") : String(localized: "Change")) {
                     showsDirectoryPicker = true
                 }
                 .buttonStyle(.bordered)
@@ -170,8 +170,8 @@ struct ServerScreen: View {
             VStack(spacing: 14) {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Port")
-                        Text("Use 0 to choose an available port")
+                        Text(String(localized: "Port"))
+                        Text(String(localized: "Use 0 to choose an available port"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -186,7 +186,7 @@ struct ServerScreen: View {
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 110)
                     .disabled(controller.settingsLocked)
-                    .accessibilityLabel("Port")
+                    .accessibilityLabel(String(localized: "Port"))
                     .accessibilityIdentifier("port-field")
                 }
                 if let error = controller.portError {
@@ -197,8 +197,8 @@ struct ServerScreen: View {
                 }
                 Divider()
                 settingToggle(
-                    "Local network access",
-                    detail: "Allow other devices on this Wi-Fi network to connect.",
+                    String(localized: "Local network access"),
+                    detail: String(localized: "Allow other devices on this Wi-Fi network to connect."),
                     value: Binding(
                         get: { controller.configuration.allowLocalNetwork },
                         set: { enabled in controller.setAllowLocalNetwork(enabled) }
@@ -211,11 +211,11 @@ struct ServerScreen: View {
     }
 
     private var behaviorCard: some View {
-        card(title: "Serving behavior", symbol: "slider.horizontal.3") {
+        card(title: String(localized: "Serving behavior"), symbol: "slider.horizontal.3") {
             VStack(spacing: 14) {
                 settingToggle(
-                    "Directory listing",
-                    detail: "Show a file list when a folder has no index.html.",
+                    String(localized: "Directory listing"),
+                    detail: String(localized: "Show a file list when a folder has no index.html."),
                     value: Binding(
                         get: { controller.configuration.directoryListing },
                         set: { enabled in controller.setDirectoryListing(enabled) }
@@ -225,7 +225,7 @@ struct ServerScreen: View {
                 Divider()
                 settingToggle(
                     "CORS",
-                    detail: "Allow cross-origin browser requests.",
+                    detail: String(localized: "Allow cross-origin browser requests."),
                     value: Binding(
                         get: { controller.configuration.cors },
                         set: { enabled in controller.setCORS(enabled) }
@@ -234,8 +234,8 @@ struct ServerScreen: View {
                 )
                 Divider()
                 settingToggle(
-                    "Single-page app fallback",
-                    detail: "Serve the root index.html for missing routes without extensions.",
+                    String(localized: "Single-page app fallback"),
+                    detail: String(localized: "Serve the root index.html for missing routes without extensions."),
                     value: Binding(
                         get: { controller.configuration.spaFallback },
                         set: { enabled in controller.setSPAFallback(enabled) }
@@ -248,12 +248,12 @@ struct ServerScreen: View {
     }
 
     private var urlsCard: some View {
-        card(title: "Running URLs", symbol: "link") {
+        card(title: String(localized: "Running URLs"), symbol: "link") {
             VStack(alignment: .leading, spacing: 14) {
                 ForEach(Array(displayedRunningURLs.enumerated()), id: \.element) { index, url in
                     let isLocal = url.host == "127.0.0.1"
                     VStack(alignment: .leading, spacing: 9) {
-                        Text(isLocal ? "This iPhone" : "Wi-Fi")
+                        Text(isLocal ? String(localized: "This iPhone") : "Wi-Fi")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.secondary)
                         Text(url.absoluteString)
@@ -262,16 +262,16 @@ struct ServerScreen: View {
                             .fixedSize(horizontal: false, vertical: true)
                             .accessibilityIdentifier(isLocal ? "server-url-local" : "server-url-lan")
                         HStack {
-                            Button("Copy", systemImage: "doc.on.doc") {
+                            Button(String(localized: "Copy"), systemImage: "doc.on.doc") {
                                 UIPasteboard.general.url = url
                             }
                             .accessibilityIdentifier("copy-url")
                             ShareLink(item: url) {
-                                Label("Share", systemImage: "square.and.arrow.up")
+                                Label(String(localized: "Share"), systemImage: "square.and.arrow.up")
                             }
                             .accessibilityIdentifier("share-url")
                             if isLocal {
-                                Button("Preview", systemImage: "safari") {
+                                Button(String(localized: "Preview"), systemImage: "safari") {
                                     showsPreview = true
                                 }
                                 .accessibilityIdentifier("preview-url")
@@ -286,7 +286,7 @@ struct ServerScreen: View {
                 }
                 if controller.configuration.allowLocalNetwork,
                    controller.runningURLs.count == 1 {
-                    Text("No current Wi-Fi address is available. The server remains local to this iPhone until Wi-Fi is ready.")
+                    Text(String(localized: "No current Wi-Fi address is available. The server remains local to this iPhone until Wi-Fi is ready."))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -304,7 +304,7 @@ struct ServerScreen: View {
 
     private var lifecycleNote: some View {
         Label(
-            "Serving works while 200 OK is open. iOS stops the server when the app moves to the background.",
+            String(localized: "Serving works while 200 OK is open. iOS stops the server when the app moves to the background."),
             systemImage: "iphone"
         )
         .font(.footnote)
@@ -315,12 +315,12 @@ struct ServerScreen: View {
 
     private var productLinks: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Link("Privacy", destination: URL(string: "https://ok200.app/privacy")!)
+            Link(String(localized: "Privacy"), destination: URL(string: "https://ok200.app/privacy")!)
                 .accessibilityIdentifier("privacy-link")
-            Link("Feedback & support", destination: URL(string: "https://ok200.app/feedback")!)
+            Link(String(localized: "Feedback & support"), destination: URL(string: "https://ok200.app/feedback")!)
                 .accessibilityIdentifier("feedback-link")
             Link(
-                "Source code · MIT",
+                String(localized: "Source code · MIT"),
                 destination: URL(string: "https://github.com/kzahel/web-server-chrome")!
             )
             .accessibilityIdentifier("source-link")
@@ -334,7 +334,7 @@ struct ServerScreen: View {
     @ViewBuilder
     private var lockedNote: some View {
         if controller.settingsLocked {
-            Text("Stop the server to change this setting.")
+            Text(String(localized: "Stop the server to change this setting."))
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)

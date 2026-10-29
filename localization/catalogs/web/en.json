@@ -1,0 +1,1022 @@
+{
+  "desktop.stopped.1a4f63": {
+    "defaultMessage": "Stopped",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.starting.aeed4d": {
+    "defaultMessage": "Starting",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.running.f4ccae": {
+    "defaultMessage": "Running",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stopping.a71ee1": {
+    "defaultMessage": "Stopping",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.error.54a0e8": {
+    "defaultMessage": "Error",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.port.must.be.between.0.and.65535.e3ecee": {
+    "defaultMessage": "Port must be between 0 and 65535",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.choose.a.folder.to.start.the.server.337adc": {
+    "defaultMessage": "Choose a folder to start the server",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.stop.web.server.a00a97": {
+    "defaultMessage": "Stop web server",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.start.web.server.9b82f9": {
+    "defaultMessage": "Start web server",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.web.server.1643cf": {
+    "defaultMessage": "Web server",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.folder.74ccd4": {
+    "defaultMessage": "Folder",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.no.folder.selected.d987e0": {
+    "defaultMessage": "No folder selected",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.choosing.fe2076": {
+    "defaultMessage": "Choosing…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.change.a6b470": {
+    "defaultMessage": "Change…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.choose.7ca416": {
+    "defaultMessage": "Choose…",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop..path.to.directory.ae256f": {
+    "defaultMessage": "/path/to/directory",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.port.72e9a5": {
+    "defaultMessage": "Port",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.0.automatic.4c2328": {
+    "defaultMessage": "0 = automatic",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.share.this.folder.cdaecd": {
+    "defaultMessage": "Share this folder?",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.cancel.19766e": {
+    "defaultMessage": "Cancel",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.start.anyway.a330c2": {
+    "defaultMessage": "Start anyway",
+    "description": "packages/ui/src/components/HeroZone.tsx"
+  },
+  "desktop.200.ok.web.server.bf6c0d": {
+    "defaultMessage": "200 OK Web Server",
+    "description": "packages/ui/src/components/Layout.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "desktop.desktop.9bd88f": {
+    "defaultMessage": "Desktop",
+    "description": "packages/ui/src/components/Layout.tsx"
+  },
+  "desktop.stop.the.server.to.change.this.setting.27acb7": {
+    "defaultMessage": "Stop the server to change this setting",
+    "description": "packages/ui/src/components/LockedControl.tsx"
+  },
+  "desktop.failed.to.open.external.link.29fcf0": {
+    "defaultMessage": "Failed to open external link:",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.feedback.suggestions.and.support.d1acad": {
+    "defaultMessage": "Feedback, suggestions, and support",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.feedback.support.2d5632": {
+    "defaultMessage": "Feedback & support",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.view.the.mit.licensed.source.code.017168": {
+    "defaultMessage": "View the MIT-licensed source code",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.source.mit.32896a": {
+    "defaultMessage": "Source · MIT",
+    "description": "packages/ui/src/components/ProductLinks.tsx"
+  },
+  "desktop.loading.47d2a5": {
+    "defaultMessage": "Loading...",
+    "description": "packages/ui/src/components/ServerPage.tsx"
+  },
+  "desktop.server.not.found.d7783f": {
+    "defaultMessage": "Server not found",
+    "description": "packages/ui/src/components/ServerPage.tsx"
+  },
+  "desktop.open.in.default.browser.d1f5a8": {
+    "defaultMessage": "Open in default browser",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.copy.url.b26d10": {
+    "defaultMessage": "Copy URL",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.url.copied.0017bd": {
+    "defaultMessage": "URL copied",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.copied.8d525e": {
+    "defaultMessage": "Copied",
+    "description": "packages/ui/src/components/ServerUrl.tsx"
+  },
+  "desktop.lan.access.708f4a": {
+    "defaultMessage": "LAN access",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.directory.listing.bc706d": {
+    "defaultMessage": "Directory listing",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.spa.mode.4695bd": {
+    "defaultMessage": "SPA mode",
+    "description": "packages/ui/src/components/ServingSettings.tsx"
+  },
+  "desktop.serving.options.ac430f": {
+    "defaultMessage": "Serving options",
+    "description": "packages/ui/src/components/SettingsZone.tsx"
+  },
+  "desktop.locked.a424e3": {
+    "defaultMessage": "Locked",
+    "description": "packages/ui/src/components/SettingsZone.tsx"
+  },
+  "desktop.app.settings.d43fb8": {
+    "defaultMessage": "App settings",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.close.app.settings.4168da": {
+    "defaultMessage": "Close app settings",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.these.controls.are.always.available.here.49809b": {
+    "defaultMessage": "These controls are always available here.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.start.at.login.5952eb": {
+    "defaultMessage": "Start at Login",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.launch.200.ok.when.you.sign.in.b9ed74": {
+    "defaultMessage": "Launch 200 OK when you sign in.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.run.in.background.0db775": {
+    "defaultMessage": "Run in Background",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.keep.running.when.the.main.window.is.closed.c46cc8": {
+    "defaultMessage": "Keep running when the main window is closed.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.keep.a.shortcut.to.200.ok.in.the.system.area.6f0b61": {
+    "defaultMessage": "Keep a shortcut to 200 OK in the system area.",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.loading.settings.e71a13": {
+    "defaultMessage": "Loading settings…",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.check.for.updates.9ed79e": {
+    "defaultMessage": "Check for Updates",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.quit.200.ok.686f8f": {
+    "defaultMessage": "Quit 200 OK",
+    "description": "desktop/tauri-app/src/AppSettings.tsx"
+  },
+  "desktop.could.not.open.value0.value1.fe47fa": {
+    "defaultMessage": "Could not open {value0}: {value1}",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.checking.for.updates.497a19": {
+    "defaultMessage": "Checking for updates…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.you.re.up.to.date.8d757d": {
+    "defaultMessage": "You’re up to date",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.200.ok.value0.is.available.31c835": {
+    "defaultMessage": "200 OK {value0} is available",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.install.updates.manually.60762c": {
+    "defaultMessage": "Install updates manually",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.downloading.200.ok.value0.19b49e": {
+    "defaultMessage": "Downloading 200 OK {value0}…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.installing.update.29e74e": {
+    "defaultMessage": "Installing update…",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.update.failed.e58282": {
+    "defaultMessage": "Update failed",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.contacting.the.200.ok.update.server.663342": {
+    "defaultMessage": "Contacting the 200 OK update server.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.200.ok.value0.is.the.newest.version.98822f": {
+    "defaultMessage": "200 OK{value0} is the newest version.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.the.update.is.signed.and.ready.to.install.4abbcb": {
+    "defaultMessage": "The update is signed and ready to install.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.updates.for.the.value0.stay.with.that.package.type.down.686fbe": {
+    "defaultMessage": "Updates for the {value0} stay with that package type. Download the matching package from ok200.app.",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.dismiss.update.notice.6a124b": {
+    "defaultMessage": "Dismiss update notice",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.dismiss.48845b": {
+    "defaultMessage": "Dismiss",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.open.downloads.3e4ad2": {
+    "defaultMessage": "Open downloads",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.install.restart.223cb1": {
+    "defaultMessage": "Install & Restart",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.check.again.fb7099": {
+    "defaultMessage": "Check again",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "desktop.later.73b6e4": {
+    "defaultMessage": "Later",
+    "description": "desktop/tauri-app/src/DesktopUpdater.tsx"
+  },
+  "extension.failed.to.launch.app.fba450": {
+    "defaultMessage": "Failed to launch app",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.failed.to.open.android.app.73ba16": {
+    "defaultMessage": "Failed to open Android app",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.failed.to.open.the.linux.setup.guide.a903f0": {
+    "defaultMessage": "Failed to open the Linux setup guide",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.200.ok.web.server.bf6c0d": {
+    "defaultMessage": "200 OK Web Server",
+    "description": "extension/src/ui/app.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.connecting.5f04ae": {
+    "defaultMessage": "Connecting...",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.desktop.app.detected.value0.6e9c58": {
+    "defaultMessage": "Desktop app detected{value0}.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.open.200.ok.06ebd0": {
+    "defaultMessage": "Open 200 OK",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.launching.b1601d": {
+    "defaultMessage": "Launching...",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.opening.android.app.708ae6": {
+    "defaultMessage": "Opening Android app...",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.app.launched.931931": {
+    "defaultMessage": "App launched!",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.serve.any.folder.over.http.install.the.desktop.app.to.g.cbebff": {
+    "defaultMessage": "Serve any folder over HTTP. Install the desktop app to get started.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.get.the.desktop.app.39b7d5": {
+    "defaultMessage": "Get the Desktop App",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.choose.the.implementation.you.prefer.chromeos.linux.avo.737672": {
+    "defaultMessage": "Choose the implementation you prefer. ChromeOS Linux avoids Google Play and gives this extension full server controls; Android is the quickest setup when Play is available.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.use.chromeos.linux.1c2722": {
+    "defaultMessage": "Use ChromeOS Linux",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.open.installed.android.app.82b23f": {
+    "defaultMessage": "Open installed Android app",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.compare.chromeos.options.tag0.081566": {
+    "defaultMessage": "<tag0>Compare ChromeOS options</tag0>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.google.play.tag0.60819d": {
+    "defaultMessage": "<tag0>Google Play</tag0>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.this.chrome.platform.does.not.have.a.supported.200.ok.l.154016": {
+    "defaultMessage": "This Chrome platform does not have a supported 200 OK launcher path.",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.see.supported.platforms.bc2221": {
+    "defaultMessage": "See supported platforms",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.try.again.df0fe9": {
+    "defaultMessage": "Try Again",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension..tag0.feedback.support.tag0.tag1.source.mit.tag1.83ed4c": {
+    "defaultMessage": "<tag0>Feedback & support</tag0> <tag1>Source · MIT</tag1>",
+    "description": "extension/src/ui/app.tsx"
+  },
+  "extension.successor.to.tag0.web.server.for.chrome.tag0.7ca3a6": {
+    "defaultMessage": "Successor to  <tag0>Web Server for Chrome</tag0>",
+    "description": "extension/src/ui/app.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.the.one.time.controller.claim.is.missing.launch.200.ok.f9593f": {
+    "defaultMessage": "The one-time controller claim is missing. Launch 200 OK Web Server again.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.this.linux.controller.is.already.paired.but.this.extens.ed282f": {
+    "defaultMessage": "This Linux controller is already paired, but this extension no longer has its token. Run ‘ok200-crostini reset-controller’ in Terminal, then launch 200 OK Web Server again.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.controller.connection.failed.f25b70": {
+    "defaultMessage": "Controller connection failed.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.check.failed.144b96": {
+    "defaultMessage": "Permission check failed.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.control.session.expired.fbba79": {
+    "defaultMessage": "The Linux control session expired.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.request.failed.4c774d": {
+    "defaultMessage": "Permission request failed.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.permission.was.not.granted.setup.instructions.remain.av.41abf6": {
+    "defaultMessage": "Permission was not granted. Setup instructions remain available, but the extension cannot control Linux.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.action.failed.f71340": {
+    "defaultMessage": "Action failed.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.server.action.failed.c2bc8c": {
+    "defaultMessage": "Server action failed.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.updating.stops.the.web.server.and.does.not.restart.it.a.8f22e4": {
+    "defaultMessage": "Updating stops the web server and does not restart it automatically. Continue?",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.component.is.already.current.b8579d": {
+    "defaultMessage": "The Linux component is already current.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.installing.the.signed.update.the.controller.will.briefl.ab10e2": {
+    "defaultMessage": "Installing the signed update. The controller will briefly reconnect…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.updated.to.linux.component.v.value0.the.web.server.rema.b21a35": {
+    "defaultMessage": "Updated to Linux component v{value0}. The web server remains stopped.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.linux.component.update.failed.426563": {
+    "defaultMessage": "The Linux component update failed.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.update.is.taking.longer.than.expected.launch.200.ok.449ff3": {
+    "defaultMessage": "The update is taking longer than expected. Launch 200 OK Web Server again, or run ‘ok200-crostini update’ in Terminal.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.update.failed.f1d764": {
+    "defaultMessage": "Update failed.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.linux.access.2a9213": {
+    "defaultMessage": "Checking Linux access…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.connecting.to.your.linux.controller.095b18": {
+    "defaultMessage": "Connecting to your Linux controller…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.connect.to.linux.67d25d": {
+    "defaultMessage": "Connect to Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.200.ok.to.communicate.with.your.chromebook.s.linu.76c804": {
+    "defaultMessage": "Allow 200 OK to communicate with your Chromebook''s Linux environment at <tag0>penguin.linux.test</tag0>. This private address stays on your Chromebook.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.linux.access.38fc0e": {
+    "defaultMessage": "Allow Linux access",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.linux.setup.and.recovery.803759": {
+    "defaultMessage": "Linux setup and recovery",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.couldn.t.connect.to.linux.6e31bc": {
+    "defaultMessage": "Couldn''t connect to Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.try.again.d8b839": {
+    "defaultMessage": "Try again",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.web.server.for.chromeos.linux.9d8ef3": {
+    "defaultMessage": "Web Server for ChromeOS Linux",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.linux.connected.a353b4": {
+    "defaultMessage": "Linux connected",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.the.server.to.change.settings.fd75f3": {
+    "defaultMessage": "Stop the server to change settings.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.wait.for.the.server.to.finish.value0.da806d": {
+    "defaultMessage": "{value0, select, starting {Wait for the server to finish starting.} stopping {Wait for the server to finish stopping.} other {Wait for the server to finish its current action.}}",
+    "description": "Complete status sentence. value0 is a stable starting/stopping protocol enum; do not translate selector keys."
+  },
+  "extension.wait.for.the.current.action.to.finish.a99bab": {
+    "defaultMessage": "Wait for the current action to finish.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.starting.aeed4d": {
+    "defaultMessage": "Starting",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stopping.a71ee1": {
+    "defaultMessage": "Stopping",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.error.54a0e8": {
+    "defaultMessage": "Error",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.running.f4ccae": {
+    "defaultMessage": "Running",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stopped.1a4f63": {
+    "defaultMessage": "Stopped",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.serving.continues.when.this.window.closes.b6048a": {
+    "defaultMessage": "Serving continues when this window closes",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.serving.stops.when.this.window.closes.49b856": {
+    "defaultMessage": "Serving stops when this window closes",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.folder.then.turn.the.server.on.3707c6": {
+    "defaultMessage": "Choose a folder, then turn the server on",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.web.server.1643cf": {
+    "defaultMessage": "Web server",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.web.server.a00a97": {
+    "defaultMessage": "Stop web server",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.start.web.server.9b82f9": {
+    "defaultMessage": "Start web server",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.this.chromebook.31f18d": {
+    "defaultMessage": "This Chromebook",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.47bd29": {
+    "defaultMessage": "Content",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.folder.and.address.d090b6": {
+    "defaultMessage": "Folder and address",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.stop.to.make.changes.a30d16": {
+    "defaultMessage": "Stop to make changes",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.different.folder.1792fc": {
+    "defaultMessage": "Choose a different folder",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.change.c0bf75": {
+    "defaultMessage": "Change",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension..tag0.port.tag0.tag1.used.in.the.server.address.tag1.1ad047": {
+    "defaultMessage": "<tag0>Port</tag0> <tag1>Used in the server address</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.chromeos.to.forward.this.port.to.your.network.5e770a": {
+    "defaultMessage": "Allow ChromeOS to forward this port to your network",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.available.on.local.network.f4bd53": {
+    "defaultMessage": "Available on local network",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.server.lifetime.b391f8": {
+    "defaultMessage": "Server lifetime",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.when.controls.close.8a761e": {
+    "defaultMessage": "When controls close",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.server.keeps.running.until.you.stop.it.or.linux.shu.c725a6": {
+    "defaultMessage": "The server keeps running until you stop it or Linux shuts down",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.server.stops.after.the.final.200.ok.control.window.e84d80": {
+    "defaultMessage": "The server stops after the final 200 OK control window closes",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.keep.serving.when.controls.close.3afb77": {
+    "defaultMessage": "Keep serving when controls close",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension..tag0.advanced.tag0.tag1.directory.behavior.access.and.305a04": {
+    "defaultMessage": "<tag0>Advanced</tag0> <tag1>Directory behavior, access, and updates</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.show.an.index.when.a.folder.has.no.index.file.dd0caa": {
+    "defaultMessage": "Show an index when a folder has no index file",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.directory.listings.a49eb4": {
+    "defaultMessage": "Directory listings",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.serve.index.html.for.routes.that.do.not.match.a.file.07862d": {
+    "defaultMessage": "Serve index.html for routes that do not match a file",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.single.page.app.fallback.f6dac9": {
+    "defaultMessage": "Single-page app fallback",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.allow.pages.on.other.origins.to.request.these.files.7a07f1": {
+    "defaultMessage": "Allow pages on other origins to request these files",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.cross.origin.requests.86c1f5": {
+    "defaultMessage": "Cross-origin requests",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.install.signed.linux.component.updates.while.stopped.6155e8": {
+    "defaultMessage": "Install signed Linux component updates while stopped",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.automatic.linux.updates.04a336": {
+    "defaultMessage": "Automatic Linux updates",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.linux.component.v.value0.23fcc0": {
+    "defaultMessage": "Linux component v{value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.ec963f": {
+    "defaultMessage": "Checking…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.check.now.2937cf": {
+    "defaultMessage": "Check now",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.to.v.value0.d7bb82": {
+    "defaultMessage": "Update to v{value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.setup.sharing.and.recovery.e978bc": {
+    "defaultMessage": "Setup, sharing, and recovery",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension..tag1.linux.component.v.value0.tag1.tag2.tag2.tag3.cont.193b14": {
+    "defaultMessage": "<tag1>Linux component v{value0}</tag1> <tag2>•</tag2> <tag3>Controller port 20080 stays private</tag3>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.server.port.9f26d1": {
+    "defaultMessage": "Content server port",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.content.port.838a49": {
+    "defaultMessage": "Content port",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.server.520174": {
+    "defaultMessage": "Open server",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.server.url.646642": {
+    "defaultMessage": "Open server URL",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.ed077f": {
+    "defaultMessage": "Open",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.url.copied.0017bd": {
+    "defaultMessage": "URL copied",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.copy.server.url.3f8f6c": {
+    "defaultMessage": "Copy server URL",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.copied.8d525e": {
+    "defaultMessage": "Copied",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.copy.e21f93": {
+    "defaultMessage": "Copy",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detecting.this.chromebook.s.address.c5a43d": {
+    "defaultMessage": "Detecting this Chromebook’s address…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detected.automatically.from.chromeos.04302a": {
+    "defaultMessage": "Detected automatically from ChromeOS.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.chromeos.shows.this.address.just.above.the.port.forward.3c5208": {
+    "defaultMessage": "ChromeOS shows this address just above the Port forwarding controls.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.local.network.4fda69": {
+    "defaultMessage": "Local network",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.finish.chromeos.forwarding.39f117": {
+    "defaultMessage": "Finish ChromeOS forwarding",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.1.step.3ce601": {
+    "defaultMessage": "1 step",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.in.chromeos.settings.open.tag0.developers.linux.port.fo.49e854": {
+    "defaultMessage": "In ChromeOS Settings, open  <tag0>Developers → Linux → Port forwarding</tag0> and add TCP port {value1}.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.chromebook.ipv4.address.94e487": {
+    "defaultMessage": "Chromebook IPv4 address",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detecting.805eb9": {
+    "defaultMessage": "Detecting…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.not.detected.9f4a10": {
+    "defaultMessage": "Not detected",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detect.chromebook.address.again.198bd4": {
+    "defaultMessage": "Detect Chromebook address again",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.detect.again.bf6732": {
+    "defaultMessage": "Detect again",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.other.devices.4e027d": {
+    "defaultMessage": "Other devices",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.controller.port.20080.stays.on.this.chromebook.and.shou.270d00": {
+    "defaultMessage": "Controller port 20080 stays on this Chromebook and should never be forwarded.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.open.folder.bcd29f": {
+    "defaultMessage": "Could not open folder.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.read.folder.locations.871ce6": {
+    "defaultMessage": "Could not read folder locations.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.my.files.985698": {
+    "defaultMessage": "My files",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.create.folder.13a151": {
+    "defaultMessage": "Could not create folder.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.could.not.select.folder.4293fe": {
+    "defaultMessage": "Could not select folder.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.a.folder.5c71b8": {
+    "defaultMessage": "Choose a folder",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.folder.picker.2db6d3": {
+    "defaultMessage": "Close folder picker",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.7d9eb7": {
+    "defaultMessage": "Close",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.folder.locations.23edda": {
+    "defaultMessage": "Folder locations",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.not.shared.yet.bd0b09": {
+    "defaultMessage": "Not shared yet",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.folder.1a5db5": {
+    "defaultMessage": "Current folder",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.opening.folder.c3ab98": {
+    "defaultMessage": "Opening folder…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.share.a.chromebook.folder.with.linux.e50ee9": {
+    "defaultMessage": "Share a Chromebook folder with Linux",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.the.chromeos.files.app.ce4973": {
+    "defaultMessage": "Open the ChromeOS Files app.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.right.click.the.folder.you.want.to.serve.ed4508": {
+    "defaultMessage": "Right-click the folder you want to serve.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.tag0.share.with.linux.tag0.then.return.here.d837a8": {
+    "defaultMessage": "Choose <tag0>Share with Linux</tag0>, then return here.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.waiting.for.a.shared.folder.676047": {
+    "defaultMessage": "Waiting for a shared folder…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.check.again.fb7099": {
+    "defaultMessage": "Check again",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.this.folder.has.no.subfolders.7b6d8d": {
+    "defaultMessage": "This folder has no subfolders.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.new.folder.name.489b9f": {
+    "defaultMessage": "New folder name",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.create.475949": {
+    "defaultMessage": "Create",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.new.folder.cf28f4": {
+    "defaultMessage": "New folder",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.cancel.19766e": {
+    "defaultMessage": "Cancel",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.choose.this.folder.0f3b23": {
+    "defaultMessage": "Choose this folder",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.v.value0.is.available.46d0d0": {
+    "defaultMessage": "v{value0} is available.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.checking.for.a.signed.update.8e194a": {
+    "defaultMessage": "Checking for a signed update…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.installing.and.reconnecting.eea5c0": {
+    "defaultMessage": "Installing and reconnecting…",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.the.last.update.check.failed.c03ab6": {
+    "defaultMessage": "The last update check failed.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.checked.value0.c23fb5": {
+    "defaultMessage": "Current · checked {value0}",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.current.automatic.check.pending.acd44c": {
+    "defaultMessage": "Current · automatic check pending",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.set.up.the.linux.version.8554b6": {
+    "defaultMessage": "Set up the Linux version",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.chromeos.settings.about.chromeos.developers.linux.b6dec2": {
+    "defaultMessage": "Open ChromeOS Settings → About ChromeOS → Developers → Linux development environment and choose <tag0>Set up</tag0>.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.terminal.once.after.linux.finishes.installing.a18d10": {
+    "defaultMessage": "Open Terminal once after Linux finishes installing.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.install.the.verified.200.ok.linux.component.tag0.curl.f.93b255": {
+    "defaultMessage": "Install the verified 200 OK Linux component: <tag0>curl -fsSL https://ok200.app/install-crostini.sh | bash</tag0> <tag1>The installer verifies the signed release, installs only for your Linux user, and leaves the web server stopped.</tag1>",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.open.tag0.200.ok.web.server.tag0.from.the.chromeos.laun.75dcac": {
+    "defaultMessage": "Open <tag0>200 OK Web Server</tag0> from the ChromeOS Launcher.",
+    "description": "extension/src/ui/crostini.tsx Preserve the exact proper names 200 OK Web Server and Web Server for Chrome."
+  },
+  "extension.if.the.launcher.cannot.wake.linux.open.terminal.once.wa.27611b": {
+    "defaultMessage": "If the Launcher cannot wake Linux, open Terminal once, wait for its prompt, close it, and try again.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.sharing.chromebook.folders.8bf65f": {
+    "defaultMessage": "Sharing Chromebook folders",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.in.files.right.click.the.folder.and.choose.tag0.share.w.f5a943": {
+    "defaultMessage": "In Files, right-click the folder and choose  <tag0>Share with Linux</tag0>. The 200 OK folder picker detects the new share when you return.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.reach.the.server.from.another.device.7f1eab": {
+    "defaultMessage": "Reach the server from another device",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.turn.on.tag0.available.on.local.network.tag0.then.add.t.571f67": {
+    "defaultMessage": "Turn on <tag0>Available on local network</tag0>, then add the content port under ChromeOS Settings → Developers → Linux → Port forwarding. Use the Chromebook''s Wi-Fi IPv4 address. Never forward controller port 20080.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.update.rollback.and.uninstall.2121a4": {
+    "defaultMessage": "Update, rollback, and uninstall",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.ok200.crostini.check.update.value0.ok200.crostini.updat.a13096": {
+    "defaultMessage": "ok200-crostini check-update{value0} ok200-crostini update{value1} ok200-crostini rollback{value2} ok200-crostini uninstall",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.uninstall.preserves.settings.and.never.deletes.a.served.d54c53": {
+    "defaultMessage": "Uninstall preserves settings and never deletes a served folder. Use <tag0>uninstall --purge</tag0> only to remove pairing and controller settings too.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "extension.close.the.200.ok.controls.and.any.tag0.opening.200.ok.t.79941c": {
+    "defaultMessage": "Close the 200 OK controls and any <tag0>Opening 200 OK…</tag0> window before uninstalling. ChromeOS removes the Launcher entry asynchronously; wait for it to disappear before stopping Linux. If an unpinned loading icon remains, do not reopen it—restart ChromeOS to clear that shelf placeholder.",
+    "description": "extension/src/ui/crostini.tsx"
+  },
+  "language.label": {
+    "defaultMessage": "Language",
+    "description": "App-local display language; does not change server settings."
+  },
+  "language.system": {
+    "defaultMessage": "System language",
+    "description": "Follow OS or browser language preferences."
+  },
+  "desktop.native.0ad9f346a7": {
+    "defaultMessage": "Show Icon in Menu Bar",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.25b4818674": {
+    "defaultMessage": "Show Icon in System Tray",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.5021888e79": {
+    "defaultMessage": "Choose a folder before starting the server",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.65e51a8997": {
+    "defaultMessage": "Stop the server before changing its configuration",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.ac5419d69a": {
+    "defaultMessage": "The selected directory cannot be served",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.879a60672f": {
+    "defaultMessage": "This shares your entire home folder, including personal and hidden files.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.0fdab34df1": {
+    "defaultMessage": "This folder contains your home folder and may expose personal files.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.bf8670ceff": {
+    "defaultMessage": "This folder is outside your home folder. Confirm that it is safe to share.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.7ee24bab5c": {
+    "defaultMessage": "The app could not compare this folder with your home folder. Confirm that it is safe to share.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.e119a30af0": {
+    "defaultMessage": "LAN access makes this folder reachable by other devices on this network.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.45e6d69dbe": {
+    "defaultMessage": "macOS app",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.147cb2aad4": {
+    "defaultMessage": "Windows installer",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3318275f29": {
+    "defaultMessage": "Windows MSI",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.e295fe0e69": {
+    "defaultMessage": "DEB package",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3a63e9846a": {
+    "defaultMessage": "RPM package",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.589cb3c9a9": {
+    "defaultMessage": "this installation",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.3e7a639282": {
+    "defaultMessage": "This shares your entire home folder, including personal and hidden files. LAN access also makes it reachable by other devices on this network.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.fec5ce9934": {
+    "defaultMessage": "This folder contains your home folder and may expose personal files. LAN access also makes it reachable by other devices on this network.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.9e62e3b15f": {
+    "defaultMessage": "This folder is outside your home folder. Confirm that it is safe to share. LAN access also makes it reachable by other devices on this network.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.native.93a5653143": {
+    "defaultMessage": "The app could not compare this folder with your home folder. Confirm that it is safe to share. LAN access also makes it reachable by other devices on this network.",
+    "description": "Exact established native display value, translated at presentation; unknown future values remain verbatim."
+  },
+  "desktop.restart.after.update": {
+    "defaultMessage": "200 OK will restart when installation finishes.",
+    "description": "Updater installation status."
+  },
+  "extension.controller.unexpected": {
+    "defaultMessage": "The listener is not the expected 200 OK controller.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.different": {
+    "defaultMessage": "The listener belongs to a different 200 OK controller. Launch 200 OK Web Server again.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.protocol": {
+    "defaultMessage": "This extension requires Linux controller protocol {required}, but the installed component reported protocol {actual}. Check for updates to the extension and Linux component.",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.controller.http": {
+    "defaultMessage": "Controller returned HTTP {status}",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  },
+  "extension.native.disconnected": {
+    "defaultMessage": "Native host disconnected",
+    "description": "First-party connection failure; preserve protocol versions and product names."
+  }
+}

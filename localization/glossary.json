@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "terms": [
+    {
+      "term": "folder",
+      "definition": "A user-selected serving folder, not an arbitrary system directory."
+    },
+    {
+      "term": "server",
+      "definition": "The native app serves files; the extension launches or controls it."
+    },
+    {
+      "term": "local network",
+      "definition": "Access on the local network does not imply public internet access."
+    },
+    {
+      "term": "directory listing",
+      "definition": "List files when no index.html exists, not upload permission."
+    },
+    {
+      "term": "background",
+      "definition": "Android/desktop policy differs; iOS stops on background."
+    },
+    {
+      "term": "start",
+      "definition": "Explicitly start the listener; opening a launcher is distinct."
+    },
+    {
+      "term": "stop",
+      "definition": "Stops serving, retaining the selected folder and settings."
+    },
+    {
+      "term": "port",
+      "definition": "Numeric port; 0 selects an available port."
+    },
+    {
+      "term": "read-only",
+      "definition": "Serving does not grant file modification."
+    },
+    {
+      "term": "choose",
+      "definition": "Select and authorize a folder."
+    },
+    {
+      "term": "launcher",
+      "definition": "Browser surface controls a separately installed native server."
+    }
+  ]
+}

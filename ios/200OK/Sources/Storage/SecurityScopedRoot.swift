@@ -14,13 +14,13 @@ enum SelectedRootError: LocalizedError, Equatable {
     var errorDescription: String? {
         switch self {
         case .noSelection:
-            "Choose a folder before starting the server."
+            String(localized: "Choose a folder before starting the server.")
         case .stale:
-            "The saved folder permission has expired. Choose the folder again."
+            String(localized: "The saved folder permission has expired. Choose the folder again.")
         case .unavailable:
-            "The selected folder is unavailable. Choose it again in Files."
+            String(localized: "The selected folder is unavailable. Choose it again in Files.")
         case .notDirectory:
-            "The selected item is not a folder."
+            String(localized: "The selected item is not a folder.")
         }
     }
 }

@@ -179,7 +179,7 @@ describe("Crostini controller UI", () => {
 
     expect(document.body.textContent).toContain(fixture?.errorContains);
     expect(document.body.textContent).toContain(
-      "Update the extension and Linux component together",
+      "Check for updates to the extension and Linux component",
     );
     expect(document.body.textContent).toContain("Linux setup and recovery");
   });

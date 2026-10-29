@@ -11,3 +11,5 @@ Categories=Network;Utility;
 Keywords=web;server;HTTP;local;development;
 StartupNotify=true
 StartupWMClass=app.ok200.crostini
+GenericName[de]=Webserver
+Comment[de]=200 OK Web Server für ChromeOS Linux öffnen

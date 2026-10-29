@@ -423,3 +423,10 @@ remain separate. This source change does not establish a published or
 store-delivered German build. Presentation preferences do not change server
 settings, folder grants, HTTP behavior or extension/controller protocol values;
 unknown peer diagnostics retain their original text.
+
+The 2026-10-29 remaining-language campaign exposed a hosted UI-test race:
+immediate status-label assertions could precede asynchronous server startup.
+The UI suite now waits on the expected status predicate with a bounded timeout.
+This changes test synchronization only; server lifecycle, HTTP behavior, native
+settings and compatibility remain unchanged. [Tactical 023](../tactical/023-remaining-language-supervisor.md)
+records the failure, fresh qualification and hosted-CI follow-up.

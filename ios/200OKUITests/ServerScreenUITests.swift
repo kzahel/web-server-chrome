@@ -2,6 +2,15 @@ import XCTest
 
 final class ServerScreenUITests: XCTestCase {
     @MainActor
+    private func assertStatus(_ expected: String, in app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "label == %@", expected),
+            object: app.staticTexts["server-status"]
+        )
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation], timeout: 10), .completed, file: file, line: line)
+    }
+
+    @MainActor
     func testTranslatedServingAndPersistedFolder() {
         let environment = ProcessInfo.processInfo.environment
         let locale = environment["OK200_TEST_LOCALE"] ?? "de"
@@ -11,10 +20,10 @@ final class ServerScreenUITests: XCTestCase {
         app.launchArguments = ["-reset-ok200-ui-test-state", "-use-ok200-ui-test-fixture", "-AppleLanguages", "(\(locale))", "-AppleLocale", locale.replacingOccurrences(of: "-", with: "_")]
         app.launch()
         XCTAssertTrue(app.staticTexts["server-status"].waitForExistence(timeout: 5))
-        XCTAssertEqual(app.staticTexts["server-status"].label, stopped)
+        assertStatus(stopped, in: app)
         let folder = app.staticTexts["folder-name"].label
         app.switches["server-toggle"].tap()
-        XCTAssertEqual(app.staticTexts["server-status"].label, running)
+        assertStatus(running, in: app)
         XCTAssertFalse(app.buttons["choose-folder"].isEnabled)
         app.switches["server-toggle"].tap()
         app.terminate()
@@ -22,7 +31,7 @@ final class ServerScreenUITests: XCTestCase {
         app.launch()
         XCTAssertTrue(app.staticTexts["server-status"].waitForExistence(timeout: 5))
         XCTAssertEqual(app.staticTexts["folder-name"].label, folder)
-        XCTAssertEqual(app.staticTexts["server-status"].label, stopped)
+        assertStatus(stopped, in: app)
     }
 
     @MainActor
@@ -35,7 +44,7 @@ final class ServerScreenUITests: XCTestCase {
         app.launch()
 
         XCTAssertTrue(app.staticTexts["200 OK Web Server"].waitForExistence(timeout: 5))
-        XCTAssertEqual(app.staticTexts["server-status"].label, "Stopped")
+        assertStatus("Stopped", in: app)
         XCTAssertTrue(app.staticTexts["folder-name"].label.contains("OK200-QA-Fixture"))
 
         let server = app.switches["server-toggle"]
@@ -43,12 +52,12 @@ final class ServerScreenUITests: XCTestCase {
         XCTAssertEqual(server.value as? String, "0")
         server.tap()
         XCTAssertTrue(app.staticTexts["server-status"].waitForExistence(timeout: 5))
-        XCTAssertEqual(app.staticTexts["server-status"].label, "Running")
+        assertStatus("Running", in: app)
         XCTAssertEqual(server.value as? String, "1")
         XCTAssertFalse(app.buttons["choose-folder"].isEnabled)
 
         server.tap()
-        XCTAssertEqual(app.staticTexts["server-status"].label, "Stopped")
+        assertStatus("Stopped", in: app)
         XCTAssertEqual(server.value as? String, "0")
         XCTAssertTrue(app.buttons["choose-folder"].isEnabled)
     }
@@ -118,13 +127,13 @@ final class ServerScreenUITests: XCTestCase {
         ]
         app.launch()
         app.switches["server-toggle"].tap()
-        XCTAssertEqual(app.staticTexts["server-status"].label, "Running")
+        assertStatus("Running", in: app)
 
         XCUIDevice.shared.press(.home)
         app.activate()
 
         XCTAssertTrue(app.staticTexts["background-stop-message"].waitForExistence(timeout: 5))
-        XCTAssertEqual(app.staticTexts["server-status"].label, "Stopped")
+        assertStatus("Stopped", in: app)
         XCTAssertTrue(app.switches["server-toggle"].isEnabled)
         XCTAssertEqual(app.switches["server-toggle"].value as? String, "0")
     }

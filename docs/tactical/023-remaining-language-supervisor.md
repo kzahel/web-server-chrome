@@ -97,3 +97,30 @@ review records retain exact candidate/final hashes and actual identities.
 Sanitized qualification records bind all five source/catalog/review inputs,
 actual message-session identities, harness/plan hashes and native/browser gates.
 Raw jobs, worker logs and platform evidence remain ignored/private.
+
+
+## Hosted iOS state-wait correction
+
+The Danish cohort's hosted iOS run failed the translated serving test after a
+start tap: the status was still German “Gestoppt” when the immediate assertion
+expected “Läuft”. The archived xcresult identifies this assertion; forty other
+configuration/test executions passed. Local qualification had passed, exposing
+a timing-dependent test race on the hosted runner. UI assertions now wait up to
+ten seconds for the expected status predicate before continuing, including the
+existing English lifecycle tests. There is no fixed sleep or runtime behavior
+change.
+
+The queue was stopped after Czech's initial full qualification, with no model
+workers or native run interrupted. Only the UI test's frozen fingerprint was
+explicitly reconciled; English/context, terminology, catalog jobs and worker
+settings remain unchanged. Old plans/results are preserved privately. Every
+previously completed locale must pass a fresh **full** qualification before its
+completion/evidence is recorded against the revised harness; Czech will also
+qualify again before its first commit. Hosted CI must pass the corrected source
+before this correction is considered closed.
+
+All seven prior locales (French, Spanish, Italian, Brazilian Portuguese, Dutch,
+Swedish and Danish) passed fresh full qualification on 2026-10-29 against the
+corrected harness. Their current tracked receipts retain the same reviewed
+translation/session inputs and new actual native/browser run hashes. The
+remaining queue resumes from Czech, with its initial review outputs preserved.

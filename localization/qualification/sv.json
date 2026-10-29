@@ -27,8 +27,8 @@
     ["ios/scripts/check.sh"],
     ["node", "scripts/qualify-localization.mjs", "--locale", "sv"]
   ],
-  "completedAt": "2026-10-29T15:18:20.752462+00:00",
-  "harnessHash": "22c80a79cc1dd619af3db7adf5cddf3f43b8810df16f8e61d8ef587035bf1e34",
+  "completedAt": "2026-10-29T16:13:57.392915+00:00",
+  "harnessHash": "6f16baf6919e567a6cf7fcca61ee3841e6883faad754fd3ef0e50adb4b5c2d59",
   "inputs": {
     "android": {
       "catalog": "acc7a0feade4dd38884f15a6ba7983e97278375c7db2e8188d61398cf0edffc8",
@@ -60,9 +60,9 @@
     "No store delivery, signed production install, physical-device or three-OS runtime qualification is inferred."
   ],
   "locale": "sv",
-  "planHash": "1d1aa57c53bdfc18bb51c30702dd4ec45d26b266fa782b7d05df347c2ceac4bd",
+  "planHash": "93da46d868a1e0ebf18c059defcf1a913a8fee0b9e24d546b208a818cf2ddf49",
   "platform": "darwin",
-  "qualificationHash": "47d173c7b8e6609bdcb87fe780081906841e915f3a8767855d66fa15203073ff",
+  "qualificationHash": "33cfea4f61b0b8402ad95c5b7d1d440a8b27ed31f2b330ed375a647858cd4523",
   "schemaVersion": 1,
   "sessions": [
     {

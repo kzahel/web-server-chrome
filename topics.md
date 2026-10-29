@@ -42,3 +42,6 @@ Keep each string exact across its commit series so
 
 - `chrome-web-store-publishing` — keyless extension submission and exact-package gates.
 - `dependency-security` — dependency advisory remediation, audit gates, and upstream warning review.
+
+- `store-publishing` — verified Android Play publication, internal-first
+  promotion, staged rollouts, keyless store access, and hosted qualification.

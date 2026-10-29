@@ -1,0 +1,68 @@
+name: Android Play Advance
+
+# Takes at most one step along the plan pinned when a production rollout
+# started, after its dwell time and a vitals check. It halts on a vitals
+# regression and never starts a rollout. The environment variable
+# ANDROID_PLAY_ADVANCE_MODE=act enables changes; otherwise it only reports.
+
+on:
+  schedule:
+    - cron: '17 16 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: report decides without changing Play; act takes the step
+        type: choice
+        options: [report, act]
+        default: report
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-play
+  cancel-in-progress: false
+
+jobs:
+  advance:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: android-play-rollout
+    permissions:
+      contents: read
+      deployments: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Authenticate with short-lived Google credentials
+        id: google
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.ANDROID_PLAY_WIF_PROVIDER }}
+          service_account: ${{ vars.ANDROID_PLAY_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/androidpublisher,https://www.googleapis.com/auth/playdeveloperreporting
+          create_credentials_file: false
+          export_environment_variables: false
+
+      - name: Advance the rollout plan
+        env:
+          PLAY_ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || vars.ANDROID_PLAY_ADVANCE_MODE || 'report' }}
+        run: |
+          status=0
+          python3 scripts/android-play.py advance --mode "$MODE" --receipt "$RUNNER_TEMP/advance.json" || status=$?
+          { echo '```json'; cat "$RUNNER_TEMP/advance.json"; echo '```'; } >> "$GITHUB_STEP_SUMMARY" || true
+          exit "$status"
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: play-advance-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/advance.json
+          if-no-files-found: ignore

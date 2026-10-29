@@ -306,3 +306,48 @@ test("release artifacts must match the clean source and checksum before a networ
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test("staging uploads verified bytes without review or cancellation", async () => {
+  const { calls, request } = sequence([status, { uploadState: "SUCCEEDED" }]);
+  const receipt = await publishStore({
+    token: "test-token",
+    publisherId,
+    candidate,
+    stageOnly: true,
+    request,
+  });
+  assert.equal(receipt.status, "staged-upload");
+  assert.equal(receipt.reviewSubmitted, false);
+  assert.equal(calls.length, 2);
+  assert.equal(calls[1].body, zip);
+  assert(
+    calls.every(
+      (call) =>
+        !call.url.endsWith(":publish") &&
+        !call.url.endsWith(":cancelSubmission"),
+    ),
+  );
+});
+
+test("staging refuses an active review before any write", async () => {
+  const { calls, request } = sequence([
+    {
+      ...status,
+      submittedItemRevisionStatus: {
+        state: "PENDING_REVIEW",
+        distributionChannels: [{ crxVersion: "0.1.3" }],
+      },
+    },
+  ]);
+  await assert.rejects(
+    publishStore({
+      token: "test-token",
+      publisherId,
+      candidate,
+      stageOnly: true,
+      request,
+    }),
+    /active submission/,
+  );
+  assert.equal(calls.length, 1);
+});

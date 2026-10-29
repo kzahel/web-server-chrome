@@ -14,6 +14,9 @@ status. Do not create a topic for every small standalone change.
 
 ## Current topics
 
+- [`android-play-publishing.md`](android-play-publishing.md) — verified Play
+  publication, internal-first promotion, staged rollouts and vitals gates.
+
 - [`localization.md`](localization.md) — locale registry, native catalogs,
   independent translation/review pipeline and app qualification.
 

@@ -1,0 +1,143 @@
+name: Android Play Publish
+
+# Publishes the signed bundle of a tagged Android Release to a Play track.
+# Production only promotes a bundle Play already holds from internal testing.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Android release tag (android-vX.Y.Z)
+        required: true
+        type: string
+      track:
+        description: Play track
+        type: choice
+        options: [internal, production]
+        default: internal
+      status:
+        description: check verifies access only; draft saves without releasing; completed releases to the whole track; inProgress starts a production staged rollout
+        type: choice
+        options: [check, draft, completed, inProgress]
+        default: check
+      fraction:
+        description: inProgress only. Starting user fraction, such as 0.01
+        type: string
+        default: ''
+      plan:
+        description: inProgress only. Plan in android/play-rollout.json, or none for manual steps
+        type: string
+        default: standard-7d
+      release_notes:
+        description: Optional. Defaults to the tag's changelog section (500 characters at most)
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-play
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      source: ${{ steps.provenance.outputs.source }}
+      run_id: ${{ steps.provenance.outputs.run_id }}
+      version_code: ${{ steps.provenance.outputs.version_code }}
+      version_name: ${{ steps.provenance.outputs.version_name }}
+      notes: ${{ steps.provenance.outputs.notes }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Test the publisher
+        run: python3 -m unittest discover -s scripts -p 'test_android_play*.py'
+
+      - name: Verify tagged build provenance and exact-source CI
+        id: provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          NOTES: ${{ inputs.release_notes }}
+        run: python3 scripts/android-play.py verify --tag "$TAG" --notes "$NOTES"
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment: android-play-${{ inputs.track }}
+    permissions:
+      contents: read
+      deployments: write
+      id-token: write
+    env:
+      TAG: ${{ inputs.tag }}
+      SOURCE: ${{ needs.verify.outputs.source }}
+      RUN: ${{ needs.verify.outputs.run_id }}
+      VERSION_CODE: ${{ needs.verify.outputs.version_code }}
+      VERSION_NAME: ${{ needs.verify.outputs.version_name }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Download and verify the candidate before Google authentication
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir "$RUNNER_TEMP/candidate" \
+            --pattern build.json --pattern SHA256SUMS --pattern "app-release.aab"
+          python3 scripts/android-play.py verify-candidate --candidate "$RUNNER_TEMP/candidate" \
+            --tag "$TAG" --source "$SOURCE" --run-id "$RUN" \
+            --version-name "$VERSION_NAME" --version-code "$VERSION_CODE"
+
+      - name: Authenticate with short-lived Google credentials
+        id: google
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.ANDROID_PLAY_WIF_PROVIDER }}
+          service_account: ${{ vars.ANDROID_PLAY_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/androidpublisher
+          create_credentials_file: false
+          export_environment_variables: false
+
+      - name: Publish through one Play edit
+        env:
+          PLAY_ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          TRACK: ${{ inputs.track }}
+          STATUS: ${{ inputs.status }}
+          FRACTION: ${{ inputs.fraction }}
+          PLAN: ${{ inputs.plan }}
+          NOTES: ${{ needs.verify.outputs.notes }}
+        run: |
+          printf '%s' "$NOTES" > "$RUNNER_TEMP/notes.txt"
+          localized_notes=()
+          notes_path="android/play/release-notes/$TAG.json"
+          if [ -f "$notes_path" ]; then localized_notes=(--localized-notes-file "$notes_path"); fi
+          if [ "$STATUS" != inProgress ]; then PLAN=none; fi
+          python3 scripts/android-play.py publish --candidate "$RUNNER_TEMP/candidate" \
+            --tag "$TAG" --source "$SOURCE" --run-id "$RUN" \
+            --version-name "$VERSION_NAME" --version-code "$VERSION_CODE" \
+            --track "$TRACK" --status "$STATUS" --fraction "$FRACTION" --plan "$PLAN" \
+            --notes-file "$RUNNER_TEMP/notes.txt" "${localized_notes[@]}" --receipt "$RUNNER_TEMP/publication.json"
+          { echo '```json'; cat "$RUNNER_TEMP/publication.json"; echo '```'
+            echo 'Submission is API acceptance. Check Play Console for review and availability.'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: play-publication-${{ inputs.tag }}-${{ inputs.track }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/publication.json
+          if-no-files-found: ignore

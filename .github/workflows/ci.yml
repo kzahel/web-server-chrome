@@ -17,6 +17,7 @@ jobs:
           node-version: "24"
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: python3 -m unittest discover -s scripts -p 'test_android_play*.py'
       - run: pnpm i18n:check
       - run: pnpm typecheck
       - run: pnpm lint

@@ -58,6 +58,7 @@ export async function publishStore({
   publisherId,
   candidate,
   checkOnly = false,
+  stageOnly = false,
   request = fetch,
   // The release job has a ten-minute bound. Never poll for Google's review.
   pause = () => new Promise((done) => setTimeout(done, 2000)),
@@ -134,6 +135,11 @@ export async function publishStore({
   };
   const published = receipt.published;
   const submitted = receipt.submitted;
+  if (stageOnly)
+    assert(
+      !active(submitted),
+      "Finish the active submission before staging listing changes",
+    );
   if (
     published?.versions.includes(build.version) &&
     published.state === "PUBLISHED"
@@ -204,6 +210,8 @@ export async function publishStore({
       build.version,
       "Uploaded store version differs",
     );
+  if (stageOnly)
+    return { status: "staged-upload", ...result, reviewSubmitted: false };
   const submittedResult = await call("POST", "publish", {
     publishType: "DEFAULT_PUBLISH",
     skipReview: false,
@@ -222,15 +230,16 @@ if (
 ) {
   const [mode, directory, receiptPath] = process.argv.slice(2);
   assert(
-    ["check", "publish"].includes(mode) && directory && receiptPath,
-    "Usage: publish-store.mjs check|publish candidate-directory receipt.json",
+    ["check", "stage", "publish"].includes(mode) && directory && receiptPath,
+    "Usage: publish-store.mjs check|stage|publish candidate-directory receipt.json",
   );
   const receipt = await publishStore({
     token: process.env.CWS_ACCESS_TOKEN,
     publisherId: process.env.CWS_PUBLISHER_ID,
     checkOnly: mode === "check",
+    stageOnly: mode === "stage",
     candidate:
-      mode === "publish"
+      mode !== "check"
         ? await loadCandidate(directory, process.env.GITHUB_SHA)
         : undefined,
   });

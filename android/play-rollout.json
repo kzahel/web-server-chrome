@@ -1,0 +1,18 @@
+{
+  "plans": {
+    "standard-7d": [
+      {"fraction": 0.01, "minHours": 24},
+      {"fraction": 0.05, "minHours": 24},
+      {"fraction": 0.2, "minHours": 48},
+      {"fraction": 0.5, "minHours": 48},
+      {"fraction": 1.0}
+    ]
+  },
+  "gate": {
+    "minUserDays": 200,
+    "maxRate": {"crash": 0.0109, "anr": 0.0047},
+    "maxRegressionFactor": 1.5,
+    "minRegressionRate": 0.002,
+    "reports": {"floor": 3, "maxRegressionFactor": 2.0}
+  }
+}

@@ -303,9 +303,10 @@ They require explicit product decisions rather than accidental parity work.
 
 ## Known gaps and next direction
 
-- Play upload, review, declarations, and rollout are maintainer-owned. Upload
-  the exact `android-v0.2.1` AAB; store-delivered validation remains separate
-  from source, sideload, CI, and GitHub Release proof.
+- Play automation is owned by [Android Play publishing](android-play-publishing.md).
+  New receipt-bearing candidates support internal publication and same-bundle
+  production promotion; older releases remain manual-only. Store-delivered
+  acceptance, declarations and review remain separate from build/source proof.
 - Before targeting Android 17/API 37, add and test the
   `ACCESS_LOCAL_NETWORK` runtime-permission flow. Target-36 apps must not
   request that permission and retain implicit LAN access through `INTERNET`.

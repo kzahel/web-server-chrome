@@ -283,7 +283,7 @@ All components follow the same release pattern:
 |-----------|-----|-----------|------------|
 | **Desktop** | `desktop-v{ver}` | Targets signed Mac/Win/Linux installers | Auto-updates only after the release-readiness gate passes |
 | **Extension** | `extension-v{ver}` | ZIP | CI submits to Chrome Web Store; Google review is asynchronous |
-| **Android** | `android-v{ver}` | Signed APK + AAB | Manual upload to Google Play Console |
+| **Android** | `android-v{ver}` | Signed APK + AAB | Explicit internal publication and same-bundle production promotion |
 | **ChromeOS Linux** | `crostini-v{ver}` | Signed static x86_64 + ARM64 binaries and manifest | CI creates a separate GitHub release; website/update-service rollout is a coordinated maintainer step |
 
 ### Desktop Releases
@@ -339,7 +339,9 @@ All components follow the same release pattern:
 - CI builds the signed APK/AAB, verifies their signer, identity, manifest,
   permissions, native payload, and checksums, then installs and deep-links the
   exact Release APK on API 36 before creating the GitHub Release
-- **Manual step:** Download AAB from GitHub Release and upload to Google Play Console
+- **Store step:** Dispatch `android-play-publish.yml` from main after main/tag CI
+  pass. Publish to internal first, then explicitly promote the same bundle to
+  production. See [the runbook](docs/runbooks/android-play-publishing.md).
 - Changelog: `android/CHANGELOG.md`
 
 ### ChromeOS Linux Releases

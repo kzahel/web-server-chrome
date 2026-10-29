@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: Build a package or check Web Store authentication without store writes
+        description: Package, check authentication, or stage an upload without submitting for review
         type: choice
-        options: [package, check]
+        options: [package, check, stage]
         default: package
   push:
     branches: [main]
@@ -50,15 +50,17 @@ jobs:
         working-directory: extension
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 9
 
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: '24'
           cache: 'pnpm'
@@ -98,15 +100,17 @@ jobs:
         working-directory: extension
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 9
 
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: '22'
           cache: 'pnpm'
@@ -129,7 +133,7 @@ jobs:
 
       - name: Preserve browser diagnostics
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: extension-browser-smoke-${{ github.run_id }}
           path: extension/browser-artifacts/
@@ -138,7 +142,7 @@ jobs:
 
   publish:
     name: Submit to Chrome Web Store
-    if: github.repository == 'kzahel/web-server-chrome' && startsWith(github.ref, 'refs/tags/extension-v')
+    if: github.repository == 'kzahel/web-server-chrome' && (startsWith(github.ref, 'refs/tags/extension-v') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'stage' && github.ref == 'refs/heads/main'))
     needs: [build, browser-smoke]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -153,6 +157,7 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - run: git merge-base --is-ancestor "$GITHUB_SHA" origin/main
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
@@ -175,7 +180,8 @@ jobs:
         env:
           CWS_ACCESS_TOKEN: ${{ steps.google.outputs.access_token }}
           CWS_PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
-        run: node extension/scripts/publish-store.mjs publish store-candidate store-receipt.json
+          MODE: ${{ inputs.mode == 'stage' && 'stage' || 'publish' }}
+        run: node extension/scripts/publish-store.mjs "$MODE" store-candidate store-receipt.json
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always()
         with:
@@ -194,6 +200,8 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: '24'
@@ -225,6 +233,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: extension-store-candidate

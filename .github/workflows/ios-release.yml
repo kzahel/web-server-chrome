@@ -101,7 +101,7 @@ jobs:
           fi
 
       - name: Upload exact candidate and evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-app-store-${{ github.run_id }}
           path: |
@@ -175,7 +175,7 @@ jobs:
 
       - name: Upload private delivery result
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-app-store-delivery-${{ github.run_id }}
           path: ${{ runner.temp }}/candidate/apple-upload.json

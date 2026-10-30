@@ -47,7 +47,7 @@ jobs:
 
       - name: Upload failed test result
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-test-result
           path: ios/build/CheckDerivedData/Logs/Test/*.xcresult
@@ -55,7 +55,7 @@ jobs:
 
       - name: Upload Release smoke evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-release-smoke
           path: |

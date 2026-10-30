@@ -6,8 +6,9 @@ Status: **native MVP physically accepted; first App Store build `0.1.0 (2)`
 is distribution-signed, Apple-validated, uploaded and processed VALID. Nineteen
 locales, English metadata, no-collection privacy, conservative age rating, free
 pricing and Release screenshots are configured. Exact physical TestFlight
-acceptance, complete private review contact and the maintainer's Content Rights
-declaration remain before actual App Review. It is not publicly available.**
+acceptance and complete private review contact remain before actual App
+Review. The maintainer approved the No Third-Party Content declaration, which
+is saved in App Store Connect. It is not publicly available.**
 
 Last reconciled: **2026-10-30**.
 
@@ -467,5 +468,8 @@ frameworks. App Store processing is VALID; the exact build is attached to the
 first version and private internal TestFlight group. Automatic build access
 and tester notifications are disabled; no tester invitations were sent.
 An unsubmitted review draft was used for Apple's metadata preflight; it has
-not been submitted. The actual returned gaps are rights declaration and absent
-review detail, alongside the repository-owned physical TestFlight gate.
+not been submitted. The initial returned gaps were rights declaration and absent
+review detail. On 2026-10-30 the maintainer approved No Third-Party Content;
+API readback verifies that saved declaration and fresh preflight now reports
+only the absent review detail. The private review-contact phone and the
+repository-owned physical TestFlight gate remain open.

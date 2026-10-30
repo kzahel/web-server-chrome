@@ -167,7 +167,7 @@ claim was released. No desktop ownership is retained.
   approved code 10/1% promotion after review clears and live candidate/track
   checks still match. Do not cancel the review or ask for the same choice again.
 - Apple: the PLA is accepted and setup/upload/processing are complete. Obtain
-  the requested Content Rights declaration and private review-contact phone,
+  the private review-contact phone (Content Rights is now approved and saved),
   restore the physical iPhone for exact TestFlight acceptance, complete the
   review detail and submit under the already granted publication authority.
   No App Store release or physical TestFlight pass is claimed.
@@ -245,3 +245,19 @@ Main source at fd47834 passed CI 41013872743, CodeQL 41013872286 and
 iOS 41013872973. A final read-only Chrome check 41016485291 passed and still reports
 0.1.10 pending review / 0.1.8 public. The physical Pixel and macOS
 smokes above remain specific to their released artifacts.
+
+## Content Rights approval — 2026-10-30 09:00 UTC
+
+After reviewing the explanation, the maintainer explicitly agreed to
+**Does not use third-party content**. The app-level declaration was saved and
+independently read back using the explicit `contentRightsDeclaration` field.
+Fresh unsubmitted-review preflight no longer reports that missing declaration;
+its remaining associated error is the absent App Review detail. The private
+contact phone is still needed before completing that detail. The configured
+iPhone remains disconnected, so physical TestFlight acceptance is still open.
+No App Review submission was made.
+
+A fresh Google Console observation still shows release0.2.4 in review. The
+approved code10/1% promotion remains pending that review; no blind retry or
+review cancellation was performed. The temporary read-only browser tab and
+bounded host claim were closed/released after the check.

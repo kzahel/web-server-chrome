@@ -7,10 +7,14 @@ Android 0.2.5/code 10 is available on the internal track through successful
 [publication 40953902148](https://github.com/kzahel/web-server-chrome/actions/runs/40953902148).
 The physical Pixel updated through Google Play, retaining preferences and its
 folder grant. French/Japanese external HTTP serving passed with identical bytes.
-Production check 40952129707 still reports 0.2.4/code 9 at 1%, with the previous
-completed baseline 0.2.1/code 6. The unfinished-rollout guard remains enabled;
-the maintainer's choice to finish that rollout or retain the new internal build
-is pending. Advancement stays report-only. [Tactical 024](../tactical/024-nineteen-language-publication.md)
+On 2026-10-30 the maintainer approved completing 0.2.4/code 9 and then staging
+0.2.5/code 10 at 1%. Completion run 41012541457 was API-accepted; read-only
+reconciliation 41013061441 reports code 9 completed. The immediate code 10 edit
+was rejected at commit because Google already has changes in review. Console
+independently shows 0.2.4 in review. The approved target remains code 10 at 1%,
+standard-7d; no further rollout-direction approval is needed when review clears
+and exact candidate/track checks still match. Preserve the review, reconcile
+before retrying, and retain all guards. Advancement stays report-only. [Tactical 024](../tactical/024-nineteen-language-publication.md)
 owns current evidence; Tactical 022 retains the German release and Tactical 021
 infrastructure qualification. Private account identities stay in operational inventory.
 

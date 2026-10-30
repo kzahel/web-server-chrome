@@ -40,7 +40,7 @@ Existing source/compatibility, signed-artifact, package and publishing gates sta
 enabled. Store review acceptance and actual availability are distinct from an
 API submission; production rollout/deployment evidence is recorded per component.
 
-## Apple prerequisite
+## Initial Apple prerequisite (resolved 2026-10-30)
 
 A read-only API check found no App Store record for `app.ok200.ios`. Membership
 endpoints reject bundle-ID/certificate access with `PLA_NOT_ACCEPTED`: Apple
@@ -162,25 +162,27 @@ claim was released. No desktop ownership is retained.
 
 - Chrome: await Google's review/automatic publication of submitted 0.1.10,
   then verify the store-served version before claiming the new extension round trip.
-- Play: answer the pending choice to complete the existing code 9 rollout before
-  staging code 10 at 1%, or leave code 10 internal. The publisher will not override
-  its unfinished-rollout guard or accelerate a rollout by assumption.
-- Apple: Account Holder accepts the updated Program License Agreement. Then
-  establish the first app identity, distribution signing/provisioning and exact
-  candidate screenshots/metadata, validate/upload, and submit for review under
-  the already granted publication authority. No App Store release is claimed.
+- Play: the maintainer approved completing code 9 then staging code 10 at 1%.
+  Completion is API-accepted, while Google still reviews 0.2.4. Resume the exact
+  approved code 10/1% promotion after review clears and live candidate/track
+  checks still match. Do not cancel the review or ask for the same choice again.
+- Apple: the PLA is accepted and setup/upload/processing are complete. Obtain
+  the requested Content Rights declaration and private review-contact phone,
+  restore the physical iPhone for exact TestFlight acceptance, complete the
+  review detail and submit under the already granted publication authority.
+  No App Store release or physical TestFlight pass is claimed.
 
 ## Authorized continuation — 2026-10-30
 
 The maintainer accepted Apple's Program License Agreement and explicitly
 approved completing Android 0.2.4, then staging 0.2.5 at 1%.
 
-- Play rollout run41012541457 accepted code9 completion. Read-only
-  reconciliation41013061441 reports production code9 completed and no committed
-  new edit. The immediate code10 promotion41012771219 was rejected at commit
+- Play rollout run 41012541457 accepted code 9 completion. Read-only
+  reconciliation 41013061441 reports production code 9 completed and no committed
+  new edit. The immediate code 10 promotion41012771219 was rejected at commit
   with `FAILED_PRECONDITION`: existing changes are in review. The failed/unknown
-  outcome was reconciled before any retry; code10 is not claimed in production.
-  The authorized target remains code10 at 1%, standard-7d, preserving the review.
+  outcome was reconciled before any retry; code 10 is not claimed in production.
+  The authorized target remains code 10 at 1%, standard-7d, preserving the review.
 - Apple membership/certificate/bundle endpoints now succeed. The exact app
   identifier and an app-specific App Store profile were registered using the
   existing valid distribution certificate and matching private key. No
@@ -190,10 +192,56 @@ approved completing Android 0.2.4, then staging 0.2.5 at 1%.
 - CI signing secrets and an exact-tag upload environment with required review
   were configured. Native macOS PKCS12 import passes after using compatible
   export encoding for the unchanged certificate/key. The first hosted candidate
-  run41013107488 then exposed Bash3.2 parsing of the profile-name regular
+  run 41013107488 then exposed Bash3.2 parsing of the profile-name regular
   expression. The expression now lives in a quoted variable, and tool-only
   preflight parses each release helper separately before returning. Existing
   locale qualification harness/runtime inputs remain unchanged.
 - Tag `ios-v0.1.0-b1` remains immutable. Build2 is the corrected packaging
   candidate; no build has yet been uploaded to Apple. Runtime catalogs,
   protocols, settings, privacy and HTTP behavior are unchanged.
+
+## Corrected iOS candidate and store preparation
+
+[Candidate 41014160636](https://github.com/kzahel/web-server-chrome/actions/runs/41014160636)
+passed complete source checks, ephemeral existing-identity signing, archive/IPA
+inspection, Apple validation and reviewed-environment upload from immutable
+`ios-v0.1.0-b2` at `fd478345d0a22ecc16f62e3bd2e456864b611460`.
+Independent inspection of the downloaded exact IPA passed distribution/profile
+matching, arm64, iOS 17 minimum, both device families, reviewed privacy and
+absence of DEBUG hooks/embedded frameworks. All nineteen `.lproj` resources
+are present. IPA SHA256:
+`cdc6f30ac67b6f0ca8e092044cf22ea2405db0896ee55fa26ace754d8fc6ba39`.
+Apple accepted upload without errors, processed build 2 VALID and reports
+non-exempt encryption false. The exact build is attached to App Store 0.1.0
+and a private internal TestFlight group with automatic build access and tester
+notifications disabled. No tester invitations were sent.
+
+The reviewed English name/subtitle/description/keywords/URLs and Developer Tools
+plus Utilities categories are saved. The No Data Collected response is published
+and independently read back from the privacy page with its publication time.
+Age answers retain conservative unrestricted web access YES; all other
+content/capabilities are NONE/NO with no override. Apple's API reports legacy
+17+, Brazil 16 and France 18. These factual product declarations do not replace
+the outstanding maintainer Content Rights answer.
+
+Free pricing in 175 regions and all-region availability after release are
+configured. Release remains manual after approval. Both required highest-size
+Release screenshots are captured from the same build 2 source (no DEBUG fixture),
+visually inspected and pass native dimensions/no-alpha checks. Both Apple
+assets processed COMPLETE. Their source/provenance lives with
+[`ios/store/screenshots`](../../ios/store/screenshots/README.md). The two
+dedicated capture simulators were shut down and removed.
+
+An unsubmitted review draft was created for Apple's metadata preflight. Adding
+the version reported exactly two associated gaps: missing Content Rights and
+missing App Review detail. The required private contact phone and rights choice
+were requested from the maintainer; contact/notes are prepared without inventing
+phone or rights values. The configured physical iPhone is disconnected, so the
+exact TestFlight Files/LAN/lifecycle gate remains open and reconnection was
+requested. The draft is independently verified unsubmitted; no App Review
+submission or public availability is inferred.
+
+Main source at fd47834 passed CI 41013872743, CodeQL 41013872286 and
+iOS 41013872973. A final read-only Chrome check 41016485291 passed and still reports
+0.1.10 pending review / 0.1.8 public. The physical Pixel and macOS
+smokes above remain specific to their released artifacts.

@@ -21,3 +21,8 @@ to the local server and revalidated. Do not guess during submission.
 The app does not broadly distribute or provide discovery of content created by
 other users, so **User-Generated Content** is expected to be No. Confirm the
 calculated global and regional results in the live questionnaire before saving.
+
+The live questionnaire was saved on 2026-10-30 with the conservative Yes and
+no overrides. API readback reports legacy global `SEVENTEEN_PLUS`, Brazil 16
+and France 18; current OS and territory displays can differ. Use the actual
+calculated store results rather than advertising a universal 16+ rating.

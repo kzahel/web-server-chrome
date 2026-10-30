@@ -1,9 +1,11 @@
 # App Store Metadata Draft
 
-This directory is the reviewed source draft for the first normal App Store
-listing. It is not an App Store Connect upload payload and does not imply that
-an app record, privacy response, screenshots, review submission, or public
-listing exists.
+This directory owns the reviewed source metadata for the first App Store
+listing. On 2026-10-30 the app record, English metadata, age/privacy responses,
+free pricing, regional availability, and Release screenshots were configured;
+build `0.1.0 (2)` was validated, uploaded and processed. App Review submission
+and public availability remain separate. [Tactical 024](../../docs/tactical/024-nineteen-language-publication.md)
+owns the exact publication evidence and remaining gates.
 
 Apple's current limits and requirements were reconciled on 2026-08-05 against
 the official App Store Connect references:
@@ -30,8 +32,8 @@ can change independently of this repository.
 - Privacy URL: `https://ok200.app/privacy`
 - Release: manual after approval
 
-The public name, subtitle, category pair, and first version remain an attended
-product checkpoint before the app record is created.
+The authorized app record uses these reviewed product choices. Its release
+mode remains manual after Apple approval.
 
 ## Public support contact
 
@@ -59,3 +61,15 @@ highest-resolution set, accepted iPhone 6.9-inch portrait sizes include
 accepts `2064x2752` or `2048x2732`. Source-build screenshots may be used for
 layout review but never represented as the exact TestFlight/App Store
 candidate.
+
+## Remaining first-review gates
+
+Apple's unsubmitted review preflight currently requests a Content Rights
+declaration and complete App Review information. The maintainer was asked
+for the declaration and private review-contact phone number. Do not invent
+phone, legal, trader or rights answers or put private contact data in this
+public directory. The disconnected physical iPhone must also return for the
+exact TestFlight Files/LAN/lifecycle acceptance before actual review submission.
+
+The [screenshots](screenshots/README.md) record source/build/runtime provenance.
+Their completed Apple processing is image acceptance, not review approval.

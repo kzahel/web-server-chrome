@@ -176,3 +176,21 @@ An unsigned archive proves packaging structure only. A signed/local IPA does
 not prove TestFlight or App Store delivery. After upload, the exact distributed
 build still requires the physical Files, external-LAN, HTTP, preview,
 stop/restart, invalid-root, and foreground/background campaign.
+
+## Qualified first upload
+
+[Tactical024](../tactical/024-nineteen-language-publication.md) records the
+first complete `0.1.0 (2)` source/sign/archive/validate/upload run. The
+`ios-app-store-upload` environment is configured for exact `ios-v*` tags with
+required maintainer review. Signing reuses the existing distribution identity
+with an app-specific profile; private backup/configuration stay outside this
+repository. An encrypted PKCS12 must pass a native macOS `security import`
+check: a modern OpenSSL default export can fail macOS MAC verification even
+with the correct password. Re-export the same identity in a compatible format
+rather than rotating its certificate.
+
+Keep profile-name regexes in quoted variables for Bash3.2. The signing
+`--check` mode parses every helper individually before returning; `bash -n`
+with multiple paths parses only its first file. The old build1 tag remains
+immutable and the repaired candidate uses build2. Source code, settings and
+HTTP compatibility remain unchanged.

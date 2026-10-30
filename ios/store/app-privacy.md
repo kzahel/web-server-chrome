@@ -1,6 +1,6 @@
 # App Privacy Response Draft
 
-Expected App Store Connect answer for the reviewed `0.1.0 (1)` source:
+Expected App Store Connect answer for the reviewed `0.1.0 (2)` source:
 
 > No, we do not collect data from this app.
 
@@ -20,3 +20,8 @@ The required privacy policy URL is `https://ok200.app/privacy`. A User Privacy
 Choices URL is unnecessary for this no-collection version. Re-audit the exact
 candidate and all linked SDKs before publishing the response; App Store privacy
 answers are app-level and must be updated if any data flow changes.
+
+On 2026-10-30 this exact no-collection response was saved and published in
+App Store Connect. The page independently reports **Data Not Collected** and
+its publication timestamp. No additional collection or tracking declaration
+was inferred from website hosting.

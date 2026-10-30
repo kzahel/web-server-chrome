@@ -2,11 +2,14 @@
 
 Topic: ios-native-swift
 
-Status: **native MVP implemented and accepted on the attached physical phone;
-repository store-readiness work is active, but App Store identity, signed
-packaging, TestFlight, and publication have not started.**
+Status: **native MVP physically accepted; first App Store build `0.1.0 (2)`
+is distribution-signed, Apple-validated, uploaded and processed VALID. Nineteen
+locales, English metadata, no-collection privacy, conservative age rating, free
+pricing and Release screenshots are configured. Exact physical TestFlight
+acceptance, complete private review contact and the maintainer's Content Rights
+declaration remain before actual App Review. It is not publicly available.**
 
-Last reconciled: **2026-08-05**.
+Last reconciled: **2026-10-30**.
 
 The bounded first implementation and device campaign are owned by
 [Tactical 016](../tactical/016-native-swift-ios-app.md). This topic owns the
@@ -40,8 +43,8 @@ observable HTTP behavior are contracts to align, not source code to share.
 
 The system application name is **200 OK Web Server**, with compact
 **200 OK** and **Web Server** treatment inside the app. The intended bundle
-identifier is `app.ok200.ios`; its App Store Connect reservation remains a
-store-readiness gate.
+identifier is `app.ok200.ios`; its authorized App Store Connect record and
+app-specific provisioning now exist.
 
 The initial deployment target is iOS 17.0. The implementation uses APIs
 available at that target even though the attached validation phone runs a newer
@@ -273,8 +276,9 @@ positive monotonically increasing build-number policy, unsigned archive
 rehearsal, explicit manual signing/export inputs, ignored evidence outputs, and
 exact `.app`/`.xcarchive`/`.ipa` inspection. The inspector passed the unsigned
 device Release app, an unsigned archive, and an IPA-shaped extraction harness.
-No team, profile, or credential is committed, and no signed archive, Apple
-validation, or upload has run.
+No team, profile, or credential is committed. The later authorized signed
+build/validation/upload is recorded in Tactical 024; the initial rehearsal
+did not itself establish store delivery.
 
 The local iOS release helper now checks or creates an exact version/build tag
 without pushing. A separate workflow can build-only, validate, or explicitly
@@ -448,7 +452,20 @@ On 2026-10-30, Apple membership access succeeded after the Account Holder
 accepted the Program License Agreement. App identity, App Store record,
 app-specific provisioning and CI signing now exist, reusing the existing valid
 distribution certificate/private key. The first candidate exposed a native
-PKCS12 format issue and Bash3.2 preflight parsing defect; build2 carries the
+PKCS12 format issue and Bash3.2 preflight parsing defect; build 2 carries the
 script repair with unchanged app behavior. Exact-tag upload still requires
-its configured environment review. Tactical024 records current signing,
+its configured environment review. Tactical 024 records current signing,
 metadata, review and delivery evidence; no App Store availability is inferred.
+
+The corrected [candidate run 41014160636](https://github.com/kzahel/web-server-chrome/actions/runs/41014160636)
+passes the complete source, ephemeral signing, exact IPA inspection, Apple
+validation and guarded upload lane. IPA SHA256 is
+`cdc6f30ac67b6f0ca8e092044cf22ea2405db0896ee55fa26ace754d8fc6ba39`.
+Independent inspection confirms nineteen compiled locales, arm64, minimum
+iOS 17, both device families, reviewed privacy and no DEBUG hooks or embedded
+frameworks. App Store processing is VALID; the exact build is attached to the
+first version and private internal TestFlight group. Automatic build access
+and tester notifications are disabled; no tester invitations were sent.
+An unsubmitted review draft was used for Apple's metadata preflight; it has
+not been submitted. The actual returned gaps are rights declaration and absent
+review detail, alongside the repository-owned physical TestFlight gate.

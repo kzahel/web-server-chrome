@@ -1,6 +1,9 @@
 # Tactical 017: iOS Store Readiness
 
-**Status:** repository preparation active; no App Store Connect or distribution mutation performed
+**Status:** first signed build uploaded/processed; final review/device gates active.
+The separately authorized publication execution is recorded in
+[Tactical024](024-nineteen-language-publication.md). The initial baseline
+below is historical; it no longer describes current store/signing setup.
 **Topic:** `ios-native-swift`
 **Baseline:** `c6a5f94`
 **Scope:** distribution identity, App Store packaging, TestFlight/review evidence,

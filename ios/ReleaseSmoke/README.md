@@ -1,7 +1,7 @@
 # Production Release Simulator smoke
 
 From the repository root on a Mac with Xcode, an available iOS
-Simulator runtime, XcodeGen and Python 3:
+Simulator runtime, XcodeGen, Python 3 and ripgrep:
 
 ```bash
 source ~/.profile

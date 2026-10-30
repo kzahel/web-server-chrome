@@ -6,7 +6,7 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ios_root="$(cd "$script_dir/.." && pwd)"
 repo_root="$(cd "$ios_root/.." && pwd)"
-for tool in xcodebuild xcodegen xcrun python3; do
+for tool in xcodebuild xcodegen xcrun python3 rg; do
   command -v "$tool" >/dev/null
 done
 mkdir -p "$ios_root/build"

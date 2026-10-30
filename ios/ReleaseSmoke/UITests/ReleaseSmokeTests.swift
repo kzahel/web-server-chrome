@@ -187,7 +187,7 @@ final class ReleaseSmokeTests: XCTestCase {
         let nextURL = try XCTUnwrap(URL(string: app.staticTexts["server-url-local"].label))
         _ = try await fetch(nextURL)
         XCUIDevice.shared.press(.home)
-        XCTAssertTrue(app.wait(for: .runningBackground, timeout: 10))
+        XCTAssertTrue(app.wait(for: .runningBackground, timeout: 10) || app.state == .runningBackgroundSuspended)
         await assertUnreachable(nextURL)
         app.activate()
         XCTAssertTrue(app.staticTexts["background-stop-message"].waitForExistence(timeout: 10))

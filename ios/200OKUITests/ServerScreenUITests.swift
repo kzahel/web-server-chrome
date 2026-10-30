@@ -163,7 +163,7 @@ final class ServerScreenUITests: XCTestCase {
         assertStatus("Running", in: app)
 
         XCUIDevice.shared.press(.home)
-        XCTAssertTrue(app.wait(for: .runningBackground, timeout: 10))
+        XCTAssertTrue(app.wait(for: .runningBackground, timeout: 10) || app.state == .runningBackgroundSuspended)
         app.activate()
 
         XCTAssertTrue(app.staticTexts["background-stop-message"].waitForExistence(timeout: 5))

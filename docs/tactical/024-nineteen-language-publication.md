@@ -391,3 +391,9 @@ Simulator is removed first. Standalone default builds also use a generic
 Simulator destination with an explicit host architecture. Phase messages expose
 progress, and XCTest cases have a five-minute execution bound. Source/runtime,
 catalogs, signing and the uploaded App Store candidate remain unchanged.
+
+The revised standalone default (generic Release build plus the final driver
+and bounded execution) passes locally in
+`ios/build/release-smoke.K0MKup/Smoke.xcresult`, exits zero, and removes its
+owned Simulator. Hosted follow-up uses the already inspected canonical Release
+app, preserving its recorded executable hash instead of rebuilding it.

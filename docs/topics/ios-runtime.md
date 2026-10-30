@@ -521,3 +521,12 @@ sources and the already uploaded build remain unchanged. Tactical 024 records
 the failed runs and subsequent verification. The completed nineteen-language
 campaign's exact harness evidence remains historical at its qualified release
 source; no receipt is rewritten to claim that it ran this later driver.
+
+Hosted source tests and archive preflight now pass with that driver. A separate
+hosted stall was traced to redundant device-specific asset compilation before
+the Release smoke began. CI now tests the canonical generic Simulator Release
+product from the standard gate and removes the source Simulator first. The
+standalone default uses a generic host-architecture build, phase logging and
+a five-minute XCTest bound. That complete default flow passes locally, with
+normal Files grants, independent HTTP and cleanup. Hosted closeout remains
+recorded in Tactical 024; the signed uploaded build is unchanged.

@@ -81,4 +81,3 @@ jobs:
             ios/build/release-smoke.*/artifact-inspection.txt
             ios/build/release-smoke.*/result.txt
           if-no-files-found: ignore
-

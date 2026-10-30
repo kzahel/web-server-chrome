@@ -16,6 +16,7 @@ cleanup() {
   local result=$?
   trap - EXIT
   if [[ -n "$simulator" ]]; then
+    echo "Removing owned Release smoke Simulator"
     xcrun simctl terminate "$simulator" app.ok200.ios >/dev/null 2>&1 || true
     xcrun simctl shutdown "$simulator" >>"$output/cleanup.log" 2>&1 || true
     if ! xcrun simctl delete "$simulator" >>"$output/cleanup.log" 2>&1; then
@@ -46,18 +47,21 @@ runtime="$(sed -n '1p' "$output/selection.txt")"
 device_type="$(sed -n '2p' "$output/selection.txt")"
 simulator="$(xcrun simctl create "200OK-Release-Smoke-$(basename "$output")" "$device_type" "$runtime")"
 printf '%s\n' "$simulator" >"$output/owned-simulator.txt"
+echo "Booting fresh Release smoke Simulator; evidence: $output"
 xcrun simctl boot "$simulator"
 xcrun simctl bootstatus "$simulator" -b >"$output/boot.log" 2>&1
 
 app="${IOS_RELEASE_SMOKE_APP:-}"
 if [[ -z "$app" ]]; then
+  echo "Building generic Simulator Release app"
   "$script_dir/generate-project.sh" >"$output/generate-app.log" 2>&1
   xcodebuild -project "$ios_root/OK200.xcodeproj" -scheme OK200 \
-    -configuration Release -destination "platform=iOS Simulator,id=$simulator" \
+    -configuration Release -destination 'generic/platform=iOS Simulator' \
     -derivedDataPath "$output/AppDerivedData" CODE_SIGNING_ALLOWED=NO \
-    ONLY_ACTIVE_ARCH=YES build >"$output/build-app.log" 2>&1
+    ONLY_ACTIVE_ARCH=YES ARCHS="$(uname -m)" build >"$output/build-app.log" 2>&1
   app="$output/AppDerivedData/Build/Products/Release-iphonesimulator/OK200.app"
 fi
+echo "Inspecting and installing Simulator Release: $app"
 [[ "$(plutil -extract DTPlatformName raw "$app/Info.plist")" == iphonesimulator ]]
 [[ "$(plutil -extract CFBundleIdentifier raw "$app/Info.plist")" == app.ok200.ios ]]
 [[ "$(plutil -extract MinimumOSVersion raw "$app/Info.plist")" == 17.0 ]]
@@ -92,6 +96,7 @@ xcrun simctl install "$simulator" "$app"
 
 # Seed only this disposable simulator's OS Files provider. The app receives
 # access later through the real UIDocumentPicker, never through its defaults.
+echo "Preparing the disposable Simulator's Files fixture"
 xcrun simctl launch "$simulator" com.apple.DocumentsApp >"$output/files-launch.log"
 provider="$(xcrun simctl get_app_container "$simulator" com.apple.DocumentsApp groups | awk -F '\t' '$1 == "group.com.apple.FileProvider.LocalStorage" {print $2}')"
 [[ -n "$provider" && "$provider" == *"/Devices/$simulator/data/Containers/Shared/AppGroup/"* ]]
@@ -105,11 +110,14 @@ printf 'nested fixture\n' >"$fixture/directory/nested.txt"
 mkdir -p "$output/Project"
 xcodegen --spec "$ios_root/ReleaseSmoke/project.yml" --project "$output/Project" \
   --project-root "$ios_root/ReleaseSmoke" >"$output/generate-tests.log" 2>&1
+echo "Building and running independent Release UI tests"
 xcodebuild -project "$output/Project/OK200ReleaseSmoke.xcodeproj" \
   -scheme ReleaseSmoke -configuration Release \
   -destination "platform=iOS Simulator,id=$simulator" \
   -parallel-testing-enabled NO -derivedDataPath "$output/TestDerivedData" \
   CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES \
+  -test-timeouts-enabled YES -default-test-execution-time-allowance 300 \
+  -maximum-test-execution-time-allowance 300 \
   -resultBundlePath "$output/Smoke.xcresult" test >"$output/test.log" 2>&1
 xcrun xcresulttool export attachments --path "$output/Smoke.xcresult" \
   --output-path "$output/attachments" >"$output/attachments.log" 2>&1

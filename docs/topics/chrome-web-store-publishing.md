@@ -2,12 +2,16 @@
 
 Topic: chrome-web-store-publishing
 
-Status: tag-driven submission and main-only upload staging configured. On
-2026-10-29, [release run 40952771672](https://github.com/kzahel/web-server-chrome/actions/runs/40952771672)
-submitted the exact browser-accepted nineteen-language 0.1.10 ZIP with keyless
-CI authentication. Independent status run 40953185911 confirmed **0.1.10
-PENDING_REVIEW / public 0.1.8**. This strictly newer candidate replaced pending
-0.1.9 through the maintained cancellation contract. [Tactical 024](../tactical/024-nineteen-language-publication.md)
+Status: tag-driven submission and main-only upload staging configured.
+**0.1.10 is PUBLISHED**, independently confirmed by
+[status run 41041629830](https://github.com/kzahel/web-server-chrome/actions/runs/41041629830)
+on 2026-10-30, with no pending submission. The public Google update endpoint
+also delivers 0.1.10 with all nineteen native locales. Its runtime/resources
+match the exact browser-accepted ZIP from
+[release run 40952771672](https://github.com/kzahel/web-server-chrome/actions/runs/40952771672)
+byte for byte; Google adds its update URL and verified-content metadata.
+Installed-store-copy functional acceptance remains separate from download
+availability. [Tactical 024](../tactical/024-nineteen-language-publication.md)
 owns current publication evidence; Tactical 021 records initial staging.
 
 The existing production extension is `lpkjdhnmgkhaabhimpdinmdgejoaejic`.

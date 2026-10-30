@@ -4,20 +4,18 @@ Topic: chromeos-extension-launcher
 
 Status: **the extension uses a best-effort Android intent with an always-visible
 HTTPS options route and does not claim to detect Android or Google Play
-availability. Public `extension-v0.1.8` is the protocol-2 release for the
-polished ChromeOS Linux setup/control surface and the Android/Linux peer
-chooser. Its exact 153,762-byte, 14-file GitHub ZIP passes CI and independent
-store-package inspection with SHA-256
-`19c1a15ffad8c10bab2f6b1c42cf3a2c75c9739dcf4bdde9a1b304bbcb07925e`.
-The release was submitted for maintainer-owned Chrome Web Store publication;
-store delivery remains open. The matching protocol-2 bootstrap is already
-deployed at the maintainer's direction, accepting a temporary compatibility
-gap until store `0.1.8` is live. Earlier physical evidence still owns the
-Android intent, contextual permission,
-claim, popup fallback, ChromeOS Linux control, LAN, and lifecycle claims until
-the exact store-delivered `0.1.8` package is exercised.**
+availability. Public Web Store `0.1.10` contains the protocol-2 ChromeOS Linux
+setup/control surface, Android/Linux peer chooser and nineteen native locales.
+The 2026-10-30 status check reports PUBLISHED with no pending submission, and
+the public CRX delivers that version. Its runtime/resources match the exact
+browser-accepted release ZIP, SHA256
+`b7715ea2079a85b7ba317e71d44429ecb97ee7ccefefc761d78c41bf559a022e`.
+The protocol-2 extension is therefore available alongside the deployed
+protocol-2 bootstrap. Earlier physical evidence still owns the Android intent,
+contextual permission, claim, popup fallback, ChromeOS Linux control, LAN and
+lifecycle claims until the current installed store copy is exercised.**
 
-Last reconciled: **2026-10-03**.
+Last reconciled: **2026-10-30**.
 
 Release tooling now supports [keyless CI Web Store submission](chrome-web-store-publishing.md).
 This does not change the outstanding store-delivered acceptance gates below.

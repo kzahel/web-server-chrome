@@ -33,8 +33,9 @@ extension/controller protocols, Android intents, persisted settings, folder
 grants and HTTP behavior remain unchanged. Old/new components continue to update
 independently, with English fallback and unknown future language preferences
 preserved. The previously accepted protocol-1 store-extension/protocol-2 Crostini
-gap remains bounded by the Crostini topic; this language release adds no new
-protocol cutover. No ordered all-component deployment is required.
+gap retains recovery for lagging installed copies in the Crostini topic;
+both protocol-2 counterparts are now publicly available. This language release
+adds no new protocol cutover. No ordered all-component deployment is required.
 
 Existing source/compatibility, signed-artifact, package and publishing gates stay
 enabled. Store review acceptance and actual availability are distinct from an
@@ -160,8 +161,9 @@ claim was released. No desktop ownership is retained.
 
 ## Remaining external actions
 
-- Chrome: await Google's review/automatic publication of submitted 0.1.10,
-  then verify the store-served version before claiming the new extension round trip.
+- Chrome: 0.1.10 is now PUBLISHED and the public CRX matches the accepted
+  runtime/resources with nineteen locales. Exact installed-store-copy functional
+  acceptance remains separate from the verified public download.
 - Play: the maintainer approved completing code 9 then staging code 10 at 1%.
   Completion is API-accepted, while Google still reviews 0.2.4. Resume the exact
   approved code 10/1% promotion after review clears and live candidate/track
@@ -350,3 +352,42 @@ qualified source and uploaded immutable candidates; it is not rewritten or
 claimed to have run this later driver. Product/runtime/catalog inputs and
 all already published/submitted artifacts are unchanged. Fresh standard source
 and Release smoke checks plus hosted CI verify the subsequent test-only change.
+
+## Chrome Web Store publication and public delivery — 2026-10-30
+
+[Read-only check 41041629830](https://github.com/kzahel/web-server-chrome/actions/runs/41041629830)
+now reports **0.1.10 PUBLISHED**, with no pending submission. An independent
+download through Google's public extension-update endpoint delivers CRX3
+0.1.10, default English plus eighteen translations. CRX SHA256 is
+`90874323e3b92f25351a6ce7713eb58445ce02e79a5953405331cccce77deb81`;
+its ZIP payload SHA256 is
+`d15c31a8ba2472642e14c0cf260c2515b97fa52cdb6fc89700ead8f321ade0a8`.
+
+The independent public GitHub ZIP still matches accepted candidate SHA256
+`b7715ea2079a85b7ba317e71d44429ecb97ee7ccefefc761d78c41bf559a022e`.
+Comparing every packaged file finds no missing files and no changed runtime
+or locale bytes. Google's only changes are `manifest.json.update_url` and an
+additional `_metadata/verified_contents.json`. This establishes public delivery
+of the accepted package without claiming a new installed-store-copy/native-host
+functional round trip. Existing app/controller compatibility is unchanged.
+
+A fresh Google Console check still shows 0.2.4 in review; code10/1% remains
+pending that review. The owned tab/browser control/host claim were released.
+Apple still reports version 0.1.0/build 2 WAITING_FOR_REVIEW with manual release.
+
+## Hosted Release smoke build handoff
+
+The repaired source UI driver passed the hosted standard source suite and
+archive preflight on 759921a and a61bc39. The superseded 759921a run was
+canceled after its new Release-smoke step exceeded eighteen minutes. Retained
+artifact logs show boot completed, followed by a stall in Xcode 26.6
+`CompileAssetCatalogVariant thinned` for the redundant device-specific app
+build. No Release smoke test had started; this is not a recorded test pass or
+an observed product failure.
+
+CI now passes the canonical generic Simulator Release product already built
+and checked by `ios/scripts/check.sh` to the independent UI runner. The source
+Simulator is removed first. Standalone default builds also use a generic
+Simulator destination with an explicit host architecture. Phase messages expose
+progress, and XCTest cases have a five-minute execution bound. Source/runtime,
+catalogs, signing and the uploaded App Store candidate remain unchanged.

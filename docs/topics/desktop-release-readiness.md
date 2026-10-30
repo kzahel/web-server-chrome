@@ -19,14 +19,17 @@ Basic Spanish native-menu/settings and visible start/serve/stop smoke pass
 through Machine Control; Tactical 024 records its scope and cleanup.
 Full three-OS installed-product and production-extension acceptance remains open.**
 
-Last reconciled: **2026-10-29**.
+Last reconciled: **2026-10-30**.
 
 Current publication evidence is in [Tactical 024](../tactical/024-nineteen-language-publication.md):
 [release run 40953035519](https://github.com/kzahel/web-server-chrome/actions/runs/40953035519).
 The update identity and keys remain unchanged: 0.1.5/0.1.12 clients receive
-0.1.13; current/future clients receive 204. Store extension 0.1.10 remains
-pending review (public 0.1.8), so an exact production extension round trip is
-not inferred. Tactical 022 retains the preceding 0.1.12 German smoke evidence.
+0.1.13; current/future clients receive 204. Store extension 0.1.10 is now public:
+the 2026-10-30 API check and public CRX download confirm nineteen locales and
+runtime/resource parity with the browser-accepted ZIP. An exact installed
+production extension round trip remains separate and is not inferred from
+download availability. Tactical 022 retains the preceding 0.1.12 German smoke
+evidence; Tactical 024 records current store/public-artifact verification.
 
 Implementation sequencing lives in
 [Tactical 000](../tactical/000-desktop-native-core-and-release-readiness.md);

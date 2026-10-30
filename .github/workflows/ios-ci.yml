@@ -48,7 +48,15 @@ jobs:
       - name: Run App Store archive preflight
         run: ios/scripts/release-archive.sh --check
 
+      - name: Remove source-check Simulator
+        if: always() && env.IOS_SOURCE_SIMULATOR_ID != ''
+        run: |
+          xcrun simctl shutdown "$IOS_SOURCE_SIMULATOR_ID" || true
+          xcrun simctl delete "$IOS_SOURCE_SIMULATOR_ID"
+
       - name: Smoke production Release through Files and native UI
+        env:
+          IOS_RELEASE_SMOKE_APP: ${{ github.workspace }}/ios/build/ReleaseDerivedData/Build/Products/Release-iphonesimulator/OK200.app
         run: ios/scripts/release-simulator-smoke.sh
 
       - name: Reject generated project drift
@@ -74,8 +82,3 @@ jobs:
             ios/build/release-smoke.*/result.txt
           if-no-files-found: ignore
 
-      - name: Remove source-check Simulator
-        if: always() && env.IOS_SOURCE_SIMULATOR_ID != ''
-        run: |
-          xcrun simctl shutdown "$IOS_SOURCE_SIMULATOR_ID" || true
-          xcrun simctl delete "$IOS_SOURCE_SIMULATOR_ID"

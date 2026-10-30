@@ -8,11 +8,14 @@ source ~/.profile
 ios/scripts/release-simulator-smoke.sh
 ```
 
-iOS CI runs this after the standard source/archive checks and retains the
-result bundle, inspection and logs as the `ios-release-smoke` artifact.
+iOS CI runs this after the standard source/archive checks, supplying their
+already-built generic Simulator Release app. It removes the source-check
+Simulator first, then retains the result bundle, inspection and logs as the
+`ios-release-smoke` artifact.
 
 The runner creates a fresh iPhone Simulator using the newest installed iOS
-runtime. It builds an unsigned **Release** app, checks production artifact
+runtime. By default it builds an unsigned generic **Release** app for the host
+architecture, checks production artifact
 hygiene, seeds a website in that Simulator's OS Files provider, and installs a
 separate XCTest UI runner. The app is driven only through normal controls and
 the real Files picker. There are no DEBUG arguments or app preference/bookmark
@@ -31,6 +34,12 @@ XCTest result bundle remain in the printed ignored `ios/build/release-smoke.*`
 directory. The script terminates the app, shuts down and deletes only the
 Simulator it created, including on failure. Test failures remain nonzero;
 inspect `test.log` and `Smoke.xcresult` before retrying.
+Each test has a five-minute execution limit, in addition to individual bounded
+UI/network waits. Phase messages identify boot, build, fixture and test work.
+
+Generic builds and CI's prebuilt-product handoff avoid repeating device-specific
+asset thinning. The initial hosted attempt stalled in that redundant asset
+compiler before any Release smoke test began; its logs remain in Tactical 024.
 
 An already-built **Simulator Release** app can be supplied with
 `IOS_RELEASE_SMOKE_APP=/absolute/path/OK200.app`. Its actual identity/hash are

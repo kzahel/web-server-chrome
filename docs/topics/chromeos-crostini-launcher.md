@@ -3,19 +3,23 @@
 Topic: chromeos-crostini-launcher
 
 Status: **the Play-free Linux choice now has public protocol-2 controller
-release `crostini-v0.1.5`, public GitHub extension release
-`extension-v0.1.8`, and a deployed signed update feed. Both static controller
+release `crostini-v0.1.6`, public Web Store extension `0.1.10`, and a deployed
+signed update feed. Both static controller
 architectures, the signed manifest, and the checksum ledger pass CI and
 independent signature/hash verification. Earlier exact public and
 production-shaped tests own the x86_64 ChromeOS and ARM64 Linux runtime,
 Launcher, permission/claim, server lifecycle, LAN, reinstall, and purge
-evidence; native ARM Chromebook and exact `0.1.5` physical acceptance remain
+evidence; native ARM Chromebook and exact current-release physical acceptance remain
 open. The tested protocol-2 bootstrap is now deployed and installs signed
-controller `0.1.5`. At the maintainer's direction this preceded Chrome Web
-Store `0.1.8` approval, accepting a temporary compatibility gap for users of
-the current protocol-1 store extension until the submitted update is live.**
+controller `0.1.6`. The 2026-10-30 API check and public CRX download verify the
+protocol-2 extension is now available too, with runtime/resources matching the
+browser-accepted ZIP and nineteen locales. Existing protocol-1 installations
+can still lag store updates; their bounded recovery/upgrade contract remains
+in the compatibility fixtures. Availability of both counterparts does not
+establish an installed-store-copy functional round trip.**
 
-Last reconciled: **2026-08-05**.
+Last reconciled: **2026-10-30**. [Tactical 024](../tactical/024-nineteen-language-publication.md)
+records current public-artifact and store-delivery evidence.
 
 ### Executable compatibility fixtures
 

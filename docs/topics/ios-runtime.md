@@ -510,3 +510,14 @@ and MANUAL release unchanged. Approval, manual public release and store-delivere
 physical acceptance remain future states. [Tactical 024](../tactical/024-nineteen-language-publication.md)
 owns the cross-store continuation; iOS CI now repeats the Release smoke and
 retains its evidence alongside the existing checks.
+
+Hosted follow-up exposed additional XCTest input-delivery/AX classification
+instability in the existing Debug UI driver. The driver now locates the unique
+control identifier across AX types, observes switch/status effects and retries
+once only if neither changed, preserving the corrupt-bookmark error path.
+The lifecycle test also waits for the actual OS background state before
+reactivating. These are test synchronization changes; app/runtime/catalog
+sources and the already uploaded build remain unchanged. Tactical 024 records
+the failed runs and subsequent verification. The completed nineteen-language
+campaign's exact harness evidence remains historical at its qualified release
+source; no receipt is rewritten to claim that it ran this later driver.

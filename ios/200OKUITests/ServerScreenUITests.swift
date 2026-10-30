@@ -12,7 +12,9 @@ final class ServerScreenUITests: XCTestCase {
 
     @MainActor
     private func tapServerSwitch(in app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
-        let server = app.switches["server-toggle"]
+        // SwiftUI's modern AX type can briefly disagree with XCTest's Switch
+        // classification. The app's unique identifier survives that transition.
+        let server = app.descendants(matching: .any)["server-toggle"]
         let ready = XCTNSPredicateExpectation(
             predicate: NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
             object: server
@@ -21,10 +23,24 @@ final class ServerScreenUITests: XCTestCase {
             XCTFail("Server switch is not ready for input", file: file, line: line)
             return
         }
-        // The SwiftUI accessibility wrapper's center tap can leave the native
-        // switch unchanged on hosted simulators. Tap its visible thumb once.
-        let thumbX = server.value as? String == "1" ? 0.75 : 0.25
-        server.coordinate(withNormalizedOffset: CGVector(dx: thumbX, dy: 0.5)).tap()
+        let initialValue = server.value as? String
+        let initialStatus = app.staticTexts["server-status"].label
+        // Delivery can be lost by hosted Simulator input. Retry once only when
+        // neither the switch nor status changed; an error is an observed effect
+        // too (the corrupt-bookmark test deliberately exercises that path).
+        for _ in 0..<2 {
+            let thumbX = initialValue == "1" ? 0.75 : 0.25
+            server.coordinate(withNormalizedOffset: CGVector(dx: thumbX, dy: 0.5)).tap()
+            let changed = XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "value != %@", initialValue ?? ""),
+                object: server
+            )
+            if XCTWaiter.wait(for: [changed], timeout: 3) == .completed ||
+                app.staticTexts["server-status"].label != initialStatus {
+                return
+            }
+        }
+        XCTFail("Server switch input produced no state change after two attempts", file: file, line: line)
     }
 
     @MainActor
@@ -147,6 +163,7 @@ final class ServerScreenUITests: XCTestCase {
         assertStatus("Running", in: app)
 
         XCUIDevice.shared.press(.home)
+        XCTAssertTrue(app.wait(for: .runningBackground, timeout: 10))
         app.activate()
 
         XCTAssertTrue(app.staticTexts["background-stop-message"].waitForExistence(timeout: 5))

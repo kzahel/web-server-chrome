@@ -333,3 +333,20 @@ PENDING_REVIEW / public 0.1.8. A fresh Google Console observation after Apple
 submission still reports release 0.2.4 in review; code10/1% remains authorized
 and pending, with no review cancellation or blind promotion retry. Its owned
 background tab, browser control and host claim were released.
+
+Fresh-Simulator hosted follow-up 41036932586 passed 28/29 tests but still
+recorded a switch tap with no observed start in the lifecycle test. Its result
+bundle was inspected, including source failure locations. The Debug UI driver
+now uses the unique accessibility identifier across SwiftUI AX type changes,
+requires an observed switch/status effect and retries once only when neither
+changed. It recognizes the deliberate invalid-bookmark error as an effect, so
+the retry does not restart failed operations or toggle an already changed
+state. The lifecycle case also waits for OS background state before reopening.
+Behavior assertions remain strict, and failures after the bounded retry fail CI.
+
+This post-campaign driver repair changes the current harness fingerprint.
+The nineteen-language qualification evidence remains tied to the historical
+qualified source and uploaded immutable candidates; it is not rewritten or
+claimed to have run this later driver. Product/runtime/catalog inputs and
+all already published/submitted artifacts are unchanged. Fresh standard source
+and Release smoke checks plus hosted CI verify the subsequent test-only change.

@@ -397,3 +397,30 @@ and bounded execution) passes locally in
 `ios/build/release-smoke.K0MKup/Smoke.xcresult`, exits zero, and removes its
 owned Simulator. Hosted follow-up uses the already inspected canonical Release
 app, preserving its recorded executable hash instead of rebuilding it.
+
+## Green hosted closeout
+
+The final source/test-tooling revision a9c9a6f passes
+[general CI 41044327639](https://github.com/kzahel/web-server-chrome/actions/runs/41044327639),
+[CodeQL 41044328364](https://github.com/kzahel/web-server-chrome/actions/runs/41044328364)
+and [iOS CI 41044327611](https://github.com/kzahel/web-server-chrome/actions/runs/41044327611).
+The preceding functionally equivalent iOS run 41043927389 also passes.
+
+The final hosted lane passes standard unit/UI tests, Simulator/device Release
+build and hygiene checks, archive preflight, source-Simulator removal, the
+independent production Release smoke, generated-project drift checks and
+evidence upload. The downloaded `ios-release-smoke` artifact independently
+reports **1 test passed, 0 failed, 0 skipped**, 185.809 seconds and cleanup
+`exit_code=0`. All HTTP, Files, preview, persistence and lifecycle assertions
+passed. The canonical Simulator app is version 0.1.0/build 2, universal
+x86_64/arm64, with reviewed privacy and absent DEBUG hooks/frameworks;
+executable SHA256 is
+`209fea566f1f73a085c5cd90ced6c90faf765fef6668b13a6edc4a10c591abc0`.
+That Simulator hash is separate from the already recorded signed device IPA.
+
+Local Simulator inventory is empty of booted devices, and the final browser
+check releases its owned tab/control/claim. App/runtime/catalog source remains
+unchanged from the uploaded immutable iOS candidate. Final Apple readback still
+reports **0.1.0 (2) WAITING_FOR_REVIEW / MANUAL**. Public Chrome 0.1.10 delivery
+is complete; the existing Play-review constraint and exact physical iPhone /
+installed-store-copy acceptance limits above remain explicit.

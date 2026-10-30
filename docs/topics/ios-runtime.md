@@ -416,13 +416,12 @@ remain unproven. The local provider returned a generic underlying directory
 name during one selection, so provider-specific display naming also merits
 broader review.
 
-There is no App Store Connect record for this bundle, distribution profile,
-completed signed archive/export or Apple validation, completed App Store
-Connect privacy response, approved/entered store metadata, screenshot set,
-TestFlight build, review result, or store-delivered artifact proof. The privacy
-policy, manifest, and metadata exist only in source until the website and app
-are distributed. Tactical 017 owns those separate store-readiness gates. Store
-submission or publication is not implied by the completed native MVP.
+At the original native-MVP acceptance, App Store identity, distribution,
+metadata, screenshots, TestFlight and review gates were still open. This is
+historical context, superseded by the first-publication continuation below:
+the current signed build is uploaded and submitted for review. Store-delivered
+physical acceptance and public App Store availability remain separate from
+the completed native MVP and the accepted Simulator submission smoke.
 
 
 ## Localization foundation and German
@@ -470,12 +469,10 @@ iOS 17, both device families, reviewed privacy and no DEBUG hooks or embedded
 frameworks. App Store processing is VALID; the exact build is attached to the
 first version and private internal TestFlight group. Automatic build access
 and tester notifications are disabled; no tester invitations were sent.
-An unsubmitted review draft was used for Apple's metadata preflight; it has
-not been submitted. The initial returned gaps were rights declaration and absent
-review detail. On 2026-10-30 the maintainer approved No Third-Party Content;
-API readback verifies that saved declaration and fresh preflight now reports
-only the absent review detail. The private review-contact phone and the
-repository-owned physical TestFlight gate remain open.
+The initial review draft identified missing rights/contact details. Both are
+now resolved: the approved No Third-Party Content declaration and complete
+private review detail are saved and independently read back. The exact version
+has since been submitted; its current state is WAITING_FOR_REVIEW.
 
 On 2026-10-30 the maintainer supplied the private review-contact phone and
 requested Simulator smoke because no iPhone was available. Apple accepted the
@@ -530,3 +527,12 @@ standalone default uses a generic host-architecture build, phase logging and
 a five-minute XCTest bound. That complete default flow passes locally, with
 normal Files grants, independent HTTP and cleanup. Hosted closeout remains
 recorded in Tactical 024; the signed uploaded build is unchanged.
+
+[Final iOS CI 41044327611](https://github.com/kzahel/web-server-chrome/actions/runs/41044327611)
+is green, including the complete production Release smoke on the canonical
+generic Simulator product, source/archive checks, generated-project hygiene
+and cleanup. Independent inspection of its retained result reports one test
+passed, zero failed/skipped, 185.809 seconds and exit zero. General CI and
+CodeQL also pass on the same source revision. The App Store version remains
+WAITING_FOR_REVIEW with manual release after approval; physical TestFlight
+and App Store delivery remain separate unproven gates.

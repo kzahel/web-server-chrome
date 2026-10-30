@@ -26,12 +26,21 @@ jobs:
   check-ios:
     runs-on: macos-26
     env:
-      IOS_SIMULATOR_NAME: iPhone 17 Pro
+      IOS_SIMULATOR_NAME: 200OK-CI-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Install project and source-check tools
         run: brew install xcodegen ripgrep
+
+      - name: Boot a fresh Simulator before source UI tests
+        run: |
+          xcrun simctl list runtimes -j > "$RUNNER_TEMP/ios-runtimes.json"
+          runtime="$(python3 -c 'import json,sys; rows=[r for r in json.load(open(sys.argv[1]))["runtimes"] if r.get("isAvailable") and r["name"].startswith("iOS ")]; print(max(rows,key=lambda r:tuple(map(int,r["version"].split("."))))["identifier"])' "$RUNNER_TEMP/ios-runtimes.json")"
+          simulator="$(xcrun simctl create "$IOS_SIMULATOR_NAME" com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro "$runtime")"
+          echo "IOS_SOURCE_SIMULATOR_ID=$simulator" >> "$GITHUB_ENV"
+          xcrun simctl boot "$simulator"
+          xcrun simctl bootstatus "$simulator" -b
 
       - name: Run iOS source checks
         run: ios/scripts/check.sh
@@ -64,3 +73,9 @@ jobs:
             ios/build/release-smoke.*/artifact-inspection.txt
             ios/build/release-smoke.*/result.txt
           if-no-files-found: ignore
+
+      - name: Remove source-check Simulator
+        if: always() && env.IOS_SOURCE_SIMULATOR_ID != ''
+        run: |
+          xcrun simctl shutdown "$IOS_SOURCE_SIMULATOR_ID" || true
+          xcrun simctl delete "$IOS_SOURCE_SIMULATOR_ID"

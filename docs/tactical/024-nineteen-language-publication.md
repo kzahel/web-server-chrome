@@ -318,3 +318,18 @@ and MANUAL release. Submission succeeded, then independent GETs confirmed both
 submission and App Store version **WAITING_FOR_REVIEW**, still attached to
 build 2 with MANUAL release. No additional agreement block was returned.
 Approval/public release and physical store-delivered testing remain pending.
+
+Hosted follow-up 41035368184 passed 27/29 existing source tests, then failed
+the invalid-bookmark input-readiness and translated start/status UI assertions
+before reaching the new Release smoke. The retained result bundle was inspected;
+this is not recorded as a passing CI run. CI now explicitly creates and fully
+boots an isolated iPhone 17 Pro before running the unchanged source suite, and
+removes that exact Simulator in always-run cleanup, matching the fresh/booted
+local precondition. Existing qualification harnesses and all product assertions
+remain unchanged. The clean hosted rerun must pass before closeout.
+
+Read-only Chrome check 41035739695 succeeds and still reports submitted 0.1.10
+PENDING_REVIEW / public 0.1.8. A fresh Google Console observation after Apple
+submission still reports release 0.2.4 in review; code10/1% remains authorized
+and pending, with no review cancellation or blind promotion retry. Its owned
+background tab, browser control and host claim were released.

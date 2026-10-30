@@ -9,6 +9,13 @@ for command_name in base64 openssl plutil rg security shasum; do
 done
 
 if [[ "${1:-}" == "--check" ]]; then
+  # bash -n accepts only one script; additional paths become script arguments.
+  # Parse every release helper before the tool-only preflight can return.
+  signing_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  for checked_script in "$signing_script_dir"/*.sh \
+    "$signing_script_dir/../../scripts/release-ios.sh"; do
+    bash -n "$checked_script"
+  done
   echo "Ephemeral iOS signing setup tools are available"
   exit 0
 fi
@@ -127,7 +134,8 @@ done
 }
 
 profile_name="$(plutil -extract Name raw "$profile_plist")"
-[[ "$profile_name" =~ ^[A-Za-z0-9._ -]+$ ]] || {
+profile_name_pattern='^[A-Za-z0-9._ -]+$'
+[[ "$profile_name" =~ $profile_name_pattern ]] || {
   echo "Provisioning profile name contains unsupported characters" >&2
   exit 1
 }

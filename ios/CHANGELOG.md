@@ -6,7 +6,12 @@ including rejected and internal-only candidates. Neither value is reused after
 an upload. Both canonical values live in `ios/project.yml`; regenerate the
 Xcode project after changing them and add the matching entry here.
 
-## 0.1.0 (1) — Unreleased
+## 0.1.0 (2) — First App Store candidate
+
+- Repair Bash 3.2 profile-name validation and check each release script syntax
+  independently before ephemeral signing. Reuses the nineteen-language app.
+
+## 0.1.0 (1) — Initial packaging rehearsal
 
 - Add nineteen offline app languages, including localized permission copy, with
   independently reviewed catalogs and native System/app language selection.

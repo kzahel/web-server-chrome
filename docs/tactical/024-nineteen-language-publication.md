@@ -169,3 +169,31 @@ claim was released. No desktop ownership is retained.
   establish the first app identity, distribution signing/provisioning and exact
   candidate screenshots/metadata, validate/upload, and submit for review under
   the already granted publication authority. No App Store release is claimed.
+
+## Authorized continuation — 2026-10-30
+
+The maintainer accepted Apple's Program License Agreement and explicitly
+approved completing Android 0.2.4, then staging 0.2.5 at 1%.
+
+- Play rollout run41012541457 accepted code9 completion. Read-only
+  reconciliation41013061441 reports production code9 completed and no committed
+  new edit. The immediate code10 promotion41012771219 was rejected at commit
+  with `FAILED_PRECONDITION`: existing changes are in review. The failed/unknown
+  outcome was reconciled before any retry; code10 is not claimed in production.
+  The authorized target remains code10 at 1%, standard-7d, preserving the review.
+- Apple membership/certificate/bundle endpoints now succeed. The exact app
+  identifier and an app-specific App Store profile were registered using the
+  existing valid distribution certificate and matching private key. No
+  certificate was created or revoked. The App Store app record was created
+  with the source-reviewed name, English primary language, iOS platform and
+  stable bundle identity. No agreement or new legal declaration was accepted.
+- CI signing secrets and an exact-tag upload environment with required review
+  were configured. Native macOS PKCS12 import passes after using compatible
+  export encoding for the unchanged certificate/key. The first hosted candidate
+  run41013107488 then exposed Bash3.2 parsing of the profile-name regular
+  expression. The expression now lives in a quoted variable, and tool-only
+  preflight parses each release helper separately before returning. Existing
+  locale qualification harness/runtime inputs remain unchanged.
+- Tag `ios-v0.1.0-b1` remains immutable. Build2 is the corrected packaging
+  candidate; no build has yet been uploaded to Apple. Runtime catalogs,
+  protocols, settings, privacy and HTTP behavior are unchanged.

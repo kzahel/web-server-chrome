@@ -441,3 +441,14 @@ server switch off. The UI driver additionally waits for enabled/hittable input
 and taps the visible switch thumb once, while retaining strict status/lifecycle
 assertions. This remains a test-only change; refreshed per-locale qualification
 and hosted CI are recorded in Tactical 023.
+
+## First publication continuation
+
+On 2026-10-30, Apple membership access succeeded after the Account Holder
+accepted the Program License Agreement. App identity, App Store record,
+app-specific provisioning and CI signing now exist, reusing the existing valid
+distribution certificate/private key. The first candidate exposed a native
+PKCS12 format issue and Bash3.2 preflight parsing defect; build2 carries the
+script repair with unchanged app behavior. Exact-tag upload still requires
+its configured environment review. Tactical024 records current signing,
+metadata, review and delivery evidence; no App Store availability is inferred.

@@ -20,15 +20,21 @@ final class ReleaseSmokeTests: XCTestCase {
 
     @MainActor
     private func setSwitch(_ id: String, on: Bool, in app: XCUIApplication) {
-        let element = app.switches[id]
+        let element = app.descendants(matching: .any)[id]
         reveal(element, in: app)
+        XCTAssertTrue(element.isEnabled)
         let desired = on ? "1" : "0"
-        if element.value as? String != desired {
+        for _ in 0..<2 where element.value as? String != desired {
             let thumbX = element.value as? String == "1" ? 0.75 : 0.25
             element.coordinate(withNormalizedOffset: CGVector(dx: thumbX, dy: 0.5)).tap()
+            let changed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", desired), object: element)
+            if XCTWaiter.wait(for: [changed], timeout: 3) == .completed { return }
+            if id == "server-toggle" && app.staticTexts["server-status"].label.hasPrefix("Error:") {
+                XCTFail("Server entered an error state after input")
+                return
+            }
         }
-        let changed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", desired), object: element)
-        XCTAssertEqual(XCTWaiter.wait(for: [changed], timeout: 10), .completed)
+        XCTAssertEqual(element.value as? String, desired, "Switch input produced no requested state after two attempts")
     }
 
     @MainActor
@@ -84,7 +90,7 @@ final class ReleaseSmokeTests: XCTestCase {
         defer { app.terminate() }
         XCTAssertTrue(app.buttons["choose-folder"].waitForExistence(timeout: 15))
         XCTAssertEqual(app.staticTexts["folder-name"].label, "No folder selected")
-        XCTAssertFalse(app.switches["server-toggle"].isEnabled)
+        XCTAssertFalse(app.descendants(matching: .any)["server-toggle"].isEnabled)
         screenshot("release-first-run", app: app)
 
         app.buttons["choose-folder"].tap()
@@ -171,8 +177,8 @@ final class ReleaseSmokeTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["folder-name"].waitForExistence(timeout: 10))
         XCTAssertEqual(app.staticTexts["folder-name"].label, selectedName)
         XCTAssertEqual(app.textFields["port-field"].value as? String, "0")
-        XCTAssertEqual(app.switches["cors-toggle"].value as? String, "1")
-        XCTAssertEqual(app.switches["lan-toggle"].value as? String, "0")
+        XCTAssertEqual(app.descendants(matching: .any)["cors-toggle"].value as? String, "1")
+        XCTAssertEqual(app.descendants(matching: .any)["lan-toggle"].value as? String, "0")
         assertStatus("Stopped", in: app)
         print("RELEASE_SMOKE_PERSISTENCE=folder,port,cors,lan,stopped")
 
@@ -186,7 +192,7 @@ final class ReleaseSmokeTests: XCTestCase {
         app.activate()
         XCTAssertTrue(app.staticTexts["background-stop-message"].waitForExistence(timeout: 10))
         assertStatus("Stopped", in: app)
-        XCTAssertTrue(app.switches["server-toggle"].isEnabled)
+        XCTAssertTrue(app.descendants(matching: .any)["server-toggle"].isEnabled)
         screenshot("release-background-stopped", app: app)
         print("RELEASE_SMOKE_LIFECYCLE=foreground200,background-off,resume-stopped")
     }

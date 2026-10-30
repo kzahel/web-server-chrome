@@ -11,10 +11,17 @@ On 2026-10-30 the maintainer approved completing 0.2.4/code 9 and then staging
 0.2.5/code 10 at 1%. Completion run 41012541457 was API-accepted; read-only
 reconciliation 41013061441 reports code 9 completed. The immediate code 10 edit
 was rejected at commit because Google already has changes in review. Console
-independently shows 0.2.4 in review. The approved target remains code 10 at 1%,
-standard-7d; no further rollout-direction approval is needed when review clears
-and exact candidate/track checks still match. Preserve the review, reconcile
-before retrying, and retain all guards. Advancement stays report-only. [Tactical 024](../tactical/024-nineteen-language-publication.md)
+independently shows 0.2.4 in review. Later on 2026-10-30 the maintainer
+explicitly superseded the staged target with **0.2.5/code 10 at 100%**. Production check 41110868956 confirmed
+code 9 completed and code 10 known to Play. Full-production submission
+41110992191 passed candidate/provenance checks but Google rejected its commit
+with `FAILED_PRECONDITION`: changes are still in review. Read-only
+reconciliation 41111131415 confirms code 9 remains completed and code 10 known;
+no code 10 production change was committed. The approved target
+remains code 10 completed (100%); no further rollout-direction approval is
+needed when review clears and exact candidate/track checks still match.
+Preserve the review, reconcile before retrying, and retain all guards.
+Scheduled advancement stays report-only. [Tactical 024](../tactical/024-nineteen-language-publication.md)
 owns current evidence; Tactical 022 retains the German release and Tactical 021
 infrastructure qualification. Private account identities stay in operational inventory.
 

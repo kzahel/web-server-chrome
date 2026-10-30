@@ -5,14 +5,16 @@ Topic: android-native-kotlin
 Status: **Android source uses one native Kotlin HTTP server, one
 application-scoped controller, and a Compose control surface. Production Play
 0.2.1/code 6 was independently confirmed on 2026-10-29. The verified signed
-0.2.4/code 9 candidate, including German localization, is available on the
-active internal Play track through the new automated publishing lane. That
-actual Play-installed build passed German physical Pixel smoke (SAF, external
-HTTP, language changes, notification/background, persistence and start/stop).
-Production promotion at 1% was accepted; Google review/public availability is
-separate. See Tactical 022 for the bounded evidence and cleanup.**
+0.2.5/code 10 candidate, including nineteen languages, is available on the
+active internal Play track. The physical Pixel updated through Play while
+retaining preferences and its folder grant; French/Japanese external HTTP
+serving and stop passed. Code 9 is API-completed in production, with Google
+review/public availability separate. The maintainer authorized code 10 at
+100% on 2026-10-30; its full-production commit was rejected because changes
+remain in review. See the [publishing topic](android-play-publishing.md) and
+Tacticals 022/024 for exact release evidence and claim limits.**
 
-Last reconciled: **2026-10-29**.
+Last reconciled: **2026-10-30**.
 
 The accepted plan, implementation sequence, and detailed emulator evidence are
 recorded in

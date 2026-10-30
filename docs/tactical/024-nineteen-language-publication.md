@@ -164,10 +164,11 @@ claim was released. No desktop ownership is retained.
 - Chrome: 0.1.10 is now PUBLISHED and the public CRX matches the accepted
   runtime/resources with nineteen locales. Exact installed-store-copy functional
   acceptance remains separate from the verified public download.
-- Play: the maintainer approved completing code 9 then staging code 10 at 1%.
-  Completion is API-accepted, while Google still reviews 0.2.4. Resume the exact
-  approved code 10/1% promotion after review clears and live candidate/track
-  checks still match. Do not cancel the review or ask for the same choice again.
+- Play: the maintainer superseded the earlier staged plan with code 10 at
+  **100%** on 2026-10-30. The full-production submission is blocked by Google
+  review, as recorded below. Resume the exact approved code 10/completed
+  promotion after review clears and live candidate/track checks still match.
+  Do not cancel the review or ask for the same choice again.
 - Apple: the PLA, contact and rights prerequisites are complete. The maintainer
   accepted Simulator Release smoke for submission because no iPhone is available;
   that smoke passes. Build 2 is submitted, WAITING_FOR_REVIEW; reconcile Apple
@@ -424,3 +425,30 @@ unchanged from the uploaded immutable iOS candidate. Final Apple readback still
 reports **0.1.0 (2) WAITING_FOR_REVIEW / MANUAL**. Public Chrome 0.1.10 delivery
 is complete; the existing Play-review constraint and exact physical iPhone /
 installed-store-copy acceptance limits above remain explicit.
+
+## Android full-production authorization — 2026-10-30
+
+The maintainer explicitly requested Android release at **100% now**, replacing
+the earlier code 10/1% direction. The target is the unchanged internally
+Play-delivered and physically tested **0.2.5/code 10** AAB, SHA256
+`2c74ca0e67a3f978a993554521d6dc0a9e912a87d2ea2f91cdfae75d0f30208b`.
+No rebuild, new signing identity, runtime/protocol/settings change or coordinated
+component update is needed. Existing independently released peers remain
+compatible under the source/cross-version evidence above.
+
+[Production precheck 41110868956](https://github.com/kzahel/web-server-chrome/actions/runs/41110868956)
+passed exact-tag/source CI and immutable-candidate verification, reporting code 9
+completed and code 10 already known to Play.
+[Full-production submission 41110992191](https://github.com/kzahel/web-server-chrome/actions/runs/41110992191)
+used the normal reviewed production environment and `status=completed`, with
+no upload or staged fraction. Google rejected the commit with
+`FAILED_PRECONDITION`: existing changes remain in review. The sanitized failure
+receipt explicitly requires reconciliation before retry; no successful code 10
+production release or public availability is claimed.
+
+[Read-only reconciliation 41111131415](https://github.com/kzahel/web-server-chrome/actions/runs/41111131415)
+returned `access_verified`, production code 9 completed, and code 10 known.
+The failed promotion left the production track unchanged. Preserve the active
+review and retry the same candidate with `status=completed` only after review
+clears and fresh candidate/track checks match; no further release-direction
+approval is required. Scheduled advancement stays report-only.

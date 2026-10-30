@@ -179,7 +179,8 @@ fi
   echo "IOS_TEAM_ID is not a ten-character Apple team identifier" >&2
   exit 1
 }
-[[ "$IOS_PROVISIONING_PROFILE_SPECIFIER" =~ ^[A-Za-z0-9._ -]+$ ]] || {
+profile_name_pattern='^[A-Za-z0-9._ -]+$'
+[[ "$IOS_PROVISIONING_PROFILE_SPECIFIER" =~ $profile_name_pattern ]] || {
   echo "IOS_PROVISIONING_PROFILE_SPECIFIER contains unsupported characters" >&2
   exit 1
 }

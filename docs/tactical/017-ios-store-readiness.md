@@ -222,6 +222,14 @@ confirms why the final screenshot gate must reject unprocessed captures.
 
 ## Review gates
 
+The publication continuation in [Tactical 024](024-nineteen-language-publication.md)
+records the maintainer's explicit publication authority and account/rights
+answers. On 2026-10-30, with no iPhone available, the maintainer requested a
+Simulator Release smoke as the submission substitute. The standalone Release
+smoke passed; exact physical TestFlight and post-publication App Store delivery
+remain unproven. This accepted exception does not turn either physical exit
+criterion above into a pass.
+
 Pause for maintainer direction before reserving identifiers, accepting
 agreements, creating distribution credentials, uploading a build, adding
 testers, submitting for review, changing price/availability, or publishing.

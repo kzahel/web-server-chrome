@@ -39,6 +39,9 @@ jobs:
       - name: Run App Store archive preflight
         run: ios/scripts/release-archive.sh --check
 
+      - name: Smoke production Release through Files and native UI
+        run: ios/scripts/release-simulator-smoke.sh
+
       - name: Reject generated project drift
         run: git diff --exit-code -- ios/OK200.xcodeproj
 
@@ -48,4 +51,16 @@ jobs:
         with:
           name: ios-test-result
           path: ios/build/CheckDerivedData/Logs/Test/*.xcresult
+          if-no-files-found: ignore
+
+      - name: Upload Release smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-smoke
+          path: |
+            ios/build/release-smoke.*/Smoke.xcresult
+            ios/build/release-smoke.*/*.log
+            ios/build/release-smoke.*/artifact-inspection.txt
+            ios/build/release-smoke.*/result.txt
           if-no-files-found: ignore

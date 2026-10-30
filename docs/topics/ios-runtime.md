@@ -5,10 +5,13 @@ Topic: ios-native-swift
 Status: **native MVP physically accepted; first App Store build `0.1.0 (2)`
 is distribution-signed, Apple-validated, uploaded and processed VALID. Nineteen
 locales, English metadata, no-collection privacy, conservative age rating, free
-pricing and Release screenshots are configured. Exact physical TestFlight
-acceptance and complete private review contact remain before actual App
-Review. The maintainer approved the No Third-Party Content declaration, which
-is saved in App Store Connect. It is not publicly available.**
+pricing and Release screenshots are configured. Private review contact and
+the approved No Third-Party Content declaration are saved. With no iPhone
+available, the maintainer accepted a Simulator Release smoke for this
+submission; that smoke passes. Exact physical TestFlight acceptance remains
+unproven. Build 2 was submitted on 2026-10-30 and Apple reports
+WAITING_FOR_REVIEW. Release is manual after approval; it is not publicly
+available.**
 
 Last reconciled: **2026-10-30**.
 
@@ -473,3 +476,37 @@ review detail. On 2026-10-30 the maintainer approved No Third-Party Content;
 API readback verifies that saved declaration and fresh preflight now reports
 only the absent review detail. The private review-contact phone and the
 repository-owned physical TestFlight gate remain open.
+
+On 2026-10-30 the maintainer supplied the private review-contact phone and
+requested Simulator smoke because no iPhone was available. Apple accepted the
+complete private review detail and the version passed the unsubmitted-review
+metadata preflight. The maintainer's Simulator substitution applies to this
+submission; it does not establish physical TestFlight or Wi-Fi acceptance.
+
+The reproducible [Release Simulator runner](../../ios/ReleaseSmoke/README.md)
+passes on iPhone 17 Pro Max / iOS 26.5 using an unsigned Simulator Release
+`0.1.0 (2)` with unchanged app/runtime/catalog sources from `ios-v0.1.0-b2`.
+The independent XCTest runner chooses a real Files folder, verifies exact HTTP
+fixture bytes/CORS/ranges/read-only errors, opens the in-app preview, checks
+stop and persisted settings/bookmark after relaunch, then waits for the OS
+background state and requires cache-free HTTP disconnection within five
+seconds. It verifies the stopped explanation on return. Screenshots were
+visually inspected. The disposable Simulator is shut down and deleted.
+
+This adds test/release tooling only. Independently delivered apps and
+extensions, shared protocols, HTTP contracts, persisted settings and language
+fallbacks retain their existing compatibility. The exact signed device IPA
+still has separate distribution inspection and Apple validation; Simulator
+checks account for different compiled icons/architectures. Physical Local
+Network permission/Wi-Fi, TestFlight installation and minimum-iOS execution
+remain separate evidence gaps, not claimed passes.
+
+The sequential fresh-Simulator standard source gate also passed, including
+unit/UI tests, unsigned Simulator/device Release builds, privacy/signing
+hygiene and device artifact inspection. At 2026-10-30 09:41:50 UTC the exact
+version/build was submitted to App Review. Independent API readback reports
+both submission and version WAITING_FOR_REVIEW with build 2 still attached
+and MANUAL release unchanged. Approval, manual public release and store-delivered
+physical acceptance remain future states. [Tactical 024](../tactical/024-nineteen-language-publication.md)
+owns the cross-store continuation; iOS CI now repeats the Release smoke and
+retains its evidence alongside the existing checks.

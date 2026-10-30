@@ -18,7 +18,7 @@ authority following the completed source campaign.
   public checksums, website and old/current/future updater-route verification.
 - Crostini 0.1.6: signed static x86_64/ARM64 artifacts, manifest/checksums and
   compatible updater/bootstrap routes.
-- iOS 0.1.0 (1): first App Store identity/signing, candidate, metadata,
+- iOS 0.1.0 (2): first App Store identity/signing, candidate, metadata,
   screenshots, upload and review subject to actual Apple account gates.
 
 The remaining isolated macOS mock-keychain browser change is committed. Local
@@ -166,11 +166,11 @@ claim was released. No desktop ownership is retained.
   Completion is API-accepted, while Google still reviews 0.2.4. Resume the exact
   approved code 10/1% promotion after review clears and live candidate/track
   checks still match. Do not cancel the review or ask for the same choice again.
-- Apple: the PLA is accepted and setup/upload/processing are complete. Obtain
-  the private review-contact phone (Content Rights is now approved and saved),
-  restore the physical iPhone for exact TestFlight acceptance, complete the
-  review detail and submit under the already granted publication authority.
-  No App Store release or physical TestFlight pass is claimed.
+- Apple: the PLA, contact and rights prerequisites are complete. The maintainer
+  accepted Simulator Release smoke for submission because no iPhone is available;
+  that smoke passes. Build 2 is submitted, WAITING_FOR_REVIEW; reconcile Apple
+  review and the manual release. No App Store availability or
+  physical TestFlight pass is claimed.
 
 ## Authorized continuation — 2026-10-30
 
@@ -261,3 +261,60 @@ A fresh Google Console observation still shows release0.2.4 in review. The
 approved code10/1% promotion remains pending that review; no blind retry or
 review cancellation was performed. The temporary read-only browser tab and
 bounded host claim were closed/released after the check.
+
+## Simulator substitution and complete private contact — 2026-10-30
+
+The maintainer provided the private App Review phone and requested Simulator
+smoke instead of waiting for an unavailable iPhone. The phone is saved only in
+App Store Connect and ignored private evidence. Apple accepted the complete
+review detail; fresh preflight staged exactly version 0.1.0/build 2 in the
+unsubmitted draft without another metadata gap.
+
+`ios/scripts/release-simulator-smoke.sh` and the separate `ios/ReleaseSmoke`
+project now reproduce a production Release smoke through native XCTest. They
+also run sequentially after the existing source/archive checks in iOS CI,
+retaining the result bundle and inspection/log evidence. They
+create their own iPhone Simulator, seed only its OS Files provider, choose the
+fixture through the real document picker and drive normal controls. No app
+test hooks, preference injection or production project dependency were added.
+Current app/runtime/catalog sources match immutable `ios-v0.1.0-b2`.
+
+The final test passed on iPhone 17 Pro Max / iOS 26.5 in 52.917 seconds:
+first-run folder restriction, actual Files grant, automatic port, CORS, exact
+index/text bytes, range 206, missing 404, POST 405, preview page, stop and
+disconnection, persisted folder/port/CORS/LAN/stopped state after relaunch, and
+background disconnection plus stopped explanation after return. Cache-free
+requests originate in the independent test runner. Background checks first
+wait for the OS background state and bound asynchronous listener shutdown to
+five seconds. Screenshots of running, preview and stopped states were visually
+inspected. Private evidence is `ios/build/release-smoke.tsjvHC/Smoke.xcresult`;
+the runner exited zero and removed its own Simulator.
+
+Harness bring-up exposed native picker single/double tap semantics, text
+selection and Safari Close/Done differences. Strict fixture-byte assertions
+caught selecting the parent folder. Those driver fixes and bounded lifecycle
+synchronization require no production app change. Simulator-specific artifact
+inspection avoids applying device-only architecture/icon-alpha rules; exact
+device-IPA distribution inspection remains independently required and passed.
+An initial concurrent standard source-suite attempt hit a Simulator app-launch
+Busy/preflight error; it is rerun sequentially on a fresh owned Simulator.
+
+This is source-equivalent Simulator Release evidence, not installation of the
+signed IPA/TestFlight build or physical Wi-Fi/Local Network permission proof.
+The maintainer accepted that bounded gap for submission. The historical native
+MVP physical evidence remains separate, and post-publication store delivery
+must still be checked. No shared runtime/protocol/settings changes or new
+cross-version rollout dependency were introduced.
+
+The sequential fresh-owned-Simulator standard `ios/scripts/check.sh` rerun
+passed all unit/UI, Release build/inspection, privacy and signing-hygiene
+checks. That Simulator was also removed; no booted Simulator or desktop-control
+claim remains from this work.
+
+At **2026-10-30 09:41:50 UTC**, the existing exact-version review draft was
+submitted under the maintainer's publication authority. Before mutation the
+API confirmed one READY_FOR_REVIEW item for 0.1.0, processed VALID build 2
+and MANUAL release. Submission succeeded, then independent GETs confirmed both
+submission and App Store version **WAITING_FOR_REVIEW**, still attached to
+build 2 with MANUAL release. No additional agreement block was returned.
+Approval/public release and physical store-delivered testing remain pending.

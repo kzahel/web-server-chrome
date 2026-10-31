@@ -37,7 +37,7 @@
   "devDependencies": {
     "@axe-core/playwright": "4.12.1",
     "@biomejs/biome": "2.4.4",
-    "@formatjs/icu-messageformat-parser": "3.5.17",
+    "@formatjs/icu-messageformat-parser": "3.5.22",
     "@playwright/test": "1.62.1",
     "intl-messageformat": "11.2.9",
     "typescript": "5.9.3"

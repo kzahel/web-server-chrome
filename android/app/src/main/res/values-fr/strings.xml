@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Dossier non pris en charge"</string>
     <string name="folder_access_android">"Accès aux dossiers via Android"</string>
     <string name="folder_access_direct">"Accès direct aux dossiers"</string>
-    <string name="folder_action_filesystem">"Système de fichiers"</string>
+    <string name="folder_action_filesystem">"Stockage / carte SD"</string>
     <string name="folder_none_selected">"Aucun dossier sélectionné"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Créer un dossier"</string>
@@ -149,8 +149,8 @@
     <string name="server_status_starting">"Démarrage en cours…"</string>
     <string name="server_status_stopped">"Arrêté"</string>
     <string name="server_status_stopping">"Arrêt en cours…"</string>
-    <string name="setting_all_files_access_granted">"Accès accordé — sélecteur du système de fichiers disponible"</string>
-    <string name="setting_all_files_access_optional">"Facultatif : mettre à disposition des dossiers non accessibles via le sélecteur Android"</string>
+    <string name="setting_all_files_access_granted">"Activé — choisir un espace de stockage ou une carte SD"</string>
+    <string name="setting_all_files_access_optional">"Nécessaire pour mettre à disposition tous les fichiers d’une carte SD, du stockage interne partagé ou du dossier Téléchargements."</string>
     <string name="setting_all_files_access_title">"Accès à tous les fichiers"</string>
     <string name="setting_battery_threshold">"Seuil de batterie : %1$d %%"</string>
     <string name="setting_cors_description">"Autoriser les requêtes du navigateur provenant d’autres origines"</string>

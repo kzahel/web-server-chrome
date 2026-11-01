@@ -55,7 +55,7 @@
     <string name="folder_none_selected">No folder selected</string>
     <string name="folder_access_direct">Direct folder access</string>
     <string name="folder_access_android">Android folder access</string>
-    <string name="folder_action_filesystem">Filesystem</string>
+    <string name="folder_action_filesystem">Storage / SD card</string>
 
     <string name="section_network">Network</string>
     <string name="setting_port">Port</string>
@@ -115,8 +115,8 @@
     <!-- Advanced settings -->
     <string name="advanced_storage_access_title">Storage access</string>
     <string name="setting_all_files_access_title">All files access</string>
-    <string name="setting_all_files_access_granted">Granted — filesystem picker available</string>
-    <string name="setting_all_files_access_optional">Optional: serve folders outside the Android picker</string>
+    <string name="setting_all_files_access_granted">Enabled — choose storage or an SD card</string>
+    <string name="setting_all_files_access_optional">Required to serve an entire SD card, internal shared storage, or Downloads.</string>
 
     <string name="advanced_server_lifetime_title">Server lifetime</string>
     <string name="advanced_server_lifetime_description">Choose what happens after you leave 200 OK</string>

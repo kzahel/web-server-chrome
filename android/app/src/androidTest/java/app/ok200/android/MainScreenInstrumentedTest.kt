@@ -25,6 +25,8 @@ class MainScreenInstrumentedTest {
         composeRule.onNodeWithTag("server-toggle").assertIsDisplayed()
         composeRule.onNodeWithText("Server settings").assertIsDisplayed()
         composeRule.onNodeWithText("Serving folder").assertIsDisplayed()
+        composeRule.onNodeWithText(composeRule.activity.getString(R.string.folder_action_filesystem))
+            .performScrollTo().assertIsDisplayed()
         assertTrue(
             "Storage copy should not expose the SAF acronym",
             composeRule.onAllNodesWithText("SAF", substring = true).fetchSemanticsNodes().isEmpty()

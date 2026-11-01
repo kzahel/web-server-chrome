@@ -14,7 +14,13 @@ review/public availability separate. The maintainer authorized code 10 at
 remain in review. See the [publishing topic](android-play-publishing.md) and
 Tacticals 022/024 for exact release evidence and claim limits.**
 
-Last reconciled: **2026-10-30**.
+Last reconciled: **2026-11-01**. Console identified the All Files Access
+rejection as 0.2.4/code 9. The evidence-backed appeal and refreshed listing /
+declaration are submitted; outcomes remain pending. Source now improves storage
+mode discovery, removable-volume selection and broad-root warnings, with local
+and physical validation complete. These source changes are **not in a new
+published binary**. See the [publishing topic](android-play-publishing.md#all-files-access-review)
+and [Tactical 025](../tactical/025-android-storage-access-review.md).
 
 The accepted plan, implementation sequence, and detailed emulator evidence are
 recorded in
@@ -123,7 +129,9 @@ same rules rather than relying on Compose alone.
   shutdown and threshold; storage actions; and battery, charging, screen,
   Doze, power-save, and optimization diagnostics. Wake locks and boot start are
   available only with valid Reliable background.
-- The Compose screen exposes SAF selection, optional all-files selection,
+- The Compose screen exposes ordinary folder selection and a visible peer
+  **Storage / SD card** action that opens Android permission Settings when
+  broad access is missing and the filesystem picker when it is granted,
   a prominent desktop-consistent start/stop switch, localhost/LAN binding,
   port `0`, directory listing, CORS, SPA fallback, authoritative plain-HTTP
   URLs, and the collapsed Android-only Advanced section. Folder, network, and
@@ -170,6 +178,73 @@ available without broad storage access. `MANAGE_EXTERNAL_STORAGE` remains an
 optional explicit path because serving arbitrary user-selected shared-storage
 folders is a core product capability; Play policy eligibility must be reviewed
 at release time. The Android OS root `/` is never a valid serving root.
+
+### Storage access policy evidence
+
+**Decision (maintainer, 2026-11-01): retain All Files Access and defend
+whole-storage serving as an intended core product capability.** Users should
+be able to serve a selected internal shared-storage volume, removable SD-card
+volume, or Downloads directory in place, preserving its hierarchy and including
+new content without repeated grants or moving/copying files into a special
+folder. The resulting user experience is part of the product requirement;
+selected-subfolder serving alone does not meet it. Permission removal remains
+a fallback for a later explicit decision if the evidence-backed review cannot
+resolve eligibility, not the default remediation.
+
+Android's
+[document-tree restrictions](https://developer.android.com/training/data-storage/shared/documents-files)
+on Android 11+ prevent tree grants for primary shared-storage root, Downloads
+itself, and SD-card roots considered reliable by the manufacturer. Ordinary
+subfolders remain grantable, and a grant covers subsequently created descendants.
+Separate folder/file grants do not provide an automatically complete volume
+tree, including root-level files and newly added sibling folders.
+
+Physical investigation found a Moto X4 on Android 9/API 28 and a Moto G Power
+(2022) on Android 12/API 31, both with removable cards. The X4 predates the
+modern restrictions. Initial Debug/loopback checks established that an ordinary
+Downloads subfolder and new descendants work without broad access, while all
+three complete roots are blocked by the picker. A subsequent **signed Release
+0.2.4/code 9** normal-UI run on Android 12 reproduced those blocked selections,
+used the real Android Settings grant, and served owned non-media fixtures over
+actual Wi-Fi with HTTP 200 and identical bytes. Primary storage and Downloads
+were selected directly; SD-card content was reached beneath the selected
+`/storage` root. The GitHub APK matches the rejected AAB's source/version, but
+was not delivered by Play. A captioned, redacted 30-second video of this run
+was uploaded and linked in the submitted appeal and declaration. Raw captures,
+exact submission text, private device/card/account identities and the unlisted
+URL stay in ignored `.local/play-storage-review/2026-11-01/`.
+
+The exact-release run exposed a real picker limitation: this Moto cannot list
+`/storage`, and the old fallback does not discover its card. Current source
+uses Android 11+'s `StorageManager.storageVolumes` and readable mounted-volume
+directories for OS-labeled removable shortcuts, without guessed card IDs or
+permission bypass. The ordinary picker remains available. Broad-root exposure
+confirmation now includes immediate removable roots as well as primary storage
+and `/storage`; canonical subfolders retain their existing behavior.
+
+Source validation passed build/JVM/lint/localization gates, all seven
+instrumentation tests on owned API 35/German and API 28/Japanese emulators, and
+physical Android 12 permission/discovery/direct-SD-root serving with HTTP 200.
+Three changed messages were independently translated and reviewed in all eighteen
+shipping non-English locales. Source tests are distinct from the signed-release
+video and do not imply a new store artifact. **LAN access defaults on** in both
+the release and current source; start/stop is explicit and settings allow
+localhost-only serving. No network default was changed by this work.
+
+No persisted setting, root representation, SAF grant, HTTP contract, deep link,
+controller protocol or update path changed. Independently released extensions,
+desktop/mobile apps and controllers retain the existing compatibility window;
+old/new combinations need no rollout ordering. New SDK calls are guarded at
+API 30, and API 28 instrumentation covers the older discovery fallback.
+Existing configuration compatibility fixtures passed on both tested APIs.
+There is no legacy support removal scheduled.
+
+[All Files Access](https://developer.android.com/training/data-storage/manage-all-files)
+can enable shared-storage and SD/USB-root access, but does not grant other apps'
+private storage or Android OS root access. Describe the feature as serving
+Android-accessible shared storage, not every file on the device. MediaStore
+does not replace arbitrary non-media directory-tree access. Play eligibility
+remains a separate review question; see the publishing topic before any retry.
 
 ## Compatibility boundary
 

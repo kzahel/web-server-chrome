@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"不支援此資料夾"</string>
     <string name="folder_access_android">"透過 Android 存取資料夾"</string>
     <string name="folder_access_direct">"直接存取資料夾"</string>
-    <string name="folder_action_filesystem">"檔案系統"</string>
+    <string name="folder_action_filesystem">"儲存空間 / SD 卡"</string>
     <string name="folder_none_selected">"尚未選取資料夾"</string>
     <string name="folder_picker_counts">"%1$s、%2$s"</string>
     <string name="folder_picker_create_folder">"建立資料夾"</string>
@@ -145,8 +145,8 @@
     <string name="server_status_starting">"正在啟動…"</string>
     <string name="server_status_stopped">"已停止"</string>
     <string name="server_status_stopping">"正在停止…"</string>
-    <string name="setting_all_files_access_granted">"已授權，可使用檔案系統選取器"</string>
-    <string name="setting_all_files_access_optional">"選用：提供 Android 選取器無法選取的資料夾中的檔案"</string>
+    <string name="setting_all_files_access_granted">"已啟用，可選取儲存空間或 SD 卡"</string>
+    <string name="setting_all_files_access_optional">"若要提供整張 SD 卡、內部共用儲存空間或「下載」資料夾中的檔案，必須啟用此權限。"</string>
     <string name="setting_all_files_access_title">"所有檔案存取權"</string>
     <string name="setting_battery_threshold">"電量門檻：%1$d%%"</string>
     <string name="setting_cors_description">"允許瀏覽器傳送來自其他來源的請求"</string>

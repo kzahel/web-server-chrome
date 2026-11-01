@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Mappen stöds inte"</string>
     <string name="folder_access_android">"Mappåtkomst via Android"</string>
     <string name="folder_access_direct">"Direkt mappåtkomst"</string>
-    <string name="folder_action_filesystem">"Filsystem"</string>
+    <string name="folder_action_filesystem">"Lagring / SD-kort"</string>
     <string name="folder_none_selected">"Ingen mapp har valts"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Skapa mapp"</string>
@@ -147,8 +147,8 @@
     <string name="server_status_starting">"Startar…"</string>
     <string name="server_status_stopped">"Stoppad"</string>
     <string name="server_status_stopping">"Stoppar…"</string>
-    <string name="setting_all_files_access_granted">"Beviljad — filsystemets mappväljare är tillgänglig"</string>
-    <string name="setting_all_files_access_optional">"Valfritt: tillhandahåll filer från mappar utanför Androids mappväljare"</string>
+    <string name="setting_all_files_access_granted">"Aktiverat — välj lagring eller ett SD-kort"</string>
+    <string name="setting_all_files_access_optional">"Krävs för att tillhandahålla filer från ett helt SD-kort, det interna delade lagringsutrymmet eller mappen Hämtade filer."</string>
     <string name="setting_all_files_access_title">"Åtkomst till alla filer"</string>
     <string name="setting_battery_threshold">"Batterigräns: %1$d %%"</string>
     <string name="setting_cors_description">"Tillåt webbläsarförfrågningar från andra ursprung"</string>

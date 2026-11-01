@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"지원하지 않는 폴더입니다"</string>
     <string name="folder_access_android">"Android 폴더 접근"</string>
     <string name="folder_access_direct">"폴더 직접 접근"</string>
-    <string name="folder_action_filesystem">"파일 시스템"</string>
+    <string name="folder_action_filesystem">"저장소 / SD 카드"</string>
     <string name="folder_none_selected">"선택한 폴더가 없습니다"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"폴더 만들기"</string>
@@ -145,8 +145,8 @@
     <string name="server_status_starting">"시작 중…"</string>
     <string name="server_status_stopped">"중지됨"</string>
     <string name="server_status_stopping">"중지 중…"</string>
-    <string name="setting_all_files_access_granted">"권한이 부여되어 파일 시스템 선택기를 사용할 수 있습니다"</string>
-    <string name="setting_all_files_access_optional">"선택 사항: Android 선택기로 선택할 수 없는 폴더의 파일을 제공합니다"</string>
+    <string name="setting_all_files_access_granted">"권한이 허용되었습니다. 저장소 또는 SD 카드를 선택하십시오."</string>
+    <string name="setting_all_files_access_optional">"SD 카드 전체, 내부 공유 저장소 또는 다운로드 폴더에 있는 파일을 제공하려면 필요합니다."</string>
     <string name="setting_all_files_access_title">"모든 파일 접근 권한"</string>
     <string name="setting_battery_threshold">"배터리 잔량 기준: %1$d%%"</string>
     <string name="setting_cors_description">"다른 출처의 브라우저 요청을 허용합니다"</string>

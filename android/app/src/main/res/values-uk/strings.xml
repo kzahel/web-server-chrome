@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Папка не підтримується"</string>
     <string name="folder_access_android">"Доступ до папки через Android"</string>
     <string name="folder_access_direct">"Прямий доступ до папки"</string>
-    <string name="folder_action_filesystem">"Файлова система"</string>
+    <string name="folder_action_filesystem">"Сховище / SD-карта"</string>
     <string name="folder_none_selected">"Папку не вибрано"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Створити папку"</string>
@@ -151,8 +151,8 @@
     <string name="server_status_starting">"Запуск…"</string>
     <string name="server_status_stopped">"Зупинено"</string>
     <string name="server_status_stopping">"Зупинення…"</string>
-    <string name="setting_all_files_access_granted">"Надано — доступний вибір папок у файловій системі"</string>
-    <string name="setting_all_files_access_optional">"Необов’язково: надання доступу до папок, недоступних через засіб вибору Android"</string>
+    <string name="setting_all_files_access_granted">"Увімкнено — виберіть сховище або SD-карту"</string>
+    <string name="setting_all_files_access_optional">"Потрібно для надання доступу до всього вмісту SD-карти, внутрішнього спільного сховища або папки «Завантаження»."</string>
     <string name="setting_all_files_access_title">"Доступ до всіх файлів"</string>
     <string name="setting_battery_threshold">"Поріг заряду акумулятора: %1$d%%"</string>
     <string name="setting_cors_description">"Дозволяти запити браузера з інших джерел"</string>

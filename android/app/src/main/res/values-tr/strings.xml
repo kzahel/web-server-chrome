@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Desteklenmeyen klasör"</string>
     <string name="folder_access_android">"Android üzerinden klasör erişimi"</string>
     <string name="folder_access_direct">"Doğrudan klasör erişimi"</string>
-    <string name="folder_action_filesystem">"Dosya sistemi"</string>
+    <string name="folder_action_filesystem">"Depolama / SD kart"</string>
     <string name="folder_none_selected">"Klasör seçilmedi"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Klasör oluşturun"</string>
@@ -147,8 +147,8 @@
     <string name="server_status_starting">"Başlatılıyor…"</string>
     <string name="server_status_stopped">"Durduruldu"</string>
     <string name="server_status_stopping">"Durduruluyor…"</string>
-    <string name="setting_all_files_access_granted">"İzin verildi — dosya sistemi seçicisi kullanılabilir"</string>
-    <string name="setting_all_files_access_optional">"İsteğe bağlı: Android seçicisiyle seçilemeyen klasörleri sunun"</string>
+    <string name="setting_all_files_access_granted">"Etkin — depolama alanı veya SD kart seçin"</string>
+    <string name="setting_all_files_access_optional">"SD kartın tamamını, dahili paylaşılan depolama alanını veya İndirilenler klasörünü sunmak için gereklidir."</string>
     <string name="setting_all_files_access_title">"Tüm dosyalara erişim"</string>
     <string name="setting_battery_threshold">"Pil eşiği: %%%1$d"</string>
     <string name="setting_cors_description">"Farklı kökenlerden gelen tarayıcı isteklerine izin verin"</string>

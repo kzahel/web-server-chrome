@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Cartella non supportata"</string>
     <string name="folder_access_android">"Accesso alle cartelle tramite Android"</string>
     <string name="folder_access_direct">"Accesso diretto alle cartelle"</string>
-    <string name="folder_action_filesystem">"File system"</string>
+    <string name="folder_action_filesystem">"Memoria / scheda SD"</string>
     <string name="folder_none_selected">"Nessuna cartella selezionata"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Creare una cartella"</string>
@@ -149,8 +149,8 @@
     <string name="server_status_starting">"Avvio in corso…"</string>
     <string name="server_status_stopped">"Arrestato"</string>
     <string name="server_status_stopping">"Arresto in corso…"</string>
-    <string name="setting_all_files_access_granted">"Autorizzato — selettore del file system disponibile"</string>
-    <string name="setting_all_files_access_optional">"Facoltativo: rendere accessibili cartelle non disponibili nel selettore di Android"</string>
+    <string name="setting_all_files_access_granted">"Attivato — scegliere la memoria o una scheda SD"</string>
+    <string name="setting_all_files_access_optional">"Necessario per condividere tramite il server un\'intera scheda SD, la memoria interna condivisa o la cartella Download."</string>
     <string name="setting_all_files_access_title">"Accesso a tutti i file"</string>
     <string name="setting_battery_threshold">"Soglia della batteria: %1$d%%"</string>
     <string name="setting_cors_description">"Consentire richieste del browser da altre origini"</string>

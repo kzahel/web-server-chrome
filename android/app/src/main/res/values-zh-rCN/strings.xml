@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"不支持此文件夹"</string>
     <string name="folder_access_android">"通过 Android 访问文件夹"</string>
     <string name="folder_access_direct">"直接访问文件夹"</string>
-    <string name="folder_action_filesystem">"文件系统"</string>
+    <string name="folder_action_filesystem">"存储空间 / SD 卡"</string>
     <string name="folder_none_selected">"未选择文件夹"</string>
     <string name="folder_picker_counts">"%1$s，%2$s"</string>
     <string name="folder_picker_create_folder">"新建文件夹"</string>
@@ -145,8 +145,8 @@
     <string name="server_status_starting">"正在启动…"</string>
     <string name="server_status_stopped">"已停止"</string>
     <string name="server_status_stopping">"正在停止…"</string>
-    <string name="setting_all_files_access_granted">"已授予权限，可使用文件系统选择器"</string>
-    <string name="setting_all_files_access_optional">"可选：提供 Android 选择器无法选择的文件夹中的文件"</string>
+    <string name="setting_all_files_access_granted">"已启用 — 选择存储空间或 SD 卡"</string>
+    <string name="setting_all_files_access_optional">"要提供整张 SD 卡、内部共享存储空间或“下载”文件夹中的文件，需授予此权限。"</string>
     <string name="setting_all_files_access_title">"所有文件访问权限"</string>
     <string name="setting_battery_threshold">"电量阈值：%1$d%%"</string>
     <string name="setting_cors_description">"允许来自其他源的浏览器请求"</string>

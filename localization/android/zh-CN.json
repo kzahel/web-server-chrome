@@ -524,12 +524,12 @@
     "folder_action_filesystem": {
       "origin": "independently authored translation",
       "reviewState": "agent-reviewed",
-      "reviewer": "gpt-6.1-sol/01a18915-62f7-77b3-9fc6-b9e5f34a920c",
-      "sourceHash": "0eb6f7a57663d1e714237585eb5b97d5d5e7b5023650832f35249d52d1a8290e",
+      "reviewer": "gpt-6.1-sol/01a196dc-329a-7440-9ae7-038dc836ec48",
+      "sourceHash": "3ae63550612a58c3fe50d0c3ffc309fcb98686dcf9d6acc0174f3175480ef6b4",
       "terminologyHash": "682ac8553ea8244e0f65015c6e9fe514edf26bd091e6f2efcab0c0a0c13ea1e9",
-      "terminologyReviewer": "gpt-6.1-sol/01a18915-62f7-77b3-9fc6-b9e5f34a920c",
-      "translationHash": "9aff6a48a2dda5356f7b8335eb28dd8f7ad3d8e541b18b34ac841906cb2b2117",
-      "translator": "gpt-6.1-sol/01a18913-f8ff-7530-b9f9-ed907dd8c6a3"
+      "terminologyReviewer": "gpt-6.1-sol/01a196dc-329a-7440-9ae7-038dc836ec48",
+      "translationHash": "6ef5958fdce58496770b05f9c7a3c29aca7d17fa5cf604572fafa75abbc6cc1a",
+      "translator": "gpt-6.1-sol/01a196db-a539-76f0-a694-6e08e6dd3de2"
     },
     "folder_none_selected": {
       "origin": "independently authored translation",
@@ -1414,22 +1414,22 @@
     "setting_all_files_access_granted": {
       "origin": "independently authored translation",
       "reviewState": "agent-reviewed",
-      "reviewer": "gpt-6.1-sol/01a18915-62f7-77b3-9fc6-b9e5f34a920c",
-      "sourceHash": "d7626ae89a2a90cc17b2083721b7a50891bbe4c129b8c799339adc4f6c697b41",
-      "terminologyHash": "682ac8553ea8244e0f65015c6e9fe514edf26bd091e6f2efcab0c0a0c13ea1e9",
-      "terminologyReviewer": "gpt-6.1-sol/01a18915-62f7-77b3-9fc6-b9e5f34a920c",
-      "translationHash": "a6f6ffa99048a72375d12dca37e5a19db9e376f0af404b1a45e8143a7ddefda9",
-      "translator": "gpt-6.1-sol/01a18913-f8ff-7530-b9f9-ed907dd8c6a3"
+      "reviewer": "gpt-6.1-sol/01a196dc-329a-7440-9ae7-038dc836ec48",
+      "sourceHash": "255d587f1dc4e26f32e3b1605c64fd8bc85073bf117bc0d0ae9551954131fa75",
+      "terminologyHash": "b0d97cb78a4be64a0802f10b5f94bfe59e7235374144c12f647b1e78e917f359",
+      "terminologyReviewer": "gpt-6.1-sol/01a196dc-329a-7440-9ae7-038dc836ec48",
+      "translationHash": "08d4975f8fb3578e12fe5fbb2d20edaaa143df5664baef10a428c86932f5cdba",
+      "translator": "gpt-6.1-sol/01a196db-a539-76f0-a694-6e08e6dd3de2"
     },
     "setting_all_files_access_optional": {
       "origin": "independently authored translation",
       "reviewState": "agent-reviewed",
-      "reviewer": "gpt-6.1-sol/01a18915-62f7-77b3-9fc6-b9e5f34a920c",
-      "sourceHash": "48aa0a01bbc8987c399681ad3b0eb6cb979330b64c7358a7d383202590d0b24f",
+      "reviewer": "gpt-6.1-sol/01a196dc-329a-7440-9ae7-038dc836ec48",
+      "sourceHash": "c2a287b4dd29b6d21dc1d214760c004a68bdfadfca11dc99232ec82614e2a12d",
       "terminologyHash": "682ac8553ea8244e0f65015c6e9fe514edf26bd091e6f2efcab0c0a0c13ea1e9",
-      "terminologyReviewer": "gpt-6.1-sol/01a18915-62f7-77b3-9fc6-b9e5f34a920c",
-      "translationHash": "15414663ae41cf0eabd6ec56d9df9a286a7302de2d8cea66056033c59899618f",
-      "translator": "gpt-6.1-sol/01a18913-f8ff-7530-b9f9-ed907dd8c6a3"
+      "terminologyReviewer": "gpt-6.1-sol/01a196dc-329a-7440-9ae7-038dc836ec48",
+      "translationHash": "0a0b4edab0e3418a90d0f2651e8542a819c9549e0aefbbd48831bcc14992a939",
+      "translator": "gpt-6.1-sol/01a196db-a539-76f0-a694-6e08e6dd3de2"
     },
     "setting_all_files_access_title": {
       "origin": "independently authored translation",

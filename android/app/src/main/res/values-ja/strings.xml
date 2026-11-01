@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"このフォルダーには対応していません"</string>
     <string name="folder_access_android">"Android の機能によるフォルダーへのアクセス"</string>
     <string name="folder_access_direct">"フォルダーへの直接アクセス"</string>
-    <string name="folder_action_filesystem">"ファイルシステム"</string>
+    <string name="folder_action_filesystem">"ストレージ / SD カード"</string>
     <string name="folder_none_selected">"フォルダーが選択されていません"</string>
     <string name="folder_picker_counts">"%1$s、%2$s"</string>
     <string name="folder_picker_create_folder">"フォルダーを作成"</string>
@@ -145,8 +145,8 @@
     <string name="server_status_starting">"開始処理中…"</string>
     <string name="server_status_stopped">"停止中"</string>
     <string name="server_status_stopping">"停止処理中…"</string>
-    <string name="setting_all_files_access_granted">"許可済み — ファイルシステムからフォルダーを選択できます"</string>
-    <string name="setting_all_files_access_optional">"任意の設定です。Android の選択画面では選べないフォルダーを配信できます"</string>
+    <string name="setting_all_files_access_granted">"有効です。ストレージまたは SD カードを選択できます。"</string>
+    <string name="setting_all_files_access_optional">"SD カード全体、内部共有ストレージ、または「ダウンロード」フォルダーを配信するには、この権限が必要です。"</string>
     <string name="setting_all_files_access_title">"すべてのファイルへのアクセス"</string>
     <string name="setting_battery_threshold">"バッテリー残量のしきい値: %1$d%%"</string>
     <string name="setting_cors_description">"他のオリジンからのブラウザーリクエストを許可します"</string>

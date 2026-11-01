@@ -78,3 +78,11 @@ store delivery, signed production install, physical-device or full three-OS
 acceptance is inferred from these local gates. Publication remains a separate
 maintainer-authorized action. Website/store localization, iOS distribution and
 broader exact-artifact acceptance remain follow-ups.
+
+On 2026-11-01, the three Android storage-discovery/permission messages received
+fresh independent translation and review in all eighteen non-English catalogs.
+Native catalog/provenance checks pass. The changed surface was exercised in the
+full seven-test Android suite on API 35/German and API 28/Japanese, plus physical
+Android 12 English. This incremental validation does not renew the prior full
+cross-platform campaign or establish store delivery; see
+[Tactical 025](../tactical/025-android-storage-access-review.md).

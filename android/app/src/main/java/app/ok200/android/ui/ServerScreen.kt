@@ -87,6 +87,7 @@ import app.ok200.android.R
 import app.ok200.android.network.NetworkAddressFamily
 import app.ok200.android.power.DozeMonitor.PowerState
 import app.ok200.android.server.ServerPhase
+import app.ok200.android.server.storage.StorageRootPolicy
 import app.ok200.android.settings.ServerLifetimeMode
 import app.ok200.android.settings.WakeLockMode
 import app.ok200.android.viewmodel.ServerViewModel
@@ -295,10 +296,14 @@ fun ServerScreen(
                                             )
                                         )
                                     }
-                                    if (allFilesAccess) {
-                                        TextButton(onClick = { showFilePicker = true }, enabled = settingsEnabled) {
-                                            Text(stringResource(R.string.folder_action_filesystem))
-                                        }
+                                    TextButton(
+                                        onClick = {
+                                            if (allFilesAccess) showFilePicker = true
+                                            else onRequestAllFilesAccess()
+                                        },
+                                        enabled = settingsEnabled
+                                    ) {
+                                        Text(stringResource(R.string.folder_action_filesystem))
                                     }
                                 }
                             }
@@ -1052,7 +1057,7 @@ private fun ProjectLinks(onOpen: (String) -> Unit) {
 private fun isBroadStorageRoot(file: File): Boolean {
     val canonical = runCatching { file.canonicalPath }.getOrDefault(file.absolutePath)
     val external = runCatching { Environment.getExternalStorageDirectory().canonicalPath }.getOrNull()
-    return canonical == external || canonical == "/storage"
+    return StorageRootPolicy.requiresBroadRootConfirmation(canonical, external)
 }
 
 private fun copyUrl(context: Context, url: String) {

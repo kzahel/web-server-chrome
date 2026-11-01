@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Pasta não compatível"</string>
     <string name="folder_access_android">"Acesso à pasta pelo Android"</string>
     <string name="folder_access_direct">"Acesso direto à pasta"</string>
-    <string name="folder_action_filesystem">"Sistema de arquivos"</string>
+    <string name="folder_action_filesystem">"Armazenamento / cartão SD"</string>
     <string name="folder_none_selected">"Nenhuma pasta selecionada"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Criar pasta"</string>
@@ -149,8 +149,8 @@
     <string name="server_status_starting">"Iniciando…"</string>
     <string name="server_status_stopped">"Parado"</string>
     <string name="server_status_stopping">"Parando…"</string>
-    <string name="setting_all_files_access_granted">"Concedido — seletor do sistema de arquivos disponível"</string>
-    <string name="setting_all_files_access_optional">"Opcional: disponibilizar pastas fora do seletor do Android"</string>
+    <string name="setting_all_files_access_granted">"Ativado — escolha o armazenamento ou um cartão SD"</string>
+    <string name="setting_all_files_access_optional">"Necessário para disponibilizar os arquivos de um cartão SD inteiro, do armazenamento interno compartilhado ou da pasta Downloads."</string>
     <string name="setting_all_files_access_title">"Acesso a todos os arquivos"</string>
     <string name="setting_battery_threshold">"Limite de bateria: %1$d%%"</string>
     <string name="setting_cors_description">"Permitir solicitações feitas pelo navegador a partir de outras origens"</string>

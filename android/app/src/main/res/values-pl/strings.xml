@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Nieobsługiwany folder"</string>
     <string name="folder_access_android">"Dostęp do folderu przez system Android"</string>
     <string name="folder_access_direct">"Bezpośredni dostęp do folderu"</string>
-    <string name="folder_action_filesystem">"System plików"</string>
+    <string name="folder_action_filesystem">"Pamięć urządzenia / karta SD"</string>
     <string name="folder_none_selected">"Nie wybrano folderu"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Utwórz folder"</string>
@@ -151,8 +151,8 @@
     <string name="server_status_starting">"Uruchamianie…"</string>
     <string name="server_status_stopped">"Zatrzymano"</string>
     <string name="server_status_stopping">"Zatrzymywanie…"</string>
-    <string name="setting_all_files_access_granted">"Przyznano — dostępny wybór folderu w systemie plików"</string>
-    <string name="setting_all_files_access_optional">"Opcjonalnie: udostępnianie folderów spoza systemowego okna wyboru Androida"</string>
+    <string name="setting_all_files_access_granted">"Włączono — wybierz pamięć urządzenia lub kartę SD"</string>
+    <string name="setting_all_files_access_optional">"To uprawnienie jest wymagane do udostępniania całej karty SD, wewnętrznej pamięci współdzielonej lub folderu Downloads."</string>
     <string name="setting_all_files_access_title">"Dostęp do wszystkich plików"</string>
     <string name="setting_battery_threshold">"Próg poziomu baterii: %1$d%%"</string>
     <string name="setting_cors_description">"Zezwalaj na żądania przeglądarki z innych źródeł"</string>

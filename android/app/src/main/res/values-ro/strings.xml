@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Folder neacceptat"</string>
     <string name="folder_access_android">"Acces la foldere prin Android"</string>
     <string name="folder_access_direct">"Acces direct la foldere"</string>
-    <string name="folder_action_filesystem">"Sistem de fișiere"</string>
+    <string name="folder_action_filesystem">"Spațiu de stocare / card SD"</string>
     <string name="folder_none_selected">"Niciun folder selectat"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Creare folder"</string>
@@ -149,8 +149,8 @@
     <string name="server_status_starting">"În curs de pornire…"</string>
     <string name="server_status_stopped">"Oprit"</string>
     <string name="server_status_stopping">"În curs de oprire…"</string>
-    <string name="setting_all_files_access_granted">"Acces acordat — selectorul din sistemul de fișiere este disponibil"</string>
-    <string name="setting_all_files_access_optional">"Opțional: furnizarea fișierelor din foldere care nu sunt disponibile în selectorul Android"</string>
+    <string name="setting_all_files_access_granted">"Activat — se poate selecta spațiul de stocare sau un card SD"</string>
+    <string name="setting_all_files_access_optional">"Acest acces este necesar pentru a furniza toate fișierele de pe un card SD, din spațiul de stocare intern partajat sau din folderul Downloads."</string>
     <string name="setting_all_files_access_title">"Acces la toate fișierele"</string>
     <string name="setting_battery_threshold">"Pragul bateriei: %1$d%%"</string>
     <string name="setting_cors_description">"Permite cereri din browser de la alte origini"</string>

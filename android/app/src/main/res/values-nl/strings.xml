@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Niet-ondersteunde map"</string>
     <string name="folder_access_android">"Maptoegang via Android"</string>
     <string name="folder_access_direct">"Directe maptoegang"</string>
-    <string name="folder_action_filesystem">"Bestandssysteem"</string>
+    <string name="folder_action_filesystem">"Opslag / SD-kaart"</string>
     <string name="folder_none_selected">"Geen map geselecteerd"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Map aanmaken"</string>
@@ -147,8 +147,8 @@
     <string name="server_status_starting">"Bezig met starten…"</string>
     <string name="server_status_stopped">"Gestopt"</string>
     <string name="server_status_stopping">"Bezig met stoppen…"</string>
-    <string name="setting_all_files_access_granted">"Toegestaan — mapkiezer voor het bestandssysteem beschikbaar"</string>
-    <string name="setting_all_files_access_optional">"Optioneel: bied mappen aan buiten de Android-mapkiezer om"</string>
+    <string name="setting_all_files_access_granted">"Ingeschakeld — kies opslag of een SD-kaart"</string>
+    <string name="setting_all_files_access_optional">"Vereist om een volledige SD-kaart, de gedeelde interne opslag of Downloads aan te bieden."</string>
     <string name="setting_all_files_access_title">"Toegang tot alle bestanden"</string>
     <string name="setting_battery_threshold">"Batterijdrempel: %1$d%%"</string>
     <string name="setting_cors_description">"Browserverzoeken van andere origins toestaan"</string>

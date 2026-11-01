@@ -1,0 +1,27 @@
+200 OK Web Server turns your Android phone, tablet, or Chromebook into a local HTTP file server for web development, testing, demos, and read-only file sharing.
+
+Serve a folder or an entire storage volume
+Choose a folder, an entire SD card, internal shared storage, or Downloads, then start the server and open its address from another device. Share files where they already live, preserving the existing directory hierarchy, root-level files, and newly added content without copying everything into a special sharing folder.
+
+Whole-storage serving uses Android's All files access permission because Android 11 and later restrict selecting storage roots and Downloads through the system folder picker. You can still serve an ordinary folder through Android's system picker without granting All files access. Protected files belonging to other apps remain inaccessible.
+
+Features
+• Read-only HTTP file browsing and downloads
+• Folder selection through Android's system picker
+• Direct selection of shared-storage folders and storage roots with All files access
+• Directory listings, byte ranges, cache validation, CORS, and single-page app fallback
+• Localhost or local-network access
+• Optional reliable background serving with a visible notification
+• Start-on-boot and screen-off availability controls
+• IPv4 and IPv6 address display
+• ChromeOS-aware network instructions
+
+You control what is served
+Granting storage permission does not start sharing automatically. Choose the serving root and explicitly start or stop the server. Android enables local-network access by default; turn off "Available on local network" before starting if you want access only from the same device.
+
+Serving uses plain, unencrypted HTTP. Anyone who can reach the server while local-network access is enabled may be able to read files beneath your selected root, including newly added files. Share only content intended for that network. The app does not provide HTTPS or automatic public Internet exposure, and it does not upload your files to a developer-operated storage service.
+
+200 OK Web Server is the successor to Web Server for Chrome, built by the original developer. The product is open source, with companion desktop applications.
+
+Learn more, download desktop versions, get support, or view the source code at:
+https://ok200.app

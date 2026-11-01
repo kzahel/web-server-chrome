@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Nepodporovaná složka"</string>
     <string name="folder_access_android">"Přístup ke složce přes Android"</string>
     <string name="folder_access_direct">"Přímý přístup ke složce"</string>
-    <string name="folder_action_filesystem">"Souborový systém"</string>
+    <string name="folder_action_filesystem">"Úložiště / SD karta"</string>
     <string name="folder_none_selected">"Není vybrána žádná složka"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Vytvořit složku"</string>
@@ -151,8 +151,8 @@
     <string name="server_status_starting">"Spouštění…"</string>
     <string name="server_status_stopped">"Zastaven"</string>
     <string name="server_status_stopping">"Zastavování…"</string>
-    <string name="setting_all_files_access_granted">"Přístup udělen — výběr složek v souborovém systému je dostupný"</string>
-    <string name="setting_all_files_access_optional">"Volitelné: zpřístupnění složek mimo systémový výběr Androidu"</string>
+    <string name="setting_all_files_access_granted">"Povoleno — vyberte úložiště nebo SD kartu"</string>
+    <string name="setting_all_files_access_optional">"Toto oprávnění je nutné k poskytování souborů z celé SD karty, interního sdíleného úložiště nebo složky Stažené soubory."</string>
     <string name="setting_all_files_access_title">"Přístup ke všem souborům"</string>
     <string name="setting_battery_threshold">"Hranice nabití baterie: %1$d %%"</string>
     <string name="setting_cors_description">"Povolit požadavky prohlížeče z jiných původů"</string>

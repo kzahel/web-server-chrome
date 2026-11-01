@@ -60,7 +60,9 @@ import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import app.ok200.android.R
+import app.ok200.android.server.storage.readableStorageVolumeShortcuts
 import java.io.File
 
 @Immutable
@@ -141,6 +143,8 @@ fun FolderPickerDialog(
     var showCreateFolder by remember { mutableStateOf(false) }
     // Incremented to force recomposition after creating a folder
     var refreshKey by remember { mutableIntStateOf(0) }
+    val context = LocalContext.current
+    val volumeShortcuts = remember(refreshKey) { readableStorageVolumeShortcuts(context) }
 
     val shortcuts = listOf(
         stringResource(R.string.folder_shortcut_external_storage) to Environment.getExternalStorageDirectory(),
@@ -151,11 +155,11 @@ fun FolderPickerDialog(
         stringResource(R.string.folder_shortcut_documents) to
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
         stringResource(R.string.folder_shortcut_filesystem_root) to root,
-    )
+    ) + volumeShortcuts.map { it.label to it.directory }
 
-    val (subdirs, files) = remember(currentDir, showHidden, refreshKey) {
+    val (subdirs, files) = remember(currentDir, showHidden, refreshKey, volumeShortcuts) {
         val listed = currentDir.listFiles()
-        val allEntries = if (listed != null) {
+        val enumeratedEntries = if (listed != null) {
             listed.toList()
         } else {
             // listFiles() returns null when the directory can't be read (SELinux, etc.).
@@ -167,6 +171,10 @@ fun FolderPickerDialog(
                 .map { File(currentDir, it) }
                 .filter { it.exists() }
         }
+        val volumeChildren = volumeShortcuts.map { it.directory }.filter {
+            it.parentFile?.canonicalFile == currentDir.canonicalFile
+        }
+        val allEntries = (enumeratedEntries + volumeChildren).distinctBy { it.absolutePath }
         val visible = allEntries.filter { showHidden || !it.name.startsWith(".") }
         val dirs = visible.filter { it.isDirectory }
             .sortedBy { it.name.lowercase() }

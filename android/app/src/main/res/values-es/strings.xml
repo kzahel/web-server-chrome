@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Carpeta no compatible"</string>
     <string name="folder_access_android">"Acceso a carpetas mediante Android"</string>
     <string name="folder_access_direct">"Acceso directo a carpetas"</string>
-    <string name="folder_action_filesystem">"Sistema de archivos"</string>
+    <string name="folder_action_filesystem">"Almacenamiento / tarjeta SD"</string>
     <string name="folder_none_selected">"No se ha seleccionado ninguna carpeta"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Crear carpeta"</string>
@@ -149,8 +149,8 @@
     <string name="server_status_starting">"Iniciando…"</string>
     <string name="server_status_stopped">"Detenido"</string>
     <string name="server_status_stopping">"Deteniendo…"</string>
-    <string name="setting_all_files_access_granted">"Permiso concedido: selector del sistema de archivos disponible"</string>
-    <string name="setting_all_files_access_optional">"Opcional: servir carpetas no disponibles en el selector de Android"</string>
+    <string name="setting_all_files_access_granted">"Activado: seleccione el almacenamiento o una tarjeta SD"</string>
+    <string name="setting_all_files_access_optional">"Necesario para servir los archivos de una tarjeta SD completa, del almacenamiento interno compartido o de la carpeta Descargas."</string>
     <string name="setting_all_files_access_title">"Acceso a todos los archivos"</string>
     <string name="setting_battery_threshold">"Umbral de batería: %1$d%%"</string>
     <string name="setting_cors_description">"Permitir solicitudes del navegador desde otros orígenes"</string>

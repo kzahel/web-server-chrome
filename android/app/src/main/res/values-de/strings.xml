@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Dieser Ordner wird nicht unterstützt"</string>
     <string name="folder_access_android">"Ordnerzugriff über Android"</string>
     <string name="folder_access_direct">"Direkter Ordnerzugriff"</string>
-    <string name="folder_action_filesystem">"Dateisystem"</string>
+    <string name="folder_action_filesystem">"Speicher / SD-Karte"</string>
     <string name="folder_none_selected">"Kein Ordner ausgewählt"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Ordner erstellen"</string>
@@ -147,8 +147,8 @@
     <string name="server_status_starting">"Wird gestartet…"</string>
     <string name="server_status_stopped">"Gestoppt"</string>
     <string name="server_status_stopping">"Wird gestoppt…"</string>
-    <string name="setting_all_files_access_granted">"Gewährt — Ordnerauswahl im Dateisystem verfügbar"</string>
-    <string name="setting_all_files_access_optional">"Optional: Ordner außerhalb der Android-Ordnerauswahl bereitstellen"</string>
+    <string name="setting_all_files_access_granted">"Aktiviert — wähle den Speicher oder eine SD-Karte aus"</string>
+    <string name="setting_all_files_access_optional">"Erforderlich, damit du eine ganze SD-Karte, den internen gemeinsam genutzten Speicher oder den Ordner Downloads bereitstellen kannst."</string>
     <string name="setting_all_files_access_title">"Zugriff auf alle Dateien"</string>
     <string name="setting_battery_threshold">"Akkuschwelle: %1$d%%"</string>
     <string name="setting_cors_description">"Browseranfragen von anderen Ursprüngen zulassen"</string>

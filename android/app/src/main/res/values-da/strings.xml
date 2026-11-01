@@ -52,7 +52,7 @@
     <string name="error_unsupported_folder">"Mappen understøttes ikke"</string>
     <string name="folder_access_android">"Mappeadgang via Android"</string>
     <string name="folder_access_direct">"Direkte mappeadgang"</string>
-    <string name="folder_action_filesystem">"Filsystem"</string>
+    <string name="folder_action_filesystem">"Lagerplads / SD-kort"</string>
     <string name="folder_none_selected">"Ingen mappe valgt"</string>
     <string name="folder_picker_counts">"%1$s, %2$s"</string>
     <string name="folder_picker_create_folder">"Opret mappe"</string>
@@ -147,8 +147,8 @@
     <string name="server_status_starting">"Starter…"</string>
     <string name="server_status_stopped">"Stoppet"</string>
     <string name="server_status_stopping">"Stopper…"</string>
-    <string name="setting_all_files_access_granted">"Tilladt — filsystemvælgeren er tilgængelig"</string>
-    <string name="setting_all_files_access_optional">"Valgfrit: Levér filer fra mapper uden for Androids mappevælger"</string>
+    <string name="setting_all_files_access_granted">"Aktiveret — vælg lagerplads eller et SD-kort"</string>
+    <string name="setting_all_files_access_optional">"Kræves for at levere filer fra et helt SD-kort, intern delt lagerplads eller mappen Downloads."</string>
     <string name="setting_all_files_access_title">"Adgang til alle filer"</string>
     <string name="setting_battery_threshold">"Batterigrænse: %1$d%%"</string>
     <string name="setting_cors_description">"Tillad browseranmodninger fra andre oprindelser"</string>

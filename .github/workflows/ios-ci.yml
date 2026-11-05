@@ -28,7 +28,7 @@ jobs:
     env:
       IOS_SIMULATOR_NAME: 200OK-CI-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install project and source-check tools
         run: brew install xcodegen ripgrep

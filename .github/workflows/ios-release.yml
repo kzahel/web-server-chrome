@@ -31,7 +31,7 @@ jobs:
       version: ${{ steps.candidate.outputs.version }}
       build: ${{ steps.candidate.outputs.build }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Require an exact iOS release tag and confirmation
         id: candidate
@@ -119,7 +119,7 @@ jobs:
     runs-on: macos-26
     environment: ios-app-store-upload
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install inspection tools
         run: brew install ripgrep

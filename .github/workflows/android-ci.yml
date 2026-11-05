@@ -67,7 +67,7 @@ jobs:
         run: scripts/check.sh
 
       - name: Upload Debug APK
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: android-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
@@ -201,26 +201,26 @@ jobs:
           sha256sum build.json >> SHA256SUMS
 
       - name: Upload Release APK
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: android-release-apk
           path: android/app/build/outputs/apk/release/app-release.apk
 
       - name: Upload Release AAB
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: android-release-aab
           path: android/app/build/outputs/bundle/release/app-release.aab
 
       - name: Upload Mapping File
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: android-mapping
           path: android/app/build/outputs/mapping/release/mapping.txt.gz
 
       - name: Upload Release verification
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: android-release-verification
           path: android/app/build/outputs/release-verification/

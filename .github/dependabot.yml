@@ -1,27 +1,36 @@
 version: 2
+
+# Security updates only. Routine upgrades are maintainer-run batches.
+# Dependabot requires a schedule, but open-pull-requests-limit: 0 disables
+# version-update PRs without disabling security updates, which are grouped
+# per ecosystem entry.
 updates:
   - package-ecosystem: npm
-    directory: /
+    directories:
+      - /
+      - /desktop/tauri-app/e2e
     schedule:
       interval: weekly
+    open-pull-requests-limit: 0
     groups:
-      javascript-development:
-        dependency-type: development
-  - package-ecosystem: npm
-    directory: /desktop/tauri-app/e2e
-    schedule:
-      interval: weekly
-    groups:
-      webdriverio:
-        patterns:
-          - '@wdio/*'
-          - webdriverio
-          - expect-webdriverio
+      npm-security:
+        applies-to: security-updates
+        patterns: ["*"]
   - package-ecosystem: cargo
     directory: /desktop
     schedule:
       interval: weekly
+    open-pull-requests-limit: 0
+    groups:
+      cargo-security:
+        applies-to: security-updates
+        patterns: ["*"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    open-pull-requests-limit: 0
+    groups:
+      actions-security:
+        applies-to: security-updates
+        patterns: ["*"]

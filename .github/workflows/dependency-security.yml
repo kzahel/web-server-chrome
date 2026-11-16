@@ -37,7 +37,9 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm audit
-      - run: npm audit --prefix desktop/tauri-app/e2e
+      # The WebdriverIO/mocha e2e harness is dev-only and pins glob/minimatch
+      # below their fixed majors (moderate, attacker-pattern-only advisories).
+      - run: npm audit --prefix desktop/tauri-app/e2e --audit-level=high
 
   rust:
     runs-on: ubuntu-latest

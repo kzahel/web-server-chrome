@@ -2,7 +2,7 @@
 
 Topic: dependency-security
 
-Last reviewed: **2026-10-28**. Next review of the remaining Rust warnings:
+Last reviewed: **2026-11-23**. Next review of the remaining Rust warnings:
 **2026-11-27**, or earlier when their upstream dependencies change.
 
 ## Current source disposition
@@ -33,12 +33,19 @@ and zip 9.1.3. The updater update required the compatible Tauri dependency
 refresh; changing only the originally flagged packages would have left these
 issues unresolved.
 
-Current locked-source results:
+October locked-source results:
 
 - `pnpm audit`: zero vulnerabilities, including development dependencies.
 - `npm audit --prefix desktop/tauri-app/e2e`: zero vulnerabilities.
-- `cargo audit --file desktop/Cargo.lock`: zero vulnerability entries, with
-  the six informational warnings below still visible.
+- `cargo audit --file desktop/Cargo.lock`: zero vulnerability entries and
+  six informational warnings.
+
+The November 23 scheduled audit failed on `cookie` 0.18.1 and `url` 2.5.8
+([hosted run](https://github.com/kzahel/web-server-chrome/actions/runs/45258543681)).
+The Rust lockfile now resolves `cookie` 0.18.3 (RUSTSEC-2026-0594) and `url`
+2.5.9 (RUSTSEC-2026-0592), plus `form_urlencoded` 1.2.3. The updated lockfile
+passes `cargo audit` with zero vulnerability entries and the ten warnings
+below. The JavaScript audits passed on the November 23 run.
 
 After [commit da3d4f3](https://github.com/kzahel/web-server-chrome/commit/da3d4f30b92e6d58bd411855ee6fb25c13130ec4)
 was pushed to main, GitHub completed dependency-graph reprocessing and reported
@@ -97,14 +104,18 @@ Zero vulnerability entries must not be described as a warning-free audit.
 
 | Advisory | Dependency | Disposition |
 |---|---|---|
+| RUSTSEC-2026-0543 | chrono 0.4.44 | Unmaintained. |
+| RUSTSEC-2026-0441 | pin-utils 0.1.0 | Unmaintained. |
 | RUSTSEC-2024-0370 | proc-macro-error 1.0.4 | Unmaintained; retain visibility and revisit the owning target-specific macro dependency. |
 | RUSTSEC-2026-0192 | ttf-parser 0.25.1 | Unmaintained; retained by the ChromeOS Linux font stack. Review its upstream replacement before changing rendering. |
 | RUSTSEC-2026-0371 | zbus_names 4.3.1 | Unmaintained; upstream Linux portal dependency. |
 | RUSTSEC-2026-0370 | zvariant 5.10.0 | Unmaintained; upstream Linux portal dependency. |
 | RUSTSEC-2026-0372 | zvariant_derive 5.10.0 | Unmaintained; upstream Linux portal dependency. |
 | RUSTSEC-2024-0429 | glib 0.18.5 | Unsound VariantStrIter implementation; fixed in >=0.20, but the GTK3/WebKitGTK dependency family requires 0.18. A direct incompatible override would not repair that dependency family. Track the upstream Linux runtime migration; do not claim this warning is fixed or proven unreachable. |
+| RUSTSEC-2026-0486 | rustix 1.1.4 | Unsound xattr buffer handling. RustSec lists a fix in 1.1.6. |
+| — | async-executor 1.14.0 | Yanked on crates.io. |
 
-The last warning deserves separate Linux follow-up, not a blanket claim that
+The glib warning deserves separate Linux follow-up, not a blanket claim that
 the desktop is unaffected. No new allowlist entries were introduced. Future
 exceptions must identify the exact advisory and dependency path, reachable
 inputs, mitigation, owner, and review/expiry date; unknown findings or expired
@@ -127,6 +138,10 @@ tests remain the compatibility window. The website may deploy first; desktop,
 extension, and ChromeOS Linux releases can follow independently without
 requiring their counterparts to update together. Existing fallback and
 unsupported-version behavior is unchanged, and no legacy support is removed.
+
+The November patch updates use the existing dependency constraints and require
+no changes to the desktop/Crostini interfaces or compatibility window. Existing
+release artifacts retain their original dependency versions until rebuilt.
 
 Desktop publication requires the source, hosted Linux product E2E, platform
 package/signing, and fail-closed finalizer gates in the
